@@ -84,8 +84,37 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+"==============================================================================
+" vundle   https://github.com/gmarik/vundle/
+"==============================================================================
+"     :BundleList          - list configured bundles
+"     :BundleInstall(!)    - install(update) bundles
+"     :BundleSearch(!) foo - search(or refresh cache first) for foo
+"     :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+set nocompatible               " be iMproved
+filetype off                   " required!
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" repos on github
+Bundle 'tpope/vim-fugitive'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'Lokaltog/vim-powerline'
+
+filetype plugin indent on     " required!
+
+
 fun! MySys()
 return "windows"
+endfun
+
+fun! IsWindows()
+    return 1
 endfun
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -164,7 +193,7 @@ if MySys() == "mac"
   set gfn=Menlo:h14
   set shell=/bin/bash
 elseif MySys() == "windows"
-  set gfn=Consolas:h12
+  set gfn=Consolas:h10
 elseif MySys() == "linux"
   set gfn=Monospace\ 10
   set shell=/bin/bash
@@ -387,52 +416,60 @@ function! StatuslineCurrentHighlight()
     endif
 endfunction
 
+function! StatuslineLineEndings()
+    let l:line_ending_message = &ff
+    if search('\r\n', 'nw') && (search('[^\n]\r$', 'nw') || search('[^\r]\n$', 'nw'))
+        let l:line_ending_message = l:line_ending_message . ',mixed'
+    endif
+    return '['.l:line_ending_message.']'
+endfunction
+
 " Format the statusline
 "set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
 "set statusline+=\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}
 
 "statusline setup
-set statusline =%#identifier#
-set statusline+=[%t]    "tail of the filename
-set statusline+=%*
-
-"display a warning if fileformat isnt unix
-set statusline+=%#warningmsg#
-set statusline+=%{'['.&ff.']'}
-set statusline+=%*
-
-"display a warning if file encoding isnt utf-8
-set statusline+=%#identifier#
-"set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
-set statusline+=%{'['.&fenc.']'}
-set statusline+=%*
-
-set statusline+=%h      "help file flag
-set statusline+=%y      "filetype
-
-"read only flag
-set statusline+=%#identifier#
-set statusline+=%r
-set statusline+=%*
-
-"modified flag
-set statusline+=%#identifier#
-set statusline+=%m
-set statusline+=%*
-
-"set statusline+=%{fugitive#statusline()}
-
-"display a warning if &paste is set
-set statusline+=%#error#
-set statusline+=%{&paste?'[paste]':''}
-set statusline+=%*
-
-set statusline+=%=      "left/right separator
-set statusline+=%{StatuslineCurrentHighlight()}\ \ "current highlight
-set statusline+=%c,     "cursor column
-set statusline+=%l/%L   "cursor line/total lines
-set statusline+=\ %P    "percent through file
-set laststatus=2 " Always show the statusline
+"set statusline =%#identifier#
+"set statusline+=[%t]    "tail of the filename
+"set statusline+=%*
+"
+""display a warning if fileformat isnt unix
+"set statusline+=%#warningmsg#
+"set statusline+=%{StatuslineLineEndings()}
+"set statusline+=%*
+"
+""display a warning if file encoding isnt utf-8
+"set statusline+=%#identifier#
+""set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
+"set statusline+=%{'['.&fenc.']'}
+"set statusline+=%*
+"
+"set statusline+=%h      "help file flag
+"set statusline+=%y      "filetype
+"
+""read only flag
+"set statusline+=%#identifier#
+"set statusline+=%r
+"set statusline+=%*
+"
+""modified flag
+"set statusline+=%#identifier#
+"set statusline+=%m
+"set statusline+=%*
+"
+""set statusline+=%{fugitive#statusline()}
+"
+""display a warning if &paste is set
+"set statusline+=%#error#
+"set statusline+=%{&paste?'[paste]':''}
+"set statusline+=%*
+"
+"set statusline+=%=      "left/right separator
+"set statusline+=%{StatuslineCurrentHighlight()}\ \ "current highlight
+"set statusline+=%c,     "cursor column
+"set statusline+=%l/%L   "cursor line/total lines
+"set statusline+=\ %P    "percent through file
+"set laststatus=2 " Always show the statusline
 
 
 function! CurDir()
@@ -615,9 +652,17 @@ map <leader>bb :cd ..<cr>
 set viminfo+=% "remember buffers
 
 " ctrlp
+if MySys() == "windows"
+    set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\*      " Windows
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*  " Linux/MacOSX
+endif
+
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_extensions = ['tag']
-let g:ctrlp_cmd = 'CtrlPMixed' " CtrlPTag
+let g:ctrlp_cmd = 'CtrlPMixed' 
+
+let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\.git$\|\.hg$\|\.svn$\|AppData\|eclipse_workspace', 
   \ 'file': '\.exe$\|\.so$\|\.dll$\|\.regtrans-ms$\|\.blf$\|\.dat$\|ntuser',
@@ -691,4 +736,9 @@ endfunction
 autocmd VimEnter * nested :call LoadSession()
 autocmd VimLeave * :call SaveSession()
 
+" always maximize GUI window size
+if IsWindows()
+    au GUIEnter * simalt ~x 
+endif
 
+highlight Normal guifg=white
