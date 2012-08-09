@@ -84,6 +84,9 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+let mapleader = ","
+let g:mapleader = ","
+
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
 "==============================================================================
@@ -105,6 +108,7 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'kien/ctrlp.vim'
 
 filetype plugin indent on     " required!
 
@@ -123,27 +127,14 @@ endfun
 " Sets how many lines of history VIM has to remember
 set history=700
 
-" Enable filetype plugin
-filetype plugin on
-filetype indent on
-
 " Set to auto read when a file is changed from the outside
 set autoread
-
-" With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-let mapleader = ","
-let g:mapleader = ","
 
 " Fast saving
 nmap <leader>w :w!<cr>
 
-" Fast editing of the .vimrc
-map <leader>e :e! ~/.vim_runtime/vimrc<cr>
-
-" When vimrc is edited, reload it
-autocmd! bufwritepost vimrc source ~/.vim_runtime/vimrc
-
+" close buffer without closing window
+nmap <leader>bd :bp|bd #
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -405,6 +396,7 @@ endtry
 """"""""""""""""""""""""""""""
 " => Statusline
 """"""""""""""""""""""""""""""
+set laststatus=2 " Always show the statusline
 
 "return the syntax highlight group under the cursor ''
 function! StatuslineCurrentHighlight()
@@ -469,7 +461,6 @@ endfunction
 "set statusline+=%c,     "cursor column
 "set statusline+=%l/%L   "cursor line/total lines
 "set statusline+=\ %P    "percent through file
-"set laststatus=2 " Always show the statusline
 
 
 function! CurDir()
@@ -517,6 +508,9 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Remap VIM 0
 map 0 ^
+"disable help key
+noremap <F1> <ESC>
+inoremap jj <ESC>
 
 "Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
@@ -614,13 +608,7 @@ function! JavaScriptFold()
 endfunction
 
 
-""""""""""""""""""""""""""""""
-" => Command-T
-""""""""""""""""""""""""""""""
-let g:CommandTMaxHeight = 15
 set wildignore+=*.o,*.obj,.git,*.pyc
-noremap <leader>j :CommandT<cr>
-noremap <leader>y :CommandTFlush<cr>
 
 
 """"""""""""""""""""""""""""""
