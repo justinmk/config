@@ -121,6 +121,18 @@ fun! IsWindows()
     return 1
 endfun
 
+" Jump to the last position when reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+set showcmd     	" Show (partial) command in status line.
+"set autowrite		" Automatically save before commands like :next and :make
+set hidden          " Allow buffer switching even if unsaved 
+set mouse=a     	" Enable mouse usage (all modes)
+
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -177,12 +189,19 @@ set tm=500
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-syntax enable "Enable syntax hl
+if has("syntax")
+    syntax enable "Enable syntax hl
+    "syntax on "Vim to override your color settings
+endif
 
 " Set font according to system
 if MySys() == "mac"
-  set gfn=Menlo:h14
-  set shell=/bin/bash
+  if has('gui_running')
+      "set guifont=Monaco:h16
+      set guifont=Menlo:h15
+      set guioptions-=T
+      set shell=/bin/bash
+  endif
 elseif MySys() == "windows"
   set gfn=Consolas:h10
 elseif MySys() == "linux"
@@ -197,7 +216,7 @@ if has("gui_running")
   colorscheme torte
   set nonu
 else
-  colorscheme zellner
+  "colorscheme zellner
   set background=dark
   
   set nonu
@@ -234,6 +253,8 @@ endtry
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set formatoptions+=rn1
+
 set expandtab
 set shiftwidth=4
 set tabstop=4
@@ -245,6 +266,10 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set nowrap 
+set textwidth=80
+set colorcolumn=80
+
+
 
 
 """"""""""""""""""""""""""""""
@@ -636,8 +661,8 @@ map <leader>bb :cd ..<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " justin various
 
-
 set viminfo+=% "remember buffers
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 " ctrlp
 if MySys() == "windows"
@@ -647,13 +672,14 @@ else
 endif
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
-let g:ctrlp_extensions = ['tag']
+let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed' 
+let g:ctrlp_extensions = ['tag']
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\.git$\|\.hg$\|\.svn$\|AppData\|eclipse_workspace', 
-  \ 'file': '\.exe$\|\.so$\|\.dll$\|\.regtrans-ms$\|\.blf$\|\.dat$\|ntuser',
+  \ 'dir':  '\.git$\|\.hg$\|\.svn$\|\.cache$|AppData\|eclipse_workspace', 
+  \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pdf$|\.regtrans-ms$\|\.blf$\|\.dat$\|ntuser',
   \ 'link': 'some_bad_symbolic_links',
   \ }
 
@@ -729,4 +755,25 @@ if IsWindows()
     au GUIEnter * simalt ~x 
 endif
 
+
+" enforce black bg, etc.
 highlight Normal guifg=white
+highlight Normal ctermbg=black guibg=black
+highlight Normal ctermfg=white guifg=white 
+highlight Keyword guifg=#d7875f
+highlight Identifier guifg=#d7af5f
+
+"j,k move by screen line instead of file line
+nnoremap j gj
+nnoremap k gk
+
+"disable F1 help key
+inoremap <F1> <ESC>
+nnoremap <F1> <ESC>
+vnoremap <F1> <ESC>
+
+
+"source ~/.vim/theme/distinguished.vim
+
+
+
