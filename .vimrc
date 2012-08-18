@@ -1,88 +1,3 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: amix the lucky stiff
-"             http://amix.dk - amix@amix.dk
-"
-" Version: 3.6 - 25/08/10 14:40:30
-"
-" Blog_post: 
-"       http://amix.dk/blog/post/19486#The-ultimate-vim-configuration-vimrc
-" Syntax_highlighted:
-"       http://amix.dk/vim/vimrc.html
-" Raw_version: 
-"       http://amix.dk/vim/vimrc.txt
-"
-" How_to_Install_on_Unix:
-"    $ mkdir ~/.vim_runtime
-"    $ svn co svn://orangoo.com/vim ~/.vim_runtime
-"    $ cat ~/.vim_runtime/install.sh
-"    $ sh ~/.vim_runtime/install.sh <system>
-"      <sytem> can be `mac`, `linux` or `windows`
-"
-" How_to_Upgrade:
-"    $ svn update ~/.vim_runtime
-"
-" Sections:
-"    -> General
-"    -> VIM user interface
-"    -> Colors and Fonts
-"    -> Files and backups
-"    -> Text, tab and indent related
-"    -> Visual mode related
-"    -> Command mode related
-"    -> Moving around, tabs and buffers
-"    -> Statusline
-"    -> Parenthesis/bracket expanding
-"    -> General Abbrevs
-"    -> Editing mappings
-"
-"    -> Cope
-"    -> Minibuffer plugin
-"    -> Omni complete functions
-"    -> Python section
-"    -> JavaScript section
-"
-"
-" Plugins_Included:
-"     > minibufexpl.vim - http://www.vim.org/scripts/script.php?script_id=159
-"       Makes it easy to get an overview of buffers:
-"           info -> :e ~/.vim_runtime/plugin/minibufexpl.vim
-"
-"     > bufexplorer - http://www.vim.org/scripts/script.php?script_id=42
-"       Makes it easy to switch between buffers:
-"           info -> :help bufExplorer
-"
-"     > yankring.vim - http://www.vim.org/scripts/script.php?script_id=1234
-"       Emacs's killring, useful when using the clipboard:
-"           info -> :help yankring
-"
-"     > surround.vim - http://www.vim.org/scripts/script.php?script_id=1697
-"       Makes it easy to work with surrounding text:
-"           info -> :help surround
-"
-"     > snipMate.vim - http://www.vim.org/scripts/script.php?script_id=2540
-"       Snippets for many languages (similar to TextMate's):
-"           info -> :help snipMate
-"
-"     > mru.vim - http://www.vim.org/scripts/script.php?script_id=521
-"       Plugin to manage Most Recently Used (MRU) files:
-"           info -> :e ~/.vim_runtime/plugin/mru.vim
-"
-"     > Command-T - http://www.vim.org/scripts/script.php?script_id=3025
-"       Command-T plug-in provides an extremely fast, intuitive mechanism for opening filesa:
-"           info -> :help CommandT
-"           screencast and web-help -> http://amix.dk/blog/post/19501
-"
-"
-"  Revisions:
-"     > 3.6: Added lots of stuff (colors, Command-T, Vim 7.3 persistent undo etc.)
-"     > 3.5: Paste mode is now shown in status line  if you are in paste mode
-"     > 3.4: Added mru.vim
-"     > 3.3: Added syntax highlighting for Mako mako.vim 
-"     > 3.2: Turned on python_highlight_all for better syntax
-"            highlighting for Python
-"     > 3.1: Added revisions ;) and bufexplorer.vim
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let mapleader = ","
 let g:mapleader = ","
@@ -113,12 +28,16 @@ Bundle 'kien/ctrlp.vim'
 filetype plugin indent on     " required!
 
 
-fun! MySys()
-return "windows"
+fun! IsWindows()
+    return has('win32') || has('win64')
 endfun
 
-fun! IsWindows()
-    return 1
+fun! IsMac()
+    return has('gui_macvim')
+endfun
+
+fun! IsGui()
+    return has('gui') || has('gui_running')
 endfun
 
 " Jump to the last position when reopening a file
@@ -145,8 +64,6 @@ set autoread
 " Fast saving
 nmap <leader>w :w!<cr>
 
-" close buffer without closing window
-nmap <leader>bd :bp|bd #
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -154,13 +71,10 @@ nmap <leader>bd :bp|bd #
 " Set 7 lines to the curors - when moving vertical..
 set so=7
 
-set wildmenu "Turn on WiLd menu
-
-set ruler "Always show current position
-
+set wildmode="full"
+set wildmenu 
+set ruler 
 set cmdheight=2 "The commandbar height
-
-set hid "Change buffer - without saving
 
 " Set backspace config
 set backspace=eol,start,indent
@@ -168,9 +82,7 @@ set whichwrap+=<,>,h,l
 
 set ignorecase "Ignore case when searching
 set smartcase
-
 set hlsearch "Highlight search things
-
 set incsearch "Make search act like search in modern browsers
 set nolazyredraw "Don't redraw while executing macros 
 
@@ -194,32 +106,35 @@ if has("syntax")
     "syntax on "Vim to override your color settings
 endif
 
-" Set font according to system
-if MySys() == "mac"
-  if has('gui_running')
-      "set guifont=Monaco:h16
-      set guifont=Menlo:h15
-      set guioptions-=T
-      set shell=/bin/bash
-  endif
-elseif MySys() == "windows"
-  set gfn=Consolas:h10
-elseif MySys() == "linux"
-  set gfn=Monospace\ 10
-  set shell=/bin/bash
-endif
-
-if has("gui_running")
-  set guioptions-=T
-  set t_Co=256
-  set background=dark
-  colorscheme torte
-  set nonu
+if IsGui()
+    "no toolbar
+    set guioptions-=T
+    set t_Co=256
+    set background=dark
+    set nonumber
 else
   "colorscheme zellner
   set background=dark
-  
-  set nonu
+endif
+
+" Set font according to system
+if IsMac()
+    " Use option (alt) as meta key.
+    set macmeta
+
+    if IsGui()
+        source ~/.vim/theme/distinguished.vim
+        "set guifont=Monaco:h16
+        set guifont=Menlo:h16
+        set shell=/bin/bash
+    endif
+elseif IsWindows()
+    set gfn=Consolas:h10
+    " Windows has a nasty habit of launching gVim in the wrong working directory
+    cd ~
+elseif IsGui()
+    set gfn=Monospace\ 10
+    set shell=/bin/bash
 endif
 
 set encoding=utf8
@@ -239,10 +154,10 @@ set nobackup
 
 "Persistent undo
 try
-    if MySys() == "windows"
+    if IsWindows()
       set undodir=C:\Windows\Temp
     else
-      set undodir=~/.vim_runtime/undodir
+      set undodir=~/.vim/undodir
     endif
     
     set undofile
@@ -332,23 +247,18 @@ cnoremap <C-K>		<C-U>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
-func! Cwd()
-  let cwd = getcwd()
-  return "e " . cwd 
-endfunc
-
 func! DeleteTillSlash()
   let g:cmd = getcmdline()
-  if MySys() == "linux" || MySys() == "mac"
-    let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
-  else
+  if IsWindows()
     let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
+  else
+    let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
   endif
   if g:cmd == g:cmd_edited
-    if MySys() == "linux" || MySys() == "mac"
-      let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
-    else
+    if IsWindows()
       let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
+    else
+      let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
     endif
   endif   
   return g:cmd_edited
@@ -374,7 +284,7 @@ map <C-l> <C-W>l
 map <leader>bd :Bclose<cr>
 
 " Close all the buffers
-map <leader>ba :1,300 bd!<cr>
+"map <leader>ba :1,300 bd!<cr>
 
 " Use the arrows to something usefull
 map <right> :bn<cr>
@@ -543,7 +453,7 @@ nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-if MySys() == "mac"
+if IsMac()
   nmap <D-j> <M-j>
   nmap <D-k> <M-k>
   vmap <D-j> <M-j>
@@ -665,7 +575,7 @@ set viminfo+=% "remember buffers
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 " ctrlp
-if MySys() == "windows"
+if IsWindows()
     set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\*      " Windows
 else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*  " Linux/MacOSX
@@ -686,12 +596,14 @@ let g:ctrlp_custom_ignore = {
 
 function! ScrubPath(path)
     let b:path=a:path
-    if MySys() == "windows"
+
+    if IsWindows()
         let b:path = substitute(b:path, '/', '\', 'g')
     "assume that paths have slashes; only scrub for Windows
     "else
     "    let b:path = substitute(b:path, '\', '/', 'g')
     endif
+
     return b:path
 endfunction
 
@@ -714,7 +626,7 @@ function! SaveSession()
   if (filereadable(b:sessionfile))
     let b:sessionfile_bk = b:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
     echo b:sessionfile_bk
-    if MySys() == "windows"
+    if IsWindows()
         exe 'silent !copy ' . b:sessionfile . ' ' . b:sessionfile_bk
     else
         exe 'silent !cp ' . b:sessionfile . ' ' . b:sessionfile_bk
@@ -722,7 +634,7 @@ function! SaveSession()
   endif
 
   if (filewritable(GetSessionDir()) != 2)
-    if MySys() == "windows"
+    if IsWindows()
         exe 'silent !mkdir ' . GetSessionDir()
     else
         exe 'silent !mkdir -p ' . GetSessionDir()
@@ -757,7 +669,6 @@ endif
 
 
 " enforce black bg, etc.
-highlight Normal guifg=white
 highlight Normal ctermbg=black guibg=black
 highlight Normal ctermfg=white guifg=white 
 highlight Keyword guifg=#d7875f
@@ -773,7 +684,6 @@ nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
 
-"source ~/.vim/theme/distinguished.vim
 
 
 
