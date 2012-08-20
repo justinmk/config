@@ -2,6 +2,18 @@
 "ignored if we are not on debian
 runtime! debian.vim
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" inspired by: 
+"   https://github.com/amix/vimrc
+"
+"     > yankring.vim - http://www.vim.org/scripts/script.php?script_id=1234
+"       Emacs's killring, useful when using the clipboard:
+"
+"     > surround.vim - http://www.vim.org/scripts/script.php?script_id=1697
+"       Makes it easy to work with surrounding text:
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let mapleader = ","
 let g:mapleader = ","
 
