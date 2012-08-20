@@ -1,4 +1,7 @@
 
+"ignored if we are not on debian
+runtime! debian.vim
+
 let mapleader = ","
 let g:mapleader = ","
 
@@ -616,10 +619,7 @@ function! GetSessionDir()
 endfunction
 
 function! SaveSession()
-  "disable session save/load for CLI
-  if argc() == 0
-      return
-  endif
+  "TODO: disable session save/load for CLI
 
   let b:sessionfile = ScrubPath(GetSessionDir() . "/session.vim")
 
@@ -646,10 +646,7 @@ function! SaveSession()
 endfunction
 
 function! LoadSession()
-  "disable session save/load for CLI
-  if argc() != 0
-      return
-  endif
+  "TODO: disable session save/load for CLI
 
   let b:sessionfile = GetSessionDir() . "/session.vim"
   if (filereadable(b:sessionfile))
