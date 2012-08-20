@@ -136,7 +136,6 @@ else
             "set guifont=Monaco:h16
             set guifont=Menlo:h16
         endif
-    endif
     elseif IsGui()
         set gfn=Monospace\ 10
     endif
