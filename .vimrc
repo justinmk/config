@@ -86,8 +86,8 @@ nmap <leader>w :w!<cr>
 " Set 7 lines to the curors - when moving vertical..
 set so=7
 
-set wildmode="full"
-set wildmenu 
+set wildmode=full
+set wildmenu
 set ruler 
 set cmdheight=2 "The commandbar height
 
@@ -585,9 +585,11 @@ map <leader>pp :setlocal paste!<cr>
 map <leader>bb :cd ..<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" justin various
 
-set viminfo+=% "remember buffers
+if !IsGui()
+    set viminfo+=% "remember buffers
+endif
+
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 " ctrlp
@@ -634,6 +636,9 @@ endfunction
 
 function! SaveSession()
   "TODO: disable session save/load for CLI
+  if !IsGui()
+    return
+  endif
 
   let b:sessionfile = ScrubPath(GetSessionDir() . "/session.vim")
 
@@ -661,6 +666,9 @@ endfunction
 
 function! LoadSession()
   "TODO: disable session save/load for CLI
+  if !IsGui()
+    return
+  endif
 
   let b:sessionfile = GetSessionDir() . "/session.vim"
   if (filereadable(b:sessionfile))
