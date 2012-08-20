@@ -116,28 +116,30 @@ if IsGui()
     set background=dark
     set nonumber
 else
-  "colorscheme zellner
   set background=dark
 endif
 
-" Set font according to system
-if IsMac()
-    " Use option (alt) as meta key.
-    set macmeta
-
-    if IsGui()
-        source ~/.vim/theme/distinguished.vim
-        "set guifont=Monaco:h16
-        set guifont=Menlo:h16
-        set shell=/bin/bash
-    endif
-elseif IsWindows()
+" platform-specific settings
+if IsWindows()
     set gfn=Consolas:h10
     " Windows has a nasty habit of launching gVim in the wrong working directory
     cd ~
-elseif IsGui()
-    set gfn=Monospace\ 10
+else
     set shell=/bin/bash
+
+    if IsMac()
+        " Use option (alt) as meta key.
+        set macmeta
+
+        if IsGui()
+            "source ~/.vim/theme/distinguished.vim
+            "set guifont=Monaco:h16
+            set guifont=Menlo:h16
+        endif
+    endif
+    elseif IsGui()
+        set gfn=Monospace\ 10
+    endif
 endif
 
 set encoding=utf8
@@ -579,15 +581,16 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 " ctrlp
 if IsWindows()
-    set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\*      " Windows
+    set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\* 
 else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*  " Linux/MacOSX
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/* 
 endif
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed' 
 let g:ctrlp_extensions = ['tag']
+nnoremap <c-m-p> :CtrlPTag<cr> 
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
