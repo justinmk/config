@@ -51,14 +51,20 @@ fun! IsMac()
     return has('gui_macvim')
 endfun
 
+" 'is GUI' means vim was _not_ launched from the command console.
+" example variables:
+"   $term  = cygwin
+"   &term  = win32
+"   &term  = builtin_gui //set *after* vimrc but *before* gvimrc
+"   &shell = C:\Windows\system32\cmd.exe
 fun! IsGui()
-    return has('gui') || has('gui_running')
+    return strlen($term) == 0
 endfun
 
-" Jump to the last position when reopening a file
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
+" 'has GUI' means vim is "gui-capable"--but we may be using gvim/macvim from within the command console.
+fun! HasGui()
+    return has('gui') || has('gui_running')
+endfun
 
 set showcmd     	" Show (partial) command in status line.
 "set autowrite		" Automatically save before commands like :next and :make
@@ -113,29 +119,29 @@ set t_vb=
 set tm=500
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Colors and Fonts
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nonumber
+set background=dark
+
 if has("syntax")
     syntax enable "Enable syntax hl
     "syntax on "Vim to override your color settings
 endif
 
-if IsGui()
-    "no toolbar
-    set guioptions-=T
+if HasGui() 
+    if IsGui() 
+        "no toolbar
+        set guioptions-=T
+    endif
+
     set t_Co=256
-    set background=dark
-    set nonumber
-else
-  set background=dark
 endif
 
 " platform-specific settings
 if IsWindows()
     set gfn=Consolas:h10
     " Windows has a nasty habit of launching gVim in the wrong working directory
-    cd ~
+    "cd ~
 else
     set shell=/bin/bash
 
@@ -143,12 +149,12 @@ else
         " Use option (alt) as meta key.
         set macmeta
 
-        if IsGui()
+        if HasGui()
             "source ~/.vim/theme/distinguished.vim
             "set guifont=Monaco:h16
             set guifont=Menlo:h16
         endif
-    elseif IsGui()
+    elseif HasGui()
         set gfn=Monospace\ 10
     endif
 endif
@@ -171,7 +177,11 @@ set nobackup
 "Persistent undo
 try
     if IsWindows()
-      set undodir=C:\Windows\Temp
+        if strlen($TEMP)
+            set undodir=$TEMP
+            " fix purported Windows 7 temp dir bug. http://languor.us/vim-e303-unable-open-swap-file-no-name-recovery-impossible
+            set directory=.,$TEMP
+        endif
     else
       set undodir=~/.vim/undodir
     endif
@@ -312,7 +322,7 @@ map <leader>te :tabedit
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove 
 
-" When pressing <leader>cd switch to the directory of the open buffer
+" switch to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>
 
 
@@ -576,23 +586,19 @@ set grepprg=/bin/grep\ -nH
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-"Quickly open a buffer for scribble
-map <leader>q :e ~/buffer<cr>
-au BufRead,BufNewFile ~/buffer iab <buffer> xh1 ===========================================
-
 map <leader>pp :setlocal paste!<cr>
-
-map <leader>bb :cd ..<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-if !IsGui()
+if HasGui() && IsGui()
     set viminfo+=% "remember buffers
 endif
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.exe
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ctrlp
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if IsWindows()
     set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\* 
 else
@@ -635,8 +641,8 @@ function! GetSessionDir()
 endfunction
 
 function! SaveSession()
-  "TODO: disable session save/load for CLI
-  if !IsGui()
+  "disable session save/load for CLI
+  if !HasGui() || !IsGui()
     return
   endif
 
@@ -665,8 +671,8 @@ function! SaveSession()
 endfunction
 
 function! LoadSession()
-  "TODO: disable session save/load for CLI
-  if !IsGui()
+  "disable session save/load for CLI
+  if !HasGui() || !IsGui()
     return
   endif
 
@@ -678,8 +684,16 @@ function! LoadSession()
   endif
 endfunction
 
-autocmd VimEnter * nested :call LoadSession()
-autocmd VimLeave * :call SaveSession()
+" Auto Commands
+if has("autocmd")
+    " Jump to the last position when reopening a file
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+    if IsGui()
+        autocmd VimEnter * nested :call LoadSession()
+        autocmd VimLeave * :call SaveSession()
+    endif
+endif
 
 " always maximize GUI window size
 if IsWindows()
