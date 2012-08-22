@@ -122,6 +122,7 @@ set tm=500
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nonumber
 set background=dark
+set showtabline=1
 
 if has("syntax")
     syntax enable "Enable syntax hl
