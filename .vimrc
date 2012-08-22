@@ -51,19 +51,24 @@ fun! IsMac()
     return has('gui_macvim')
 endfun
 
-" 'is GUI' means vim was _not_ launched from the command console.
-" example variables:
-"   $term  = cygwin
-"   &term  = win32
-"   &term  = builtin_gui //set *after* vimrc but *before* gvimrc
-"   &shell = C:\Windows\system32\cmd.exe
+" 'is GUI' means vim is _not_ running within the terminal.
+" sample values:
+"   &term  = win32 //vimrc running in cygwin terminal
+"   $TERM  = xterm-color , cygwin
+"   &term  = builtin_gui //*after* vimrc but *before* gvimrc
+"   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 fun! IsGui()
-    return strlen($term) == 0
+    "echo 'justin:&term:' . &term
+    "echo 'justin:$term:' . $term
+    "echo 'justin:$TERM:' . $TERM
+    "echo 'justin:&shell:' . &shell
+
+    return has('gui_running') || strlen(&term) == 0 || &term == 'builtin_gui'
 endfun
 
-" 'has GUI' means vim is "gui-capable"--but we may be using gvim/macvim from within the command console.
+" 'has GUI' means vim is "gui-capable"--but we may be using gvim/macvim from within the terminal.
 fun! HasGui()
-    return has('gui') || has('gui_running')
+    return has('gui')
 endfun
 
 set showcmd     	" Show (partial) command in status line.
@@ -129,12 +134,9 @@ if has("syntax")
     "syntax on "Vim to override your color settings
 endif
 
-if HasGui() 
-    if IsGui() 
-        "no toolbar
-        set guioptions-=T
-    endif
-
+if HasGui() && IsGui() 
+    "no toolbar
+    set guioptions-=T
     set t_Co=256
 endif
 
@@ -150,12 +152,12 @@ else
         " Use option (alt) as meta key.
         set macmeta
 
-        if HasGui()
-            "source ~/.vim/theme/distinguished.vim
+        if IsGui()
+            source ~/.vim/theme/distinguished.vim
             "set guifont=Monaco:h16
             set guifont=Menlo:h16
         endif
-    elseif HasGui()
+    elseif IsGui()
         set gfn=Monospace\ 10
     endif
 endif
@@ -346,13 +348,6 @@ function! <SID>BufcloseCloseIt()
      execute("bdelete! ".l:currentBufNum)
    endif
 endfunction
-
-" Specify the behavior when switching between buffers 
-try
-  set switchbuf=usetab
-  set stal=2
-catch
-endtry
 
 
 """"""""""""""""""""""""""""""
