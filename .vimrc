@@ -17,6 +17,10 @@ runtime! debian.vim
 let mapleader = ","
 let g:mapleader = ","
 
+"if syntax highlighting ever gets messed up, uncomment and restart:
+"let s:remember_session=0
+"set runtimepath+=$VIMRUNTIME
+
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
 "==============================================================================
@@ -27,7 +31,7 @@ let g:mapleader = ","
 set nocompatible               " be iMproved
 filetype off                   " required!
 
-set rtp+=~/.vim/bundle/vundle/
+set runtimepath+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 " let Vundle manage Vundle
@@ -144,10 +148,8 @@ endif
 if IsWindows()
     set gfn=Consolas:h10
     " Windows has a nasty habit of launching gVim in the wrong working directory
-    "cd ~
+    cd ~
 else
-    set shell=/bin/bash
-
     if IsMac()
         " Use option (alt) as meta key.
         set macmeta
@@ -168,7 +170,7 @@ try
 catch
 endtry
 
-set ffs=unix,dos,mac "Default file types
+set ffs=unix,dos,mac "file type priority
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -178,20 +180,17 @@ set ffs=unix,dos,mac "Default file types
 set nobackup
 
 "Persistent undo
-try
-    if IsWindows()
-        if strlen($TEMP)
-            set undodir=$TEMP
-            " fix purported Windows 7 temp dir bug. http://languor.us/vim-e303-unable-open-swap-file-no-name-recovery-impossible
-            set directory=.,$TEMP
-        endif
-    else
-      set undodir=~/.vim/undodir
+if IsWindows()
+    if strlen($TEMP)
+        set undodir=$TEMP
+        set directory=$TEMP
     endif
-    
-    set undofile
-catch
-endtry
+else
+    set undodir=~/.vim/undodir
+    set directory=~/.vim/swpdir
+endif
+
+set undofile
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -210,7 +209,7 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set nowrap 
-set textwidth=80
+"set textwidth=80
 set colorcolumn=80
 
 
@@ -257,8 +256,12 @@ endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Command mode related
+" => Command mode 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+map <leader>pp :setlocal paste!<cr>
 " Smart mappings on the command line
 cno $h e ~/
 cno $d e ~/Desktop/
@@ -268,13 +271,6 @@ cno $c e <C-\>eCurrentFileDir("e")<cr>
 " $q is super useful when browsing on the command line
 cno $q <C-\>eDeleteTillSlash()<cr>
 
-" Bash like keys for the command line
-cnoremap <C-A>		<Home>
-cnoremap <C-E>		<End>
-cnoremap <C-K>		<C-U>
-
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
 
 func! DeleteTillSlash()
   let g:cmd = getcmdline()
@@ -421,7 +417,7 @@ endfunction
 
 
 function! CurDir()
-    let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
+    let curdir = substitute(getcwd(), '/Users/justin/', "~/", "g")
     return curdir
 endfunction
 
@@ -565,9 +561,6 @@ function! JavaScriptFold()
 endfunction
 
 
-set wildignore+=*.o,*.obj,.git,*.pyc
-
-
 """"""""""""""""""""""""""""""
 " => Vim grep
 """"""""""""""""""""""""""""""
@@ -575,33 +568,17 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
 
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => MISC
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
-
-map <leader>pp :setlocal paste!<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if HasGui() && IsGui()
-    set viminfo+=% "remember buffers
-endif
-
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.exe
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ctrlp
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set wildignore+=*.o,*.obj,.git,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
+
 if IsWindows()
     set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\* 
 else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/* 
 endif
 
-set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed' 
 let g:ctrlp_extensions = ['tag']
@@ -680,14 +657,18 @@ function! LoadSession()
   endif
 endfunction
 
+
 " Auto Commands
 if has("autocmd")
     " Jump to the last position when reopening a file
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     if IsGui()
-        autocmd VimEnter * nested :call LoadSession()
-        autocmd VimLeave * :call SaveSession()
+        if !exists("s:remember_session") || s:remember_session != 0
+            set viminfo+=% "remember buffer list
+            autocmd VimEnter * nested :call LoadSession()
+            autocmd VimLeave * :call SaveSession()
+        endif
     endif
 endif
 
