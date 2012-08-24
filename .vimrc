@@ -62,11 +62,6 @@ endfun
 "   &term  = builtin_gui //*after* vimrc but *before* gvimrc
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 fun! IsGui()
-    "echo 'justin:&term:' . &term
-    "echo 'justin:$term:' . $term
-    "echo 'justin:$TERM:' . $TERM
-    "echo 'justin:&shell:' . &shell
-
     return has('gui_running') || strlen(&term) == 0 || &term == 'builtin_gui'
 endfun
 
@@ -176,18 +171,22 @@ set ffs=unix,dos,mac "file type priority
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git anyway...
+" Turn backup off, since most stuff is source control anyway...
 set nobackup
 
 "Persistent undo
 if IsWindows()
-    if strlen($TEMP)
+    if strlen($TEMP) && isdirectory($TEMP)
         set undodir=$TEMP
         set directory=$TEMP
     endif
 else
     set undodir=~/.vim/undodir
-    set directory=~/.vim/swpdir
+    if !isdirectory(&undodir)
+        set undodir=/tmp
+    endif
+
+    "set directory=~/.vim/swpdir
 endif
 
 set undofile
