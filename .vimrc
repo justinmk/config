@@ -43,6 +43,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
+Bundle 'fholgado/minibufexpl.vim'
 
 filetype plugin indent on     " required!
 
@@ -311,8 +312,8 @@ map <leader>bd :Bclose<cr>
 "map <leader>ba :1,300 bd!<cr>
 
 " Use the arrows to something usefull
-map <right> :bn<cr>
-map <left> :bp<cr>
+map <c-right> :bn<cr>
+map <c-left> :bp<cr>
 
 " Tab configuration
 map <leader>tn :tabnew<cr>
@@ -573,7 +574,7 @@ set grepprg=/bin/grep\ -nH
 set wildignore+=*.o,*.obj,.git,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 if IsWindows()
-    set wildignore+=.git\*,.hg\*,.svn\*,Windows\*,Program\ Files\*,Program\ Files\ \(x86\)\* 
+    set wildignore+=.git\\*,.hg\\*,.svn\\*,Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
 else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/* 
 endif
@@ -692,7 +693,8 @@ inoremap <F1> <ESC>
 nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
-
-
+" minibufexpl: disable duplicate detection to avoid slowness
+"   https://github.com/fholgado/minibufexpl.vim/issues/61
+let g:miniBufExplCheckDupeBufs = 0
 
 
