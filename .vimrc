@@ -85,7 +85,7 @@ set mouse=a     	" Enable mouse usage (all modes)
 set history=700
 
 " Set to auto read when a file is changed from the outside
-set autoread
+"set autoread
 
 " Fast saving
 nmap <leader>w :w!<cr>
@@ -108,7 +108,7 @@ set whichwrap+=<,>,h,l
 
 set ignorecase "Ignore case when searching
 set smartcase
-set hlsearch "Highlight search things
+set hlsearch "Highlight search matches
 set incsearch "Make search act like search in modern browsers
 set nolazyredraw "Don't redraw while executing macros 
 
@@ -151,7 +151,12 @@ else
         set macmeta
 
         if IsGui()
-            source ~/.vim/theme/distinguished.vim
+            " macvim options  :view $VIM/gvimrc
+            let macvim_skip_colorscheme=1
+            let macvim_skip_cmd_opt_movement=1
+
+            "source ~/.vim/theme/distinguished.vim
+            source ~/.vim/colors/molokai.vim
             "set guifont=Monaco:h16
             set guifont=Menlo:h16
         endif
@@ -194,7 +199,7 @@ set undofile
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
+" => Text, tab and indent 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set formatoptions+=rn1
 
@@ -203,15 +208,15 @@ set shiftwidth=4
 set tabstop=4
 set smarttab
 
-set lbr
-set tw=500
+set linebreak "wrap long lines at 'breakat' character
+set textwidth=500
 
-set ai "Auto indent
-set si "Smart indent
+set autoindent
+set smartindent
 set nowrap 
 "set textwidth=80
-set colorcolumn=80
-
+set colorcolumn=80 "highlight the specified column
+set cursorline     "highlight the current line
 
 
 
@@ -311,9 +316,12 @@ map <leader>bd :Bclose<cr>
 " Close all the buffers
 "map <leader>ba :1,300 bd!<cr>
 
-" Use the arrows to something usefull
+" ctrl+arrow to switch buffers
 map <c-right> :bn<cr>
 map <c-left> :bp<cr>
+
+" avoid annoying insert-mode ctrl+u behavior
+imap <C-u> <Esc><C-u>
 
 " Tab configuration
 map <leader>tn :tabnew<cr>
@@ -368,52 +376,6 @@ function! StatuslineLineEndings()
     endif
     return '['.l:line_ending_message.']'
 endfunction
-
-" Format the statusline
-"set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-"set statusline+=\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}
-
-"statusline setup
-"set statusline =%#identifier#
-"set statusline+=[%t]    "tail of the filename
-"set statusline+=%*
-"
-""display a warning if fileformat isnt unix
-"set statusline+=%#warningmsg#
-"set statusline+=%{StatuslineLineEndings()}
-"set statusline+=%*
-"
-""display a warning if file encoding isnt utf-8
-"set statusline+=%#identifier#
-""set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
-"set statusline+=%{'['.&fenc.']'}
-"set statusline+=%*
-"
-"set statusline+=%h      "help file flag
-"set statusline+=%y      "filetype
-"
-""read only flag
-"set statusline+=%#identifier#
-"set statusline+=%r
-"set statusline+=%*
-"
-""modified flag
-"set statusline+=%#identifier#
-"set statusline+=%m
-"set statusline+=%*
-"
-""set statusline+=%{fugitive#statusline()}
-"
-""display a warning if &paste is set
-"set statusline+=%#error#
-"set statusline+=%{&paste?'[paste]':''}
-"set statusline+=%*
-"
-"set statusline+=%=      "left/right separator
-"set statusline+=%{StatuslineCurrentHighlight()}\ \ "current highlight
-"set statusline+=%c,     "cursor column
-"set statusline+=%l/%L   "cursor line/total lines
-"set statusline+=\ %P    "percent through file
 
 
 function! CurDir()
@@ -697,4 +659,9 @@ vnoremap <F1> <ESC>
 "   https://github.com/fholgado/minibufexpl.vim/issues/61
 let g:miniBufExplCheckDupeBufs = 0
 
+" Toggle hlsearch 
+nmap <leader>hs :set hlsearch! hlsearch?<CR>
+
+" Disable Ex mode shortcut
+nmap Q <nop>
 
