@@ -17,8 +17,7 @@ runtime! debian.vim
 let mapleader = ","
 let g:mapleader = ","
 
-"if syntax highlighting ever gets messed up, uncomment and restart:
-"let s:remember_session=0
+let s:remember_session=0
 "set runtimepath+=$VIMRUNTIME
 
 "==============================================================================
@@ -43,7 +42,6 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
-Bundle 'fholgado/minibufexpl.vim'
 
 filetype plugin indent on     " required!
 
@@ -145,6 +143,11 @@ if IsWindows()
     set gfn=Consolas:h10
     " Windows has a nasty habit of launching gVim in the wrong working directory
     cd ~
+
+    if IsWindows()
+        " expects &runtimepath/colors/{name}.vim.
+        colorscheme molokai
+    endif
 else
     if IsMac()
         " Use option (alt) as meta key.
@@ -155,8 +158,9 @@ else
             let macvim_skip_colorscheme=1
             let macvim_skip_cmd_opt_movement=1
 
-            "source ~/.vim/theme/distinguished.vim
-            source ~/.vim/colors/molokai.vim
+            " expects &runtimepath/colors/{name}.vim.
+            colorscheme molokai
+            "
             "set guifont=Monaco:h16
             set guifont=Menlo:h16
         endif
@@ -541,10 +545,13 @@ else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/* 
 endif
 
-let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed' 
-let g:ctrlp_extensions = ['tag']
-nnoremap <c-m-p> :CtrlPTag<cr> 
+let g:ctrlp_extensions = ['tag', 'buffertag']
+if IsWindows()
+    let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
+endif
+
+nnoremap <m-p> :CtrlPBufTagAll<cr> 
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
@@ -626,8 +633,9 @@ if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     if IsGui()
+        set viminfo+=% "remember buffer list
+
         if !exists("s:remember_session") || s:remember_session != 0
-            set viminfo+=% "remember buffer list
             autocmd VimEnter * nested :call LoadSession()
             autocmd VimLeave * :call SaveSession()
         endif
@@ -641,8 +649,8 @@ endif
 
 
 " enforce black bg, etc.
-highlight Normal ctermbg=black guibg=black
-highlight Normal ctermfg=white guifg=white 
+highlight Normal ctermbg=black guibg=black 
+"ctermfg=white guifg=white 
 highlight Keyword guifg=#d7875f
 highlight Identifier guifg=#d7af5f
 
@@ -654,10 +662,6 @@ nnoremap k gk
 inoremap <F1> <ESC>
 nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
-
-" minibufexpl: disable duplicate detection to avoid slowness
-"   https://github.com/fholgado/minibufexpl.vim/issues/61
-let g:miniBufExplCheckDupeBufs = 0
 
 " Toggle hlsearch 
 nmap <leader>hs :set hlsearch! hlsearch?<CR>
