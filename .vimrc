@@ -136,6 +136,8 @@ if HasGui() && IsGui()
     "no toolbar
     set guioptions-=T
     set t_Co=256
+
+    let g:Powerline_symbols = 'unicode'
 endif
 
 " platform-specific settings
@@ -362,6 +364,8 @@ endfunction
 " => Statusline
 """"""""""""""""""""""""""""""
 set laststatus=2 " Always show the statusline
+let g:Powerline_stl_path_style = 'short'
+
 
 "return the syntax highlight group under the cursor ''
 function! StatuslineCurrentHighlight()
