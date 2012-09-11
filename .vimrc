@@ -136,8 +136,6 @@ if HasGui() && IsGui()
     "no toolbar
     set guioptions-=T
     set t_Co=256
-
-    let g:Powerline_symbols = 'unicode'
 endif
 
 " platform-specific settings
@@ -165,8 +163,10 @@ else
             "
             "set guifont=Monaco:h16
             set guifont=Menlo:h16
+
+            let g:Powerline_symbols = 'unicode'
         endif
-    elseif IsGui()
+    elseif IsGui() "linux or other
         set gfn=Monospace\ 10
     endif
 endif
