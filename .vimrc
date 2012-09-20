@@ -654,9 +654,7 @@ endif
 
 " enforce black bg, etc.
 highlight Normal ctermbg=black guibg=black 
-"ctermfg=white guifg=white 
-highlight Keyword guifg=#d7875f
-highlight Identifier guifg=#d7af5f
+highlight Normal ctermfg=white guifg=white 
 
 "j,k move by screen line instead of file line
 nnoremap j gj
