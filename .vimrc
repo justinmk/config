@@ -141,8 +141,6 @@ endif
 " platform-specific settings
 if IsWindows()
     set gfn=Consolas:h10
-    " Windows has a nasty habit of launching gVim in the wrong working directory
-    cd ~
 
     if IsWindows()
         " expects &runtimepath/colors/{name}.vim.
