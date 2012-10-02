@@ -112,13 +112,13 @@ set nolazyredraw "Don't redraw while executing macros
 
 set magic "Set magic on, for regular expressions
 
-set showmatch "Show matching bracets when text indicator is over them
+set showmatch "Show matching brackets when text indicator is over them
 set mat=2 "How many tenths of a second to blink
 
 " No sound on errors
 set noerrorbells
 set novisualbell
-set t_vb=
+set vb t_vb=
 set tm=500
 
 
@@ -128,8 +128,7 @@ set background=dark
 set showtabline=1
 
 if has("syntax")
-    syntax enable "Enable syntax hl
-    "syntax on "Vim to override your color settings
+    syntax enable "Enable syntax highlighting
 endif
 
 if HasGui() && IsGui() 
