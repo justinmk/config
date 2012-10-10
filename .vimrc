@@ -117,8 +117,7 @@ set mat=2 "How many tenths of a second to blink
 
 " No sound on errors
 set noerrorbells
-set novisualbell
-set vb t_vb=
+set novb t_vb=
 set tm=500
 
 
@@ -525,6 +524,7 @@ if IsWindows()
     let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
 
+" CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <m-p> :CtrlPBufTagAll<cr> 
 
 let g:ctrlp_clear_cache_on_exit = 0
