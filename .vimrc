@@ -413,7 +413,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 map 0 ^
 "disable help key
 noremap <F1> <ESC>
-"inoremap jj <ESC>
+inoremap jj <ESC>
 
 "toggle/untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
