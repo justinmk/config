@@ -17,7 +17,7 @@ runtime! debian.vim
 let mapleader = ","
 let g:mapleader = ","
 
-let s:remember_session=0
+let s:remember_session=1
 "set runtimepath+=$VIMRUNTIME
 
 "==============================================================================
@@ -42,16 +42,22 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
+Bundle 'tpope/vim-surround'
 
 filetype plugin indent on     " required!
 
-
+"exists() tests whether an option exists
+"has() tests whether a feature was compiled in
 fun! IsWindows()
     return has('win32') || has('win64')
 endfun
 
 fun! IsMac()
     return has('gui_macvim')
+endfun
+
+fun! IsUnix()
+    return has('unix')
 endfun
 
 " 'is GUI' means vim is _not_ running within the terminal.
@@ -535,6 +541,10 @@ let g:ctrlp_custom_ignore = {
   \ }
 
 
+" =============================================================================
+" session  http://vim.wikia.com/wiki/Go_away_and_come_back
+" =============================================================================
+
 function! ScrubPath(path)
     let b:path=a:path
 
@@ -548,10 +558,12 @@ function! ScrubPath(path)
     return b:path
 endfunction
 
-" session  
-"   http://vim.wikia.com/wiki/Go_away_and_come_back
+" do *not* save global variables/mappings/options
+set sessionoptions-=options
+set sessionoptions-=globals
+
 function! GetSessionDir()
-    "expand ~ to absolute path so that mkdir works on windows CMD
+    "expand ~ to absolute path so that mkdir works on windows
     "                     . substitute(getcwd(), 'C:', '/c', 'g')
     return ScrubPath(expand(expand("~/.vim/sessions"))) 
 endfunction
