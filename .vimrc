@@ -565,7 +565,7 @@ set sessionoptions-=globals
 function! GetSessionDir()
     "expand ~ to absolute path so that mkdir works on windows
     "                     . substitute(getcwd(), 'C:', '/c', 'g')
-    return ScrubPath(expand(expand("~/.vim/sessions"))) 
+    return ScrubPath(expand("~/.vim/sessions")) 
 endfunction
 
 function! SaveSession()
