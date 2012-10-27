@@ -132,10 +132,6 @@ set nonumber
 set background=dark
 set showtabline=1
 
-if has("syntax")
-    syntax enable "Enable syntax highlighting
-endif
-
 if HasGui() && IsGui() 
     "no toolbar
     set guioptions-=T
@@ -188,23 +184,23 @@ set ffs=unix,dos,mac "file type priority
 " Turn backup off, since most stuff is source control anyway...
 set nobackup
 
-"Persistent undo
-if IsWindows()
-    if strlen($TEMP) && isdirectory($TEMP)
-        set undodir=$TEMP
-        set directory=$TEMP
-    endif
-else
-    set undodir=~/.vim/undodir
-    if !isdirectory(&undodir)
-        set undodir=/tmp
+if has('persistent_undo')
+    if IsWindows()
+        if strlen($TEMP) && isdirectory($TEMP)
+            set undodir=$TEMP
+            set directory=$TEMP
+        endif
+    else
+        set undodir=~/.vim/undodir
+        if !isdirectory(&undodir)
+            set undodir=/tmp
+        endif
+
+        "set directory=~/.vim/swpdir
     endif
 
-    "set directory=~/.vim/swpdir
+    set undofile
 endif
-
-set undofile
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent 
@@ -223,7 +219,12 @@ set autoindent
 set smartindent
 set nowrap 
 "set textwidth=80
-set colorcolumn=80 "highlight the specified column
+
+if exists('+syntax') 
+    syntax enable "Enable syntax highlighting
+    set colorcolumn=80 "highlight the specified column
+endif
+
 set cursorline     "highlight the current line
 
 function! BreakBraces()
@@ -421,21 +422,16 @@ map 0 ^
 noremap <F1> <ESC>
 inoremap jj <ESC>
 
+nnoremap K i<cr><esc>k$
+
 "toggle/untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
-"Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
+"Move a line of text using ALT+[jk] 
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
-if IsMac()
-  nmap <D-j> <M-j>
-  nmap <D-k> <M-k>
-  vmap <D-j> <M-j>
-  vmap <D-k> <M-k>
-endif
 
 "Delete trailing white space, useful for Python ;)
 func! DeleteTrailingWS()
@@ -648,7 +644,6 @@ nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
 " Toggle hlsearch 
-" nmap <silent> <leader>hs :set hlsearch! hlsearch?<CR>
 nmap <silent> <leader>hs :noh<cr>
 
 " Disable Ex mode shortcut
