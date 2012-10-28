@@ -43,6 +43,8 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
 Bundle 'tpope/vim-surround'
+Bundle 'justinmk/vim-syntax-extra'
+Bundle 'PProvost/vim-ps1'
 
 filetype plugin indent on     " required!
 
@@ -83,7 +85,7 @@ set mouse=a     	" Enable mouse usage (all modes)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
+" general
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
 set history=700
@@ -96,9 +98,9 @@ nmap <leader>w :w!<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
+" user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the curors - when moving vertical..
+" scroll when the cursor is this many lines near the edge
 set so=7
 
 set wildmode=full
@@ -179,7 +181,7 @@ set ffs=unix,dos,mac "file type priority
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Files, backups and undo
+" files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Turn backup off, since most stuff is source control anyway...
 set nobackup
@@ -203,7 +205,7 @@ if has('persistent_undo')
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent 
+" text, tab and indent 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set formatoptions+=rn1
 
@@ -234,7 +236,7 @@ function! BreakBraces()
 endfunction
 
 """"""""""""""""""""""""""""""
-" => Visual mode related
+" visual mode related
 """"""""""""""""""""""""""""""
 " In visual mode, press * or # to search for the current selection
 vnoremap * :call VisualSearch('f')<CR>
@@ -274,7 +276,7 @@ endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Command mode 
+" command mode 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
@@ -313,7 +315,7 @@ endfunc
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs and buffers
+" moving around, tabs and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Smart way to move btw. windows
@@ -367,7 +369,7 @@ endfunction
 
 
 """"""""""""""""""""""""""""""
-" => Statusline
+" statusline
 """"""""""""""""""""""""""""""
 set laststatus=2 " Always show the statusline
 let g:Powerline_stl_path_style = 'short'
@@ -408,13 +410,13 @@ endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General Abbrevs
+" general 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Key mappings
+" key mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Remap VIM 0
 map 0 ^
@@ -445,7 +447,7 @@ set guitablabel=%t
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Cope
+" cope
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Do :help cope if you are unsure what cope is. It's super useful!
 map <leader>cc :botright cope<cr>
@@ -454,13 +456,13 @@ map <leader>p :cp<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Omni complete functions
+" omni complete
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 
 """"""""""""""""""""""""""""""
-" => Python section
+" python
 """"""""""""""""""""""""""""""
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
@@ -479,7 +481,7 @@ au FileType python map <buffer> <leader>D ?def
 
 
 """"""""""""""""""""""""""""""
-" => JavaScript section
+" javascript
 """""""""""""""""""""""""""""""
 au FileType javascript call JavaScriptFold()
 au FileType javascript setl fen
@@ -503,7 +505,7 @@ endfunction
 
 
 """"""""""""""""""""""""""""""
-" => Vim grep
+" vim grep
 """"""""""""""""""""""""""""""
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
