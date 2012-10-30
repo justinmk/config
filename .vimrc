@@ -45,6 +45,7 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'justinmk/vim-syntax-extra'
 Bundle 'PProvost/vim-ps1'
+Bundle 'Shougo/neocomplcache'
 
 filetype plugin indent on     " required!
 
@@ -126,7 +127,7 @@ set mat=2 "How many tenths of a second to blink
 " No sound on errors
 set noerrorbells
 set novb t_vb=
-set tm=500
+set tm=1000
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -510,6 +511,14 @@ endfunction
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
 
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" neocomplcache
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_smart_case = 1
+"disable neocomplcache for matching buffer names
+"let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ctrlp
