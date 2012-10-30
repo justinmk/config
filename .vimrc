@@ -566,21 +566,24 @@ function! GetSessionDir()
     return ScrubPath(expand("~/.vim/sessions")) 
 endfunction
 
+let s:sessionfile = ScrubPath(GetSessionDir() . "/session.vim")
+let s:sessionlock = ScrubPath(GetSessionDir() . "/session.lock")
+
 function! SaveSession()
   "disable session save/load for CLI
   if !HasGui() || !IsGui()
     return
   endif
 
-  let b:sessionfile = ScrubPath(GetSessionDir() . "/session.vim")
-
-  if (filereadable(b:sessionfile))
-    let b:sessionfile_bk = b:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
+  if (filereadable(s:sessionfile))
+    let b:sessionfile_bk = s:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
     echo b:sessionfile_bk
     if IsWindows()
-        exe 'silent !copy ' . b:sessionfile . ' ' . b:sessionfile_bk
+        exe 'silent !copy ' . s:sessionfile . ' ' . b:sessionfile_bk
+        exe 'silent !del ' . s:sessionlock 
     else
-        exe 'silent !cp ' . b:sessionfile . ' ' . b:sessionfile_bk
+        exe 'silent !cp ' . s:sessionfile . ' ' . b:sessionfile_bk
+        exe 'silent !rm -f ' . s:sessionlock 
     endif
   endif
 
@@ -593,7 +596,7 @@ function! SaveSession()
     redraw!
   endif
 
-  exe "mksession! " . b:sessionfile
+  exe "mksession! " . s:sessionfile
 endfunction
 
 function! LoadSession()
@@ -602,9 +605,17 @@ function! LoadSession()
     return
   endif
 
-  let b:sessionfile = GetSessionDir() . "/session.vim"
-  if (filereadable(b:sessionfile))
-    exe 'source ' b:sessionfile
+  if (filereadable(s:sessionlock))
+    echo "Session already open in another vim."
+  elseif (filereadable(s:sessionfile))
+    "write the session 'lock' file
+    exe "new | w " . s:sessionlock . " | bd"
+    
+    "open the session
+    exe 'source ' s:sessionfile
+
+    "set up trigger to save on exit
+    autocmd VimLeave * :call SaveSession()
   else
     echo "No session loaded."
   endif
@@ -617,11 +628,9 @@ if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     if IsGui()
-        set viminfo+=% "remember buffer list
-
         if !exists("s:remember_session") || s:remember_session != 0
+            set viminfo+=% "remember buffer list
             autocmd VimEnter * nested :call LoadSession()
-            autocmd VimLeave * :call SaveSession()
         endif
     endif
 endif
