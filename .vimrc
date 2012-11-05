@@ -226,6 +226,8 @@ set nofoldenable " disable folding
 
 if exists('+syntax') 
     syntax enable "Enable syntax highlighting
+endif
+if exists('&colorcolumn')
     set colorcolumn=80 "highlight the specified column
 endif
 
