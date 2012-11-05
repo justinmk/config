@@ -4,6 +4,9 @@ fi
 
 umask 0077
 
+#disable ctrl-s scroll-lock
+stty -ixon
+
 SSHAGENT=/usr/bin/ssh-agent                                                     
 SSHAGENTARGS="-s"                                                               
 if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then                              
