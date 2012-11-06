@@ -27,6 +27,14 @@ let s:remember_session=1
 "     :BundleInstall(!)    - install(update) bundles
 "     :BundleSearch(!) foo - search(or refresh cache first) for foo
 "     :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+
+"boostrap vundle on new systems
+fun! InstallVundle()
+    echo "Installing Vundle..."
+    silent !mkdir -p ~/.vim/bundle
+    silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+endfun
+
 set nocompatible               " be iMproved
 filetype off                   " required!
 
