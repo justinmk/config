@@ -2,18 +2,6 @@
 "ignored if we are not on debian
 runtime! debian.vim
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" inspired by: 
-"   https://github.com/amix/vimrc
-"
-"     > yankring.vim - http://www.vim.org/scripts/script.php?script_id=1234
-"       Emacs's killring, useful when using the clipboard:
-"
-"     > surround.vim - http://www.vim.org/scripts/script.php?script_id=1697
-"       Makes it easy to work with surrounding text:
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 let mapleader = ","
 let g:mapleader = ","
 
@@ -54,6 +42,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'justinmk/vim-syntax-extra'
 Bundle 'PProvost/vim-ps1'
 Bundle 'Shougo/neocomplcache'
+Bundle 'tomtom/tcomment_vim'
 
 filetype plugin indent on     " required!
 
@@ -519,7 +508,7 @@ let g:neocomplcache_enable_smart_case = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ctrlp
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set wildignore+=*.o,*.obj,.git,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
+set wildignore+=*.o,*.obj,*.class,.git,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 if IsWindows()
     set wildignore+=.git\\*,.hg\\*,.svn\\*,Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
