@@ -2,6 +2,15 @@
 "ignored if we are not on debian
 runtime! debian.vim
 
+if exists('&guioptions')
+    "no toolbar, no menu bar
+    set guioptions-=T
+    set guioptions-=m
+    "don't source $VIMRUNTIME/menu.vim. (must be done before 'filetype on' / 'syntax on')
+    set guioptions-=M
+    set t_Co=256
+endif
+
 let mapleader = ","
 let g:mapleader = ","
 
@@ -131,12 +140,6 @@ set tm=1000
 set nonumber
 set background=dark
 set showtabline=1
-
-if HasGui() && IsGui() 
-    "no toolbar
-    set guioptions-=T
-    set t_Co=256
-endif
 
 " platform-specific settings
 if IsWindows()
@@ -319,7 +322,7 @@ endfunc
 " moving around, tabs and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Smart way to move btw. windows
+" move between windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
@@ -327,9 +330,6 @@ map <C-l> <C-W>l
 
 " Close the current buffer
 map <leader>bd :Bclose<cr>
-
-" Close all the buffers
-"map <leader>ba :1,300 bd!<cr>
 
 " ctrl+arrow to switch buffers
 map <c-right> :bn<cr>
@@ -425,6 +425,7 @@ map 0 ^
 noremap <F1> <ESC>
 inoremap jj <ESC>
 
+" 'un-join' (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
 
 "toggle/untoggle spell checking
