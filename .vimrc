@@ -8,7 +8,6 @@ if exists('&guioptions')
     set guioptions-=m
     "don't source $VIMRUNTIME/menu.vim. (must be done before 'filetype on' / 'syntax on')
     set guioptions-=M
-    set t_Co=256
 endif
 
 let mapleader = ","
