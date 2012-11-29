@@ -103,12 +103,6 @@ set history=700
 nmap <leader>w :w!<cr>
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" user interface
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" scroll when the cursor is this many lines near the edge
-set so=7
-
 set wildmode=full
 set wildmenu
 set ruler 
@@ -653,4 +647,5 @@ nmap <silent> <leader>hs :noh<cr>
 
 " Disable Ex mode shortcut
 nmap Q <nop>
+
 
