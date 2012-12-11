@@ -518,6 +518,8 @@ endif
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <m-p> :CtrlPBufTagAll<cr> 
+" CtrlP buffer switching (this makes minibufexpl pretty much obsolete)
+nnoremap <c-b> :CtrlPBuffer<cr> 
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
