@@ -51,9 +51,22 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-#MacOS/BSD-style aliases 
+#MacOS
 if [[ `uname` == 'Darwin' ]]; then
+    #BSD-style aliases 
     alias ls='ls -GCF'
+    
+    # Display ASCII control characters using caret notation in standard text views
+    # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
+    defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
+
+    defaults write com.apple.finder DisableAllAnimations -bool true
+
+    # Display full POSIX path as Finder window title
+    defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+    # Avoid creating .DS_Store files on network volumes
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 fi
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -70,3 +83,5 @@ if [ -f "${HOME}/.bashrcx" ]; then
   . "${HOME}/.bashrcx"
 fi
 
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
