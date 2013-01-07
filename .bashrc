@@ -12,6 +12,25 @@ shopt -s histappend
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
 
+if [[ $TERM != 'cygwin' && $OSTYPE != 'msys' ]] ; then
+    umask 0077
+fi
+
+#disable ctrl-s scroll-lock
+if [ -x stty ] ; then stty -ixon ; fi
+
+SSHAGENT=/usr/bin/ssh-agent                                                     
+SSHAGENTARGS="-s"                                                               
+if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then                              
+    eval `$SSHAGENT $SSHAGENTARGS`                                              
+    trap "kill $SSH_AGENT_PID" 0                                                
+fi                                 
+
+# Set PATH so it includes user's private bin if it exists                       
+if [ -d "${HOME}/bin" ] ; then                                                
+  PATH=${HOME}/bin:${PATH}                                                    
+fi   
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -26,12 +45,16 @@ case "$TERM" in
 esac
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
+	# We have color support; assume it's compliant with Ecma-48 (ISO/IEC-6429). 
+    # (Lack of such support is extremely rare, and such a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+else
+    color_prompt=
+fi
+
+# allow msysgit to set $PS1
+if [[ $TERM -eq 'cygwin' && $OSTYPE -eq 'msys' ]] ; then
+    color_prompt=
 fi
 
 if [ "$color_prompt" = yes ]; then
@@ -41,12 +64,24 @@ else
 fi
 unset color_prompt 
 
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+# http://stackoverflow.com/q/394230/152142
+#   also: $OSTYPE
+if [[ `uname` == 'Darwin' ]]; then
+    export PS1="\[\033[00m\]\u@\h\[\033[0;36m\] \W \[\033[32m\]\$(parse_git_branch 2> /dev/null) \[\033[00m\]$\[\033[00m\] "
+    export LSCOLORS=GxFxCxDxBxegedabagaced
+fi
+
 #GNU-style aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls -CF --color=auto'
 fi
 
+alias ls='ls -CF --color=auto'
+alias gitk='gitk --all'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
