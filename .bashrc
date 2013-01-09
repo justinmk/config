@@ -53,7 +53,7 @@ else
 fi
 
 # allow msysgit to set $PS1
-if [[ $TERM -eq 'cygwin' && $OSTYPE -eq 'msys' ]] ; then
+if [[ $TERM == 'cygwin' && $OSTYPE == 'msys' ]] ; then
     color_prompt=
 fi
 
