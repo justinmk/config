@@ -166,30 +166,6 @@ endtry
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" files, backups and undo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is source control anyway...
-set nobackup
-
-if has('persistent_undo')
-    if IsWindows()
-        if strlen($TEMP) && isdirectory($TEMP)
-            set undodir=$TEMP
-            set directory=$TEMP
-        endif
-    else
-        set undodir=~/.vim/undodir
-        if !isdirectory(&undodir)
-            set undodir=/tmp
-        endif
-
-        "set directory=~/.vim/swpdir
-    endif
-
-    set undofile
-endif
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " text, tab and indent 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set formatoptions+=rn1
