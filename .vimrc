@@ -42,6 +42,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " repos on github
+Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
@@ -83,8 +84,6 @@ fun! HasGui()
     return has('gui')
 endfun
 
-set showcmd     	" Show (partial) command in status line.
-"set autowrite		" Automatically save before commands like :next and :make
 set hidden          " Allow buffer switching even if unsaved 
 set mouse=a     	" Enable mouse usage (all modes)
 
@@ -103,9 +102,6 @@ set history=700
 nmap <leader>w :w!<cr>
 
 
-set wildmode=full
-set wildmenu
-set ruler 
 set cmdheight=2 "The commandbar height
 
 " Set backspace config
@@ -113,15 +109,12 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
 set ignorecase "Ignore case when searching
-set smartcase
 set hlsearch "Highlight search matches
-set incsearch "Make search act like search in modern browsers
-set nolazyredraw "Don't redraw while executing macros 
 
 set magic "Set magic on, for regular expressions
 
-set showmatch "Show matching brackets when text indicator is over them
-set mat=2 "How many tenths of a second to blink
+set showmatch " When inserting paren, jump briefly to matching one.
+set mat=5     " showmatch time (tenths of a second)
 
 " No sound on errors
 set noerrorbells
@@ -171,8 +164,6 @@ try
 catch
 endtry
 
-set ffs=unix,dos,mac "file type priority
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " files, backups and undo
@@ -206,12 +197,13 @@ set formatoptions+=rn1
 set expandtab
 set shiftwidth=4
 set tabstop=4
+" Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 set smarttab
 
 set linebreak "wrap long lines at 'breakat' character
 set textwidth=500
 
-set autoindent
+set autoindent " Autoindent when starting new line, or using "o" or "O".
 set smartindent
 set nowrap 
 "set textwidth=80
@@ -411,10 +403,6 @@ map <leader>n :cn<cr>
 map <leader>p :cp<cr>
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" omni complete
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 
 """"""""""""""""""""""""""""""
@@ -452,17 +440,22 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" neocomplcache
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =============================================================================
+" omni complete
+" =============================================================================
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+
+" Don't scan included files. Tags file is more performant.
+set complete-=i
+
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 "disable neocomplcache for matching buffer names
 "let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =============================================================================
 " ctrlp
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =============================================================================
 set wildignore+=*.o,*.obj,*.class,.git,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 if IsWindows()
