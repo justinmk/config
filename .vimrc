@@ -233,22 +233,14 @@ function! BreakBraces()
 endfunction
 
 """"""""""""""""""""""""""""""
-" visual mode related
+" visual mode 
 """"""""""""""""""""""""""""""
-" In visual mode, press * or # to search for the current selection
+" in visual mode, press * or # to search for the current selection
 vnoremap * :call VisualSearch('f')<CR>
 vnoremap # :call VisualSearch('b')<CR>
 
-" When you press gv you vimgrep after the selected text
-vnoremap <silent> gv :call VisualSearch('gv')<CR>
+" vimgrep 
 map <leader>g :vimgrep // ./*.<left><left><left><left><left><left>
-
-
-function! CmdLine(str)
-    exe "menu Foo.Bar :" . a:str
-    emenu Foo.Bar
-    unmenu Foo
-endfunction 
 
 " From an idea by Michael Naumann
 function! VisualSearch(direction) range
@@ -271,7 +263,6 @@ function! VisualSearch(direction) range
 endfunction
 
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " command mode 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -279,10 +270,8 @@ endfunction
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 map <leader>pp :setlocal paste!<cr>
-" Smart mappings on the command line
-cno $h e ~/
-cno $d e ~/Desktop/
-cno $j e ./
+
+" paste current dir to command line
 cno $c e <C-\>eCurrentFileDir("e")<cr>
 
 " $q is super useful when browsing on the command line
@@ -379,35 +368,7 @@ function! StatuslineCurrentHighlight()
     endif
 endfunction
 
-function! StatuslineLineEndings()
-    let l:line_ending_message = &ff
-    if search('\r\n', 'nw') && (search('[^\n]\r$', 'nw') || search('[^\r]\n$', 'nw'))
-        let l:line_ending_message = l:line_ending_message . ',mixed'
-    endif
-    return '['.l:line_ending_message.']'
-endfunction
-
-
-function! CurDir()
-    let curdir = substitute(getcwd(), '/Users/justin/', "~/", "g")
-    return curdir
-endfunction
-
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    else
-        return ''
-    endif
-endfunction
-
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" general 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " key mappings
