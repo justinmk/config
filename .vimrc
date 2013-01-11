@@ -1,12 +1,14 @@
 
-"ignored if we are not on debian
-runtime! debian.vim
+" If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
+"    set runtimepath+=/path/to/.vim
+"    source /path/to/.vimrc
+"==============================================================================
 
 if exists('&guioptions')
     "no toolbar, no menu bar
     set guioptions-=T
     set guioptions-=m
-    "don't source $VIMRUNTIME/menu.vim. (must be done before 'filetype on' / 'syntax on')
+    "don't source &runtimepath/menu.vim. (must be done before 'filetype on' / 'syntax on')
     set guioptions-=M
 endif
 
@@ -14,7 +16,6 @@ let mapleader = ","
 let g:mapleader = ","
 
 let s:remember_session=1
-"set runtimepath+=$VIMRUNTIME
 
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
