@@ -102,7 +102,6 @@ set history=700
 " Fast saving
 nmap <leader>w :w!<cr>
 
-
 set cmdheight=2 "The commandbar height
 
 " Set backspace config
@@ -159,6 +158,7 @@ else
     endif
 endif
 
+set fileformats=unix,dos,mac
 set encoding=utf8
 try
     lang en_US

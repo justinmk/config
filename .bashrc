@@ -82,9 +82,13 @@ fi
 
 alias ls='ls -CF --color=auto'
 alias gitk='gitk --all'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+
+#some old systems (msysgit) do not support grep --color.
+if grep --color "a" <<< "a" &> /dev/null ; then
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
 #MacOS
 if [[ `uname` == 'Darwin' ]]; then
