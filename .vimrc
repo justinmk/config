@@ -351,6 +351,8 @@ inoremap jj <ESC>
 " 'un-join' (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
 
+nnoremap <space> :
+
 "toggle/untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
