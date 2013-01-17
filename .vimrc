@@ -195,10 +195,13 @@ endif
 
 set cursorline     "highlight the current line
 
-function! BreakBraces()
-    :%s/{/{\r/g
-    :%s/}/\r}\r/g
-    :%s/;/;\r/g
+function! BreakBefore(s)
+    execute ':%s/' . a:s . '/\r' . a:s . '/g'
+endfunction
+function! BreakAfter(s)
+    execute ':%s/' . a:s . '/' . a:s . '\r/g'
+    " :%s/}/\r}\r/g
+    " :%s/;/;\r/g
 endfunction
 
 """"""""""""""""""""""""""""""
