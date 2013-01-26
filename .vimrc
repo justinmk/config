@@ -99,11 +99,6 @@ set lazyredraw  " no redraws in macros
 " Sets how many lines of history VIM has to remember
 set history=700
 
-" Set to auto read when a file is changed from the outside
-"set autoread
-
-" Fast saving
-nmap <leader>w :w!<cr>
 
 set cmdheight=2 "The commandbar height
 
@@ -151,9 +146,9 @@ else
 
             " expects &runtimepath/colors/{name}.vim.
             colorscheme molokai
-            "
+            
             "set guifont=Monaco:h16
-            set guifont=Menlo:h16
+            set guifont=Menlo:h14
 
             let g:Powerline_symbols = 'unicode'
         endif
@@ -329,7 +324,6 @@ endfunction
 """"""""""""""""""""""""""""""
 " statusline
 """"""""""""""""""""""""""""""
-set laststatus=2 " Always show the statusline
 let g:Powerline_stl_path_style = 'short'
 
 
@@ -350,19 +344,18 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Remap VIM 0
 map 0 ^
-"disable help key
-noremap <F1> <ESC>
-inoremap jj <ESC>
 
 " 'un-join' (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
 
+inoremap jj <ESC>
 nnoremap <space> :
+nmap <leader>w :w!<cr>
 
 "toggle/untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
-"Move a line of text using ALT+[jk] 
+"text bubbling: move text up/down with meta-[jk] 
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
@@ -576,7 +569,6 @@ if IsWindows()
     au GUIEnter * simalt ~x 
 endif
 
-
 " enforce black bg, etc.
 highlight Normal ctermbg=black guibg=black 
 highlight Normal ctermfg=white guifg=white 
@@ -585,15 +577,15 @@ highlight Normal ctermfg=white guifg=white
 nnoremap j gj
 nnoremap k gk
 
-"disable F1 help key
+" disable F1 help key
 inoremap <F1> <ESC>
 nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
+" disable Ex mode shortcut
+nmap Q <nop>
+
 " Toggle hlsearch 
 nmap <silent> <leader>hs :noh<cr>
-
-" Disable Ex mode shortcut
-nmap Q <nop>
 
 
