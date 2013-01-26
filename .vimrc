@@ -96,10 +96,6 @@ set mouse=a     	" Enable mouse usage (all modes)
 "set ttyfast
 set lazyredraw  " no redraws in macros
 
-" Sets how many lines of history VIM has to remember
-set history=700
-
-
 set cmdheight=2 "The commandbar height
 
 " Set backspace config
@@ -462,8 +458,8 @@ nnoremap <c-b> :CtrlPBuffer<cr>
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\.git$\|\.hg$\|\.svn$\|\.cache$|AppData\|eclipse_workspace', 
-  \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pdf$|\.regtrans-ms$\|\.blf$\|\.dat$\|ntuser',
+  \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace',
+  \ 'file': '\v\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
 
