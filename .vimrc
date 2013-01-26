@@ -93,6 +93,9 @@ set mouse=a     	" Enable mouse usage (all modes)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " general
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"set ttyfast
+set lazyredraw  " no redraws in macros
+
 " Sets how many lines of history VIM has to remember
 set history=700
 
@@ -108,10 +111,11 @@ set cmdheight=2 "The commandbar height
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
-set ignorecase "Ignore case when searching
-set hlsearch "Highlight search matches
+set ignorecase " case-insensitive searching
+set smartcase  " but become case-sensitive if you type uppercase characters
+set hlsearch   " highlight search matches
 
-set magic "Set magic on, for regular expressions
+set magic " change the way backslashes are used in search patterns
 
 set showmatch " When inserting paren, jump briefly to matching one.
 set mat=5     " showmatch time (tenths of a second)
@@ -172,15 +176,14 @@ endtry
 set formatoptions+=rn1
 
 set expandtab
-set shiftwidth=4
 set tabstop=4
-" Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
-set smarttab
+set shiftwidth=4
+set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
 set linebreak "wrap long lines at 'breakat' character
 set textwidth=500
 
-set autoindent " Autoindent when starting new line, or using "o" or "O".
+set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
 set smartindent
 set nowrap 
 "set textwidth=80
@@ -375,6 +378,13 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 
 set guitablabel=%t
 
+" replay @q macro for each line of a visual selection
+vnoremap @q :normal @q<CR>
+" repeat last command for each line of a visual selection
+vnoremap . :normal .<CR>
+
+
+nnoremap <leader>a :Ack
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " cope
