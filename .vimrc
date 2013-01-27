@@ -63,7 +63,7 @@ fun! IsWindows()
 endfun
 
 fun! IsMac()
-    return has('gui_macvim')
+    return has('gui_macvim') || has('mac')
 endfun
 
 fun! IsUnix()
@@ -83,6 +83,17 @@ endfun
 " 'has GUI' means vim is "gui-capable"--but we may be using gvim/macvim from within the terminal.
 fun! HasGui()
     return has('gui')
+endfun
+
+fun! EnsureDir(path)
+    if (filewritable(a:path) != 2)
+        if IsWindows()
+            exe 'silent !mkdir ' . a:path
+        else
+            exe 'silent !mkdir -p ' . a:path
+        endif
+        redraw!
+    endif
 endfun
 
 set hidden          " Allow buffer switching even if unsaved 
@@ -512,14 +523,7 @@ function! SaveSession()
     endif
   endif
 
-  if (filewritable(GetSessionDir()) != 2)
-    if IsWindows()
-        exe 'silent !mkdir ' . GetSessionDir()
-    else
-        exe 'silent !mkdir -p ' . GetSessionDir()
-    endif
-    redraw!
-  endif
+  EnsureDir(GetSessionDir())
 
   exe "mksession! " . s:sessionfile
 endfunction
@@ -583,5 +587,12 @@ nmap Q <nop>
 
 " Toggle hlsearch 
 nmap <silent> <leader>hs :noh<cr>
+
+
+"ensure transient dirs
+let s:dir = (has('win32') || has('win64')) ? '~/Application Data/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'
+call EnsureDir(expand(s:dir) . '/swap/')
+call EnsureDir(expand(s:dir) . '/backup/')
+call EnsureDir(expand(s:dir) . '/undo/')
 
 
