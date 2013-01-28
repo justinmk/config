@@ -86,11 +86,12 @@ fun! HasGui()
 endfun
 
 fun! EnsureDir(path)
-    if (filewritable(a:path) != 2)
+    let l:path = expand(a:path)
+    if (filewritable(l:path) != 2)
         if IsWindows()
-            exe 'silent !mkdir ' . a:path
+            exe 'silent !mkdir "' . l:path . '"'
         else
-            exe 'silent !mkdir -p ' . a:path
+            exe 'silent !mkdir -p "' . l:path . '"'
         endif
         redraw!
     endif
@@ -479,19 +480,6 @@ let g:ctrlp_custom_ignore = {
 " session  http://vim.wikia.com/wiki/Go_away_and_come_back
 " =============================================================================
 
-function! ScrubPath(path)
-    let b:path=a:path
-
-    if IsWindows()
-        let b:path = substitute(b:path, '/', '\', 'g')
-    "assume that paths have slashes; only scrub for Windows
-    "else
-    "    let b:path = substitute(b:path, '\', '/', 'g')
-    endif
-
-    return b:path
-endfunction
-
 " do *not* save global variables/mappings/options
 set sessionoptions-=options
 set sessionoptions-=globals
@@ -499,11 +487,11 @@ set sessionoptions-=globals
 function! GetSessionDir()
     "expand ~ to absolute path so that mkdir works on windows
     "                     . substitute(getcwd(), 'C:', '/c', 'g')
-    return ScrubPath(expand("~/.vim/sessions")) 
+    return expand("~/.vim/sessions")
 endfunction
 
-let s:sessionfile = ScrubPath(GetSessionDir() . "/session.vim")
-let s:sessionlock = ScrubPath(GetSessionDir() . "/session.lock")
+let s:sessionfile = expand(GetSessionDir() . "/session.vim")
+let s:sessionlock = expand(GetSessionDir() . "/session.lock")
 
 function! SaveSession()
   "disable session save/load for CLI
@@ -589,10 +577,10 @@ nmap Q <nop>
 nmap <silent> <leader>hs :noh<cr>
 
 
-"ensure transient dirs
-let s:dir = (has('win32') || has('win64')) ? '~/Application Data/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'
-call EnsureDir(expand(s:dir) . '/swap/')
-call EnsureDir(expand(s:dir) . '/backup/')
-call EnsureDir(expand(s:dir) . '/undo/')
+"ensure transient dirs (for sensible.vim)
+let s:dir = (has('win32') || has('win64')) ? $APPDATA . '/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'
+call EnsureDir(s:dir . '/swap/')
+call EnsureDir(s:dir . '/backup/')
+call EnsureDir(s:dir . '/undo/')
 
 
