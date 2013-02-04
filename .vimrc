@@ -247,7 +247,8 @@ endfunction
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-map <leader>pp :setlocal paste!<cr>
+" Toggle paste mode
+map <leader>pp :setlocal paste! paste?<cr>
 
 " paste current dir to command line
 cno $c e <C-\>eCurrentFileDir("e")<cr>
@@ -464,7 +465,7 @@ if IsWindows()
 endif
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
-nnoremap <m-p> :CtrlPBufTagAll<cr> 
+nnoremap <m-p> :CtrlPBufTagAll<cr>
 " CtrlP buffer switching (this makes minibufexpl pretty much obsolete)
 nnoremap <c-b> :CtrlPBuffer<cr> 
 
@@ -576,6 +577,8 @@ nmap Q <nop>
 " Toggle hlsearch 
 nmap <silent> <leader>hs :noh<cr>
 
+" use interactive shell (enables bash aliases)
+set shellcmdflag=-ic
 
 "ensure transient dirs (for sensible.vim)
 let s:dir = (has('win32') || has('win64')) ? $APPDATA . '/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'
