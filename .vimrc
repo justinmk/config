@@ -201,6 +201,31 @@ endif
 
 set cursorline     "highlight the current line
 
+" =============================================================================
+" util functions
+" =============================================================================
+
+" generate random number at end of current line 
+" credit: http://mo.morsi.org/blog/node/299
+" usage:
+"   :Rand <CR>
+"   :Rand 100<CR>
+function! s:Rand(max)
+y a         
+redir @b    
+ruby << EOF
+  rmax = VIM::evaluate("a:max")
+  rmax = nil if rmax == ""
+  printf rand(rmax).to_s
+EOF
+redir END 
+    let @a = strpart(@a, 0, strlen(@a) - 1)
+    let @b = strpart(@b, 1, strlen(@b) - 1)
+    let @c = @a . @b
+    .s/.*/\=@c/g
+endfunction
+command! -nargs=? Rand :call <SID>Rand(<q-args>)
+
 function! BreakBefore(s)
     execute ':%s/' . a:s . '/\r' . a:s . '/g'
 endfunction
