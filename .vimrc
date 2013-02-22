@@ -53,6 +53,7 @@ Bundle 'justinmk/vim-syntax-extra'
 Bundle 'PProvost/vim-ps1'
 Bundle 'Shougo/neocomplcache'
 Bundle 'tomtom/tcomment_vim'
+Bundle 'ap/vim-css-color'
 
 filetype plugin indent on     " required!
 
@@ -235,9 +236,9 @@ function! BreakAfter(s)
     " :%s/;/;\r/g
 endfunction
 
-""""""""""""""""""""""""""""""
+" =============================================================================
 " visual mode 
-""""""""""""""""""""""""""""""
+" =============================================================================
 " in visual mode, press * or # to search for the current selection
 vnoremap * :call VisualSearch('f')<CR>
 vnoremap # :call VisualSearch('b')<CR>
@@ -266,9 +267,16 @@ function! VisualSearch(direction) range
 endfunction
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" command mode 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =============================================================================
+" command/ex mode
+" =============================================================================
+" Emacs-style movement (like Bash)
+:cnoremap <M-b>  <S-Left>
+:cnoremap <M-f>  <S-Right>
+
+" =============================================================================
+" normal mode
+" =============================================================================
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
@@ -323,12 +331,6 @@ map <c-left> :bp<cr>
 
 " avoid annoying insert-mode ctrl+u behavior
 imap <C-u> <Esc><C-u>
-
-" Tab configuration
-map <leader>tn :tabnew<cr>
-map <leader>te :tabedit 
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove 
 
 " switch to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>
@@ -490,14 +492,14 @@ if IsWindows()
 endif
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
-nnoremap <m-p> :CtrlPBufTagAll<cr>
+nnoremap <c-t> :CtrlPBufTagAll<cr>
 " CtrlP buffer switching (this makes minibufexpl pretty much obsolete)
-nnoremap <c-b> :CtrlPBuffer<cr> 
+nnoremap <c-b> :CtrlPBuffer<cr>
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace',
-  \ 'file': '\v\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms)$',
+  \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
 
@@ -599,11 +601,8 @@ vnoremap <F1> <ESC>
 " disable Ex mode shortcut
 nmap Q <nop>
 
-" Toggle hlsearch 
+" turn off search highlighting
 nmap <silent> <leader>hs :noh<cr>
-
-" use interactive shell (enables bash aliases)
-set shellcmdflag=-ic
 
 "ensure transient dirs (for sensible.vim)
 let s:dir = (has('win32') || has('win64')) ? $APPDATA . '/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'

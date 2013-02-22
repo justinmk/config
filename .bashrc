@@ -4,8 +4,8 @@
 [ -z "$PS1" ] && return
 
 export HISTCONTROL=erasedups
-export HISTSIZE=5000
-export HISTFILESIZE=10000
+export HISTSIZE=10000
+export HISTFILESIZE=100000
 # append to the history file, don't overwrite it
 shopt -s histappend
 
