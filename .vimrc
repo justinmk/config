@@ -243,30 +243,6 @@ endfunction
 vnoremap * :call VisualSearch('f')<CR>
 vnoremap # :call VisualSearch('b')<CR>
 
-" vimgrep 
-map <leader>g :vimgrep // ./*.<left><left><left><left><left><left>
-
-" From an idea by Michael Naumann
-function! VisualSearch(direction) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'b'
-        execute "normal ?" . l:pattern . "^M"
-    elseif a:direction == 'gv'
-        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-    elseif a:direction == 'f'
-        execute "normal /" . l:pattern . "^M"
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
-
-
 " =============================================================================
 " command/ex mode
 " =============================================================================
@@ -416,12 +392,11 @@ vnoremap . :normal .<CR>
 nnoremap <leader>a :Ack
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" cope
+" cope/quickfix/errorlist
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Do :help cope if you are unsure what cope is. It's super useful!
 map <leader>cc :botright cope<cr>
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
+map <leader>n :cnext<cr>
+map <leader>p :cprevious<cr>
 
 
 
@@ -453,6 +428,33 @@ au FileType javascript imap <c-a> alert();<esc>hi
 au FileType javascript inoremap <buffer> <leader>r return 
 au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
 
+
+""""""""""""""""""""""""""""""
+" vim grep
+""""""""""""""""""""""""""""""
+" :noau speeds up vimgrep
+map <leader>g  :noau vimgrep 
+map <leader>/ :noau vimgrep // ./*.<left><left><left><left><left><left>
+
+" From an idea by Michael Naumann
+function! VisualSearch(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
 
 " =============================================================================
 " omni complete
