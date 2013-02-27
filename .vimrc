@@ -454,13 +454,6 @@ au FileType javascript inoremap <buffer> <leader>r return
 au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
 
 
-""""""""""""""""""""""""""""""
-" vim grep
-""""""""""""""""""""""""""""""
-let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
-set grepprg=/bin/grep\ -nH
-
-
 " =============================================================================
 " omni complete
 " =============================================================================
@@ -469,7 +462,6 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 " Don't scan included files. Tags file is more performant.
 set complete-=i
 
-let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 "disable neocomplcache for matching buffer names
 "let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
@@ -477,19 +469,15 @@ let g:neocomplcache_enable_smart_case = 1
 " =============================================================================
 " ctrlp
 " =============================================================================
-set wildignore+=*.o,*.obj,*.class,.git,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
+set wildignore+=*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 if IsWindows()
-    set wildignore+=.git\\*,.hg\\*,.svn\\*,Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
-else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/* 
+    set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
+    let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
 
 let g:ctrlp_cmd = 'CtrlPMixed' 
 let g:ctrlp_extensions = ['tag', 'buffertag']
-if IsWindows()
-    let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
-endif
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <c-t> :CtrlPBufTagAll<cr>
@@ -498,7 +486,7 @@ nnoremap <c-b> :CtrlPBuffer<cr>
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace',
+  \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
   \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
@@ -512,14 +500,9 @@ let g:ctrlp_custom_ignore = {
 set sessionoptions-=options
 set sessionoptions-=globals
 
-function! GetSessionDir()
-    "expand ~ to absolute path so that mkdir works on windows
-    "                     . substitute(getcwd(), 'C:', '/c', 'g')
-    return expand("~/.vim/sessions")
-endfunction
-
-let s:sessionfile = expand(GetSessionDir() . "/session.vim")
-let s:sessionlock = expand(GetSessionDir() . "/session.lock")
+let s:sessiondir  = expand("~/.vim/sessions")
+let s:sessionfile = expand(s:sessiondir . "/session.vim")
+let s:sessionlock = expand(s:sessiondir . "/session.lock")
 
 function! SaveSession()
   "disable session save/load for CLI
@@ -539,7 +522,7 @@ function! SaveSession()
     endif
   endif
 
-  EnsureDir(GetSessionDir())
+  EnsureDir(s:sessiondir)
 
   exe "mksession! " . s:sessionfile
 endfunction
