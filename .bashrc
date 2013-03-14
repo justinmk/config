@@ -95,7 +95,7 @@ if [[ `uname` == 'Darwin' ]]; then
     #BSD-style aliases 
     alias ls='ls -GCF'
 
-    alias su='echo >>>REMINDER: verify umask && su'
+    alias su='echo "***REMINDER: verify umask" && su'
     
     # Display ASCII control characters using caret notation in standard text views
     # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
