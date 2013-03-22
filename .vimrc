@@ -231,9 +231,9 @@ function! BreakBefore(s)
     execute ':%s/' . a:s . '/\r' . a:s . '/g'
 endfunction
 function! BreakAfter(s)
+    "break after text like: 221= 
+    "%s/\(\d\{3}=\)/\r\1/g
     execute ':%s/' . a:s . '/' . a:s . '\r/g'
-    " :%s/}/\r}\r/g
-    " :%s/;/;\r/g
 endfunction
 
 " =============================================================================
@@ -524,7 +524,7 @@ function! SaveSession()
     endif
   endif
 
-  EnsureDir(s:sessiondir)
+  call EnsureDir(s:sessiondir)
 
   exe "mksession! " . s:sessionfile
 endfunction
