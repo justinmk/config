@@ -479,7 +479,8 @@ if IsWindows()
 endif
 
 let g:ctrlp_cmd = 'CtrlPMixed' 
-let g:ctrlp_extensions = ['tag', 'buffertag']
+let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
+                        \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <c-t> :CtrlPBufTagAll<cr>
