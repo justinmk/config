@@ -54,6 +54,7 @@ Bundle 'PProvost/vim-ps1'
 Bundle 'Shougo/neocomplcache'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
+Bundle 'airblade/vim-gitgutter'
 
 filetype plugin indent on     " required!
 
