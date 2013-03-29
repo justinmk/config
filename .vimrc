@@ -45,6 +45,7 @@ Bundle 'gmarik/vundle'
 " repos on github
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
+Bundle 'Valloric/MatchTagAlways'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
