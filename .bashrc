@@ -124,5 +124,7 @@ if [ -f "${HOME}/.bashrcx" ]; then
   . "${HOME}/.bashrcx"
 fi
 
+[[ -d "$HOME/opt/gwt" ]] && PATH=$PATH:$HOME/opt/gwt
+
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
