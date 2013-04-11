@@ -20,10 +20,6 @@ let s:remember_session=1
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
 "==============================================================================
-"     :BundleList          - list configured bundles
-"     :BundleInstall(!)    - install(update) bundles
-"     :BundleSearch(!) foo - search(or refresh cache first) for foo
-"     :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
 
 "boostrap vundle on new systems
 fun! InstallVundle()
@@ -45,16 +41,17 @@ Bundle 'gmarik/vundle'
 " repos on github
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-surround'
 Bundle 'Valloric/MatchTagAlways'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
-Bundle 'tpope/vim-surround'
 Bundle 'PProvost/vim-ps1'
 Bundle 'Shougo/neocomplcache'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'derekwyatt/vim-scala'
 
 filetype plugin indent on     " required!
 
