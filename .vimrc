@@ -101,9 +101,9 @@ set mouse=a     	" Enable mouse usage (all modes)
 
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 " general
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 "set ttyfast
 set lazyredraw  " no redraws in macros
 
@@ -128,7 +128,7 @@ set novb t_vb=
 set tm=1000
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 set nonumber
 set background=dark
 set showtabline=1
@@ -172,9 +172,9 @@ catch
 endtry
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 " text, tab and indent 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 set formatoptions+=rn1
 
 set expandtab
@@ -252,10 +252,10 @@ vnoremap # :call VisualSearch('b')<CR>
 " normal mode
 " =============================================================================
 " Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Toggle paste mode
-map <leader>pp :setlocal paste! paste?<cr>
+nnoremap <leader>pp :setlocal paste! paste?<cr>
 
 " paste current dir to command line
 cno $c e <C-\>eCurrentFileDir("e")<cr>
@@ -286,29 +286,29 @@ func! CurrentFileDir(cmd)
 endfunc
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" moving around, tabs and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
+" tabs, buffers, windows
+"==============================================================================
 
 " move between windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
 
 " Close the current buffer
-map <leader>bd :Bclose<cr>
+nnoremap <leader>bd :Bclose<cr>
 
 " ctrl+arrow to switch buffers
-map <c-right> :bn<cr>
-map <c-left> :bp<cr>
+nnoremap <c-right> :bn<cr>
+nnoremap <c-left> :bp<cr>
 
 " avoid annoying insert-mode ctrl+u behavior
-imap <C-u> <Esc><C-u>
+inoremap <C-u> <Esc><C-u>i
+inoremap <C-d> <Esc><C-d>i
 
 " switch to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>
-
+nnoremap <leader>cd :cd %:p:h<cr>
 
 command! Bclose call <SID>BufcloseCloseIt()
 function! <SID>BufcloseCloseIt()
@@ -331,9 +331,9 @@ function! <SID>BufcloseCloseIt()
 endfunction
 
 
-""""""""""""""""""""""""""""""
+"==============================================================================
 " statusline
-""""""""""""""""""""""""""""""
+"==============================================================================
 let g:Powerline_stl_path_style = 'short'
 
 
@@ -349,27 +349,27 @@ endfunction
 
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 " key mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Remap VIM 0
-map 0 ^
+"==============================================================================
+"move to first non-whitespace char, instead of first column
+nnoremap 0 ^
 
-" 'un-join' (split) the current line at the cursor position
+" un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
 
-inoremap jj <ESC>
+inoremap jj <esc>
 nnoremap <space> :
-nmap <leader>w :w!<cr>
+nnoremap <leader>w :w!<cr>
 
 "toggle/untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
+nnoremap <leader>ss :setlocal spell!<cr>
 
 "text bubbling: move text up/down with meta-[jk] 
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+nnoremap <M-j> mz:m+<cr>`z
+nnoremap <M-k> mz:m-2<cr>`z
+vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 "Delete trailing white space, useful for Python ;)
 func! DeleteTrailingWS()
@@ -389,19 +389,18 @@ vnoremap . :normal .<CR>
 
 nnoremap <leader>a :Ack
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" snippets ====================================================================
+inoremap {} {}<esc>i<cr><esc>k$o
+
+"==============================================================================
 " cope/quickfix/errorlist
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>cc :botright cope<cr>
-map <leader>n :cnext<cr>
-map <leader>p :cprevious<cr>
+"==============================================================================
+nnoremap <leader>cc :botright cope<cr>
+nnoremap <leader>n :cnext<cr>
+nnoremap <leader>p :cprevious<cr>
 
 
-
-
-""""""""""""""""""""""""""""""
-" python
-""""""""""""""""""""""""""""""
+" python ======================================================================
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
 
@@ -412,27 +411,21 @@ au FileType python inoremap <buffer> $r return
 au FileType python inoremap <buffer> $i import 
 au FileType python inoremap <buffer> $p print 
 au FileType python inoremap <buffer> $f #--- PH ----------------------------------------------<esc>FP2xi
-au FileType python map <buffer> <leader>1 /class 
-au FileType python map <buffer> <leader>2 /def 
-au FileType python map <buffer> <leader>C ?class 
-au FileType python map <buffer> <leader>D ?def 
 
 
-""""""""""""""""""""""""""""""
-" javascript
-"""""""""""""""""""""""""""""""
+" javascript ==================================================================
 au FileType javascript setl nocindent
-au FileType javascript imap <c-a> alert();<esc>hi
+au FileType javascript inoremap <c-a> alert();<esc>hi
 au FileType javascript inoremap <buffer> <leader>r return 
 au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
 
 
-""""""""""""""""""""""""""""""
+"==============================================================================
 " vim grep
-""""""""""""""""""""""""""""""
+"==============================================================================
 " :noau speeds up vimgrep
-map <leader>g  :noau vimgrep 
-map <leader>/ :noau vimgrep // ./*.<left><left><left><left><left><left>
+noremap <leader>g  :noau vimgrep 
+noremap <leader>/ :noau vimgrep // ./*.<left><left><left><left><left><left>
 
 " From an idea by Michael Naumann
 function! VisualSearch(direction) range
@@ -497,7 +490,7 @@ let g:ctrlp_custom_ignore = {
 " session  http://vim.wikia.com/wiki/Go_away_and_come_back
 " =============================================================================
 
-" do *not* save global variables/mappings/options
+" do *not* save global session variables/mappings/options
 set sessionoptions-=options
 set sessionoptions-=globals
 
@@ -556,17 +549,20 @@ if has("autocmd")
     " Jump to the last position when reopening a file
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+    " force windows to be sized equally after viewport resize
+    au VimResized * wincmd =
+
     if IsGui()
         if !exists("s:remember_session") || s:remember_session != 0
             set viminfo+=% "remember buffer list
             autocmd VimEnter * nested :call LoadSession()
         endif
     endif
-endif
 
-" always maximize GUI window size
-if IsWindows()
-    au GUIEnter * simalt ~x 
+    if IsWindows()
+        " always maximize initial GUI window size
+        au GUIEnter * simalt ~x 
+    endif
 endif
 
 " enforce black bg, etc.
@@ -583,10 +579,10 @@ nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
 " disable Ex mode shortcut
-nmap Q <nop>
+nnoremap Q <nop>
 
 " turn off search highlighting
-nmap <silent> <leader>hs :noh<cr>
+nnoremap <silent> <leader>hs :noh<cr>
 
 "ensure transient dirs (for sensible.vim)
 let s:dir = (has('win32') || has('win64')) ? $APPDATA . '/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'
