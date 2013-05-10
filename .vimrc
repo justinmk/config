@@ -69,9 +69,13 @@ fun! IsUnix()
     return has('unix')
 endfun
 
+fun! IsMsysgit()
+    return (has('win32') || has('win64')) && $TERM == 'cygwin'
+endfun
+
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
-"   &term  = win32 //vimrc running in cygwin terminal
+"   &term  = win32 //vimrc running in msysgit terminal
 "   $TERM  = xterm-color , cygwin
 "   &term  = builtin_gui //*after* vimrc but *before* gvimrc
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
@@ -134,34 +138,31 @@ set background=dark
 set showtabline=1
 
 " platform-specific settings
+if !IsMsysgit()
+    "highlight the current line
+    set cursorline
+
+    " expects &runtimepath/colors/{name}.vim.
+    colorscheme molokai
+endif
 if IsWindows()
     set gfn=Consolas:h10
+elseif IsMac()
+    " Use option (alt) as meta key.
+    set macmeta
 
-    if IsWindows()
-        " expects &runtimepath/colors/{name}.vim.
-        colorscheme molokai
+    if IsGui()
+        " macvim options  :view $VIM/gvimrc
+        let macvim_skip_colorscheme=1
+        let macvim_skip_cmd_opt_movement=1
+
+        "set guifont=Monaco:h16
+        set guifont=Menlo:h14
+
+        let g:Powerline_symbols = 'unicode'
     endif
-else
-    if IsMac()
-        " Use option (alt) as meta key.
-        set macmeta
-
-        if IsGui()
-            " macvim options  :view $VIM/gvimrc
-            let macvim_skip_colorscheme=1
-            let macvim_skip_cmd_opt_movement=1
-
-            " expects &runtimepath/colors/{name}.vim.
-            colorscheme molokai
-            
-            "set guifont=Monaco:h16
-            set guifont=Menlo:h14
-
-            let g:Powerline_symbols = 'unicode'
-        endif
-    elseif IsGui() "linux or other
-        set gfn=Monospace\ 10
-    endif
+elseif IsGui() "linux or other
+    set gfn=Monospace\ 10
 endif
 
 set fileformats=unix,dos,mac
@@ -197,8 +198,6 @@ endif
 if exists('&colorcolumn')
     set colorcolumn=80 "highlight the specified column
 endif
-
-set cursorline     "highlight the current line
 
 " =============================================================================
 " util functions
@@ -493,6 +492,7 @@ let g:ctrlp_custom_ignore = {
 " do *not* save global session variables/mappings/options
 set sessionoptions-=options
 set sessionoptions-=globals
+set sessionoptions-=blank
 
 let s:sessiondir  = expand("~/.vim/sessions")
 let s:sessionfile = expand(s:sessiondir . "/session.vim")
