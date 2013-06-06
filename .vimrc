@@ -585,7 +585,7 @@ nnoremap Q <nop>
 nnoremap <silent> <leader>hs :noh<cr>
 
 "ensure transient dirs (for sensible.vim)
-let s:dir = (has('win32') || has('win64')) ? $APPDATA . '/Vim' : has('mac') ? '~/Library/Vim' : '~/.local/share/vim'
+let s:dir = has('win32') ? '$APPDATA/Vim' : match(system('uname'), "Darwin") > -1 ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
 call EnsureDir(s:dir . '/swap/')
 call EnsureDir(s:dir . '/backup/')
 call EnsureDir(s:dir . '/undo/')
