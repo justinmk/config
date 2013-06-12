@@ -584,10 +584,31 @@ nnoremap Q <nop>
 " turn off search highlighting
 nnoremap <silent> <leader>hs :noh<cr>
 
-"ensure transient dirs (for sensible.vim)
-let s:dir = has('win32') ? '$APPDATA/Vim' : match(system('uname'), "Darwin") > -1 ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
-call EnsureDir(s:dir . '/swap/')
-call EnsureDir(s:dir . '/backup/')
-call EnsureDir(s:dir . '/undo/')
+if !exists('g:netrw_list_hide')
+  let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
+endif
+
+"ensure transient dirs
+let s:dir = has('win32') ? '$APPDATA/Vim' : IsMac() > -1 ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
+
+if isdirectory(expand(s:dir))
+  call EnsureDir(s:dir . '/swap/')
+  call EnsureDir(s:dir . '/backup/')
+  call EnsureDir(s:dir . '/undo/')
+
+  if &directory =~# '^\.,'
+    let &directory = expand(s:dir) . '/swap//,' . &directory
+  endif
+  if &backupdir =~# '^\.,'
+    let &backupdir = expand(s:dir) . '/backup//,' . &backupdir
+  endif
+  if exists('+undodir') && &undodir =~# '^\.\%(,\|$\)'
+    let &undodir = expand(s:dir) . '/undo//,' . &undodir
+  endif
+
+  if exists('+undofile')
+    set undofile
+  endif
+endif
 
 
