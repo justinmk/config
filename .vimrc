@@ -42,6 +42,7 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-dispatch'
 Bundle 'Valloric/MatchTagAlways'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
@@ -59,19 +60,19 @@ filetype plugin indent on     " required!
 "has() tests whether a feature was compiled in
 fun! IsWindows()
     return has('win32') || has('win64')
-endfun
-
+endf
 fun! IsMac()
     return has('gui_macvim') || has('mac')
-endfun
-
+endf
 fun! IsUnix()
     return has('unix')
-endfun
-
+endf
 fun! IsMsysgit()
     return (has('win32') || has('win64')) && $TERM == 'cygwin'
-endfun
+endf
+fun! IsTmux()
+    return !(empty($TMUX))
+endf
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -349,7 +350,7 @@ endfunction
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 "==============================================================================
-" key mappings
+" key mappings/bindings
 "==============================================================================
 "move to first non-whitespace char, instead of first column
 nnoremap 0 ^
@@ -385,8 +386,16 @@ vnoremap @q :normal @q<CR>
 " repeat last command for each line of a visual selection
 vnoremap . :normal .<CR>
 
-
 nnoremap <leader>a :Ack
+
+" navigate to the directory of the current file
+if IsTmux()
+    nnoremap <leader>gf :execute '!tmux split-window \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'
+elseif IsWindows()
+    nnoremap <leader>gf :!start explorer /select,%:p<cr>
+elseif IsMac()
+    nnoremap <leader>gf :execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")
+endif
 
 " snippets ====================================================================
 inoremap {} {}<esc>i<cr><esc>k$o
