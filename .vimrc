@@ -15,8 +15,6 @@ endif
 let mapleader = ","
 let g:mapleader = ","
 
-let s:remember_session=1
-
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
 "==============================================================================
@@ -508,11 +506,6 @@ let s:sessionfile = expand(s:sessiondir . "/session.vim")
 let s:sessionlock = expand(s:sessiondir . "/session.lock")
 
 function! SaveSession()
-  "disable session save/load for CLI
-  if !HasGui() || !IsGui()
-    return
-  endif
-
   if (filereadable(s:sessionfile))
     let b:sessionfile_bk = s:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
     echo b:sessionfile_bk
@@ -531,11 +524,6 @@ function! SaveSession()
 endfunction
 
 function! LoadSession()
-  "disable session save/load for CLI
-  if !HasGui() || !IsGui()
-    return
-  endif
-
   if (filereadable(s:sessionlock))
     echo "Session already open in another vim."
   elseif (filereadable(s:sessionfile))
@@ -562,10 +550,8 @@ if has("autocmd")
     au VimResized * wincmd =
 
     if IsGui()
-        if !exists("s:remember_session") || s:remember_session != 0
-            set viminfo+=% "remember buffer list
-            autocmd VimEnter * nested :call LoadSession()
-        endif
+        set viminfo+=% "remember buffer list
+        autocmd VimEnter * nested :call LoadSession()
     endif
 
     if IsWindows()
