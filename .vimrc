@@ -390,11 +390,11 @@ nnoremap <leader>a :Ack
 
 " navigate to the directory of the current file
 if IsTmux()
-    nnoremap <leader>gf :execute '!tmux split-window \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'
+    nnoremap <leader>gf :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'<cr>
 elseif IsWindows()
-    nnoremap <leader>gf :!start explorer /select,%:p<cr>
+    nnoremap <leader>gf :silent !start explorer /select,%:p<cr>
 elseif IsMac()
-    nnoremap <leader>gf :execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")
+    nnoremap <leader>gf :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
 endif
 
 " snippets ====================================================================
