@@ -83,6 +83,11 @@ fi
 alias ls='ls -CF --color=auto'
 alias gitk='gitk --all'
 
+#msysgit cygwin sets this, even over ssh; full cygwin sets this to 'xterm'.
+if [[ $TERM != 'cygwin' ]]; then
+    alias tmux='tmux -2'
+fi
+
 #some old systems (msysgit) do not support grep --color.
 if grep --color "a" <<< "a" &> /dev/null ; then
     alias grep='grep --color=auto'
