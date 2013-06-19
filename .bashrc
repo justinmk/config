@@ -13,7 +13,7 @@ shopt -s histappend
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
 
-if [[ "$MSYSTEM" != MINGW32 && "$TERM" == cygwin && $OSTYPE == 'msys' ]] ; then
+if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
     umask 0077
 fi
 
@@ -46,6 +46,7 @@ if ! type -t __git_ps1 &> /dev/null ; then
     #cygwin (non-msysgit): try to find git-prompt.sh
     gitprompt_home="`which git`/../../etc/git-prompt.sh" 
     [ -f "$gitprompt_home" ] && source "$gitprompt_home"
+    [ -f ~/bin/git-prompt.sh ] && source ~/bin/git-prompt.sh
 fi
 
 if type -t __git_ps1 &> /dev/null ; then
