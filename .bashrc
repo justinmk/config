@@ -3,16 +3,17 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-export HISTCONTROL=erasedups
-export HISTSIZE=10000
-export HISTFILESIZE=100000
+# HIST* are bash-only variables, not environmental variables, so do not 'export'
+HISTCONTROL=erasedups
+HISTSIZE=10000
+HISTFILESIZE=20000
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
 
-if [[ $TERM != 'cygwin' && $OSTYPE != 'msys' ]] ; then
+if [[ "$MSYSTEM" != MINGW32 && "$TERM" == cygwin && $OSTYPE == 'msys' ]] ; then
     umask 0077
 fi
 
@@ -34,45 +35,25 @@ fi
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+# if [[ $TERM == 'cygwin' && $OSTYPE == 'msys' ]] ; then
+if [ "$MSYSTEM" == MINGW32 ]; then
+    # msysgit cygwin
+    export LS_COLORS='di=01;36'
 fi
 
-# set a fancy prompt
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
-
-if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48 (ISO/IEC-6429). 
-    # (Lack of such support is extremely rare, and such a case would tend to support setf rather than setaf.)
-    color_prompt=yes
-else
-    color_prompt=
+#try to find git-prompt.sh if __git_ps1 was not automatically provided.
+if ! type -t __git_ps1 &> /dev/null ; then
+    #cygwin (non-msysgit): try to find git-prompt.sh
+    gitprompt_home="`which git`/../../etc/git-prompt.sh" 
+    [ -f "$gitprompt_home" ] && source "$gitprompt_home"
 fi
 
-# allow msysgit to set $PS1
-if [[ $TERM == 'cygwin' && $OSTYPE == 'msys' ]] ; then
-    color_prompt=
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt 
-
-parse_git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-}
-
-# http://stackoverflow.com/q/394230/152142
-#   also: $OSTYPE
-if [[ `uname` == 'Darwin' ]]; then
-    export PS1="\[\033[00m\]\u@\h\[\033[0;36m\] \W \[\033[32m\]\$(parse_git_branch 2> /dev/null) \[\033[00m\]$\[\033[00m\] "
-    export LSCOLORS=GxFxCxDxBxegedabagaced
+if type -t __git_ps1 &> /dev/null ; then
+    PS1='\[\033[1;32m\]\u@\h \[\033[36m\]\w\[\033[33m$(__git_ps1)\033[0m\]
+$ '
+    GIT_PS1_STATESEPARATOR=""
+    GIT_PS1_SHOWUPSTREAM="verbose"
+    GIT_PS1_SHOWCOLORHINTS=1
 fi
 
 #GNU-style aliases
@@ -96,7 +77,11 @@ if grep --color "a" <<< "a" &> /dev/null ; then
 fi
 
 #MacOS
+# http://stackoverflow.com/q/394230/152142
+#   also: $OSTYPE
 if [[ `uname` == 'Darwin' ]]; then
+    export LSCOLORS=GxFxCxDxBxegedabagaced
+
     #BSD-style aliases 
     alias ls='ls -GCF'
 
@@ -124,12 +109,11 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+[[ -d "$HOME/opt/gwt" ]] && PATH=$PATH:$HOME/opt/gwt
+
 #local settings
 if [ -f "${HOME}/.bashrcx" ]; then
   . "${HOME}/.bashrcx"
 fi
-
-[[ -d "$HOME/opt/gwt" ]] && PATH=$PATH:$HOME/opt/gwt
-
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
