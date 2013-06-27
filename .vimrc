@@ -1,4 +1,9 @@
 
+" windows builds: http://files.kaoriya.net/goto/vim73w32
+" MacVim with homebrew:
+"   brew install macvim --with-cscope --with-lua --override-system-vim
+"
+
 " If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
 "    set runtimepath+=/path/to/.vim
 "    source /path/to/.vimrc
@@ -14,6 +19,10 @@ endif
 
 let mapleader = ","
 let g:mapleader = ","
+
+fun! IsVimRecentBuildWithLua()
+    return ! (!has('lua') || v:version < 703 || (v:version == 703 && !has('patch885')))
+endfun
 
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
@@ -47,11 +56,16 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
 Bundle 'PProvost/vim-ps1'
+if IsVimRecentBuildWithLua()
+Bundle 'Shougo/neocomplete.vim'
+else
 Bundle 'Shougo/neocomplcache'
+endif
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
+Bundle 'Blackrush/vim-gocode'
 
 filetype plugin indent on     " required!
 
@@ -461,9 +475,15 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 " Don't scan included files. Tags file is more performant.
 set complete-=i
 
-let g:neocomplcache_enable_smart_case = 1
-"disable neocomplcache for matching buffer names
-"let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+if IsVimRecentBuildWithLua()
+    nnoremap <leader>neo :NeoCompleteEnable<cr>
+    let g:neocomplete#enable_smart_case = 1
+    "disable neocomplcache for matching buffer names
+    "let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+else
+    nnoremap <leader>neo :NeoComplCacheEnable<cr>
+    let g:neocomplcache_enable_smart_case = 1
+endif
 
 " =============================================================================
 " ctrlp
