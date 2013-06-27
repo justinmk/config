@@ -37,6 +37,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " repos on github
+Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
@@ -130,6 +131,7 @@ set noerrorbells
 set novb t_vb=
 set tm=1000
 
+set nopaste
 
 "==============================================================================
 set nonumber
