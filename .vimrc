@@ -131,8 +131,6 @@ set noerrorbells
 set novb t_vb=
 set tm=1000
 
-set nopaste
-
 "==============================================================================
 set nonumber
 set background=dark
