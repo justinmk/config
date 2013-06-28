@@ -519,38 +519,53 @@ let s:sessiondir  = expand("~/.vim/sessions")
 let s:sessionfile = expand(s:sessiondir . "/session.vim")
 let s:sessionlock = expand(s:sessiondir . "/session.lock")
 
-function! SaveSession()
-  if (filereadable(s:sessionfile))
-    let b:sessionfile_bk = s:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
-    echo b:sessionfile_bk
-    if IsWindows()
-        exe 'silent !copy ' . s:sessionfile . ' ' . b:sessionfile_bk
-        exe 'silent !del ' . s:sessionlock 
-    else
-        exe 'silent !cp ' . s:sessionfile . ' ' . b:sessionfile_bk
-        exe 'silent !rm -f ' . s:sessionlock 
-    endif
+function! SaveSession(delete_lock)
+  " use 'call' so that SaveSession() can also work in command-mode.
+  call EnsureDir(s:sessiondir)
+
+  if ! isdirectory(s:sessiondir)
+    echoerr "Failed to create session dir: " . s:sessiondir
+    return
   endif
 
-  call EnsureDir(s:sessiondir)
+  let b:sessionfile_bk = s:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
+  if IsWindows()
+    if filereadable(s:sessionfile)
+      exe 'silent !copy ' . s:sessionfile . ' ' . b:sessionfile_bk
+    endif
+    if a:delete_lock
+      exe 'silent !del ' . s:sessionlock 
+    endif
+  else
+    if filereadable(s:sessionfile)
+      exe 'silent !cp ' . s:sessionfile . ' ' . b:sessionfile_bk
+    endif
+    if a:delete_lock
+      exe 'silent !rm -f ' . s:sessionlock 
+    endif
+  endif
 
   exe "mksession! " . s:sessionfile
 endfunction
 
 function! LoadSession()
-  if (filereadable(s:sessionlock))
+  if filereadable(s:sessionlock)
     echo "Session already open in another vim."
-  elseif (filereadable(s:sessionfile))
+  elseif isdirectory(s:sessiondir)
     "write the session 'lock' file
     exe "new | w " . s:sessionlock . " | bd"
     
-    "open the session
-    exe 'source ' s:sessionfile
+    if filereadable(s:sessionfile)
+      "open the session
+      exe 'source ' s:sessionfile
+    else 
+      echo "Session initialized."
+    endif
 
     "set up trigger to save on exit
-    autocmd VimLeave * :call SaveSession()
+    autocmd VimLeave * :call SaveSession(1)
   else
-    echo "No session loaded."
+    echoerr "Invalid session dir: " . s:sessiondir
   endif
 endfunction
 
@@ -569,6 +584,8 @@ if has("autocmd")
     endif
 
     if IsWindows()
+        " use .viminfo instead of _viminfo
+        set viminfo+=n~/.viminfo
         " always maximize initial GUI window size
         au GUIEnter * simalt ~x 
     endif
