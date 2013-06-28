@@ -51,8 +51,16 @@ Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-dispatch'
+Bundle 'tpope/vim-abolish'
+Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-eunuch'
+Bundle 'tpope/vim-rsi'
+Bundle 'tpope/vim-unimpaired'
+Bundle 'kshenoy/vim-signature'
+Bundle 'kana/vim-smartinput'
 Bundle 'Valloric/MatchTagAlways'
-Bundle 'Lokaltog/vim-easymotion'
+" Bundle 'Valloric/YouCompleteMe'
+" Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
 Bundle 'PProvost/vim-ps1'
@@ -247,13 +255,6 @@ function! BreakAfter(s)
 endfunction
 
 " =============================================================================
-" visual mode 
-" =============================================================================
-" in visual mode, press * or # to search for the current selection
-vnoremap * :call VisualSearch('f')<CR>
-vnoremap # :call VisualSearch('b')<CR>
-
-" =============================================================================
 " command/ex mode
 " =============================================================================
 " Emacs-style movement (like Bash)
@@ -409,8 +410,6 @@ elseif IsMac()
     nnoremap <leader>gf :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
 endif
 
-" snippets ====================================================================
-inoremap {} {}<esc>i<cr><esc>k$o
 
 "==============================================================================
 " cope/quickfix/errorlist
@@ -444,28 +443,23 @@ au FileType javascript inoremap <buffer> $f //--- PH ---------------------------
 " vim grep
 "==============================================================================
 " :noau speeds up vimgrep
-noremap <leader>g  :noau vimgrep 
-noremap <leader>/ :noau vimgrep // ./*.<left><left><left><left><left><left>
+noremap <leader>grep :noau vimgrep // **<left><left><left><left>
 
-" From an idea by Michael Naumann
-function! VisualSearch(direction) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'b'
-        execute "normal ?" . l:pattern . "^M"
-    elseif a:direction == 'gv'
-        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-    elseif a:direction == 'f'
-        execute "normal /" . l:pattern . "^M"
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
+" makes * and # work on visual mode too.
+function! s:VSetSearch(cmdtype)
+  let temp = @s
+  norm! gv"sy
+  let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
+  let @s = temp
 endfunction
+
+" in visual mode, press * or # to search for the current selection
+xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+
+" recursively vimgrep for word under cursor or selection if you hit leader-star
+nmap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
+vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
 
 " =============================================================================
 " omni complete
