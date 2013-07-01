@@ -74,6 +74,7 @@ Bundle 'ap/vim-css-color'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
+Bundle 'Shougo/unite.vim'
 
 filetype plugin indent on     " required!
 
@@ -151,7 +152,7 @@ set mat=5     " showmatch time (tenths of a second)
 " No sound on errors
 set noerrorbells
 set novb t_vb=
-set tm=1000
+set tm=3000
 
 "==============================================================================
 set nonumber
@@ -310,11 +311,7 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " Close the current buffer
-nnoremap <leader>bd :Bclose<cr>
-
-" ctrl+arrow to switch buffers
-nnoremap <c-right> :bn<cr>
-nnoremap <c-left> :bp<cr>
+nnoremap <leader>bd :bdelete!<cr>
 
 " avoid annoying insert-mode ctrl+u behavior
 inoremap <C-u> <Esc><C-u>i
@@ -322,26 +319,6 @@ inoremap <C-d> <Esc><C-d>i
 
 " switch to the directory of the open buffer
 nnoremap <leader>cd :cd %:p:h<cr>
-
-command! Bclose call <SID>BufcloseCloseIt()
-function! <SID>BufcloseCloseIt()
-   let l:currentBufNum = bufnr("%")
-   let l:alternateBufNum = bufnr("#")
-
-   if buflisted(l:alternateBufNum)
-     buffer #
-   else
-     bnext
-   endif
-
-   if bufnr("%") == l:currentBufNum
-     new
-   endif
-
-   if buflisted(l:currentBufNum)
-     execute("bdelete! ".l:currentBufNum)
-   endif
-endfunction
 
 
 "==============================================================================
@@ -489,14 +466,12 @@ if IsWindows()
     let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
 
-let g:ctrlp_cmd = 'CtrlPMixed' 
+let g:ctrlp_map = '<F12>'
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
                         \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <c-t> :CtrlPBufTagAll<cr>
-" CtrlP buffer switching (this makes minibufexpl pretty much obsolete)
-nnoremap <c-b> :CtrlPBuffer<cr>
 
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
@@ -505,6 +480,14 @@ let g:ctrlp_custom_ignore = {
   \ 'link': 'some_bad_symbolic_links',
   \ }
 
+" Unite
+let g:unite_source_history_yank_enable = 1
+let g:unite_force_overwrite_statusline = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" nnoremap <c-p>    :Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
+nnoremap <c-p>      :Unite -no-split -buffer-name=files   -start-insert file_rec file_mru<cr>
+nnoremap <c-y>      :Unite -no-split -buffer-name=yank    history/yank<cr>
+nnoremap <c-b>      :Unite -no-split -buffer-name=buffer  buffer<cr>
 
 " =============================================================================
 " session  http://vim.wikia.com/wiki/Go_away_and_come_back
@@ -514,6 +497,7 @@ let g:ctrlp_custom_ignore = {
 set sessionoptions-=options
 set sessionoptions-=globals
 set sessionoptions-=blank
+set sessionoptions-=buffers
 
 let s:sessiondir  = expand("~/.vim/sessions")
 let s:sessionfile = expand(s:sessiondir . "/session.vim")
