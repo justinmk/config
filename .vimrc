@@ -466,7 +466,6 @@ if IsWindows()
     let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
 
-let g:ctrlp_map = '<F12>'
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
                         \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
 
@@ -485,9 +484,18 @@ let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " nnoremap <c-p>    :Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
-nnoremap <c-p>      :Unite -no-split -buffer-name=files   -start-insert file_rec file_mru<cr>
+" nnoremap <c-p>    :Unite -no-split -buffer-name=files   -start-insert file_rec:.:~/.:~ file_mru<cr>
+nnoremap <c-b>      :Unite -no-split -buffer-name=buffer  -start-insert buffer<cr>
 nnoremap <c-y>      :Unite -no-split -buffer-name=yank    history/yank<cr>
-nnoremap <c-b>      :Unite -no-split -buffer-name=buffer  buffer<cr>
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  nmap <buffer> <esc> <Plug>(unite_exit)
+  map  <buffer> <F5>  <Plug>(unite_redraw)
+  imap <buffer> <C-j> <Plug>(unite_select_next_line)
+  imap <buffer> <C-k> <Plug>(unite_select_previous_line)
+endfunction
 
 " =============================================================================
 " session  http://vim.wikia.com/wiki/Go_away_and_come_back
