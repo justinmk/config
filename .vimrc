@@ -256,13 +256,6 @@ function! BreakAfter(s)
 endfunction
 
 " =============================================================================
-" command/ex mode
-" =============================================================================
-" Emacs-style movement (like Bash)
-:cnoremap <M-b>  <S-Left>
-:cnoremap <M-f>  <S-Right>
-
-" =============================================================================
 " normal mode
 " =============================================================================
 " Remove the Windows ^M - when the encodings gets messed up
@@ -311,7 +304,8 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " Close the current buffer
-nnoremap <leader>bd :bdelete!<cr>
+nnoremap <leader>bd :bdelete! <cr>
+" nnoremap <leader>bd :bdelete! <bar> if exists("g:sessionowner") <bar> call SaveSession(0) <bar> endif <cr>
 
 " avoid annoying insert-mode ctrl+u behavior
 inoremap <C-u> <Esc><C-u>i
@@ -388,14 +382,6 @@ elseif IsMac()
 endif
 
 
-"==============================================================================
-" cope/quickfix/errorlist
-"==============================================================================
-nnoremap <leader>cc :botright cope<cr>
-nnoremap <leader>n :cnext<cr>
-nnoremap <leader>p :cprevious<cr>
-
-
 " python ======================================================================
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
@@ -419,6 +405,8 @@ au FileType javascript inoremap <buffer> $f //--- PH ---------------------------
 "==============================================================================
 " vim grep
 "==============================================================================
+nnoremap <leader>cc :botright cope<cr>
+
 " :noau speeds up vimgrep
 noremap <leader>grep :noau vimgrep // **<left><left><left><left>
 
