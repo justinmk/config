@@ -64,17 +64,19 @@ Bundle 'Valloric/MatchTagAlways'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'kien/ctrlp.vim'
 Bundle 'PProvost/vim-ps1'
-if IsVimRecentBuildWithLua()
-Bundle 'Shougo/neocomplete.vim'
-else
-Bundle 'Shougo/neocomplcache'
-endif
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
+Bundle 'justinmk/vim-ipmotion'
+Bundle 'argtextobj.vim'
 Bundle 'Shougo/unite.vim'
+if IsVimRecentBuildWithLua()
+Bundle 'Shougo/neocomplete.vim'
+else
+Bundle 'Shougo/neocomplcache'
+endif
 
 filetype plugin indent on     " required!
 
@@ -337,7 +339,8 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " key mappings/bindings
 "==============================================================================
 "move to first non-whitespace char, instead of first column
-nnoremap 0 ^
+nnoremap 1 ^
+nnoremap 0 $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
@@ -482,12 +485,17 @@ call unite#custom#source(
             \ ['converter_relative_abbr', 'converter_file_directory'])
 
 " extend default ignore pattern for file_rec source
-let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] . '\|AppData\|eclipse_workspace\|Downloads'
+let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] .
+    \ '\|\.\%(jpg\|gif\|png\)$'
+    \ '\|Downloads\|eclipse_workspace'
+if IsWindows()
+    let s:file_rec_ignore .= '\|AppData'
+elseif IsMac()
+    let s:file_rec_ignore .= '\|Library'
+endif
 call unite#custom#source('file_rec', 'ignore_pattern', s:file_rec_ignore)
-
-" extend default ignore pattern for directory_rec source
-let s:dir_rec_ignore = unite#get_all_sources('directory_rec')['ignore_pattern'] . '\|AppData\|eclipse_workspace\|Downloads'
-call unite#custom#source('directory_rec', 'ignore_pattern', s:dir_rec_ignore)
+" directory_rec copies ignore pattern from file_rec, see unite/sources/rec.vim
+" call unite#custom#source('directory_rec', 'ignore_pattern', s:dir_rec_ignore)
 
 call unite#custom#source(
             \ 'file_rec/async,file_rec,file_mru', 'converters',
