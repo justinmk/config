@@ -1,0 +1,8 @@
+set ignorecase
+set smartcase
+set incsearch
+set saney
+set tabstop=4
+set autochdir
+set gvimpath=/Users/justin/bin/mvim
+
