@@ -4,5 +4,9 @@ set incsearch
 set saney
 set tabstop=4
 set autochdir
+noremap ,bd :bdelete<cr>
+noremap ,w  :w<cr>
+noremap 0 $
+noremap 1 ^
 set gvimpath=/Users/justin/bin/mvim
 

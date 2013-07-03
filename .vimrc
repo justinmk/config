@@ -486,7 +486,7 @@ call unite#custom#source(
 
 " extend default ignore pattern for file_rec source
 let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] .
-    \ '\|\.\%(jpg\|gif\|png\)$'
+    \ '\|\.\%(jpg\|gif\|png\)$' .
     \ '\|Downloads\|eclipse_workspace'
 if IsWindows()
     let s:file_rec_ignore .= '\|AppData'
@@ -495,7 +495,7 @@ elseif IsMac()
 endif
 call unite#custom#source('file_rec', 'ignore_pattern', s:file_rec_ignore)
 " directory_rec copies ignore pattern from file_rec, see unite/sources/rec.vim
-" call unite#custom#source('directory_rec', 'ignore_pattern', s:dir_rec_ignore)
+call unite#custom#source('directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
 call unite#custom#source(
             \ 'file_rec/async,file_rec,file_mru', 'converters',
@@ -504,7 +504,7 @@ call unite#custom#source(
 " nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec/async:!<cr>
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
-nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec directory_rec file_mru<cr>
+nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru<cr>
 nnoremap <c-b>   :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <c-y>   :Unite -no-split -buffer-name=yank   history/yank<cr>
 
