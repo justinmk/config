@@ -1,12 +1,18 @@
+" vrapper bonus mappings:
+" gR    rename element
+" gc    toggle line-comment
+" gr    find all references
 set ignorecase
 set smartcase
 set incsearch
 set saney
 set tabstop=4
 set autochdir
-noremap ,bd :bdelete<cr>
-noremap ,w  :w<cr>
-noremap 0 $
-noremap 1 ^
+nnoremap K i<cr><esc>k$
+inoremap jj <esc>
+nnoremap ,bd :bdelete<cr>
+nnoremap ,w  :w<cr>
+nnoremap 0 $
+nnoremap 1 ^
 set gvimpath=/Users/justin/bin/mvim
 
