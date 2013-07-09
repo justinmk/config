@@ -198,6 +198,7 @@ if !IsMsysgit()
         set t_Co=256
 
         autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
+        autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
     endif
 
     if empty(&t_Co) || &t_Co > 16
@@ -205,11 +206,11 @@ if !IsMsysgit()
             " expects &runtimepath/colors/{name}.vim.
             colorscheme molokai
 
-            autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
-            " autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
+            autocmd ColorScheme * highlight Normal  ctermbg=black guibg=black
+            autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
             " autocmd ColorScheme * highlight Cursor    guifg=black guibg=LimeGreen
-            autocmd ColorScheme * highlight IncSearch guifg=black guibg=LightGoldenrod1 gui=underline
-            autocmd ColorScheme * highlight Search    guifg=black guibg=LightGoldenrod1 gui=underline
+            autocmd ColorScheme * highlight IncSearch guifg=black guibg=LightGoldenrod1
+            autocmd ColorScheme * highlight Search    guifg=black guibg=LightGoldenrod1
         else
             let g:jellybeans_use_lowcolor_black = 0
             colorscheme jellybeans
