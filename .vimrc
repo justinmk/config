@@ -193,9 +193,11 @@ if !IsMsysgit()
     "highlight the current line
     set cursorline
 
-    if IsTmux()
-        " force colors in tmux
+    if &t_Co < 256 && (IsTmux() || &term =~? 'xterm')
+        " force colors
         set t_Co=256
+
+        autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
     endif
 
     if empty(&t_Co) || &t_Co > 16
@@ -653,7 +655,7 @@ if !exists('g:netrw_list_hide')
 endif
 
 "ensure transient dirs
-let s:dir = has('win32') ? '$APPDATA/Vim' : IsMac() > -1 ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
+let s:dir = has('win32') ? '$APPDATA/Vim' : IsMac() ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
 
 if isdirectory(expand(s:dir))
   call EnsureDir(s:dir . '/swap/')
