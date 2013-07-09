@@ -46,6 +46,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " repos on github
+Bundle 'nanotech/jellybeans.vim'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -71,7 +72,9 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
 Bundle 'justinmk/vim-ipmotion'
 Bundle 'argtextobj.vim'
+Bundle 'bufkill.vim'
 Bundle 'Shougo/unite.vim'
+Bundle 'Shougo/unite-outline'
 if IsVimRecentBuildWithLua()
 Bundle 'Shougo/neocomplete.vim'
 else
@@ -162,31 +165,39 @@ set background=dark
 set showtabline=1
 
 " platform-specific settings
-if !IsMsysgit()
-    "highlight the current line
-    set cursorline
-
-    " expects &runtimepath/colors/{name}.vim.
-    colorscheme molokai
-endif
 if IsWindows()
     set gfn=Consolas:h10
 elseif IsMac()
     " Use option (alt) as meta key.
     set macmeta
 
-    if IsGui()
-        " macvim options  :view $VIM/gvimrc
-        let macvim_skip_colorscheme=1
-        let macvim_skip_cmd_opt_movement=1
+    " macvim options  :view $VIM/gvimrc
+    let macvim_skip_colorscheme=1
+    let macvim_skip_cmd_opt_movement=1
 
+    if IsGui()
         "set guifont=Monaco:h16
         set guifont=Menlo:h14
 
         let g:Powerline_symbols = 'unicode'
+    elseif IsTmux()
+        " force colors in tmux
+        set t_Co=256
     endif
 elseif IsGui() "linux or other
     set gfn=Monospace\ 10
+endif
+
+if !IsMsysgit()
+    "highlight the current line
+    set cursorline
+
+    if empty(&t_Co) || &t_Co > 16
+        " expects &runtimepath/colors/{name}.vim.
+        " colorscheme molokai
+        colorscheme jellybeans
+        let g:jellybeans_use_lowcolor_black = 0
+    endif
 endif
 
 set fileformats=unix,dos,mac
@@ -306,7 +317,7 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " Close the current buffer
-nnoremap <leader>bd :bdelete! <cr>
+nnoremap <leader>bd :BD!<cr>
 " nnoremap <leader>bd :bdelete! <bar> if exists("g:sessionowner") <bar> call SaveSession(0) <bar> endif <cr>
 
 " avoid annoying insert-mode ctrl+u behavior
@@ -316,6 +327,9 @@ inoremap <C-d> <Esc><C-d>i
 " switch to the directory of the open buffer
 nnoremap <leader>cd :cd %:p:h <bar> pwd<cr>
 
+" bufkill.vim
+let g:BufKillActionWhenBufferDisplayedInAnotherWindow = 'cancel'
+let g:BufKillVerbose = 0
 
 "==============================================================================
 " statusline
@@ -458,8 +472,7 @@ if IsWindows()
 endif
 
 let g:ctrlp_map = '<F12>'
-let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
-                        \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
+let g:ctrlp_extensions = ['tag', 'quickfix', 'rtscript']
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <c-t> :CtrlPBufTagAll<cr>
@@ -467,15 +480,14 @@ nnoremap <c-t> :CtrlPBufTagAll<cr>
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
-  \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$',
-  \ 'link': 'some_bad_symbolic_links',
-  \ }
+  \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
 
 " Unite
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 1
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
 " see unite/custom.vim
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru', 'matchers',
@@ -504,9 +516,11 @@ call unite#custom#source(
 " nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec/async:!<cr>
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
-nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru<cr>
-nnoremap <c-b>   :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
-nnoremap <c-y>   :Unite -no-split -buffer-name=yank   history/yank<cr>
+nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru<cr>
+nnoremap <c-b> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+nnoremap <c-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
+nnoremap <c-y> :Unite -no-split -buffer-name=yank history/yank<cr>
+nnoremap <c-i> :Unite -no-split -buffer-name=jump jump<cr>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
@@ -605,8 +619,8 @@ if has("autocmd")
 endif
 
 " enforce black bg, etc.
-highlight Normal ctermbg=black guibg=black 
-highlight Normal ctermfg=white guifg=white 
+" highlight Normal ctermbg=black guibg=black 
+" highlight Normal ctermfg=white guifg=white 
 
 "j,k move by screen line instead of file line
 nnoremap j gj
