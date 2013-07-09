@@ -20,6 +20,23 @@ endif
 let mapleader = ","
 let g:mapleader = ","
 
+"exists() tests whether an option exists
+"has() tests whether a feature was compiled in
+fun! IsWindows()
+    return has('win32') || has('win64')
+endf
+fun! IsMac()
+    return has('gui_macvim') || has('mac')
+endf
+fun! IsUnix()
+    return has('unix')
+endf
+fun! IsMsysgit()
+    return (has('win32') || has('win64')) && $TERM == 'cygwin'
+endf
+fun! IsTmux()
+    return !(empty($TMUX))
+endf
 fun! IsVimRecentBuildWithLua()
     return ! (!has('lua') || v:version < 703 || (v:version == 703 && !has('patch885')))
 endfun
@@ -46,7 +63,11 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " repos on github
+if IsWindows()
+Bundle 'tomasr/molokai'
+else
 Bundle 'nanotech/jellybeans.vim'
+endif
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -83,23 +104,6 @@ endif
 
 filetype plugin indent on     " required!
 
-"exists() tests whether an option exists
-"has() tests whether a feature was compiled in
-fun! IsWindows()
-    return has('win32') || has('win64')
-endf
-fun! IsMac()
-    return has('gui_macvim') || has('mac')
-endf
-fun! IsUnix()
-    return has('unix')
-endf
-fun! IsMsysgit()
-    return (has('win32') || has('win64')) && $TERM == 'cygwin'
-endf
-fun! IsTmux()
-    return !(empty($TMUX))
-endf
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -166,7 +170,7 @@ set showtabline=1
 
 " platform-specific settings
 if IsWindows()
-    set gfn=Consolas:h10
+    set guifont=Consolas:h10
 elseif IsMac()
     " Use option (alt) as meta key.
     set macmeta
@@ -180,23 +184,34 @@ elseif IsMac()
         set guifont=Menlo:h14
 
         let g:Powerline_symbols = 'unicode'
-    elseif IsTmux()
-        " force colors in tmux
-        set t_Co=256
     endif
 elseif IsGui() "linux or other
-    set gfn=Monospace\ 10
+    set guifont=Monospace\ 10
 endif
 
 if !IsMsysgit()
     "highlight the current line
     set cursorline
 
+    if IsTmux()
+        " force colors in tmux
+        set t_Co=256
+    endif
+
     if empty(&t_Co) || &t_Co > 16
-        " expects &runtimepath/colors/{name}.vim.
-        " colorscheme molokai
-        colorscheme jellybeans
-        let g:jellybeans_use_lowcolor_black = 0
+        if IsWindows()
+            " expects &runtimepath/colors/{name}.vim.
+            colorscheme molokai
+
+            autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
+            " autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
+            " autocmd ColorScheme * highlight Cursor    guifg=black guibg=LimeGreen
+            autocmd ColorScheme * highlight IncSearch guifg=black guibg=LightGoldenrod1 gui=underline
+            autocmd ColorScheme * highlight Search    guifg=black guibg=LightGoldenrod1 gui=underline
+        else
+            let g:jellybeans_use_lowcolor_black = 0
+            colorscheme jellybeans
+        endif
     endif
 endif
 
@@ -617,10 +632,6 @@ if has("autocmd")
         au GUIEnter * simalt ~x 
     endif
 endif
-
-" enforce black bg, etc.
-" highlight Normal ctermbg=black guibg=black 
-" highlight Normal ctermfg=white guifg=white 
 
 "j,k move by screen line instead of file line
 nnoremap j gj
