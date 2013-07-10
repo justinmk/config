@@ -12,6 +12,7 @@ nnoremap K i<cr><esc>k$
 inoremap jj <esc>
 nnoremap ,bd :bdelete<cr>
 nnoremap ,w  :w<cr>
+nnoremap ,v  :vim<cr>
 nnoremap 0 $
 nnoremap 1 ^
 set gvimpath=/Users/justin/bin/mvim

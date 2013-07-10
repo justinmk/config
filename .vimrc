@@ -78,9 +78,10 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-rsi'
 Bundle 'tpope/vim-unimpaired'
+Bundle 'tpope/vim-obsession'
 Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
-Bundle 'Valloric/MatchTagAlways'
+" Bundle 'Valloric/MatchTagAlways'
 " Bundle 'Valloric/YouCompleteMe'
 " Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
@@ -128,20 +129,18 @@ fun! EnsureDir(path)
         else
             exe 'silent !mkdir -p "' . l:path . '"'
         endif
-        redraw!
     endif
+    return isdirectory(a:path) 
 endfun
-
-set hidden          " Allow buffer switching even if unsaved 
-set mouse=a     	" Enable mouse usage (all modes)
-
 
 
 "==============================================================================
 " general
 "==============================================================================
-"set ttyfast
+set hidden      " Allow buffer switching even if unsaved 
+set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
+"set ttyfast
 
 set cmdheight=2 "The commandbar height
 
@@ -155,7 +154,6 @@ set hlsearch   " highlight search matches
 
 set magic " change the way backslashes are used in search patterns
 
-set showmatch " When inserting paren, jump briefly to matching one.
 set mat=5     " showmatch time (tenths of a second)
 
 " No sound on errors
@@ -163,7 +161,6 @@ set noerrorbells
 set novb t_vb=
 set tm=3000
 
-"==============================================================================
 set nonumber
 set background=dark
 set showtabline=1
@@ -336,7 +333,6 @@ nnoremap <C-l> <C-W>l
 
 " Close the current buffer
 nnoremap <leader>bd :BD!<cr>
-" nnoremap <leader>bd :bdelete! <bar> if exists("g:sessionowner") <bar> call SaveSession(0) <bar> endif <cr>
 
 " avoid annoying insert-mode ctrl+u behavior
 inoremap <C-u> <Esc><C-u>i
@@ -506,6 +502,7 @@ let g:unite_force_overwrite_statusline = 1
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
+call unite#custom#profile('files', 'filters', 'sorter_rank')
 " see unite/custom.vim
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru', 'matchers',
@@ -534,7 +531,7 @@ call unite#custom#source(
 " nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec/async:!<cr>
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
-nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru<cr>
+nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru directory_rec<cr>
 nnoremap <c-b> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <c-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
 nnoremap <c-y> :Unite -no-split -buffer-name=yank history/yank<cr>
@@ -550,72 +547,34 @@ function! s:unite_settings()
   imap <buffer> <C-k> <Plug>(unite_select_previous_line)
 endfunction
 
-" =============================================================================
-" session  http://vim.wikia.com/wiki/Go_away_and_come_back
-" =============================================================================
-
-" do *not* save global session variables/mappings/options
-set sessionoptions-=options
+" session  ====================================================================
 set sessionoptions-=globals
 set sessionoptions-=blank
-set sessionoptions-=buffers
-
 let s:sessiondir  = expand("~/.vim/sessions")
 let s:sessionfile = expand(s:sessiondir . "/session.vim")
 let s:sessionlock = expand(s:sessiondir . "/session.lock")
-
-function! SaveSession(delete_lock)
-  " use 'call' so that SaveSession() can also work in command-mode.
-  call EnsureDir(s:sessiondir)
-
-  if ! isdirectory(s:sessiondir)
-    echoerr "Failed to create session dir: " . s:sessiondir
-    return
-  endif
-
-  let b:sessionfile_bk = s:sessionfile . '.' . strftime("%Y-%m-%d") . '.bk'
-  if IsWindows()
-    if filereadable(s:sessionfile)
-      exe 'silent !copy ' . s:sessionfile . ' ' . b:sessionfile_bk
-    endif
-    if a:delete_lock
-      exe 'silent !del ' . s:sessionlock 
-    endif
-  else
-    if filereadable(s:sessionfile)
-      exe 'silent !cp ' . s:sessionfile . ' ' . b:sessionfile_bk
-    endif
-    if a:delete_lock
-      exe 'silent !rm -f ' . s:sessionlock 
-    endif
-  endif
-
-  exe "mksession! " . s:sessionfile
-endfunction
-
 function! LoadSession()
-  if filereadable(s:sessionlock)
-    echo "Session already open in another vim."
-  elseif isdirectory(s:sessiondir)
-    "write the session 'lock' file
-    exe "new | w " . s:sessionlock . " | bd"
-    
-    if filereadable(s:sessionfile)
-      "open the session
-      exe 'source ' s:sessionfile
-    else 
-      echo "Session initialized."
-    endif
-
-    "set up trigger to save on exit
-    autocmd VimLeave * :call SaveSession(1)
-  else
-    echoerr "Invalid session dir: " . s:sessiondir
+  if filereadable(s:sessionlock) " session already open in another vim
+    return 
+  elseif !isdirectory(s:sessiondir) && !EnsureDir(s:sessiondir)
+      echoerr "failed to create session dir: " . s:sessiondir 
   endif
+
+  "write the session 'lock' file
+  silent exe "new | w " . s:sessionlock . " | bd"
+  
+  if filereadable(s:sessionfile)
+    "open the session
+    exe 'source ' s:sessionfile
+  endif
+
+  exe 'Obsession '.s:sessionfile
+  "unlock the session
+  autocmd VimLeave * silent exe IsWindows() ? '!del ' . s:sessionlock : '!rm -f ' . s:sessionlock 
 endfunction
 
 
-" Auto Commands
+" auto commands ===============================================================
 if has("autocmd")
     " Jump to the last position when reopening a file
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -626,13 +585,14 @@ if has("autocmd")
     if IsGui()
         set viminfo+=% "remember buffer list
         autocmd VimEnter * nested :call LoadSession()
+        " autocmd GUIEnter * nested :call LoadSession()
     endif
 
     if IsWindows()
         " use .viminfo instead of _viminfo
         set viminfo+=n~/.viminfo
         " always maximize initial GUI window size
-        au GUIEnter * simalt ~x 
+        autocmd GUIEnter * simalt ~x 
     endif
 endif
 
