@@ -94,7 +94,6 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
 Bundle 'justinmk/vim-ipmotion'
 Bundle 'argtextobj.vim'
-Bundle 'bufkill.vim'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
 if IsVimRecentBuildWithLua()
@@ -167,6 +166,7 @@ set showtabline=1
 
 " platform-specific settings
 if IsWindows()
+    set winaltkeys=no
     set guifont=Consolas:h10
 elseif IsMac()
     " Use option (alt) as meta key.
@@ -332,7 +332,7 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " Close the current buffer
-nnoremap <leader>bd :BD!<cr>
+nnoremap <leader>bd :bdelete!<cr>
 
 " avoid annoying insert-mode ctrl+u behavior
 inoremap <C-u> <Esc><C-u>i
@@ -340,10 +340,6 @@ inoremap <C-d> <Esc><C-d>i
 
 " switch to the directory of the open buffer
 nnoremap <leader>cd :cd %:p:h <bar> pwd<cr>
-
-" bufkill.vim
-let g:BufKillActionWhenBufferDisplayedInAnotherWindow = 'cancel'
-let g:BufKillVerbose = 0
 
 "==============================================================================
 " statusline
@@ -464,6 +460,8 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 " Don't scan included files. Tags file is more performant.
 set complete-=i
+set completeopt-=preview
+set completeopt+=longest
 
 if IsVimRecentBuildWithLua()
     nnoremap <leader>neo :NeoCompleteEnable<cr>
@@ -476,9 +474,10 @@ else
 endif
 
 " =============================================================================
-" ctrlp
+" autocomplete
 " =============================================================================
-set wildignore+=*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
+set wildmode=longest:full,full
+set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 if IsWindows()
     set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
@@ -490,7 +489,6 @@ let g:ctrlp_extensions = ['tag', 'quickfix', 'rtscript']
 
 " CtrlP auto-generates exuberant ctags for the current buffer!
 nnoremap <c-t> :CtrlPBufTagAll<cr>
-
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
@@ -532,7 +530,14 @@ call unite#custom#source(
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
 nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru directory_rec<cr>
-nnoremap <c-b> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+if IsGui()
+    nnoremap <m-p> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+else
+    " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
+    " insert-mode, type ctrl-v, then press alt+<key>. This must be done in a terminal, not gvim/macvim.
+    " http://stackoverflow.com/a/10633069/152142
+    nnoremap p :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+endif
 nnoremap <c-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
 nnoremap <c-y> :Unite -no-split -buffer-name=yank history/yank<cr>
 nnoremap <c-i> :Unite -no-split -buffer-name=jump jump<cr>
