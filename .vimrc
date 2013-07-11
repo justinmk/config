@@ -136,7 +136,16 @@ endfun
 "==============================================================================
 " general
 "==============================================================================
-set hidden      " Allow buffer switching even if unsaved 
+
+" To map a 'meta' escape sequence in a terminal, you must map the literal control character.
+" insert-mode, type ctrl-v, then press alt+<key>. This must be done in a terminal, not gvim/macvim.
+" http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
+" http://stackoverflow.com/a/10633069/152142
+if !IsMsysgit() && !IsGui()
+    set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
+endif
+
+" set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
 "set ttyfast
@@ -289,8 +298,7 @@ endfunction
 " Remove the Windows ^M - when the encodings gets messed up
 nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-" Toggle paste mode
-nnoremap <leader>pp :setlocal paste! paste?<cr>
+set pastetoggle=<leader>pp
 
 " paste current dir to command line
 cno $c e <C-\>eCurrentFileDir("e")<cr>
@@ -501,6 +509,7 @@ let g:unite_force_overwrite_statusline = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#profile('files', 'filters', 'sorter_rank')
+call unite#custom#profile('files_glob', 'matchers', ['matcher_glob'])
 " see unite/custom.vim
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru', 'matchers',
@@ -529,18 +538,11 @@ call unite#custom#source(
 " nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec/async:!<cr>
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
-nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec file_mru directory_rec<cr>
-if IsGui()
-    nnoremap <m-p> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
-else
-    " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
-    " insert-mode, type ctrl-v, then press alt+<key>. This must be done in a terminal, not gvim/macvim.
-    " http://stackoverflow.com/a/10633069/152142
-    nnoremap p :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
-endif
-nnoremap <c-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
-nnoremap <c-y> :Unite -no-split -buffer-name=yank history/yank<cr>
-nnoremap <c-i> :Unite -no-split -buffer-name=jump jump<cr>
+nnoremap <c-p> :Unite -no-split -buffer-name=files      -start-insert file_rec file_mru directory_rec<cr>
+nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec file_mru directory_rec<cr>
+nnoremap <m-b> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+nnoremap <m-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
+nnoremap <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
@@ -614,7 +616,7 @@ vnoremap <F1> <ESC>
 nnoremap Q <nop>
 
 " turn off search highlighting
-nnoremap <silent> <leader>hs :noh<cr>
+nnoremap <silent> <leader>hs :nohlsearch<cr>
 
 if !exists('g:netrw_list_hide')
   let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
