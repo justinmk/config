@@ -143,6 +143,7 @@ endfun
 " http://stackoverflow.com/a/10633069/152142
 if !IsMsysgit() && !IsGui()
     set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
+    set <m-t>=t <m-l>=l
 endif
 
 " set hidden      " Allow buffer switching even if unsaved 
@@ -540,7 +541,7 @@ call unite#custom#source(
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
 nnoremap <c-p> :Unite -no-split -buffer-name=files      -start-insert file_rec file_mru directory_rec<cr>
 nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec file_mru directory_rec<cr>
-nnoremap <m-b> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+nnoremap <m-l> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <m-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
 nnoremap <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
 
