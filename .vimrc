@@ -1,5 +1,6 @@
 
-" windows builds: http://files.kaoriya.net/goto/vim73w32
+" windows builds: http://tuxproject.de/projects/vim/
+"                 http://files.kaoriya.net/vim/
 " MacVim with homebrew:
 "   brew install macvim --with-cscope --with-lua --override-system-vim
 "
@@ -22,24 +23,13 @@ let g:mapleader = ","
 
 "exists() tests whether an option exists
 "has() tests whether a feature was compiled in
-fun! IsWindows()
-    return has('win32') || has('win64')
-endf
-fun! IsMac()
-    return has('gui_macvim') || has('mac')
-endf
-fun! IsUnix()
-    return has('unix')
-endf
-fun! IsMsysgit()
-    return (has('win32') || has('win64')) && $TERM == 'cygwin'
-endf
-fun! IsTmux()
-    return !(empty($TMUX))
-endf
-fun! IsVimRecentBuildWithLua()
-    return ! (!has('lua') || v:version < 703 || (v:version == 703 && !has('patch885')))
-endfun
+let s:is_cygwin = has('win32unix')
+let s:is_windows = has('win32') || has('win64')
+let s:is_mac = has('gui_macvim') || has('mac')
+let s:is_unix = has('unix')
+let s:is_msysgit = (has('win32') || has('win64')) && $TERM == 'cygwin'
+let s:is_tmux = !(empty($TMUX))
+let s:is_vimRecentBuildWithLua = ! (!has('lua') || v:version < 703 || (v:version == 703 && !has('patch885')))
 
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
@@ -63,7 +53,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " repos on github
-if IsWindows()
+if s:is_windows
 Bundle 'tomasr/molokai'
 else
 Bundle 'nanotech/jellybeans.vim'
@@ -96,7 +86,7 @@ Bundle 'justinmk/vim-ipmotion'
 Bundle 'argtextobj.vim'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
-if IsVimRecentBuildWithLua()
+if s:is_vimRecentBuildWithLua
 Bundle 'Shougo/neocomplete.vim'
 else
 Bundle 'Shougo/neocomplcache'
@@ -123,7 +113,7 @@ endfun
 fun! EnsureDir(path)
     let l:path = expand(a:path)
     if (filewritable(l:path) != 2)
-        if IsWindows()
+        if s:is_windows
             exe 'silent !mkdir "' . l:path . '"'
         else
             exe 'silent !mkdir -p "' . l:path . '"'
@@ -141,12 +131,12 @@ endfun
 " insert-mode, type ctrl-v, then press alt+<key>. This must be done in a terminal, not gvim/macvim.
 " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
 " http://stackoverflow.com/a/10633069/152142
-if !IsMsysgit() && !IsGui()
+if !s:is_msysgit && !IsGui()
     set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
     set <m-t>=t <m-l>=l
 endif
 
-" set hidden      " Allow buffer switching even if unsaved 
+set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
 "set ttyfast
@@ -175,10 +165,10 @@ set background=dark
 set showtabline=1
 
 " platform-specific settings
-if IsWindows()
+if s:is_windows
     set winaltkeys=no
     set guifont=Consolas:h10
-elseif IsMac()
+elseif s:is_mac
     " Use option (alt) as meta key.
     set macmeta
 
@@ -196,11 +186,11 @@ elseif IsGui() "linux or other
     set guifont=Monospace\ 10
 endif
 
-if !IsMsysgit()
+if !s:is_msysgit
     "highlight the current line
     set cursorline
 
-    if &t_Co < 256 && (IsTmux() || &term =~? 'xterm')
+    if &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
         " force colors
         set t_Co=256
 
@@ -209,7 +199,7 @@ if !IsMsysgit()
     endif
 
     if empty(&t_Co) || &t_Co > 16
-        if IsWindows()
+        if s:is_windows
             " expects &runtimepath/colors/{name}.vim.
             colorscheme molokai
 
@@ -303,6 +293,7 @@ set pastetoggle=<leader>pp
 
 " paste current dir to command line
 cno $c e <C-\>eCurrentFileDir("e")<cr>
+cabbrev $f lookanabbreviation
 
 " $q is super useful when browsing on the command line
 cno $q <C-\>eDeleteTillSlash()<cr>
@@ -310,13 +301,13 @@ cno $q <C-\>eDeleteTillSlash()<cr>
 
 func! DeleteTillSlash()
   let g:cmd = getcmdline()
-  if IsWindows()
+  if s:is_windows
     let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
   else
     let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
   endif
   if g:cmd == g:cmd_edited
-    if IsWindows()
+    if s:is_windows
       let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
     else
       let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
@@ -343,13 +334,6 @@ nnoremap <C-l> <C-W>l
 " Close the current buffer
 nnoremap <leader>bd :bdelete!<cr>
 
-" avoid annoying insert-mode ctrl+u behavior
-inoremap <C-u> <Esc><C-u>i
-inoremap <C-d> <Esc><C-d>i
-
-" switch to the directory of the open buffer
-nnoremap <leader>cd :cd %:p:h <bar> pwd<cr>
-
 "==============================================================================
 " statusline
 "==============================================================================
@@ -372,6 +356,8 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " key mappings/bindings
 "==============================================================================
 "move to first non-whitespace char, instead of first column
+xnoremap 1 ^
+xnoremap 0 $
 nnoremap 1 ^
 nnoremap 0 $
 
@@ -388,8 +374,8 @@ nnoremap <leader>ss :setlocal spell!<cr>
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> mz:m+<cr>`z
 nnoremap <M-k> mz:m-2<cr>`z
-vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+xnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+xnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 "Delete trailing white space, useful for Python ;)
 func! DeleteTrailingWS()
@@ -402,18 +388,18 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 set guitablabel=%t
 
 " replay @q macro for each line of a visual selection
-vnoremap @q :normal @q<CR>
+xnoremap @q :normal @q<CR>
 " repeat last command for each line of a visual selection
-vnoremap . :normal .<CR>
+xnoremap . :normal .<CR>
 
 nnoremap <leader>a :Ack
 
 " navigate to the directory of the current file
-if IsTmux()
+if s:is_tmux
     nnoremap <leader>gf :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'<cr>
-elseif IsWindows()
+elseif s:is_windows
     nnoremap <leader>gf :silent !start explorer /select,%:p<cr>
-elseif IsMac()
+elseif s:is_mac
     nnoremap <leader>gf :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
 endif
 
@@ -445,6 +431,9 @@ nnoremap <leader>cc :botright cope<cr>
 
 " :noau speeds up vimgrep
 noremap <leader>grep :noau vimgrep // **<left><left><left><left>
+" search and replace word under cursor
+nnoremap <leader>sr :<c-u>%s/<c-r><c-w>//gc<left><left><left>
+xnoremap <leader>sr :<c-u>call <SID>VSetSearch('/')<cr>:%s/<c-r>=@/<cr>//gc<left><left><left>
 
 " makes * and # work on visual mode too.
 function! s:VSetSearch(cmdtype)
@@ -472,14 +461,20 @@ set complete-=i
 set completeopt-=preview
 set completeopt+=longest
 
-if IsVimRecentBuildWithLua()
+if s:is_vimRecentBuildWithLua
     nnoremap <leader>neo :NeoCompleteEnable<cr>
     let g:neocomplete#enable_smart_case = 1
-    "disable neocomplcache for matching buffer names
-    "let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+    if !exists('g:neocomplete#sources#omni#input_patterns')
+        let g:neocomplete#sources#omni#input_patterns = {}
+    endif
+    let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
 else
     nnoremap <leader>neo :NeoComplCacheEnable<cr>
     let g:neocomplcache_enable_smart_case = 1
+    if !exists('g:neocomplcache_sources_omni_input_patterns')
+        let g:neocomplcache_sources_omni_input_patterns = {}
+    endif
+    let g:neocomplcache_sources_omni_input_patterns.go = '[^.[:digit:] *\t]\.\w*'
 endif
 
 " =============================================================================
@@ -488,7 +483,7 @@ endif
 set wildmode=longest:full,full
 set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
-if IsWindows()
+if s:is_windows
     set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
     let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
@@ -505,55 +500,63 @@ let g:ctrlp_custom_ignore = {
 
 " Unite
 let g:unite_source_history_yank_enable = 1
-let g:unite_force_overwrite_statusline = 1
+let g:unite_force_overwrite_statusline = 0
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('files_glob', 'matchers', ['matcher_glob'])
 " see unite/custom.vim
 call unite#custom#source(
-            \ 'buffer,file_rec/async,file_rec,file_mru', 'matchers',
-            \ ['converter_tail', 'matcher_default'])
+            \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
+            \ 'matchers',
+            \ ['matcher_fuzzy'])
 call unite#custom#source(
-            \ 'file_rec/async,file_rec,file_mru', 'converters',
+            \ 'file_rec/async,file_rec,file_mru', 
+            \ 'converters',
             \ ['converter_relative_abbr', 'converter_file_directory'])
 
-" extend default ignore pattern for file_rec source
+" extend default ignore pattern for file_rec source (same as directory_rec)
 let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] .
     \ '\|\.\%(jpg\|gif\|png\)$' .
     \ '\|Downloads\|eclipse_workspace'
-if IsWindows()
+if s:is_windows
     let s:file_rec_ignore .= '\|AppData'
-elseif IsMac()
+elseif s:is_mac
     let s:file_rec_ignore .= '\|Library'
 endif
-call unite#custom#source('file_rec', 'ignore_pattern', s:file_rec_ignore)
-" directory_rec copies ignore pattern from file_rec, see unite/sources/rec.vim
-call unite#custom#source('directory_rec', 'ignore_pattern', s:file_rec_ignore)
-
-call unite#custom#source(
-            \ 'file_rec/async,file_rec,file_mru', 'converters',
-            \ ['converter_relative_abbr', 'converter_file_directory'])
+call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
 " nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec/async:!<cr>
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
-nnoremap <c-p> :Unite -no-split -buffer-name=files      -start-insert file_rec file_mru directory_rec<cr>
-nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec file_mru directory_rec<cr>
+nnoremap <c-p> :Unite -no-split -buffer-name=files      -start-insert file_rec file_mru<cr>
+" nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec file_mru<cr>
 nnoremap <m-l> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <m-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
 nnoremap <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
+nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory -start-insert -buffer-name=cd -default-action=cd<CR>
+nnoremap <leader>ps :<C-u>:Unite process -buffer-name=processes -start-insert<CR>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
   nmap <buffer> <esc> <Plug>(unite_exit)
-  imap <buffer> <F5>  <Plug>(unite_redraw)
+  " refresh the cache
   nmap <buffer> <F5>  <Plug>(unite_redraw)
+  imap <buffer> <F5>  <Plug>(unite_redraw)
+  " change directories in unite
+  nmap <buffer> <leader>cd <Plug>(unite_restart) 
+
   imap <buffer> <C-j> <Plug>(unite_select_next_line)
   imap <buffer> <C-k> <Plug>(unite_select_previous_line)
 endfunction
+
+" possible godoc solution    https://gist.github.com/mattn/569652
+"    Bundle 'thinca/vim-ref'
+"    let g:ref_use_vimproc = 1
+"    let g:ref_open = 'vsplit'
+"    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
+"    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 
 " session  ====================================================================
 set sessionoptions-=globals
@@ -578,7 +581,7 @@ function! LoadSession()
 
   exe 'Obsession '.s:sessionfile
   "unlock the session
-  autocmd VimLeave * silent exe IsWindows() ? '!del ' . s:sessionlock : '!rm -f ' . s:sessionlock 
+  autocmd VimLeave * silent exe s:is_windows ? '!del ' . s:sessionlock : '!rm -f ' . s:sessionlock 
 endfunction
 
 
@@ -596,7 +599,7 @@ if has("autocmd")
         " autocmd GUIEnter * nested :call LoadSession()
     endif
 
-    if IsWindows()
+    if s:is_windows
         " use .viminfo instead of _viminfo
         set viminfo+=n~/.viminfo
         " always maximize initial GUI window size
@@ -609,9 +612,9 @@ nnoremap j gj
 nnoremap k gk
 
 " disable F1 help key
-inoremap <F1> <ESC>
-nnoremap <F1> <ESC>
-vnoremap <F1> <ESC>
+inoremap <F1> <nop>
+nnoremap <F1> <nop>
+vnoremap <F1> <nop>
 
 " disable Ex mode shortcut
 nnoremap Q <nop>
@@ -624,7 +627,7 @@ if !exists('g:netrw_list_hide')
 endif
 
 "ensure transient dirs
-let s:dir = has('win32') ? '$APPDATA/Vim' : IsMac() ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
+let s:dir = has('win32') ? '$APPDATA/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
 
 if isdirectory(expand(s:dir))
   call EnsureDir(s:dir . '/swap/')
