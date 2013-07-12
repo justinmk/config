@@ -71,7 +71,7 @@ Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
 Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
-" Bundle 'Valloric/MatchTagAlways'
+Bundle 'Valloric/MatchTagAlways'
 " Bundle 'Valloric/YouCompleteMe'
 " Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
@@ -206,7 +206,7 @@ if !s:is_msysgit
             autocmd ColorScheme * highlight Normal  ctermbg=black guibg=black
             autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
             " autocmd ColorScheme * highlight Cursor    guifg=black guibg=LimeGreen
-            autocmd ColorScheme * highlight IncSearch guifg=black guibg=LightGoldenrod1
+            autocmd ColorScheme * highlight IncSearch guifg=LimeGreen 
             autocmd ColorScheme * highlight Search    guifg=black guibg=LightGoldenrod1
         else
             let g:jellybeans_use_lowcolor_black = 0
@@ -502,10 +502,13 @@ let g:ctrlp_custom_ignore = {
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 
-call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('files_glob', 'matchers', ['matcher_glob'])
 " see unite/custom.vim
+call unite#custom#source(
+            \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
+            \ 'sorters',
+            \ ['sorter_rank'])
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
             \ 'matchers',
