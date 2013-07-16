@@ -58,6 +58,7 @@ Bundle 'tomasr/molokai'
 else
 Bundle 'nanotech/jellybeans.vim'
 endif
+Bundle 'benmills/vimux'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
