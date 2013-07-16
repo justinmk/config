@@ -11,6 +11,7 @@
 "==============================================================================
 
 if exists('&guioptions')
+    set guitablabel=%t
     "no toolbar, no menu bar
     set guioptions-=T
     set guioptions-=m
@@ -58,7 +59,9 @@ Bundle 'tomasr/molokai'
 else
 Bundle 'nanotech/jellybeans.vim'
 endif
+if !s:is_windows
 Bundle 'benmills/vimux'
+endif
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -137,30 +140,22 @@ if !s:is_msysgit && !IsGui()
     set <m-t>=t <m-l>=l
 endif
 
+set list
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
 "set ttyfast
-
 set cmdheight=2 "The commandbar height
-
-" Set backspace config
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
-
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
-
 set magic " change the way backslashes are used in search patterns
-
 set mat=5     " showmatch time (tenths of a second)
-
-" No sound on errors
 set noerrorbells
 set novb t_vb=
 set tm=3000
-
 set nonumber
 set background=dark
 set showtabline=1
@@ -223,6 +218,7 @@ try
 catch
 endtry
 
+let g:Powerline_stl_path_style = 'short'
 
 "==============================================================================
 " text, tab and indent 
@@ -243,9 +239,6 @@ set nowrap
 "set textwidth=80
 set nofoldenable " disable folding
 
-if exists('+syntax') 
-    syntax enable "Enable syntax highlighting
-endif
 if exists('&colorcolumn')
     set colorcolumn=80 "highlight the specified column
 endif
@@ -253,6 +246,22 @@ endif
 " =============================================================================
 " util functions
 " =============================================================================
+
+func! DeleteTrailingWhitespace()
+  exe "normal mz"
+  %s/\s\+$//ge
+  exe "normal `z"
+endfunc
+
+"return the syntax highlight group under the cursor ''
+function! CurrentWordSyntaxName()
+    let name = synIDattr(synID(line('.'),col('.'),1),'name')
+    if name == ''
+        return ''
+    else
+        return '[' . name . ']'
+    endif
+endfunction
 
 " generate random number at end of current line 
 " credit: http://mo.morsi.org/blog/node/299
@@ -293,8 +302,7 @@ nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 set pastetoggle=<leader>pp
 
 " paste current dir to command line
-cno $c e <C-\>eCurrentFileDir("e")<cr>
-cabbrev $f lookanabbreviation
+cabbrev $c <c-r>=expand("%:p:h")<cr>
 
 " $q is super useful when browsing on the command line
 cno $q <C-\>eDeleteTillSlash()<cr>
@@ -317,55 +325,38 @@ func! DeleteTillSlash()
   return g:cmd_edited
 endfunc
 
-func! CurrentFileDir(cmd)
-  return a:cmd . " " . expand("%:p:h") . "/"
-endfunc
 
-
-"==============================================================================
-" tabs, buffers, windows
-"==============================================================================
-
-" move between windows
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
-
-" Close the current buffer
-nnoremap <leader>bd :bdelete!<cr>
-
-"==============================================================================
-" statusline
-"==============================================================================
-let g:Powerline_stl_path_style = 'short'
-
-
-"return the syntax highlight group under the cursor ''
-function! StatuslineCurrentHighlight()
-    let name = synIDattr(synID(line('.'),col('.'),1),'name')
-    if name == ''
-        return ''
-    else
-        return '[' . name . ']'
-    endif
-endfunction
+" abbreviations ===============================================================
 
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
 "==============================================================================
+" move between windows
+nnoremap <C-j> :wincmd j<cr>
+nnoremap <C-k> :wincmd k<cr>
+nnoremap <C-h> :wincmd h<cr>
+nnoremap <C-l> :wincmd l<cr>
+
+" Close the current buffer
+nnoremap <leader>bd :bdelete!<cr>
+
 "move to first non-whitespace char, instead of first column
 xnoremap 1 ^
-xnoremap 0 $
 nnoremap 1 ^
+"move to last character 
+xnoremap 0 $
 nnoremap 0 $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
+" delete without overwriting yank buffer
+nnoremap s "_d
 
 inoremap jj <esc>
+nnoremap <c-d> <PageDown>
+nnoremap <c-u> <PageUp>
 nnoremap <space> :
 nnoremap <leader>w :w!<cr>
 
@@ -378,22 +369,25 @@ nnoremap <M-k> mz:m-2<cr>`z
 xnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 xnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-"Delete trailing white space, useful for Python ;)
-func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
-endfunc
-autocmd BufWrite *.py :call DeleteTrailingWS()
-
-set guitablabel=%t
-
 " replay @q macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
 
-nnoremap <leader>a :Ack
+"j,k move by screen line instead of file line
+nnoremap j gj
+nnoremap k gk
+
+" disable F1 help key
+inoremap <F1> <nop>
+nnoremap <F1> <nop>
+vnoremap <F1> <nop>
+
+" disable Ex mode shortcut
+nnoremap Q <nop>
+
+" turn off search highlighting
+nnoremap <silent> <leader>hs :nohlsearch<cr>
 
 " navigate to the directory of the current file
 if s:is_tmux
@@ -406,6 +400,8 @@ endif
 
 
 " python ======================================================================
+autocmd BufWrite *.py :call DeleteTrailingWhitespace()
+
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
 
@@ -425,8 +421,23 @@ au FileType javascript inoremap <buffer> <leader>r return
 au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
 
 
+" golang ======================================================================
+" possible godoc solution    https://gist.github.com/mattn/569652
+"    Bundle 'thinca/vim-ref'
+"    let g:ref_use_vimproc = 1
+"    let g:ref_open = 'vsplit'
+"    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
+"    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
+
+autocmd BufWrite *.go :call DeleteTrailingWhitespace()
+
+" abbreviations
+au FileType go iab <buffer> ife if err != nil {<cr>log.Fatal(err)}<cr>
+au FileType go iab <buffer> ,,e if err != nil {<cr>log.Fatal(err)}<cr>
+au FileType go iab <buffer> er- if err != nil {<cr>log.Fatal(err)}<cr>
+
 "==============================================================================
-" vim grep
+" vim grep/search/replace
 "==============================================================================
 nnoremap <leader>cc :botright cope<cr>
 
@@ -450,7 +461,7 @@ xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
 " recursively vimgrep for word under cursor or selection if you hit leader-star
 nmap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
-vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
+vmap <leader>* :<C-u>call <SID>VSetSearch('/')<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
 
 " =============================================================================
 " omni complete
@@ -499,7 +510,8 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
   \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
 
-" Unite
+
+" Unite =======================================================================
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 
@@ -555,13 +567,6 @@ function! s:unite_settings()
   imap <buffer> <C-k> <Plug>(unite_select_previous_line)
 endfunction
 
-" possible godoc solution    https://gist.github.com/mattn/569652
-"    Bundle 'thinca/vim-ref'
-"    let g:ref_use_vimproc = 1
-"    let g:ref_open = 'vsplit'
-"    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
-"    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
-
 " session  ====================================================================
 set sessionoptions-=globals
 set sessionoptions-=blank
@@ -610,21 +615,6 @@ if has("autocmd")
         autocmd GUIEnter * simalt ~x 
     endif
 endif
-
-"j,k move by screen line instead of file line
-nnoremap j gj
-nnoremap k gk
-
-" disable F1 help key
-inoremap <F1> <nop>
-nnoremap <F1> <nop>
-vnoremap <F1> <nop>
-
-" disable Ex mode shortcut
-nnoremap Q <nop>
-
-" turn off search highlighting
-nnoremap <silent> <leader>hs :nohlsearch<cr>
 
 if !exists('g:netrw_list_hide')
   let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
