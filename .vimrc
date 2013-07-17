@@ -79,7 +79,6 @@ Bundle 'Valloric/MatchTagAlways'
 " Bundle 'Valloric/YouCompleteMe'
 " Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
-Bundle 'kien/ctrlp.vim'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
@@ -88,6 +87,7 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
 Bundle 'justinmk/vim-ipmotion'
 Bundle 'argtextobj.vim'
+Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
 if s:is_vimRecentBuildWithLua
@@ -497,18 +497,12 @@ set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.
 
 if s:is_windows
     set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
-    let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
+    " let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
 
-let g:ctrlp_map = '<F12>'
-let g:ctrlp_extensions = ['tag', 'quickfix', 'rtscript']
-
-" CtrlP auto-generates exuberant ctags for the current buffer!
-nnoremap <c-t> :CtrlPBufTagAll<cr>
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
-  \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
+"   \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
 
 
 " Unite =======================================================================
@@ -548,7 +542,9 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 nnoremap <c-p> :Unite -no-split -buffer-name=files      -start-insert file_rec file_mru<cr>
 " nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec file_mru<cr>
 nnoremap <m-l> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+" auto-generates exuberant ctags for the current buffer!
 nnoremap <m-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
+nnoremap <m-t> :Unite -no-split -buffer-name=tag -start-insert tag<cr>
 nnoremap <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
 nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory -start-insert -buffer-name=cd -default-action=cd<CR>
 nnoremap <leader>ps :<C-u>:Unite process -buffer-name=processes -start-insert<CR>
