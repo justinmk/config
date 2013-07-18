@@ -82,6 +82,7 @@ Bundle 'Lokaltog/vim-powerline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
+Bundle 'OrelSokolov/HiCursorWords'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
@@ -95,6 +96,7 @@ Bundle 'Shougo/neocomplete.vim'
 else
 Bundle 'Shougo/neocomplcache'
 endif
+Bundle 'justinmk/vim-syntax-extra'
 
 filetype plugin indent on     " required!
 
@@ -219,6 +221,7 @@ catch
 endtry
 
 let g:Powerline_stl_path_style = 'short'
+let g:HiCursorWords_delay = 1500
 
 "==============================================================================
 " text, tab and indent 
@@ -334,10 +337,10 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " key mappings/bindings
 "==============================================================================
 " move between windows
-nnoremap <C-j> :wincmd j<cr>
-nnoremap <C-k> :wincmd k<cr>
-nnoremap <C-h> :wincmd h<cr>
-nnoremap <C-l> :wincmd l<cr>
+nnoremap <silent> <C-j> :wincmd j<cr>
+nnoremap <silent> <C-k> :wincmd k<cr>
+nnoremap <silent> <C-h> :wincmd h<cr>
+nnoremap <silent> <C-l> :wincmd l<cr>
 
 " Close the current buffer
 nnoremap <leader>bd :bdelete!<cr>
@@ -546,8 +549,8 @@ nnoremap <m-l> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <m-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
 nnoremap <m-t> :Unite -no-split -buffer-name=tag -start-insert tag<cr>
 nnoremap <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
-nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory -start-insert -buffer-name=cd -default-action=cd<CR>
-nnoremap <leader>ps :<C-u>:Unite process -buffer-name=processes -start-insert<CR>
+nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -start-insert -buffer-name=cd -default-action=cd<CR>
+nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
