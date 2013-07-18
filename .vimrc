@@ -43,7 +43,10 @@ fun! InstallVundle()
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endfun
 
-set nocompatible               " be iMproved
+if &compatible
+    " this resets many settings, eg 'history'
+    set nocompatible               " be iMproved
+endif
 filetype off                   " required!
 
 set runtimepath+=~/.vim/bundle/vundle/
@@ -167,7 +170,7 @@ set showtabline=1
 " platform-specific settings
 if s:is_windows
     set winaltkeys=no
-    set guifont=Consolas:h10
+    set guifont=Consolas:h11
 elseif s:is_mac
     " Use option (alt) as meta key.
     set macmeta
@@ -223,7 +226,7 @@ catch
 endtry
 
 let g:Powerline_stl_path_style = 'short'
-let g:HiCursorWords_delay = 1500
+let g:HiCursorWords_delay = 1000
 
 "==============================================================================
 " text, tab and indent 
@@ -305,6 +308,8 @@ endfunction
 nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 set pastetoggle=<leader>pp
+" Paste Line: paste a word as a line
+nnoremap <leader>pl o<esc>p==
 
 " paste current dir to command line
 cabbrev $c <c-r>=expand("%:p:h")<cr>
@@ -348,18 +353,23 @@ nnoremap <silent> <C-l> :wincmd l<cr>
 nnoremap <leader>bd :call <SID>BufKill()<cr>
 
 function! <SID>BufKill()
-   let l:buffnum = bufnr("%")
-   let l:count = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+  let l:bufnum = bufnr("%")
+  let l:wins = range(1,winnr('$'))
+  let l:valid_buffers = filter(range(1, bufnr('$')), 
+              \ 'buflisted(v:val) && v:val != l:bufnum'.
+              \ ' && bufname(v:val) !~# ''\[\(unite\|Vundle\)\]''')
 
-   if l:count > 2 && buflisted(bufnr("#"))
-     buffer #
-   else
-     bnext
-   endif
+  if len(l:valid_buffers) > 2
+    if 0 <= index(l:valid_buffers, bufnr("#"))
+      buffer #
+    else
+      exe 'buffer '.l:valid_buffers[0]
+    endif
+  endif
 
-   if buflisted(l:buffnum)
-     execute("bdelete! ".l:buffnum)
-   endif
+  if buflisted(l:bufnum)
+    exe "bdelete! ".l:bufnum
+  endif
 endfunction
 
 "move to first non-whitespace char, instead of first column
@@ -572,6 +582,7 @@ nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
+  setlocal nolist
   nmap <buffer> <esc> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <F5>  <Plug>(unite_redraw)
