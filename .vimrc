@@ -73,6 +73,9 @@ Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-rsi'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
+Bundle 'tpope/vim-markdown'
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
 Bundle 'Valloric/MatchTagAlways'
@@ -96,7 +99,6 @@ Bundle 'Shougo/neocomplete.vim'
 else
 Bundle 'Shougo/neocomplcache'
 endif
-Bundle 'justinmk/vim-syntax-extra'
 
 filetype plugin indent on     " required!
 
@@ -343,7 +345,22 @@ nnoremap <silent> <C-h> :wincmd h<cr>
 nnoremap <silent> <C-l> :wincmd l<cr>
 
 " Close the current buffer
-nnoremap <leader>bd :bdelete!<cr>
+nnoremap <leader>bd :call <SID>BufKill()<cr>
+
+function! <SID>BufKill()
+   let l:buffnum = bufnr("%")
+   let l:count = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+
+   if l:count > 2 && buflisted(bufnr("#"))
+     buffer #
+   else
+     bnext
+   endif
+
+   if buflisted(l:buffnum)
+     execute("bdelete! ".l:buffnum)
+   endif
+endfunction
 
 "move to first non-whitespace char, instead of first column
 xnoremap 1 ^
