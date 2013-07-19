@@ -2,21 +2,30 @@
 " gR    rename element
 " gc    toggle line-comment
 " gr    find all references
+
+let mapleader = ","
+let g:mapleader = ","
+
 set ignorecase
 set smartcase
 set incsearch
-set saney
 set tabstop=4
-set autochdir
+
 nnoremap K i<cr><esc>k$
 inoremap jj <esc>
 nnoremap ,bd :bdelete<cr>
 nnoremap ,w  :w<cr>
-nnoremap ,v  :vim<cr>
-vnoremap 0 $
-vnoremap 1 ^
-nnoremap 0 $
-nnoremap 1 ^
+nnoremap ,d "_d
+nnoremap ,pl o<esc>p==
+nnoremap ,hs :nohlsearch<cr>
+noremap 0 $
+noremap 1 ^
+
 nnoremap <m-l> :ls<cr>
+
+"vrapper
+nnoremap ,v  :vim<cr>
+set autochdir
+set saney
 set gvimpath=/Users/justin/bin/mvim
 
