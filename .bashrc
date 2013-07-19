@@ -62,7 +62,8 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
-alias ls='ls -CF --color=auto'
+alias ls='ls -C --color=auto'
+alias l='ls -lrt --color=auto'
 alias gitk='gitk --all'
 
 #msysgit cygwin sets this, even over ssh; full cygwin sets this to 'xterm'.
