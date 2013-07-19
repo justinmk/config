@@ -356,13 +356,17 @@ nnoremap <leader>bd :call <SID>BufKill()<cr>
 
 function! <SID>BufKill()
   let l:bufnum = bufnr("%")
-  "valid 'next' buffers exclude current, Unite, Vundle
+  "valid 'next' buffers 
+  "   EXCLUDE: current, Unite, Vundle, and [buffers already open in another window in the current tab]
+  "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
-              \ 'buflisted(v:val) && v:val != l:bufnum'.
-              \ ' && bufname(v:val) !~# ''\\*unite\*\|[\(unite\|Vundle\)\]''')
+              \ '((buflisted(v:val) && "" ==# &buftype)|| "help" ==# &buftype) '.
+              \ '&& v:val != l:bufnum '.
+              \ '&& -1 == index(tabpagebuflist(), v:val) '.
+              \ '&& bufname(v:val) !~# ''\\*unite\*\|[\(unite\|Vundle\)\]''')
 
   if len(l:valid_buffers) > 1
-    if 0 <= index(l:valid_buffers, bufnr("#"))
+    if -1 != index(l:valid_buffers, bufnr("#"))
       buffer #
     else
       exe 'buffer '.l:valid_buffers[0]
