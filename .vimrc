@@ -28,7 +28,7 @@ let s:is_cygwin = has('win32unix')
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_unix = has('unix')
-let s:is_msysgit = (has('win32') || has('win64')) && $TERM == 'cygwin'
+let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !(empty($TMUX))
 let s:is_vimRecentBuildWithLua = ! (!has('lua') || v:version < 703 || (v:version == 703 && !has('patch885')))
 
@@ -44,25 +44,21 @@ fun! InstallVundle()
 endfun
 
 if &compatible
-    " this resets many settings, eg 'history'
-    set nocompatible               " be iMproved
+    " caution: this resets many settings, eg 'history'
+    set nocompatible " be iMproved
 endif
-filetype off                   " required!
+filetype off " required!
 
 set runtimepath+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-" let Vundle manage Vundle
-" required! 
+" let Vundle manage Vundle (required!)
 Bundle 'gmarik/vundle'
 
-" repos on github
 if s:is_windows
 Bundle 'tomasr/molokai'
 else
 Bundle 'nanotech/jellybeans.vim'
-endif
-if !s:is_windows
 Bundle 'benmills/vimux'
 endif
 Bundle 'thinca/vim-quickrun'
@@ -84,6 +80,7 @@ Bundle 'kana/vim-smartinput'
 Bundle 'Valloric/MatchTagAlways'
 " Bundle 'Valloric/YouCompleteMe'
 " Bundle 'Lokaltog/vim-easymotion'
+Bundle 'goldfeld/vim-seek'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
@@ -113,7 +110,7 @@ filetype plugin indent on     " required!
 "   &term  = builtin_gui //*after* vimrc but *before* gvimrc
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 fun! IsGui()
-    return has('gui_running') || strlen(&term) == 0 || &term == 'builtin_gui'
+    return has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
 endfun
 
 " 'has GUI' means vim is "gui-capable"--but we may be using gvim/macvim from within the terminal.
@@ -196,36 +193,34 @@ if !s:is_msysgit
     if &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
         " force colors
         set t_Co=256
+    endif
 
-        autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
-        autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
+    if !s:is_mac
+      autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
+      autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
     endif
 
     if empty(&t_Co) || &t_Co > 16
-        autocmd ColorScheme * highlight Visual guibg=#35322d
-
         if s:is_windows
             " expects &runtimepath/colors/{name}.vim.
             colorscheme molokai
-
-            autocmd ColorScheme * highlight Normal  ctermbg=black guibg=black
-            autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
-            " autocmd ColorScheme * highlight Cursor    guifg=black guibg=LimeGreen
-            autocmd ColorScheme * highlight IncSearch guifg=LimeGreen 
-            autocmd ColorScheme * highlight Search    guifg=black guibg=LightGoldenrod1
         else
             let g:jellybeans_use_lowcolor_black = 0
             colorscheme jellybeans
-
-            autocmd ColorScheme * highlight Cursor guibg=#0a9dff guifg=white gui=bold 
-            autocmd ColorScheme * highlight Pmenu guifg=#f8f6f2 guibg=#35322d
-            autocmd ColorScheme * highlight PmenuSel guibg=#0a9dff 
-            autocmd ColorScheme * highlight PmenuSbar guibg=#857f78
-            autocmd ColorScheme * highlight PmenuThumb guifg=#242321
-            "1c1b1a blackgravel
-            "141413 blackgravel
-            commandsÜ
         endif
+
+        autocmd ColorScheme * highlight Visual guibg=#35322d
+        autocmd ColorScheme * highlight Cursor guibg=#0a9dff guifg=white gui=bold 
+        autocmd ColorScheme * highlight Pmenu guifg=#f8f6f2 guibg=#1c1b1a 
+        autocmd ColorScheme * highlight PmenuSel guibg=#0a9dff 
+        autocmd ColorScheme * highlight PmenuSbar guibg=#857f78
+        autocmd ColorScheme * highlight PmenuThumb guifg=#242321
+        autocmd ColorScheme * highlight WildMenu gui=none guifg=#f8f6f2 guibg=#0a9dff
+        autocmd ColorScheme * highlight StatusLine gui=reverse guifg=#455354 guibg=fg
+        autocmd ColorScheme * highlight IncSearch guifg=white guibg=LimeGreen gui=bold
+        autocmd ColorScheme * highlight Search guifg=black guibg=LightGoldenrod1
+        "1c1b1a darkestgravel
+        "141413 blackgravel
     endif
 endif
 
@@ -274,12 +269,8 @@ endfunc
 
 "return the syntax highlight group under the cursor ''
 function! CurrentWordSyntaxName()
-    let name = synIDattr(synID(line('.'),col('.'),1),'name')
-    if name == ''
-        return ''
-    else
-        return '[' . name . ']'
-    endif
+    let l:name = synIDattr(synID(line('.'),col('.'),1),'name')
+    return l:name == '' ? '' : '[' . l:name . ']'
 endfunction
 
 " generate random number at end of current line 
@@ -385,16 +376,14 @@ function! <SID>BufKill()
 endfunction
 
 "move to first non-whitespace char, instead of first column
-xnoremap 1 ^
-nnoremap 1 ^
+noremap 1 ^
 "move to last character 
-xnoremap 0 $
-nnoremap 0 $
+noremap 0 $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
 " delete without overwriting yank register
-nnoremap s "_d
+noremap <leader>d "_d
 
 inoremap jj <esc>
 nnoremap <c-d> <PageDown>
@@ -421,9 +410,8 @@ nnoremap j gj
 nnoremap k gk
 
 " disable F1 help key
-inoremap <F1> <nop>
-nnoremap <F1> <nop>
-vnoremap <F1> <nop>
+noremap! <F1> <nop>
+noremap <F1> <nop>
 
 " disable Ex mode shortcut
 nnoremap Q <nop>
@@ -502,8 +490,8 @@ xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
 " recursively vimgrep for word under cursor or selection if you hit leader-star
-nmap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
-vmap <leader>* :<C-u>call <SID>VSetSearch('/')<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
+nnoremap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
+vnoremap <leader>* :<C-u>call <SID>VSetSearch('/')<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
 
 " =============================================================================
 " omni complete
@@ -595,16 +583,12 @@ nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
   setlocal nolist
-  setlocal nohlsearch
   nmap <buffer> <esc> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <F5>  <Plug>(unite_redraw)
   imap <buffer> <F5>  <Plug>(unite_redraw)
   " change directories in unite
   nmap <buffer> <leader>cd <Plug>(unite_restart) 
-
-  imap <buffer> <C-j> <Plug>(unite_select_next_line)
-  imap <buffer> <C-k> <Plug>(unite_select_previous_line)
 endfunction
 
 " session  ====================================================================
@@ -643,7 +627,7 @@ if has("autocmd")
     au VimResized * wincmd =
 
     if IsGui()
-        set viminfo+=% "remember buffer list
+        " set viminfo+=% "remember buffer list
         autocmd VimEnter * nested :call LoadSession()
         " autocmd GUIEnter * nested :call LoadSession()
     endif
