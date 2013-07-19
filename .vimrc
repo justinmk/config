@@ -193,7 +193,7 @@ if !s:is_msysgit
     "highlight the current line
     set cursorline
 
-    if &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
+    if &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
         " force colors
         set t_Co=256
 
@@ -202,6 +202,8 @@ if !s:is_msysgit
     endif
 
     if empty(&t_Co) || &t_Co > 16
+        autocmd ColorScheme * highlight Visual guibg=#35322d
+
         if s:is_windows
             " expects &runtimepath/colors/{name}.vim.
             colorscheme molokai
@@ -214,6 +216,15 @@ if !s:is_msysgit
         else
             let g:jellybeans_use_lowcolor_black = 0
             colorscheme jellybeans
+
+            autocmd ColorScheme * highlight Cursor guibg=#0a9dff guifg=white gui=bold 
+            autocmd ColorScheme * highlight Pmenu guifg=#f8f6f2 guibg=#35322d
+            autocmd ColorScheme * highlight PmenuSel guibg=#0a9dff 
+            autocmd ColorScheme * highlight PmenuSbar guibg=#857f78
+            autocmd ColorScheme * highlight PmenuThumb guifg=#242321
+            "1c1b1a blackgravel
+            "141413 blackgravel
+            commandsÜ
         endif
     endif
 endif
@@ -234,8 +245,8 @@ let g:HiCursorWords_delay = 1000
 set formatoptions+=rn1
 
 set expandtab
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
 set linebreak "wrap long lines at 'breakat' character
@@ -354,12 +365,12 @@ nnoremap <leader>bd :call <SID>BufKill()<cr>
 
 function! <SID>BufKill()
   let l:bufnum = bufnr("%")
-  let l:wins = range(1,winnr('$'))
+  "valid 'next' buffers exclude current, Unite, Vundle
   let l:valid_buffers = filter(range(1, bufnr('$')), 
               \ 'buflisted(v:val) && v:val != l:bufnum'.
-              \ ' && bufname(v:val) !~# ''\[\(unite\|Vundle\)\]''')
+              \ ' && bufname(v:val) !~# ''\\*unite\*\|[\(unite\|Vundle\)\]''')
 
-  if len(l:valid_buffers) > 2
+  if len(l:valid_buffers) > 1
     if 0 <= index(l:valid_buffers, bufnr("#"))
       buffer #
     else
@@ -367,8 +378,9 @@ function! <SID>BufKill()
     endif
   endif
 
-  if buflisted(l:bufnum)
-    exe "bdelete! ".l:bufnum
+  let l:is_in_another_win = l:bufnum != bufnr("%") && -1 < bufwinnr(l:bufnum)
+  if !l:is_in_another_win && buflisted(l:bufnum)
+    exe 'bdelete! '.l:bufnum
   endif
 endfunction
 
@@ -381,7 +393,7 @@ nnoremap 0 $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
-" delete without overwriting yank buffer
+" delete without overwriting yank register
 nnoremap s "_d
 
 inoremap jj <esc>
@@ -522,7 +534,7 @@ endif
 " =============================================================================
 " autocomplete
 " =============================================================================
-set wildmode=longest:full,full
+set wildmode=full
 set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
 if s:is_windows
@@ -568,9 +580,9 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 
 " nnoremap <c-p> :Unite -no-split -buffer-name=files  -start-insert file_rec/async:!<cr>
 " search hidden directories:
-" nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. file_mru<cr>
-nnoremap <c-p> :Unite -no-split -buffer-name=files      -start-insert file_rec file_mru<cr>
-" nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec file_mru<cr>
+" nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. <cr>
+nnoremap <c-p> :Unite -no-split -buffer-name=files -start-insert file_mru file_rec <cr>
+" nnoremap <m-p> :Unite -no-split -buffer-name=files_glob -start-insert file_rec <cr>
 nnoremap <m-l> :Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 " auto-generates exuberant ctags for the current buffer!
 nnoremap <m-o> :Unite -no-split -buffer-name=outline -start-insert outline<cr>
@@ -583,6 +595,7 @@ nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
   setlocal nolist
+  setlocal nohlsearch
   nmap <buffer> <esc> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <F5>  <Plug>(unite_redraw)
