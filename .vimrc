@@ -77,6 +77,8 @@ Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
+Bundle 'kana/vim-textobj-user'
+Bundle 'kana/vim-textobj-indent'
 Bundle 'Valloric/MatchTagAlways'
 " Bundle 'Valloric/YouCompleteMe'
 " Bundle 'Lokaltog/vim-easymotion'
@@ -388,6 +390,7 @@ noremap 0 $
 nnoremap K i<cr><esc>k$
 " delete without overwriting yank register
 noremap <leader>d "_d
+nnoremap <leader>D "_D
 
 inoremap jj <esc>
 nnoremap <c-d> <PageDown>
