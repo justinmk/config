@@ -3,9 +3,6 @@
 " gc    toggle line-comment
 " gr    find all references
 
-let mapleader = ","
-let g:mapleader = ","
-
 set ignorecase
 set smartcase
 set incsearch
@@ -15,7 +12,8 @@ nnoremap K i<cr><esc>k$
 inoremap jj <esc>
 nnoremap ,bd :bdelete<cr>
 nnoremap ,w  :w<cr>
-nnoremap ,d "_d
+noremap ,d "_d
+nnoremap ,D "_D
 nnoremap ,pl o<esc>p==
 nnoremap ,hs :nohlsearch<cr>
 noremap 0 $

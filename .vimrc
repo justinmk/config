@@ -246,6 +246,8 @@ set tabstop=2
 set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
+autocmd FileType text setlocal tabstop=4 shiftwidth=4
+
 set linebreak "wrap long lines at 'breakat' character
 set textwidth=500
 
