@@ -80,9 +80,8 @@ Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
+Bundle 'gaving/vim-textobj-argument'
 Bundle 'Valloric/MatchTagAlways'
-" Bundle 'Valloric/YouCompleteMe'
-" Bundle 'Lokaltog/vim-easymotion'
 Bundle 'goldfeld/vim-seek'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'PProvost/vim-ps1'
@@ -93,7 +92,6 @@ Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
 Bundle 'justinmk/vim-ipmotion'
-Bundle 'argtextobj.vim'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
@@ -200,7 +198,7 @@ if !s:is_msysgit
 
     if !s:is_mac
       autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
-      autocmd ColorScheme * highlight NonText ctermbg=black guibg=black
+            \ | highlight NonText ctermbg=black guibg=black
     endif
 
     if empty(&t_Co) || &t_Co > 16
@@ -213,15 +211,15 @@ if !s:is_msysgit
         endif
 
         autocmd ColorScheme * highlight Visual guibg=#35322d
-        autocmd ColorScheme * highlight Cursor guibg=#0a9dff guifg=white gui=bold 
-        autocmd ColorScheme * highlight Pmenu guifg=#f8f6f2 guibg=#1c1b1a 
-        autocmd ColorScheme * highlight PmenuSel guibg=#0a9dff 
-        autocmd ColorScheme * highlight PmenuSbar guibg=#857f78
-        autocmd ColorScheme * highlight PmenuThumb guifg=#242321
-        autocmd ColorScheme * highlight WildMenu gui=none guifg=#f8f6f2 guibg=#0a9dff
-        autocmd ColorScheme * highlight StatusLine gui=reverse guifg=#455354 guibg=fg
-        autocmd ColorScheme * highlight IncSearch guifg=white guibg=LimeGreen gui=bold
-        autocmd ColorScheme * highlight Search guifg=black guibg=LightGoldenrod1 gui=none
+              \ | highlight Cursor guibg=#0a9dff guifg=white gui=bold 
+              \ | highlight Pmenu guifg=#f8f6f2 guibg=#1c1b1a 
+              \ | highlight PmenuSel guibg=#0a9dff 
+              \ | highlight PmenuSbar guibg=#857f78
+              \ | highlight PmenuThumb guifg=#242321
+              \ | highlight WildMenu gui=none guifg=#f8f6f2 guibg=#0a9dff
+              \ | highlight StatusLine gui=reverse guifg=#455354 guibg=fg
+              \ | highlight IncSearch guifg=white guibg=LimeGreen gui=bold
+              \ | highlight Search guifg=black guibg=LightGoldenrod1 gui=none
         "1c1b1a darkestgravel
         "141413 blackgravel
     endif
@@ -380,7 +378,8 @@ function! <SID>BufKill()
 
   let l:is_in_another_win = l:bufnum != bufnr("%") && -1 < bufwinnr(l:bufnum)
   if !l:is_in_another_win && buflisted(l:bufnum)
-    exe 'bdelete! '.l:bufnum
+    " obliterate the buffer and all of its related state (marks, local options, ...).
+    exe 'bwipeout! '.l:bufnum
   endif
 endfunction
 
@@ -479,7 +478,10 @@ au FileType go iab <buffer> er- if err != nil {<cr>log.Fatal(err)}<cr>
 "==============================================================================
 " vim grep/search/replace
 "==============================================================================
-nnoremap <leader>cc :botright cope<cr>
+nnoremap <leader>cc :botright copen<cr>
+"toggle quickfix window
+autocmd BufReadPost quickfix map <buffer> <leader>cc :cclose<cr>
+autocmd BufReadPost quickfix map <buffer> <c-p> <up> 
 
 " :noau speeds up vimgrep
 noremap <leader>grep :noau vimgrep // **<left><left><left><left>
@@ -487,6 +489,7 @@ noremap <leader>grep :noau vimgrep // **<left><left><left><left>
 nnoremap <leader>sr :<c-u>%s/<c-r><c-w>//gc<left><left><left>
 xnoremap <leader>sr :<c-u>call <SID>VSetSearch('/')<cr>:%s/<c-r>=@/<cr>//gc<left><left><left>
 
+" https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.
 function! s:VSetSearch(cmdtype)
   let temp = @s
@@ -593,12 +596,12 @@ nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
   setlocal nolist nopaste
-  nmap <buffer> <esc> <Plug>(unite_exit)
+  nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
   " refresh the cache
-  nmap <buffer> <F5>  <Plug>(unite_redraw)
-  imap <buffer> <F5>  <Plug>(unite_redraw)
+  nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
+  imap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   " change directories in unite
-  nmap <buffer> <leader>cd <Plug>(unite_restart) 
+  nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart) 
 endfunction
 
 " session  ====================================================================
@@ -650,9 +653,9 @@ if has("autocmd")
     endif
 endif
 
-if !exists('g:netrw_list_hide')
-  let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
-endif
+" tree view
+let g:netrw_liststyle = 3
+let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
 let s:dir = has('win32') ? '$APPDATA/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
