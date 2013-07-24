@@ -2,7 +2,8 @@
 " windows builds: http://tuxproject.de/projects/vim/
 "                 http://files.kaoriya.net/vim/
 " MacVim with homebrew:
-"   brew install macvim --with-cscope --with-lua --override-system-vim
+"   brew install macvim --with-cscope --with-lua --HEAD --override-system-vim
+"   brew linkapps --system
 "
 
 " If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
@@ -220,7 +221,7 @@ if !s:is_msysgit
         autocmd ColorScheme * highlight WildMenu gui=none guifg=#f8f6f2 guibg=#0a9dff
         autocmd ColorScheme * highlight StatusLine gui=reverse guifg=#455354 guibg=fg
         autocmd ColorScheme * highlight IncSearch guifg=white guibg=LimeGreen gui=bold
-        autocmd ColorScheme * highlight Search guifg=black guibg=LightGoldenrod1
+        autocmd ColorScheme * highlight Search guifg=black guibg=LightGoldenrod1 gui=none
         "1c1b1a darkestgravel
         "141413 blackgravel
     endif
@@ -265,7 +266,7 @@ endif
 " util functions
 " =============================================================================
 
-func! DeleteTrailingWhitespace()
+func! TrimTrailingWhitespace()
   exe "normal mz"
   %s/\s\+$//ge
   exe "normal `z"
@@ -311,7 +312,7 @@ endfunction
 " normal mode
 " =============================================================================
 " Remove the Windows ^M - when the encodings gets messed up
-nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+" nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 set pastetoggle=<leader>pp
 " Paste Line: paste a word as a line
@@ -439,7 +440,7 @@ endif
 
 
 " python ======================================================================
-autocmd BufWrite *.py :call DeleteTrailingWhitespace()
+autocmd BufWrite *.py :call TrimTrailingWhitespace()
 
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
@@ -468,7 +469,7 @@ au FileType javascript inoremap <buffer> $f //--- PH ---------------------------
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
 "    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 
-autocmd BufWrite *.go :call DeleteTrailingWhitespace()
+autocmd BufWrite *.go :call TrimTrailingWhitespace()
 
 " abbreviations
 au FileType go iab <buffer> ife if err != nil {<cr>log.Fatal(err)}<cr>
@@ -591,7 +592,7 @@ nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
-  setlocal nolist
+  setlocal nolist nopaste
   nmap <buffer> <esc> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <F5>  <Plug>(unite_redraw)
