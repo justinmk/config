@@ -1,5 +1,3 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -13,10 +11,6 @@ shopt -s histappend
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
 
-if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
-    umask 0077
-fi
-
 #disable ctrl-s scroll-lock
 if [ -x stty ] ; then stty -ixon ; fi
 
@@ -28,9 +22,7 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
 fi                                 
 
 # Set PATH so it includes user's private bin if it exists                       
-if [ -d "${HOME}/bin" ] ; then                                                
-  PATH=${HOME}/bin:${PATH}                                                    
-fi   
+[ -d "${HOME}/bin" ] && PATH=${HOME}/bin:${PATH}
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -63,7 +55,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias ls='ls -C --color=auto'
-alias l='ls -lrt --color=auto'
+alias l='ls -lrt'
 alias gitk='gitk --all'
 
 #msysgit cygwin sets this, even over ssh; full cygwin sets this to 'xterm'.
@@ -109,27 +101,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # enable programmable completion 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
-fi
-
-[[ -d "$HOME/opt/gwt" ]] && PATH=$PATH:$HOME/opt/gwt
-
-# golang root
-[[ -d "/usr/local/go" ]] && export GOROOT=/usr/local/go && PATH=$PATH:$GOROOT/bin  
-# golang workspace / package directory 
-[[ -d "$HOME/dev/go" ]] && export GOPATH=$HOME/dev/go && PATH=$PATH:$GOPATH/bin 
-# Writing, building, installing, and testing Go code:
-#   http://www.youtube.com/watch?v=XCsL89YtqCs
-#
-# create package source in $GOPATH/src/foo/bar/qux.go
-#   $ go install qux
-#   edit some other module, example.go: 
-#       import "foo/bar"
-#   $ go build example.go  
-# 
-
-#local settings
-if [ -f "${HOME}/.bashrcx" ]; then
-  . "${HOME}/.bashrcx"
 fi
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

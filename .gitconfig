@@ -1,6 +1,7 @@
 [alias]
-    l = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-    d = diff --stat --color
+  l = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  d = diff --stat --color
+  co = checkout
 [advice]
-	statusHints = false
+  statusHints = false
 
