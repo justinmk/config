@@ -253,7 +253,6 @@ set textwidth=500
 set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
 set smartindent
 set nowrap 
-"set textwidth=80
 set nofoldenable " disable folding
 
 if exists('&colorcolumn')
@@ -450,14 +449,12 @@ au BufNewFile,BufRead *.mako set ft=mako
 au FileType python inoremap <buffer> $r return 
 au FileType python inoremap <buffer> $i import 
 au FileType python inoremap <buffer> $p print 
-au FileType python inoremap <buffer> $f #--- PH ----------------------------------------------<esc>FP2xi
 
 
 " javascript ==================================================================
 au FileType javascript setl nocindent
 au FileType javascript inoremap <c-a> alert();<esc>hi
 au FileType javascript inoremap <buffer> <leader>r return 
-au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
 
 
 " golang ======================================================================
@@ -468,7 +465,8 @@ au FileType javascript inoremap <buffer> $f //--- PH ---------------------------
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
 "    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 
-autocmd BufWrite *.go :call TrimTrailingWhitespace()
+autocmd BufWrite *.go if exists("$GOPATH") | exe "Fmt" | else | call TrimTrailingWhitespace() | endif
+autocmd FileType go setlocal tabstop=4 shiftwidth=2 noexpandtab copyindent softtabstop=0
 
 " abbreviations
 au FileType go iab <buffer> ife if err != nil {<cr>log.Fatal(err)}<cr>
