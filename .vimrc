@@ -5,7 +5,6 @@
 "   brew install macvim --with-cscope --with-lua --HEAD --override-system-vim
 "   brew linkapps --system
 "
-
 " If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
 "    set runtimepath+=/path/to/.vim
 "    source /path/to/.vimrc
@@ -62,6 +61,7 @@ else
 Bundle 'nanotech/jellybeans.vim'
 Bundle 'benmills/vimux'
 endif
+Bundle 'sjl/clam.vim'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -142,7 +142,7 @@ endfun
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !IsGui()
     set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
-    set <m-t>=t <m-l>=l
+          \ <m-t>=t <m-l>=l
 endif
 
 set list
@@ -239,6 +239,8 @@ let g:HiCursorWords_delay = 1000
 " text, tab and indent 
 "==============================================================================
 set formatoptions+=rn1
+" don't syntax-highlight long lines
+set synmaxcol=300
 
 set expandtab
 set tabstop=2
@@ -362,13 +364,13 @@ function! <SID>BufKill()
   "   EXCLUDE: current, Unite, Vundle, and [buffers already open in another window in the current tab]
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
-              \ '((buflisted(v:val) && "" ==# &buftype)|| "help" ==# &buftype) '.
+              \ 'buflisted(v:val) && "" ==# &buftype '.
               \ '&& v:val != l:bufnum '.
               \ '&& -1 == index(tabpagebuflist(), v:val) '.
               \ '&& bufname(v:val) !~# ''\\*unite\*\|[\(unite\|Vundle\)\]''')
 
-  if len(l:valid_buffers) > 1
-    if -1 != index(l:valid_buffers, bufnr("#"))
+  if len(l:valid_buffers) > 0
+    if -1 != index(l:valid_buffers, bufnr("#")) || 'help' ==# &buftype
       buffer #
     else
       exe 'buffer '.l:valid_buffers[0]
@@ -517,17 +519,16 @@ set completeopt+=longest
 if s:is_vimRecentBuildWithLua
     nnoremap <leader>neo :NeoCompleteEnable<cr>
     let g:neocomplete#enable_smart_case = 1
+    if !exists('g:neocomplete#force_omni_input_patterns')
+        let g:neocomplete#force_omni_input_patterns = {}
+    endif
     if !exists('g:neocomplete#sources#omni#input_patterns')
         let g:neocomplete#sources#omni#input_patterns = {}
     endif
     let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
+    let g:neocomplete#force_omni_input_patterns.go = '[^.[:digit:] *\t]\.\w*'
 else
     nnoremap <leader>neo :NeoComplCacheEnable<cr>
-    let g:neocomplcache_enable_smart_case = 1
-    if !exists('g:neocomplcache_sources_omni_input_patterns')
-        let g:neocomplcache_sources_omni_input_patterns = {}
-    endif
-    let g:neocomplcache_sources_omni_input_patterns.go = '[^.[:digit:] *\t]\.\w*'
 endif
 
 " =============================================================================
