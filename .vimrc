@@ -95,11 +95,12 @@ Bundle 'Lokaltog/vim-powerline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
-Bundle 'OrelSokolov/HiCursorWords'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
 Bundle 'justinmk/vim-ipmotion'
+Bundle 'xolox/vim-misc'
+Bundle 'xolox/vim-easytags'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
@@ -224,7 +225,6 @@ catch
 endtry
 
 let g:Powerline_stl_path_style = 'short'
-let g:HiCursorWords_delay = 1000
 
 "==============================================================================
 " text, tab and indent 
@@ -246,7 +246,6 @@ set textwidth=500
 set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
 set smartindent
 set nowrap 
-set nofoldenable " disable folding
 
 if exists('&colorcolumn')
     set colorcolumn=80 "highlight the specified column
@@ -267,6 +266,59 @@ function! CurrentWordSyntaxName()
     let l:name = synIDattr(synID(line('.'),col('.'),1),'name')
     return l:name == '' ? '' : '[' . l:name . ']'
 endfunction
+
+" HiCursorWords "{{{
+exec ((s:is_gui || &t_Co > 16) ? 'autocmd ColorScheme * ' : '') . 'highlight WordUnderTheCursor guifg=black guibg=white ctermfg=black ctermbg=white' 
+
+function! s:HiCursorWords__getHiName(linenum, colnum)
+  let hiname = synIDattr(synID(a:linenum, a:colnum, 0), "name")
+  let hiname = s:HiCursorWords__resolveHiName(hiname)
+  return hiname
+endfunction
+
+function! s:HiCursorWords__resolveHiName(hiname)
+  redir => resolved
+  silent execute 'highlight ' . a:hiname
+  redir END
+
+  if stridx(resolved, 'links to') == -1
+    return a:hiname
+  endif
+
+  return substitute(resolved, '\v(.*) links to ([^ ]+).*$', '\2', '')
+endfunction
+
+function! s:HiCursorWords__getWordUnderTheCursor(linestr, linenum, colnum)
+  "let word = substitute(a:linestr, '.*\(\<\k\{-}\%' . a:colnum . 'c\k\{-}\>\).*', '\1', '') "expand('<word>')
+  let word = matchstr(a:linestr, '\k*\%' . a:colnum . 'c\k\+')
+  if word == ''
+    return ''
+  endif
+  return '\V\<' . word . '\>'
+endfunction
+
+let s:HiCursorWords_hiGroupRegexp = ''
+function! s:HiCursorWords__execute()
+  if exists("w:HiCursorWords__matchId")
+    call matchdelete(w:HiCursorWords__matchId)
+    unlet w:HiCursorWords__matchId
+  endif
+
+  let linestr = getline('.')
+  let linenum = line('.')
+  let colnum = col('.')
+
+  "debug
+  "echo s:HiCursorWords__getHiName(linenum, colnum)
+
+  let word = s:HiCursorWords__getWordUnderTheCursor(linestr, linenum, colnum)
+  if strlen(word) != 0
+    if match(s:HiCursorWords__getHiName(linenum, colnum), s:HiCursorWords_hiGroupRegexp) == -1
+      return
+    endif
+    let w:HiCursorWords__matchId = matchadd('WordUnderTheCursor', word, 0)
+  endif
+endfunction " }}}
 
 " generate random number at end of current line 
 " credit: http://mo.morsi.org/blog/node/299
@@ -421,6 +473,8 @@ nnoremap Q <nop>
 
 " turn off search highlighting
 nnoremap <silent> <leader>hs :nohlsearch<cr>
+" highlight current word
+nnoremap <silent> <leader>hw :call <sid>HiCursorWords__execute()<cr>
 
 " navigate to the directory of the current file
 if s:is_tmux
@@ -500,7 +554,7 @@ nnoremap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("
 vnoremap <leader>* :<C-u>call <SID>VSetSearch('/')<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
 
 " =============================================================================
-" omni complete
+" autocomplete / omnicomplete / tags
 " =============================================================================
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
@@ -524,9 +578,6 @@ else
     nnoremap <leader>neo :NeoComplCacheEnable<cr>
 endif
 
-" =============================================================================
-" autocomplete
-" =============================================================================
 set wildmode=full
 set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe
 
@@ -539,6 +590,10 @@ endif
 "   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
 "   \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
 
+" important!: semicolon means 'walk up until tags/ is found'
+set tags=./tags;,tags;
+let g:easytags_auto_highlight = 0
+let g:easytags_dynamic_files = 1
 
 " Unite =======================================================================
 let g:unite_source_history_yank_enable = 1
@@ -646,7 +701,7 @@ if has("autocmd")
 endif
 
 " tree view
-let g:netrw_liststyle = 3
+" let g:netrw_liststyle = 3
 let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
@@ -671,5 +726,4 @@ if isdirectory(expand(s:dir))
     set undofile
   endif
 endif
-
 
