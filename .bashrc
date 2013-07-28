@@ -1,5 +1,38 @@
-# If not running interactively, don't do anything
+# Environment variables (non-bash-specific; bash-specific commands follow below)
+# Darwin, Debian, Cygwin, and MSYS have differing behavior:
+#   - Darwin (and MacVim) runs a login shell every time (sources .bash_profile)
+#   - MSYSGIT bash sources .bashrc _then_ .bash_profile (wtf?)
+#   - Cygwin runs a login shell every time (sources .bash_profile)
+#   - Debian/Ubuntu sources .bash_profile on login; thereafter only .bashrc
+# =============================================================================
+
+if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
+    umask 0077
+fi
+[ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
+
+# golang root
+[ -d "/usr/local/go" ] && export GOROOT=/usr/local/go && PATH=$PATH:$GOROOT/bin  
+# golang workspace / package
+[ -d "$HOME/dev/go" ] && export GOPATH=$HOME/dev/go && PATH=$PATH:$GOPATH/bin 
+# Writing, building, installing, and testing Go code:
+#   http://www.youtube.com/watch?v=XCsL89YtqCs
+#
+# create package source in $GOPATH/src/foo/bar/qux.go
+#   $ go install qux
+#   edit some other module, example.go: 
+#       import "foo/bar"
+#   $ go build example.go  
+# 
+
+# do not continue if we are not in a bash shell
+[ -z "$BASH_VERSION" ] && return
+# do not continue if we are not running interactively
 [ -z "$PS1" ] && return
+
+# =============================================================================
+# Bash-specific commands
+# =============================================================================
 
 # HIST* are bash-only variables, not environmental variables, so do not 'export'
 HISTCONTROL=erasedups
@@ -78,29 +111,31 @@ if [[ `uname` == 'Darwin' ]]; then
 
     #BSD-style aliases 
     alias ls='ls -GC'
-
-    alias su='echo "***REMINDER: verify umask" && su'
+    alias su='echo "***REMINDER: verify umask" && su -l'
     
-    # Display ASCII control characters using caret notation in standard text views
-    # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
-    defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
+    if [[ 0 == `defaults read com.apple.finder DisableAllAnimations` ]] ; then
+      # Display ASCII control characters using caret notation in standard text views
+      # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
+      defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 
-    defaults write com.apple.finder DisableAllAnimations -bool true
+      defaults write com.apple.finder DisableAllAnimations -bool true
 
-    # Display full POSIX path as Finder window title
-    defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+      # Display full POSIX path as Finder window title
+      defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
-    # Avoid creating .DS_Store files on network volumes
-    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+      # Avoid creating .DS_Store files on network volumes
+      defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+    fi
 fi
 
 # Add an "alert" alias for long running commands. eg:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# enable programmable completion 
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
+if command -v brew > /dev/null 2>&1 && [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+  . /etc/bash_completion
 fi
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

@@ -32,6 +32,14 @@ let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !(empty($TMUX))
 let s:is_vimRecentBuildWithLua = ! (!has('lua') || v:version < 703 || (v:version == 703 && !has('patch885')))
 
+" 'is GUI' means vim is _not_ running within the terminal.
+" sample values:
+"   &term  = win32 //vimrc running in msysgit terminal
+"   $TERM  = xterm-color , cygwin
+"   &term  = builtin_gui //*after* vimrc but *before* gvimrc
+"   &shell = C:\Windows\system32\cmd.exe , /bin/bash
+let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
+
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
 "==============================================================================
@@ -104,21 +112,6 @@ endif
 filetype plugin indent on     " required!
 
 
-" 'is GUI' means vim is _not_ running within the terminal.
-" sample values:
-"   &term  = win32 //vimrc running in msysgit terminal
-"   $TERM  = xterm-color , cygwin
-"   &term  = builtin_gui //*after* vimrc but *before* gvimrc
-"   &shell = C:\Windows\system32\cmd.exe , /bin/bash
-fun! IsGui()
-    return has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
-endfun
-
-" 'has GUI' means vim is "gui-capable"--but we may be using gvim/macvim from within the terminal.
-fun! HasGui()
-    return has('gui')
-endfun
-
 fun! EnsureDir(path)
     let l:path = expand(a:path)
     if (filewritable(l:path) != 2)
@@ -137,10 +130,10 @@ endfun
 "==============================================================================
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
-" insert-mode, type ctrl-v, then press alt+<key>. This must be done in a terminal, not gvim/macvim.
+" insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
 " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
 " http://stackoverflow.com/a/10633069/152142
-if !s:is_msysgit && !IsGui()
+if !s:is_msysgit && !s:is_gui
     set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
           \ <m-t>=t <m-l>=l
 endif
@@ -177,13 +170,13 @@ elseif s:is_mac
     let macvim_skip_colorscheme=1
     let macvim_skip_cmd_opt_movement=1
 
-    if IsGui()
+    if s:is_gui
         "set guifont=Monaco:h16
         set guifont=Menlo:h14
 
         let g:Powerline_symbols = 'unicode'
     endif
-elseif IsGui() "linux or other
+elseif s:is_gui "linux or other
     set guifont=Monospace\ 10
 endif
 
@@ -201,7 +194,7 @@ if !s:is_msysgit
             \ | highlight NonText ctermbg=black guibg=black
     endif
 
-    if empty(&t_Co) || &t_Co > 16
+    if s:is_gui || &t_Co > 16
         if s:is_windows
             " expects &runtimepath/colors/{name}.vim.
             colorscheme molokai
@@ -211,15 +204,13 @@ if !s:is_msysgit
         endif
 
         autocmd ColorScheme * highlight Visual guibg=#35322d
-              \ | highlight Cursor guibg=#0a9dff guifg=white gui=bold 
-              \ | highlight Pmenu guifg=#f8f6f2 guibg=#1c1b1a 
-              \ | highlight PmenuSel guibg=#0a9dff 
+              \ | highlight Cursor guibg=#0a9dff guifg=white gui=bold ctermfg=black
+              \ | highlight PmenuSel guibg=#0a9dff ctermbg=39
               \ | highlight PmenuSbar guibg=#857f78
               \ | highlight PmenuThumb guifg=#242321
-              \ | highlight WildMenu gui=none guifg=#f8f6f2 guibg=#0a9dff
-              \ | highlight StatusLine gui=reverse guifg=#455354 guibg=fg
-              \ | highlight IncSearch guifg=white guibg=LimeGreen gui=bold
-              \ | highlight Search guifg=black guibg=LightGoldenrod1 gui=none
+              \ | highlight WildMenu gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
+              \ | highlight IncSearch guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
+              \ | highlight Search guifg=black guibg=LightGoldenrod1 ctermfg=black ctermbg=227 gui=none cterm=NONE
         "1c1b1a darkestgravel
         "141413 blackgravel
     endif
@@ -312,6 +303,8 @@ endfunction
 " =============================================================================
 " Remove the Windows ^M - when the encodings gets messed up
 " nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+nnoremap <leader><leader>wr :setlocal wrap!<cr>
 
 set pastetoggle=<leader>pp
 " Paste Line: paste a word as a line
@@ -638,7 +631,7 @@ if has("autocmd")
     " force windows to be sized equally after viewport resize
     au VimResized * wincmd =
 
-    if IsGui()
+    if s:is_gui
         " set viminfo+=% "remember buffer list
         autocmd VimEnter * nested :call LoadSession()
         " autocmd GUIEnter * nested :call LoadSession()
