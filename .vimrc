@@ -82,7 +82,7 @@ Bundle 'tpope/vim-rsi'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
-Bundle 'tpope/vim-endwise'
+" Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
@@ -158,6 +158,7 @@ set tm=3000
 set nonumber
 set background=dark
 set showtabline=1
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 
 " platform-specific settings
 if s:is_windows
@@ -205,7 +206,7 @@ if !s:is_msysgit
         endif
 
         autocmd ColorScheme * highlight Visual guibg=#35322d
-              \ | highlight Cursor guibg=#0a9dff guifg=white gui=bold ctermfg=black
+              \ | highlight Cursor guibg=#0a9dff guifg=white gui=NONE ctermfg=black
               \ | highlight PmenuSel guibg=#0a9dff ctermbg=39
               \ | highlight PmenuSbar guibg=#857f78
               \ | highlight PmenuThumb guifg=#242321
@@ -583,6 +584,7 @@ set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.
 
 if s:is_windows
     set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
+    " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
     " let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
 endif
 
