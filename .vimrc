@@ -159,6 +159,7 @@ set nonumber
 set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set virtualedit=block "Allow virtual editing in Visual block mode.
 
 " platform-specific settings
 if s:is_windows
