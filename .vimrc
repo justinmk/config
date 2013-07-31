@@ -159,6 +159,7 @@ set nonumber
 set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set foldmethod=marker
 
 " platform-specific settings
 if s:is_windows
@@ -257,9 +258,9 @@ endif
 " =============================================================================
 
 func! TrimTrailingWhitespace()
-  exe "normal mz"
+  normal mz
   %s/\s\+$//ge
-  exe "normal `z"
+  normal `zmz
 endfunc
 
 "return the syntax highlight group under the cursor ''
