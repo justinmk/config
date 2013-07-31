@@ -11,12 +11,12 @@
 "==============================================================================
 
 if exists('&guioptions')
-    "no toolbar, no menu bar
-    set guioptions-=T guioptions-=m
+    "no toolbar, no menu bar, no left scroll bar
+    set guioptions-=T guioptions-=m guioptions-=L guioptions-=l
     "don't source &runtimepath/menu.vim. (must be done before 'filetype on' / 'syntax on')
     set guioptions-=M
     "use console dialogs instead of popup dialogs for simple choices.
-    set guioptions+=rLc
+    set guioptions+=rc
 endif
 
 let mapleader = ","
