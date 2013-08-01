@@ -11,12 +11,12 @@
 "==============================================================================
 
 if exists('&guioptions')
-    set guitablabel=%t
-    "no toolbar, no menu bar
-    set guioptions-=T
-    set guioptions-=m
+    "no toolbar, no menu bar, no left scroll bar
+    set guioptions-=T guioptions-=m guioptions-=L guioptions-=l
     "don't source &runtimepath/menu.vim. (must be done before 'filetype on' / 'syntax on')
     set guioptions-=M
+    "use console dialogs instead of popup dialogs for simple choices.
+    set guioptions+=rc
 endif
 
 let mapleader = ","
@@ -160,6 +160,7 @@ set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
+set virtualedit=block "Allow virtual editing in Visual block mode.
 
 " platform-specific settings
 if s:is_windows
@@ -517,7 +518,7 @@ au FileType javascript inoremap <buffer> <leader>r return
 "    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 
 autocmd BufWrite *.go if exists("$GOPATH") | exe "Fmt" | else | call TrimTrailingWhitespace() | endif
-autocmd FileType go setlocal tabstop=4 shiftwidth=2 noexpandtab copyindent softtabstop=0
+autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
 
 " abbreviations
 au FileType go iab <buffer> ife if err != nil {<cr>log.Fatal(err)}<cr>

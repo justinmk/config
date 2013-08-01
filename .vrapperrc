@@ -22,6 +22,8 @@ noremap 1 ^
 nnoremap <m-l> :ls<cr>
 
 "vrapper
+eclipseaction findref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
+nnoremap gr :findref<cr>
 nnoremap ,v  :vim<cr>
 set autochdir
 set saney
