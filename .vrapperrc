@@ -14,7 +14,8 @@ nnoremap ,bd :bdelete<cr>
 nnoremap ,w  :w<cr>
 noremap ,d "_d
 nnoremap ,D "_D
-nnoremap ,pl o<esc>p==
+nnoremap =p o<esc>p==
+nnoremap =P O<esc>p==
 nnoremap ,hs :nohlsearch<cr>
 noremap 0 $
 noremap 1 ^

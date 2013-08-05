@@ -12,7 +12,8 @@ inoremap jj <esc>
 nnoremap <leader>w  :w<cr>
 noremap <leader>d "_d
 nnoremap <leader>D "_D
-nnoremap <leader>pl o<esc>p==
+nnoremap =p o<esc>p==
+nnoremap =P O<esc>p==
 nnoremap <leader>hs :nohlsearch<cr>
 noremap 0 $
 noremap 1 ^
