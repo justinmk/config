@@ -358,11 +358,7 @@ endfunction
 " Remove the Windows ^M - when the encodings gets messed up
 " nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-nnoremap <leader><leader>wr :setlocal wrap!<cr>
-
 set pastetoggle=<leader>pp
-" Paste Line: paste a word as a line
-nnoremap <leader>pl o<esc>p==
 
 " paste current dir to command line
 cabbrev $c <c-r>=expand("%:p:h")<cr>
