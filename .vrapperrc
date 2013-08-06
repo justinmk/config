@@ -1,6 +1,6 @@
 " vrapper bonus mappings:
 " gR    rename element
-" gc    toggle line-comment
+" gc    toggle comment
 " gr    find all references
 
 set ignorecase
@@ -17,14 +17,20 @@ nnoremap ,D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap ,hs :nohlsearch<cr>
-noremap 0 $
-noremap 1 ^
+noremap - $
 
 nnoremap <m-l> :ls<cr>
 
-"vrapper
+" vrapper
+" http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
+" https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
+
 eclipseaction findref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
 nnoremap gr :findref<cr>
+
+eclipseaction togglebp org.eclipse.debug.ui.commands.ToggleBreakpoint
+nnoremap gb :togglebp<cr>
+
 nnoremap ,v  :vim<cr>
 set autochdir
 set saney

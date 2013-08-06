@@ -1,4 +1,3 @@
-
 " windows builds: http://tuxproject.de/projects/vim/
 "                 http://files.kaoriya.net/vim/
 " MacVim with homebrew:
@@ -84,6 +83,7 @@ Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
 " Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-speeddating'
+Bundle 'tpope/vim-tbone'
 Bundle 'kshenoy/vim-signature'
 Bundle 'kana/vim-smartinput'
 Bundle 'kana/vim-textobj-user'
@@ -209,6 +209,7 @@ if !s:is_msysgit
 
         autocmd ColorScheme * highlight Visual guibg=#35322d
               \ | highlight Cursor guibg=#0a9dff guifg=white gui=NONE ctermfg=black
+              \ | highlight CursorLine cterm=underline
               \ | highlight PmenuSel guibg=#0a9dff ctermbg=39
               \ | highlight PmenuSbar guibg=#857f78
               \ | highlight PmenuThumb guifg=#242321
@@ -359,6 +360,15 @@ endfunction
 " Remove the Windows ^M - when the encodings gets messed up
 " nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
+" Make Y consistent with C and D.
+nnoremap Y y$
+" copy selection to gui-clipboard
+xnoremap Y "+y
+" copy entire file contents to gui-clipboard
+nnoremap yyy :let b:winview=winsaveview()<cr>ggVG"+y:call winrestview(b:winview)<cr>
+
 set pastetoggle=<leader>pp
 
 " paste current dir to command line
@@ -431,10 +441,8 @@ function! <SID>BufKill()
   endif
 endfunction
 
-"move to first non-whitespace char, instead of first column
-noremap 1 ^
 "move to last character 
-noremap 0 $
+noremap - $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$

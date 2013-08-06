@@ -15,8 +15,7 @@ nnoremap <leader>D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <leader>hs :nohlsearch<cr>
-noremap 0 $
-noremap 1 ^
+noremap - $
 
 nnoremap Y y$
 
@@ -24,7 +23,7 @@ nnoremap Y y$
 nnoremap <c-o> :vsc View.NavigateBackward<cr>
 nnoremap <c-i> :vsc View.NavigateForward<cr>
 vnoremap gc :vsc Edit.CommentSelection<cr>
-nnoremap gcc V :vsc Edit.CommentSelection<cr>
+nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
 " nmap <c-p> :vsc Debug.ToggleBreakpoint<cr> 
