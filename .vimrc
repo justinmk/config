@@ -359,11 +359,7 @@ endfunction
 " Remove the Windows ^M - when the encodings gets messed up
 " nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-nnoremap <leader><leader>wr :setlocal wrap!<cr>
-
 set pastetoggle=<leader>pp
-" Paste Line: paste a word as a line
-nnoremap <leader>pl o<esc>p==
 
 " paste current dir to command line
 cabbrev $c <c-r>=expand("%:p:h")<cr>
@@ -405,6 +401,9 @@ nnoremap <silent> <C-l> :wincmd l<cr>
 
 " Close the current buffer
 nnoremap <leader>bd :call <SID>BufKill()<cr>
+
+" switch to the directory of the open buffer
+nnoremap gcd :cd %:p:h<bar>pwd<cr>
 
 function! <SID>BufKill()
   let l:bufnum = bufnr("%")
@@ -652,7 +651,7 @@ function! s:unite_settings()
   nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   imap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   " change directories in unite
-  nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart) 
+  nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart)
 endfunction
 
 " session  ====================================================================
