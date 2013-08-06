@@ -370,8 +370,8 @@ xnoremap & :&&<CR>
 nnoremap Y y$
 " copy selection to gui-clipboard
 xnoremap Y "+y
-" copy entire file contents to gui-clipboard
-nnoremap yyy :let b:winview=winsaveview()<cr>ggVG"+y:call winrestview(b:winview)<cr>
+" copy entire file contents (to gui-clipboard if available)
+nnoremap yyy :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
 set pastetoggle=<leader>pp
 

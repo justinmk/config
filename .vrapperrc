@@ -33,6 +33,7 @@ nnoremap gb :togglebp<cr>
 
 nnoremap ,v  :vim<cr>
 set autochdir
+set cleanindent
 set saney
 set gvimpath=/Users/justin/bin/mvim
 
