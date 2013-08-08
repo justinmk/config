@@ -1,2 +1,15 @@
 *.swp
 
+# OS-generated files
+.DS_Store
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# Compiled
+*.class
+*.o
+*.pyc
+*.so
+

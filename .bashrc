@@ -45,7 +45,7 @@ shopt -s histappend
 shopt -s checkwinsize
 
 #disable ctrl-s scroll-lock
-if [ -x stty ] ; then stty -ixon ; fi
+command -v stty > /dev/null 2>&1 && stty -ixon
 
 SSHAGENT=/usr/bin/ssh-agent                                                     
 SSHAGENTARGS="-s"                                                               
