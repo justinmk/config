@@ -13,6 +13,7 @@
 [alias]
   l = log --graph --pretty=format:'%C(bold yellow)%h%Creset%C(bold red)%d%Creset %s %C(bold green)(%cr) %C(bold cyan)<%an>%Creset' --abbrev-commit
   d = diff --stat --color
+  s = status
   co = checkout
 [advice]
   statusHints = false
