@@ -26,7 +26,8 @@ vnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
-" nmap <c-p> :vsc Debug.ToggleBreakpoint<cr> 
+nnoremap gr :vsc Edit.FindAllReferences<cr>
+nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
 
 set hlsearch
 set autoindent
