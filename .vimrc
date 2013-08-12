@@ -500,13 +500,15 @@ elseif s:is_mac
     nnoremap <silent> gof :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
 endif
 
+" C:\opt\cygwin\bin\bash
+let g:cygwin_bash = 'C:\Program Files (x86)\Git\bin\sh.exe'
 if s:is_tmux
     nnoremap <silent> got :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'<cr>
 elseif s:is_windows
     " HACK: Execute bash (again) immediately after -c to prevent exit.
     "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
     " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, this is what cmd.exe expects.
-    nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""C:\Program Files (x86)\Git\bin\sh.exe" "--login" "-i" "-c" "cd '''.expand("%:h").''' ; bash" "'<cr>
+    nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:h").''' ; bash" "'<cr>
 elseif s:is_mac
     nnoremap <silent> got :silent echo 'not implemented for mac yet'
 endif
