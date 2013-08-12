@@ -164,7 +164,7 @@ set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
-set virtualedit=all "Allow virtual editing in Visual block mode.
+set virtualedit=all "allow cursor to move anywhere in all modes
 
 " platform-specific settings
 if s:is_windows
@@ -491,14 +491,25 @@ nnoremap <silent> <leader>hs :nohlsearch<cr>
 nnoremap <silent> <leader>hw :call <sid>HiCursorWords__execute()<cr>
 
 " navigate to the directory of the current file
-if s:is_tmux
-    nnoremap <leader>gf :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'<cr>
+" TODO: https://github.com/vim-scripts/open-terminal-filemanager
+if !s:is_gui "fallback
+    nnoremap <silent> gof got
 elseif s:is_windows
-    nnoremap <leader>gf :silent !start explorer /select,%:p<cr>
+    nnoremap <silent> gof :silent !start explorer /select,%:p<cr>
 elseif s:is_mac
-    nnoremap <leader>gf :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
+    nnoremap <silent> gof :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
 endif
 
+if s:is_tmux
+    nnoremap <silent> got :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'<cr>
+elseif s:is_windows
+    " HACK: Execute bash (again) immediately after -c to prevent exit.
+    "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
+    " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, this is what cmd.exe expects.
+    nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""C:\Program Files (x86)\Git\bin\sh.exe" "--login" "-i" "-c" "cd '''.expand("%:h").''' ; bash" "'<cr>
+elseif s:is_mac
+    nnoremap <silent> got :silent echo 'not implemented for mac yet'
+endif
 
 " python ======================================================================
 autocmd BufWrite *.py :call TrimTrailingWhitespace()
@@ -652,7 +663,7 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. <cr>
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files -start-insert file_mru file_rec <cr>
-nnoremap <c-n> :<C-u>UniteWithBufferDir -no-split -buffer-name=filescurrbuff -start-insert file_rec:! <cr>
+nnoremap <c-n> :<C-u>UniteWithBufferDir -no-split -buffer-name=filescurrbuff -start-insert file_rec<cr>
 nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
