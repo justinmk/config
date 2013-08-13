@@ -3,7 +3,7 @@
 [core]
   ignorecase = false
   autocrlf = false
-  excludesfile = .gitexcludes
+  excludesfile = ~/.gitexcludes
 [merge]
   tool = vimdiff
 [mergetool]

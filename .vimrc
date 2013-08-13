@@ -99,6 +99,7 @@ Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Blackrush/vim-gocode'
 Bundle 'justinmk/vim-ipmotion'
+Bundle 'justinmk/vim-gtfo'
 Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-easytags'
 Bundle 'tsukkee/unite-tag'
@@ -489,29 +490,6 @@ nnoremap Q <nop>
 nnoremap <silent> <leader>hs :nohlsearch<cr>
 " highlight current word
 nnoremap <silent> <leader>hw :call <sid>HiCursorWords__execute()<cr>
-
-" navigate to the directory of the current file
-" TODO: https://github.com/vim-scripts/open-terminal-filemanager
-if !s:is_gui "fallback
-    nnoremap <silent> gof got
-elseif s:is_windows
-    nnoremap <silent> gof :silent !start explorer /select,%:p<cr>
-elseif s:is_mac
-    nnoremap <silent> gof :silent execute '!open ' . substitute(expand("%:p:h")," ","\\\\ ","g")<cr>
-endif
-
-" C:\opt\cygwin\bin\bash
-let g:cygwin_bash = 'C:\Program Files (x86)\Git\bin\sh.exe'
-if s:is_tmux
-    nnoremap <silent> got :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . substitute(expand("%:p:h")," ","\\\\ ","g") . ' C-m'<cr>
-elseif s:is_windows
-    " HACK: Execute bash (again) immediately after -c to prevent exit.
-    "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
-    " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, this is what cmd.exe expects.
-    nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:h").''' ; bash" "'<cr>
-elseif s:is_mac
-    nnoremap <silent> got :silent echo 'not implemented for mac yet'
-endif
 
 " python ======================================================================
 autocmd BufWrite *.py :call TrimTrailingWhitespace()
