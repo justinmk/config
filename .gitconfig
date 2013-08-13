@@ -17,4 +17,6 @@
   co = checkout
 [advice]
   statusHints = false
+[color]
+  ui = auto
 
