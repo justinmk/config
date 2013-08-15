@@ -165,7 +165,13 @@ set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
+
+set cpoptions+=m " When joining multiple lines leave the cursor at the position where it would be when joining two lines.
+
+" controversial yet awesome settings that might break plugins
 set virtualedit=all "allow cursor to move anywhere in all modes
+autocmd BufLeave * set nostartofline
+autocmd CursorMoved,CursorMovedI * set startofline
 
 " platform-specific settings
 if s:is_windows
@@ -377,27 +383,13 @@ nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'
 set pastetoggle=<leader>pp
 
 " paste current dir to command line
-cabbrev $c <c-r>=expand("%:p:h")<cr>
+cabbrev ]c <c-r>=expand("%:p:h")<cr>
 
-" $q is super useful when browsing on the command line
-cno $q <C-\>eDeleteTillSlash()<cr>
+" delete the 'head' of a path on the command line
+cno <c-o>dts <C-\>e<sid>deleteTillSlash()<cr>
 
-
-func! DeleteTillSlash()
-  let g:cmd = getcmdline()
-  if s:is_windows
-    let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
-  else
-    let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
-  endif
-  if g:cmd == g:cmd_edited
-    if s:is_windows
-      let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
-    else
-      let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
-    endif
-  endif   
-  return g:cmd_edited
+func! s:deleteTillSlash()
+  return s:is_windows ? substitute(getcmdline(), '\(.*[/\\]\).*', '\1', '') : substitute(getcmdline(), '\(.*[/]\).*', '\1', '')
 endfunc
 
 
@@ -409,18 +401,19 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " key mappings/bindings
 "==============================================================================
 " move between windows
-nnoremap <silent> <C-j> :wincmd j<cr>
-nnoremap <silent> <C-k> :wincmd k<cr>
-nnoremap <silent> <C-h> :wincmd h<cr>
-nnoremap <silent> <C-l> :wincmd l<cr>
+nnoremap <silent> gwj :wincmd j<cr>
+nnoremap <silent> gwk :wincmd k<cr>
+nnoremap <silent> gwh :wincmd h<cr>
+nnoremap <silent> gwl :wincmd l<cr>
+nnoremap <silent> gwc :wincmd c<cr>
 
 " Close the current buffer
-nnoremap <leader>bd :call <SID>BufKill()<cr>
+nnoremap <leader>bd :call <SID>buf_kill()<cr>
 
 " switch to the directory of the open buffer
 nnoremap gcd :cd %:p:h<bar>pwd<cr>
 
-function! <SID>BufKill()
+function! s:buf_kill()
   let l:bufnum = bufnr("%")
   "valid 'next' buffers 
   "   EXCLUDE: current, Unite, Vundle, and [buffers already open in another window in the current tab]
@@ -429,7 +422,9 @@ function! <SID>BufKill()
               \ 'buflisted(v:val) && "" ==# &buftype '.
               \ '&& v:val != l:bufnum '.
               \ '&& -1 == index(tabpagebuflist(), v:val) '.
-              \ '&& bufname(v:val) !~# ''\\*unite\*\|[\(unite\|Vundle\)\]''')
+              \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
+              "TODO
+             "\ '&& bufname(v:val) =~# ''*unite*\|\[unite\]''')
 
   if len(l:valid_buffers) > 0
     if -1 != index(l:valid_buffers, bufnr("#")) || 'help' ==# &buftype
@@ -495,22 +490,12 @@ nnoremap <silent> <leader>hw :call <sid>HiCursorWords__execute()<cr>
 " python ======================================================================
 autocmd BufWrite *.py :call TrimTrailingWhitespace()
 
-let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
 
-au BufNewFile,BufRead *.jinja set syntax=htmljinja
-au BufNewFile,BufRead *.mako set ft=mako
-
-au FileType python inoremap <buffer> $r return 
-au FileType python inoremap <buffer> $i import 
-au FileType python inoremap <buffer> $p print 
-
-
 " javascript ==================================================================
-au FileType javascript setl nocindent
+au FileType javascript setlocal nocindent
 au FileType javascript inoremap <c-a> alert();<esc>hi
 au FileType javascript inoremap <buffer> <leader>r return 
-
 
 " golang ======================================================================
 " possible godoc solution    https://gist.github.com/mattn/569652
