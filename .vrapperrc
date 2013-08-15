@@ -19,17 +19,22 @@ nnoremap =P O<esc>p==
 nnoremap ,hs :nohlsearch<cr>
 noremap - $
 
-nnoremap <m-l> :ls<cr>
-
 " vrapper
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
 " https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
 
-eclipseaction findref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
-nnoremap gr :findref<cr>
+eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
+nnoremap gr :eclipsefindref<cr>
 
-eclipseaction togglebp org.eclipse.debug.ui.commands.ToggleBreakpoint
-nnoremap gb :togglebp<cr>
+eclipseaction eclipsetogglebp org.eclipse.debug.ui.commands.ToggleBreakpoint
+nnoremap gb :eclipsetogglebp<cr>
+
+eclipseaction eclipseopenresource org.eclipse.ui.navigate.openResource
+nnoremap <c-p> :eclipseopenresource<cr>
+
+" amazing 'omnibox' that searches buffers, commands, views, menus, preferences, etc.
+eclipseaction eclipsecmdsearch org.eclipse.ui.window.quickAccess
+nnoremap <m-l> :eclipsecmdsearch<cr>
 
 nnoremap ,v  :vim<cr>
 set autochdir

@@ -459,16 +459,17 @@ inoremap jj <esc>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
+xnoremap <space> :
 nnoremap <leader>w :w!<cr>
 
 "toggle/untoggle spell checking
 nnoremap <leader>ss :setlocal spell!<cr>
 
 "text bubbling: move text up/down with meta-[jk] 
-nnoremap <M-j> mz:m+<cr>`z
-nnoremap <M-k> mz:m-2<cr>`z
-xnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-xnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+nnoremap <M-j> m`:m+<cr>``
+nnoremap <M-k> m`:m-2<cr>``
+xnoremap <M-j> :m'>+<cr>gv
+xnoremap <M-k> :m'<-2<cr>gv
 
 " replay @q macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
@@ -541,7 +542,8 @@ au FileType go iab <buffer> er- if err != nil {<cr>log.Fatal(err)}<cr>
 nnoremap <leader>cc :botright copen<cr>
 "toggle quickfix window
 autocmd BufReadPost quickfix map <buffer> <leader>cc :cclose<cr>
-autocmd BufReadPost quickfix map <buffer> <c-p> <up> 
+autocmd BufReadPost quickfix map <buffer> <c-p> <up>
+autocmd BufReadPost quickfix map <buffer> <c-n> <down>
 
 " :noau speeds up vimgrep
 noremap <leader>grep :noau vimgrep // **<left><left><left><left>
@@ -664,6 +666,22 @@ function! s:unite_settings()
   " change directories in unite
   nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart)
 endfunction
+
+function! s:clearUniteBuffers()
+  "find [unite] or *unite* buffers to be wiped-out
+  "TODO: unite-outline buffers are listed (bug in unite-outline?), so we can't test !buflisted(v:val)
+  let unitebuffs = filter(range(1, bufnr('$')), 
+        \ '"nofile" ==# getbufvar(v:val, "&buftype") '.
+        \ '&& bufwinnr(v:val) == -1 '.
+        \ '&& bufname(v:val) =~# ''*unite*\|\[unite\]''')
+
+  echom 'unitebuffs:' join(unitebuffs, ' ')
+  " obliterate the buffer and all of its related state (marks especially).
+  for bufnum in unitebuffs
+    exe 'bwipeout!' bufnum
+  endfor
+endfunction
+autocmd BufEnter * silent call <sid>clearUniteBuffers()
 
 " session  ====================================================================
 set sessionoptions-=globals
