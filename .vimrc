@@ -130,6 +130,11 @@ endfun
 "==============================================================================
 " general
 "==============================================================================
+let g:gitgutter_escape_grep = 1
+let g:gitgutter_eager = 0
+if s:is_windows
+  let g:gitgutter_realtime = 0
+endif
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
@@ -145,6 +150,7 @@ if s:is_windows || !s:is_gui || (&termencoding !=# 'utf-8' && &encoding !=# 'utf
 endif
 set list
 
+set report=0
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
@@ -195,49 +201,47 @@ elseif s:is_gui "linux or other
     set guifont=Monospace\ 10
 endif
 
-if !s:is_msysgit
-    "highlight the current line
-    set cursorline
+"colorscheme {{{
+  set cursorline "highlight the current line
 
-    if &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
-        " force colors
-        set t_Co=256
+  if &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
+    " force colors
+    set t_Co=256
+  endif
+
+  if !s:is_mac
+    autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
+          \ | highlight NonText ctermbg=black guibg=black
+  endif
+
+  if !s:is_gui && &t_Co <= 88
+    highlight CursorLine cterm=underline
+  else
+    let s:color_override = ' highlight Visual guibg=#35322d
+          \ | highlight Cursor guibg=#0a9dff guifg=white gui=NONE ctermfg=black
+          \ | highlight CursorLine guibg=#293739 ctermbg=236
+          \ | highlight PmenuSel guibg=#0a9dff ctermbg=39
+          \ | highlight PmenuSbar guibg=#857f78
+          \ | highlight PmenuThumb guifg=#242321
+          \ | highlight WildMenu gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
+          \ | highlight IncSearch guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
+          \ | highlight Search guifg=black guibg=LightGoldenrod1 ctermfg=black ctermbg=227 gui=none cterm=NONE
+          \'
+    if s:is_windows
+      " expects &runtimepath/colors/{name}.vim.
+      colorscheme molokai
+      exe 'autocmd ColorScheme *' s:color_override
+    else
+      let g:jellybeans_use_lowcolor_black = 0
+      colorscheme jellybeans
+      exe s:color_override
     endif
-
-    if !s:is_mac
-      autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
-            \ | highlight NonText ctermbg=black guibg=black
-    endif
-
-    if s:is_gui || &t_Co > 16
-        if s:is_windows
-            " expects &runtimepath/colors/{name}.vim.
-            colorscheme molokai
-        else
-            let g:jellybeans_use_lowcolor_black = 0
-            colorscheme jellybeans
-        endif
-
-        autocmd ColorScheme * highlight Visual guibg=#35322d
-              \ | highlight Cursor guibg=#0a9dff guifg=white gui=NONE ctermfg=black
-              \ | highlight CursorLine cterm=underline
-              \ | highlight PmenuSel guibg=#0a9dff ctermbg=39
-              \ | highlight PmenuSbar guibg=#857f78
-              \ | highlight PmenuThumb guifg=#242321
-              \ | highlight WildMenu gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
-              \ | highlight IncSearch guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
-              \ | highlight Search guifg=black guibg=LightGoldenrod1 ctermfg=black ctermbg=227 gui=none cterm=NONE
-        "1c1b1a darkestgravel
-        "141413 blackgravel
-    endif
-endif
+  endif
+"}}}
 
 set fileformats=unix,dos,mac
 set encoding=utf8
-try
-    lang en_US
-catch
-endtry
+try | lang en_US | catch | endtry
 
 let g:Powerline_stl_path_style = 'short'
 
@@ -395,7 +399,7 @@ endfunc
 
 " abbreviations ===============================================================
 
-iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+iab xdate <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -605,7 +609,8 @@ set tags=./tags;,tags;
 let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
-" Unite =======================================================================
+" Unite ======================================================================= {{{
+if exists(':Unite')
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 
@@ -676,6 +681,8 @@ function! s:clearUniteBuffers()
   endfor
 endfunction
 autocmd BufEnter * silent call <sid>clearUniteBuffers()
+endif
+"}}}
 
 " session  ====================================================================
 set sessionoptions-=globals
