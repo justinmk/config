@@ -401,11 +401,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " key mappings/bindings
 "==============================================================================
 " move between windows
-nnoremap <silent> gwj :wincmd j<cr>
-nnoremap <silent> gwk :wincmd k<cr>
-nnoremap <silent> gwh :wincmd h<cr>
-nnoremap <silent> gwl :wincmd l<cr>
-nnoremap <silent> gwc :wincmd c<cr>
+nnoremap <silent> gw <c-w>
 
 " Close the current buffer
 nnoremap <leader>bd :call <SID>buf_kill()<cr>
@@ -419,7 +415,8 @@ function! s:buf_kill()
   "   EXCLUDE: current, Unite, Vundle, and [buffers already open in another window in the current tab]
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
-              \ 'buflisted(v:val) && "" ==# &buftype '.
+              \ 'buflisted(v:val) '.
+              \ '&& ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) '.
               \ '&& v:val != l:bufnum '.
               \ '&& -1 == index(tabpagebuflist(), v:val) '.
               \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
@@ -427,7 +424,7 @@ function! s:buf_kill()
              "\ '&& bufname(v:val) =~# ''*unite*\|\[unite\]''')
 
   if len(l:valid_buffers) > 0
-    if -1 != index(l:valid_buffers, bufnr("#")) || 'help' ==# &buftype
+    if -1 != index(l:valid_buffers, bufnr("#"))
       buffer #
     else
       exe 'buffer '.l:valid_buffers[0]
@@ -504,6 +501,18 @@ au FileType javascript inoremap <buffer> <leader>r return
 "    let g:ref_open = 'vsplit'
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
 "    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
+
+if exists("$GOPATH")
+  let s:gopaths = split($GOPATH, ':')
+  for s:gopath in s:gopaths
+    "set up Golint    https://github.com/golang/lint
+    if isdirectory(s:gopath."/src/github.com/golang/lint/misc/vim")
+      exe 'set runtimepath+='.s:gopath.'/src/github.com/golang/lint/misc/vim'
+      autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
+      break
+    endif
+  endfor
+endif
 
 autocmd BufWrite *.go if exists("$GOPATH") | exe "Fmt" | else | call TrimTrailingWhitespace() | endif
 autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist

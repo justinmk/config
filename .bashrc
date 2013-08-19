@@ -12,9 +12,16 @@ fi
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 
 # golang root
-[ -d "/usr/local/go" ] && export GOROOT=/usr/local/go && PATH=$PATH:$GOROOT/bin  
-# golang workspace / package
-[ -d "$HOME/dev/go" ] && export GOPATH=$HOME/dev/go && PATH=$PATH:$GOPATH/bin 
+[ -d "/usr/local/go" ] && export GOROOT=/usr/local/go && PATH=$PATH:$GOROOT/bin
+# golang workspace / packages
+# https://code.google.com/p/go-wiki/wiki/GOPATH
+# TODO: It is useful to have two GOPATH entries:
+#   - first entry is for 3rd-party goinstalled packages (goinstall will use this as the default destination)
+#   - second entry is for your own projects
+[ -d "$HOME/dev/go" ] && export GOPATH=$HOME/dev/go
+# add all $GOPATH/bin directories.
+[ -z "$GOPATH" ] || PATH=$PATH:${GOPATH//://bin:}/bin
+
 # Writing, building, installing, and testing Go code:
 #   http://www.youtube.com/watch?v=XCsL89YtqCs
 #
