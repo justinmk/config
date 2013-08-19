@@ -514,7 +514,7 @@ if exists("$GOPATH")
   endfor
 endif
 
-autocmd BufWrite *.go if exists("$GOPATH") | exe "Fmt" | else | call TrimTrailingWhitespace() | endif
+autocmd BufWrite *.go if exists("$GOPATH") | exe "keepjumps Fmt" | else | call TrimTrailingWhitespace() | endif
 autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
 
 " abbreviations
