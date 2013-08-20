@@ -128,7 +128,7 @@ endfun
 
 
 "==============================================================================
-" general
+" general settings / options
 "==============================================================================
 let g:gitgutter_escape_grep = 1
 let g:gitgutter_eager = 0
@@ -739,6 +739,7 @@ let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
 let s:dir = has('win32') ? '$APPDATA/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
+call EnsureDir(s:dir)
 
 if isdirectory(expand(s:dir))
   call EnsureDir(s:dir . '/swap/')

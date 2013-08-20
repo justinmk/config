@@ -40,5 +40,5 @@ nnoremap ,v  :vim<cr>
 set autochdir
 set cleanindent
 set saney
-set gvimpath=/Users/justin/bin/mvim
+set gvimpath=/usr/local/bin/mvim
 
