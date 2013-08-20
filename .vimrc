@@ -217,6 +217,7 @@ endif
   if !s:is_gui && &t_Co <= 88
     highlight CursorLine cterm=underline
   else
+    "see :h 'highlight'
     let s:color_override = ' highlight Visual guibg=#35322d
           \ | highlight Cursor guibg=#0a9dff guifg=white gui=NONE ctermfg=black
           \ | highlight CursorLine guibg=#293739 ctermbg=236
@@ -610,11 +611,15 @@ let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
 " Unite ======================================================================= {{{
-if exists(':Unite')
+try
+  call unite#custom#profile('files', 'filters', 'sorter_rank')
+  let s:unite_installed = 1
+catch
+endtry
+if exists('s:unite_installed')
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 
-call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('files_glob', 'matchers', ['matcher_glob'])
 " see unite/custom.vim
 call unite#custom#source(
@@ -681,8 +686,8 @@ function! s:clearUniteBuffers()
   endfor
 endfunction
 autocmd BufEnter * silent call <sid>clearUniteBuffers()
-endif
-"}}}
+
+endif "}}}
 
 " session  ====================================================================
 set sessionoptions-=globals
