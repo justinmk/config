@@ -172,8 +172,6 @@ set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
 
-set cpoptions+=m " When joining multiple lines leave the cursor at the position where it would be when joining two lines.
-
 " controversial yet awesome settings that might break plugins
 set virtualedit=all "allow cursor to move anywhere in all modes
 autocmd BufLeave * set nostartofline
@@ -202,7 +200,12 @@ elseif s:is_gui "linux or other
 endif
 
 "colorscheme {{{
-  set cursorline "highlight the current line
+  "highlight line in the current window only
+  augroup CursorLine
+    au!
+    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+  augroup END
 
   if &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
     " force colors
@@ -231,17 +234,19 @@ endif
     if s:is_windows
       " expects &runtimepath/colors/{name}.vim.
       colorscheme molokai
-      exe 'autocmd ColorScheme *' s:color_override
     else
       let g:jellybeans_use_lowcolor_black = 0
       colorscheme jellybeans
+    endif
+
+    if s:is_gui || s:is_mac
+      exe 'autocmd ColorScheme *' s:color_override
+    else
       exe s:color_override
     endif
   endif
 "}}}
 
-set fileformats=unix,dos,mac
-set encoding=utf8
 try | lang en_US | catch | endtry
 
 let g:Powerline_stl_path_style = 'short'

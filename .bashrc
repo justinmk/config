@@ -1,9 +1,10 @@
-# Environment variables (non-bash-specific; bash-specific commands follow below)
 # Darwin, Debian, Cygwin, and MSYS have differing behavior:
 #   - Darwin (and MacVim) runs a login shell every time (sources .bash_profile)
 #   - MSYSGIT bash sources .bashrc _then_ .bash_profile (wtf?)
 #   - Cygwin runs a login shell every time (sources .bash_profile)
 #   - Debian/Ubuntu sources .bash_profile on login; thereafter only .bashrc
+
+# Environment variables (non-bash-specific; bash-specific commands follow below)
 # =============================================================================
 
 if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
