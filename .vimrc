@@ -174,6 +174,7 @@ set foldmethod=marker
 
 set virtualedit=all "allow cursor to move anywhere in all modes
 
+if &startofline
 " don't reset the cursor upon returning to a buffer:
 augroup StayPut
   au!
@@ -183,6 +184,7 @@ augroup StayPut
   autocmd BufLeave * set nostartofline | 
       \ autocmd StayPut CursorMoved,CursorMovedI * set startofline | autocmd! StayPut CursorMoved,CursorMovedI
 augroup END
+endif
 
 " platform-specific settings
 if s:is_windows
