@@ -145,6 +145,11 @@ if !s:is_msysgit && !s:is_gui
           \ <m-t>=t <m-l>=l <m-h>=h
 endif
 
+" removing this breaks alt/meta mappings (on win32 gvim at least).
+set encoding=utf-8
+
+try | lang en_US | catch | endtry
+
 if s:is_windows || !s:is_gui || (&termencoding !=# 'utf-8' && &encoding !=# 'utf-8')
   set listchars=tab:>\ ,trail:.,extends:>,precedes:<,nbsp:+
 endif
@@ -255,8 +260,6 @@ endif
     endif
   endif
 "}}}
-
-try | lang en_US | catch | endtry
 
 let g:Powerline_stl_path_style = 'short'
 
