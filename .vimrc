@@ -172,10 +172,17 @@ set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
 
-" controversial yet awesome settings that might break plugins
 set virtualedit=all "allow cursor to move anywhere in all modes
-autocmd BufLeave * set nostartofline
-autocmd CursorMoved,CursorMovedI * set startofline
+
+" don't reset the cursor upon returning to a buffer:
+augroup StayPut
+  au!
+  " 1. disable 'startofline' temporarily while switching buffers, 
+  " 2. then re-enable it on CursorMoved, 
+  " 3. then clear the CursorMoved autocommand to avoid spam
+  autocmd BufLeave * set nostartofline | 
+      \ autocmd StayPut CursorMoved,CursorMovedI * set startofline | autocmd! StayPut CursorMoved,CursorMovedI
+augroup END
 
 " platform-specific settings
 if s:is_windows
