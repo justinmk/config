@@ -1,5 +1,6 @@
 " windows builds: http://tuxproject.de/projects/vim/
 "                 http://files.kaoriya.net/vim/
+"                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
 " MacVim with homebrew:
 "   brew install macvim --with-cscope --with-lua --HEAD --override-system-vim
 "   brew linkapps --system
@@ -91,7 +92,8 @@ Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
 Bundle 'Valloric/MatchTagAlways'
 Bundle 'goldfeld/vim-seek'
-Bundle 'Lokaltog/vim-powerline'
+" Bundle 'Lokaltog/vim-powerline'
+Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
@@ -431,7 +433,28 @@ nnoremap <leader>bd :call <SID>buf_kill()<cr>
 " switch to the directory of the open buffer
 nnoremap gcd :cd %:p:h<bar>pwd<cr>
 
-function! s:buf_kill()
+" TODO: empty buffer notes:
+" let save_lazyredraw  = &lazyredraw
+" set lazyredraw
+" let &lazyredraw  = save_lazyredraw
+" 
+" if bufloaded, then just use getbufline() or ZyX's method.
+" if buffer is _not_ loaded: 
+"     - get its file path and check getfsize().
+"     - else, an unloaded buffer without a filepath must be empty.
+" echo expand("#8:p")
+" echo bufloaded(8)
+" echo getfsize(expand("#8:p"))
+
+func! BufDeath_Comparebuf(b1, b2)
+  "prefer loaded buffers before unloaded buffers
+  if bufloaded(a:b1)
+    return bufloaded(a:b2) ? 0 : -1
+  endif
+  return !bufloaded(a:b2) ? 0 : 1
+endf
+
+func! s:buf_kill()
   let l:bufnum = bufnr("%")
   "valid 'next' buffers 
   "   EXCLUDE: current, Unite, Vundle, and [buffers already open in another window in the current tab]
@@ -442,13 +465,15 @@ function! s:buf_kill()
               \ '&& v:val != l:bufnum '.
               \ '&& -1 == index(tabpagebuflist(), v:val) '.
               \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
-              "TODO
-             "\ '&& bufname(v:val) =~# ''*unite*\|\[unite\]''')
+
+  let l:valid_buffers = sort(copy(l:valid_buffers), 'BufDeath_Comparebuf')
 
   if len(l:valid_buffers) > 0
+    " change to the 'alternate' buffer iff it is a 'valid' buffer.
     if -1 != index(l:valid_buffers, bufnr("#"))
       buffer #
     else
+      " just pick the first 'valid' buffer.
       exe 'buffer '.l:valid_buffers[0]
     endif
   endif
@@ -458,7 +483,7 @@ function! s:buf_kill()
     " obliterate the buffer and all of its related state (marks, local options, ...).
     exe 'bwipeout! '.l:bufnum
   endif
-endfunction
+endf
 
 "move to last character 
 noremap - $
@@ -505,6 +530,16 @@ nnoremap Q <nop>
 nnoremap <silent> <leader>hs :nohlsearch<cr>
 " highlight current word
 nnoremap <silent> <leader>hw :call <sid>HiCursorWords__execute()<cr>
+
+func! ReadExCommandOutput(cmd)
+  redir => l:message
+  silent execute a:cmd
+  redir END
+  "tabnew
+  silent put=l:message
+  "set nomodified
+endf
+command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
 
 " python ======================================================================
 autocmd BufWrite *.py :call TrimTrailingWhitespace()
@@ -627,6 +662,8 @@ set tags=./tags;,tags;
 let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
+let g:unite_ignore_source_files = []
+
 " Unite ======================================================================= {{{
 try
   call unite#custom#profile('files', 'filters', 'sorter_rank')
@@ -642,7 +679,7 @@ call unite#custom#profile('files_glob', 'matchers', ['matcher_glob'])
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
             \ 'sorters',
-            \ ['sorter_rank'])
+            \ ['sorter_ftime', 'sorter_rank'])
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
             \ 'matchers',
