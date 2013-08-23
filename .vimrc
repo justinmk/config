@@ -237,15 +237,22 @@ endif
     highlight CursorLine cterm=underline
   else
     "see :h 'highlight'
-    let s:color_override = ' highlight Visual guibg=#35322d
-          \ | highlight Cursor guibg=#0a9dff guifg=white gui=NONE ctermfg=black
-          \ | highlight CursorLine guibg=#293739 ctermbg=236
-          \ | highlight PmenuSel guibg=#0a9dff ctermbg=39
-          \ | highlight PmenuSbar guibg=#857f78
-          \ | highlight PmenuThumb guifg=#242321
-          \ | highlight WildMenu gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
-          \ | highlight IncSearch guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
-          \ | highlight Search guifg=black guibg=LightGoldenrod1 ctermfg=black ctermbg=227 gui=none cterm=NONE
+    "https://github.com/Pychimp/vim-luna
+    let s:color_override = ' 
+          \   hi Visual        guifg=#262626 guibg=#ffff4d gui=NONE   ctermfg=235  ctermbg=227  cterm=NONE
+          \ | hi VisualNOS     guifg=#262626 guibg=#ffff4d gui=NONE   ctermfg=235  ctermbg=227  cterm=NONE
+          \ | hi Cursor        guibg=#0a9dff guifg=white gui=NONE ctermfg=black
+          \ | hi CursorLine    guibg=#293739 ctermbg=236
+          \ | hi PmenuSel      guibg=#0a9dff ctermbg=39
+          \ | hi PmenuSbar     guibg=#857f78
+          \ | hi PmenuThumb    guifg=#242321
+          \ | hi WildMenu      gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
+          \ | hi IncSearch     guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
+          \ | hi Search        guifg=black guibg=LightGoldenrod1 ctermfg=black ctermbg=227 gui=none cterm=NONE
+          \ | hi DiffAdd       guifg=#ffffff guibg=#006600 gui=NONE  ctermfg=231  ctermbg=22   cterm=NONE 
+          \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
+          \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
+          \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
           \'
     if s:is_windows
       " expects &runtimepath/colors/{name}.vim.
@@ -424,11 +431,15 @@ iab xdate <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 "==============================================================================
 " key mappings/bindings
 "==============================================================================
-" move between windows
-nnoremap <silent> gw <c-w>
+" manage windows
+nnoremap gw <c-w>
 
-" Close the current buffer
-nnoremap <leader>bd :call <SID>buf_kill()<cr>
+" manage tabs
+nnoremap gwtn :tabnew<cr>
+nnoremap gwte :tabedit<cr>
+
+" kill the current buffer with a vengeance
+nnoremap <leader>bdd :call <SID>buf_kill()<cr>
 
 " switch to the directory of the open buffer
 nnoremap gcd :cd %:p:h<bar>pwd<cr>
@@ -796,7 +807,7 @@ if has("autocmd")
 endif
 
 " tree view
-" let g:netrw_liststyle = 3
+let g:netrw_liststyle = 3
 let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
