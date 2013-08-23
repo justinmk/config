@@ -434,6 +434,9 @@ nnoremap <leader>bd :call <SID>buf_kill()<cr>
 nnoremap gcd :cd %:p:h<bar>pwd<cr>
 
 " TODO: empty buffer notes:
+" purpose of bufdeath:
+"   - ensure there is always a useful 'alternate' buffer
+"   - ensure that the next switched-to buffer is not already displayed in some other window in the current tab
 " let save_lazyredraw  = &lazyredraw
 " set lazyredraw
 " let &lazyredraw  = save_lazyredraw
@@ -466,7 +469,7 @@ func! s:buf_kill()
               \ '&& -1 == index(tabpagebuflist(), v:val) '.
               \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
 
-  let l:valid_buffers = sort(copy(l:valid_buffers), 'BufDeath_Comparebuf')
+  call sort(l:valid_buffers, 'BufDeath_Comparebuf')
 
   if len(l:valid_buffers) > 0
     " change to the 'alternate' buffer iff it is a 'valid' buffer.
