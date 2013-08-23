@@ -87,6 +87,7 @@ Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
+Bundle 'zhaocai/DirDiff.vim'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
@@ -444,22 +445,6 @@ nnoremap <leader>bdd :call <SID>buf_kill()<cr>
 " switch to the directory of the open buffer
 nnoremap gcd :cd %:p:h<bar>pwd<cr>
 
-" TODO: empty buffer notes:
-" purpose of bufdeath:
-"   - ensure there is always a useful 'alternate' buffer
-"   - ensure that the next switched-to buffer is not already displayed in some other window in the current tab
-" let save_lazyredraw  = &lazyredraw
-" set lazyredraw
-" let &lazyredraw  = save_lazyredraw
-" 
-" if bufloaded, then just use getbufline() or ZyX's method.
-" if buffer is _not_ loaded: 
-"     - get its file path and check getfsize().
-"     - else, an unloaded buffer without a filepath must be empty.
-" echo expand("#8:p")
-" echo bufloaded(8)
-" echo getfsize(expand("#8:p"))
-
 func! BufDeath_Comparebuf(b1, b2)
   "prefer loaded buffers before unloaded buffers
   if bufloaded(a:b1)
@@ -468,23 +453,36 @@ func! BufDeath_Comparebuf(b1, b2)
   return !bufloaded(a:b2) ? 0 : 1
 endf
 
-func! s:buf_kill()
-  let l:bufnum = bufnr("%")
+func! s:buf_find_displayed_bufs()
+  " all buffers displayed in windows in any tab.
+  let s:displayedbufs = []
+  for i in range(1, tabpagenr('$'))
+    call extend(s:displayedbufs, tabpagebuflist(i))
+  endfor
+  return s:displayedbufs
+endf
+
+func! s:buf_findvalid()
   "valid 'next' buffers 
-  "   EXCLUDE: current, Unite, Vundle, and [buffers already open in another window in the current tab]
+  "   EXCLUDE: current, Unite, Vundle, and buffers already open in another window in the current tab
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
               \ 'buflisted(v:val) '.
               \ '&& ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) '.
-              \ '&& v:val != l:bufnum '.
+              \ '&& v:val != bufnr("%") '.
               \ '&& -1 == index(tabpagebuflist(), v:val) '.
               \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
-
   call sort(l:valid_buffers, 'BufDeath_Comparebuf')
+  return l:valid_buffers
+endf
+
+func! s:buf_kill()
+  let l:origbuf = bufnr("%")
+  let l:valid_buffers = s:buf_findvalid()
 
   if len(l:valid_buffers) > 0
     " change to the 'alternate' buffer iff it is a 'valid' buffer.
-    if -1 != index(l:valid_buffers, bufnr("#"))
+    if -1 < index(l:valid_buffers, bufnr("#"))
       buffer #
     else
       " just pick the first 'valid' buffer.
@@ -492,10 +490,10 @@ func! s:buf_kill()
     endif
   endif
 
-  let l:is_in_another_win = l:bufnum != bufnr("%") && -1 < bufwinnr(l:bufnum)
-  if !l:is_in_another_win && buflisted(l:bufnum)
-    " obliterate the buffer and all of its related state (marks, local options, ...).
-    exe 'bwipeout! '.l:bufnum
+  " obliterate the buffer and all of its related state (marks, local options, ...), 
+  " _iff_ it is not displaying in a _different_ window in the current tab.
+  if -1 == bufwinnr(l:origbuf) || bufwinnr(l:origbuf) == bufwinnr(bufnr("%"))
+    exe 'bwipeout! '.l:origbuf
   endif
 endf
 
@@ -509,6 +507,7 @@ noremap <leader>d "_d
 nnoremap <leader>D "_D
 
 inoremap jj <esc>
+inoremap kk <esc>l
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
@@ -613,7 +612,7 @@ autocmd BufReadPost quickfix map <buffer> <c-n> <down>
 " :noau speeds up vimgrep
 noremap <leader>grep :noau vimgrep // **<left><left><left><left>
 " search and replace word under cursor
-nnoremap <leader>sr :<c-u>%s/<c-r><c-w>//gc<left><left><left>
+nnoremap <leader>sr :<c-u>%s/\<<c-r><c-w>\>//gc<left><left><left>
 xnoremap <leader>sr :<c-u>call <SID>VSetSearch('/')<cr>:%s/<c-r>=@/<cr>//gc<left><left><left>
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
@@ -739,6 +738,7 @@ function! s:unite_settings()
   nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart)
 endfunction
 
+"TODO: :keepalt
 function! s:clearUniteBuffers()
   "find [unite] or *unite* buffers to be wiped-out
   "TODO: unite-outline buffers are listed (bug in unite-outline?), so we can't test !buflisted(v:val)
@@ -747,13 +747,49 @@ function! s:clearUniteBuffers()
         \ '&& bufwinnr(v:val) == -1 '.
         \ '&& bufname(v:val) =~# ''*unite*\|\[unite\]''')
 
-  echom 'unitebuffs:' join(unitebuffs, ' ')
-  " obliterate the buffer and all of its related state (marks especially).
-  for bufnum in unitebuffs
-    exe 'bwipeout!' bufnum
-  endfor
+  " obliterate the buffers and their related state (marks especially).
+  if !empty(unitebuffs)
+    exe 'bwipeout! '.join(unitebuffs, ' ')
+  endif
 endfunction
-autocmd BufEnter * silent call <sid>clearUniteBuffers()
+autocmd BufEnter * call <sid>clearUniteBuffers()
+
+" delete empty, non-alternate, non-visible, non-special buffers
+" ensure there is always a useful 'alternate' buffer
+" ensure that the next switched-to buffer is not already displayed in some other window in the current tab
+function! s:clear_empty_buffers()
+  " test for empty buffer:
+  "   expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
+  " :bufdo if line2byte(line("$")+1)<=2 | call add(empty_bufs, bufnr("%")) | endif
+
+  " if the buffer is loaded: we can just check its contents via getbufline() or ZyX's method.
+  let empty_bufs = filter(range(1, bufnr('$')),
+        \ 'bufloaded(v:val) '.
+        \ '&& "" ==# getbufvar(v:val, "&buftype") '.
+        \ '&& [""] == getbufline(v:val, 1, 2) '.
+        \ '&& -1 == bufwinnr(v:val) ')
+
+  " if the buffer is _not_ loaded, we do _not_ want to load 
+  " every unloaded/unlisted buffer just to check if it is empty.
+  "     - get its file path and check getfsize().
+  "     - if getfsize() fails, then the filepath must be non-existent; and 
+  "       an unloaded buffer with an invalid a filepath must be empty.
+  let nonexistent = filter(range(1, bufnr('$')),
+        \ '!bufloaded(v:val) '.
+        \ '&& -1 == getfsize(expand("#".v:val.":p")) ')
+
+  for i in empty_bufs
+    echom "empty /" i "/" bufname(i)
+  endfor
+  for i in nonexistent
+    echom "nonexistent /" i "/" bufname(i)
+  endfor
+
+  " if !empty(empty_bufs + nonexistent)
+  "   exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
+  " endif
+endfunction
+autocmd BufEnter * silent call <sid>clear_empty_buffers()
 
 endif "}}}
 
@@ -794,8 +830,7 @@ if has("autocmd")
 
     if s:is_gui
         " set viminfo+=% "remember buffer list
-        autocmd VimEnter * nested :call LoadSession()
-        " autocmd GUIEnter * nested :call LoadSession()
+        autocmd VimEnter * :call LoadSession()
     endif
 
     if s:is_windows
