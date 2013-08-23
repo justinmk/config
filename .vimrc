@@ -505,6 +505,7 @@ func! s:buf_kill()
 endf
 
 nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
+
 "move to last character 
 noremap - $
 
@@ -750,17 +751,18 @@ endfunction
 function! s:clearUniteBuffers()
   "find [unite] or *unite* buffers to be wiped-out
   "TODO: unite-outline buffers are listed (bug in unite-outline?), so we can't test !buflisted(v:val)
+  let displayedbufs = <sid>buf_find_displayed_bufs()
   let unitebuffs = filter(range(1, bufnr('$')), 
-        \ '"nofile" ==# getbufvar(v:val, "&buftype") '.
-        \ '&& bufwinnr(v:val) == -1 '.
-        \ '&& bufname(v:val) =~# ''*unite*\|\[unite\]''')
+        \ '"nofile" ==# getbufvar(v:val, "&buftype") 
+        \  && -1 == index(displayedbufs, v:val) 
+        \  && bufname(v:val) =~# ''*unite*\|\[unite\]''')
 
   " obliterate the buffers and their related state (marks especially).
   if !empty(unitebuffs)
     exe 'bwipeout! '.join(unitebuffs, ' ')
   endif
 endfunction
-autocmd BufEnter * call <sid>clearUniteBuffers()
+autocmd BufEnter * silent call <sid>clearUniteBuffers()
 
 " delete empty, non-alternate, non-visible, non-special buffers
 " ensure there is always a useful 'alternate' buffer
@@ -769,33 +771,39 @@ function! s:clear_empty_buffers()
   " test for empty buffer:
   "   expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   " :bufdo if line2byte(line("$")+1)<=2 | call add(empty_bufs, bufnr("%")) | endif
-
   " if the buffer is loaded: we can just check its contents via getbufline() or ZyX's method.
+  let displayedbufs = <sid>buf_find_displayed_bufs()
   let empty_bufs = filter(range(1, bufnr('$')),
-        \ 'bufloaded(v:val) '.
-        \ '&& "" ==# getbufvar(v:val, "&buftype") '.
-        \ '&& [""] == getbufline(v:val, 1, 2) '.
-        \ '&& -1 == bufwinnr(v:val) ')
+        \ 'bufloaded(v:val) 
+        \  && 0 == getbufvar(v:val, "&modified") 
+        \  && "" ==# getbufvar(v:val, "&buftype") 
+        \  && [""] == getbufline(v:val, 1, 2) 
+        \  && -1 == index(displayedbufs, v:val) 
+        \  && -1 == bufwinnr(v:val) 
+        \ ')
 
-  " if the buffer is _not_ loaded, we do _not_ want to load 
-  " every unloaded/unlisted buffer just to check if it is empty.
+  " if the buffer is _not_ loaded, we do _not_ want to load every buffer just to check if it is empty.
   "     - get its file path and check getfsize().
   "     - if getfsize() fails, then the filepath must be non-existent; and 
   "       an unloaded buffer with an invalid a filepath must be empty.
   let nonexistent = filter(range(1, bufnr('$')),
-        \ '!bufloaded(v:val) '.
-        \ '&& -1 == getfsize(expand("#".v:val.":p")) ')
+        \ 'bufexists(v:val) && !bufloaded(v:val) 
+        \  && -1 == getfsize(expand("#".v:val.":p")) 
+        \ ')
 
-  for i in empty_bufs
-    echom "empty /" i "/" bufname(i)
-  endfor
-  for i in nonexistent
-    echom "nonexistent /" i "/" bufname(i)
-  endfor
+  " echom "========================================================"
+  " echom "empty_bufs=" len(empty_bufs)
+  " echom "nonexistent=" len(nonexistent)
+  " for i in empty_bufs
+  "   echom "empty /" i "/" bufname(i)
+  " endfor
+  " for i in nonexistent
+  "   echom "nonexistent /" i "/" bufname(i)
+  " endfor
 
-  " if !empty(empty_bufs + nonexistent)
-  "   exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
-  " endif
+  if !empty(empty_bufs + nonexistent)
+    exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
+  endif
 endfunction
 autocmd BufEnter * silent call <sid>clear_empty_buffers()
 
