@@ -88,6 +88,8 @@ Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
+" TODO: https://github.com/kurkale6ka/vim-pairs
+Bundle 'paradigm/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
@@ -240,11 +242,11 @@ endif
     "see :h 'highlight'
     "https://github.com/Pychimp/vim-luna
     let s:color_override = ' 
-          \   hi Visual        guifg=#262626 guibg=#ffff4d gui=NONE   ctermfg=235  ctermbg=227  cterm=NONE
-          \ | hi VisualNOS     guifg=#262626 guibg=#ffff4d gui=NONE   ctermfg=235  ctermbg=227  cterm=NONE
-          \ | hi Cursor        guibg=#0a9dff guifg=white gui=NONE ctermfg=black
+          \   hi Visual        guifg=#262626 guibg=#ffff4d gui=NONE  ctermfg=235  ctermbg=227  cterm=NONE
+          \ | hi VisualNOS     guifg=#262626 guibg=#ffff4d gui=NONE  ctermfg=235  ctermbg=227  cterm=NONE
+          \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
           \ | hi CursorLine    guibg=#293739 ctermbg=236
-          \ | hi PmenuSel      guibg=#0a9dff ctermbg=39
+          \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
           \ | hi PmenuSbar     guibg=#857f78
           \ | hi PmenuThumb    guifg=#242321
           \ | hi WildMenu      gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
@@ -436,11 +438,11 @@ iab xdate <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 nnoremap gw <c-w>
 
 " manage tabs
-nnoremap gwtn :tabnew<cr>
-nnoremap gwte :tabedit<cr>
+nnoremap gwe :tabnew<cr>
+nnoremap gwT :wincmd T<cr>
 
-" kill the current buffer with a vengeance
 nnoremap <leader>bdd :call <SID>buf_kill()<cr>
+nnoremap <leader>be :enew<cr>
 
 " switch to the directory of the open buffer
 nnoremap gcd :cd %:p:h<bar>pwd<cr>
@@ -476,8 +478,7 @@ func! s:buf_findvalid()
   return l:valid_buffers
 endf
 
-func! s:buf_kill()
-  let l:origbuf = bufnr("%")
+func! s:buf_switch_to_altbuff()
   let l:valid_buffers = s:buf_findvalid()
 
   if len(l:valid_buffers) > 0
@@ -489,14 +490,21 @@ func! s:buf_kill()
       exe 'buffer '.l:valid_buffers[0]
     endif
   endif
+endf
+
+" close the current buffer with a vengeance
+func! s:buf_kill()
+  let l:origbuf = bufnr("%")
+  call <sid>buf_switch_to_altbuff()
 
   " obliterate the buffer and all of its related state (marks, local options, ...), 
-  " _iff_ it is not displaying in a _different_ window in the current tab.
-  if -1 == bufwinnr(l:origbuf) || bufwinnr(l:origbuf) == bufwinnr(bufnr("%"))
+  " _iff_ it is not displaying in a _different_ window in the _current_ tab.
+  if bufexists(l:origbuf) && -1 == bufwinnr(l:origbuf) || bufwinnr(l:origbuf) == bufwinnr(bufnr("%"))
     exe 'bwipeout! '.l:origbuf
   endif
 endf
 
+nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
 "move to last character 
 noremap - $
 
