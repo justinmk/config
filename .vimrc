@@ -88,7 +88,6 @@ Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
-" TODO: https://github.com/kurkale6ka/vim-pairs
 Bundle 'paradigm/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
