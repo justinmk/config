@@ -1,0 +1,4 @@
+--exclude=.git
+--exclude=*.cache.html
+--exclude=*.nocache.js
+
