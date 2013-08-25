@@ -179,6 +179,8 @@ set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
+set splitright
+set noequalalways
 
 set virtualedit=all "allow cursor to move anywhere in all modes
 
@@ -506,6 +508,8 @@ endf
 
 nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
 
+"move to first non-blank character
+noremap 0 ^
 "move to last character 
 noremap - $
 
@@ -517,6 +521,8 @@ nnoremap <leader>D "_D
 
 inoremap jj <esc>
 inoremap kk <esc>l
+nnoremap <left> zh
+nnoremap <right> zl
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
@@ -569,9 +575,6 @@ autocmd BufWrite *.py :call TrimTrailingWhitespace()
 au FileType python syn keyword pythonDecorator True None False self
 
 " javascript ==================================================================
-au FileType javascript setlocal nocindent
-au FileType javascript inoremap <c-a> alert();<esc>hi
-au FileType javascript inoremap <buffer> <leader>r return 
 
 " golang ======================================================================
 " possible godoc solution    https://gist.github.com/mattn/569652
@@ -684,19 +687,15 @@ set tags=./tags;,tags;
 let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
-let g:unite_ignore_source_files = []
-
 " Unite ======================================================================= {{{
 try
   call unite#custom#profile('files', 'filters', 'sorter_rank')
-  let s:unite_installed = 1
-catch
+catch E117
 endtry
-if exists('s:unite_installed')
+if exists('*unite#custom#profile')
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 
-call unite#custom#profile('files_glob', 'matchers', ['matcher_glob'])
 " see unite/custom.vim
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
@@ -842,7 +841,7 @@ if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     " force windows to be sized equally after viewport resize
-    au VimResized * wincmd =
+    " au VimResized * wincmd =
 
     if s:is_gui
         " set viminfo+=% "remember buffer list
