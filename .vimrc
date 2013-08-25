@@ -63,10 +63,9 @@ call vundle#rc()
 " let Vundle manage Vundle (required!)
 Bundle 'gmarik/vundle'
 
-if s:is_windows
 Bundle 'tomasr/molokai'
-else
-Bundle 'nanotech/jellybeans.vim'
+" Bundle 'nanotech/jellybeans.vim'
+if !s:is_windows
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
 endif
@@ -256,13 +255,9 @@ endif
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
           \'
-    if s:is_windows
-      " expects &runtimepath/colors/{name}.vim.
-      colorscheme molokai
-    else
-      let g:jellybeans_use_lowcolor_black = 0
-      colorscheme jellybeans
-    endif
+
+    " expects &runtimepath/colors/{name}.vim.
+    colorscheme molokai
 
     if s:is_gui || s:is_mac
       exe 'autocmd ColorScheme *' s:color_override
