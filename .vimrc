@@ -435,7 +435,8 @@ nnoremap gw <c-w>
 nnoremap gwe :tabnew<cr>
 nnoremap gwT :wincmd T<cr>
 
-nnoremap <leader>bdd :call <SID>buf_kill()<cr>
+nnoremap <leader>bdd :call <SID>buf_kill(1)<cr>
+nnoremap <leader>bd! :call <SID>buf_kill(0)<cr>
 nnoremap <leader>be :enew<cr>
 
 " switch to the directory of the open buffer
@@ -487,9 +488,14 @@ func! s:buf_switch_to_altbuff()
 endf
 
 " close the current buffer with a vengeance
-func! s:buf_kill()
+func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
-  call <sid>buf_switch_to_altbuff()
+  if a:mercy && &modified
+    echom 'buffer has unsaved changes'
+    return
+  endif
+
+  silent call <sid>buf_switch_to_altbuff()
 
   " obliterate the buffer and all of its related state (marks, local options, ...), 
   " _iff_ it is not displaying in a _different_ window in the _current_ tab.
