@@ -179,8 +179,6 @@ set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
-set splitright
-set noequalalways
 
 set virtualedit=all "allow cursor to move anywhere in all modes
 
@@ -432,6 +430,8 @@ iab xdate <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 "==============================================================================
 " manage windows
 nnoremap gw <c-w>
+nnoremap gwW :setlocal winfixwidth<cr>
+nnoremap gwF :setlocal winfixheight<cr>
 
 " manage tabs
 nnoremap gwe :tabnew<cr>
@@ -463,14 +463,14 @@ endf
 
 func! s:buf_findvalid()
   "valid 'next' buffers 
-  "   EXCLUDE: current, Unite, Vundle, and buffers already open in another window in the current tab
+  "   EXCLUDE: current, unlisted, Unite, Vundle
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
               \ 'buflisted(v:val) '.
               \ '&& ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) '.
               \ '&& v:val != bufnr("%") '.
-              \ '&& -1 == index(tabpagebuflist(), v:val) '.
               \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
+              " \ '&& (a:valid_even_if_open_in_other_win || -1 == index(tabpagebuflist(), v:val)) '.
   call sort(l:valid_buffers, 'BufDeath_Comparebuf')
   return l:valid_buffers
 endf
@@ -501,7 +501,7 @@ func! s:buf_kill(mercy)
 
   " obliterate the buffer and all of its related state (marks, local options, ...), 
   " _iff_ it is not displaying in a _different_ window in the _current_ tab.
-  if bufexists(l:origbuf) && -1 == bufwinnr(l:origbuf) || bufwinnr(l:origbuf) == bufwinnr(bufnr("%"))
+  if bufexists(l:origbuf) && (-1 == bufwinnr(l:origbuf) || bufwinnr(l:origbuf) == bufwinnr(bufnr("%")))
     exe 'bwipeout! '.l:origbuf
   endif
 endf
@@ -550,6 +550,9 @@ nnoremap k gk
 " disable F1 help key
 noremap! <F1> <nop>
 noremap <F1> <nop>
+
+" disable linewise undo
+nnoremap U <nop>
 
 " disable Ex mode shortcut
 nnoremap Q <nop>
@@ -622,27 +625,28 @@ autocmd BufReadPost quickfix map <buffer> <c-p> <up>
 autocmd BufReadPost quickfix map <buffer> <c-n> <down>
 
 " :noau speeds up vimgrep
-noremap <leader>grep :noau vimgrep // **<left><left><left><left>
+noremap <leader>grep :<c-u>noau vimgrep // **<left><left><left><left>
 " search and replace word under cursor
 nnoremap <leader>sr :<c-u>%s/\<<c-r><c-w>\>//gc<left><left><left>
-xnoremap <leader>sr :<c-u>call <SID>VSetSearch('/')<cr>:%s/<c-r>=@/<cr>//gc<left><left><left>
+xnoremap <leader>sr :<c-u>%s/<c-r>=<SID>VSetSearch('/')<cr>//gc<left><left><left>
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.
 function! s:VSetSearch(cmdtype)
-  let temp = @s
-  norm! gv"sy
-  let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
-  let @s = temp
+  let l:temp = @s
+  exe "normal! \<esc>gv\"sy"
+  let l:foo = substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
+  let @s = l:temp
+  return l:foo
 endfunction
 
 " in visual mode, press * or # to search for the current selection
-xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+xnoremap * /\V<C-R>=<SID>VSetSearch('/')<cr><cr>
+xnoremap # ?\V<C-R>=<SID>VSetSearch('?')<cr><cr>
 
 " recursively vimgrep for word under cursor or selection if you hit leader-star
-nnoremap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
-vnoremap <leader>* :<C-u>call <SID>VSetSearch('/')<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
+nnoremap <leader>* :<c-u>noau vimgrep /\V<c-r><c-w>/ **<CR>
+xnoremap <leader>* :<c-u>noau vimgrep /<c-r>=<SID>VSetSearch('/')<cr>/ **<CR>
 
 " =============================================================================
 " autocomplete / omnicomplete / tags
@@ -761,7 +765,6 @@ function! s:clearUniteBuffers()
     exe 'bwipeout! '.join(unitebuffs, ' ')
   endif
 endfunction
-autocmd BufEnter * silent call <sid>clearUniteBuffers()
 
 " delete empty, non-alternate, non-visible, non-special buffers
 " ensure there is always a useful 'alternate' buffer
@@ -804,7 +807,11 @@ function! s:clear_empty_buffers()
     exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
   endif
 endfunction
+augroup clearuselessbuffers
+  au!
+autocmd BufEnter * silent call <sid>clearUniteBuffers()
 autocmd BufEnter * silent call <sid>clear_empty_buffers()
+augroup END
 
 endif "}}}
 
@@ -841,7 +848,7 @@ if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     " force windows to be sized equally after viewport resize
-    " au VimResized * wincmd =
+    au VimResized * wincmd =
 
     if s:is_gui
         " set viminfo+=% "remember buffer list

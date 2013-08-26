@@ -11,7 +11,7 @@ set tabstop=4
 nnoremap K i<cr><esc>k$
 inoremap jj <esc>
 inoremap kk <esc>l
-nnoremap ,bd :bdelete<cr>
+nnoremap ,bdd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
 nnoremap ,w  :w<cr>
 noremap ,d "_d
