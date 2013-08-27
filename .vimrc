@@ -110,8 +110,6 @@ Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
 if s:is_vimRecentBuildWithLua
 Bundle 'Shougo/neocomplete.vim'
-else
-Bundle 'Shougo/neocomplcache'
 endif
 
 filetype plugin indent on     " required!
@@ -669,12 +667,10 @@ if s:is_vimRecentBuildWithLua
     endif
     let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
     let g:neocomplete#force_omni_input_patterns.go = '[^.[:digit:] *\t]\.\w*'
-else
-    nnoremap <leader>neo :NeoComplCacheEnable<cr>
 endif
 
 set wildmode=full
-set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe,*.jar
+set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe,*.jar,gwt-unitCache/*,*.cache.html
 
 if s:is_windows
     set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
