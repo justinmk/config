@@ -22,8 +22,6 @@ endif
 let mapleader = ","
 let g:mapleader = ","
 
-"exists() tests whether an option exists
-"has() tests whether a feature was compiled in
 let s:is_cygwin = has('win32unix')
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
@@ -70,6 +68,7 @@ Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
 endif
 Bundle 'sjl/clam.vim'
+Bundle 'vim-scripts/dbext.vim'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -851,11 +850,14 @@ if has("autocmd")
         autocmd VimEnter * :call LoadSession()
     endif
 
-    if s:is_windows
-        " use .viminfo instead of _viminfo
-        set viminfo+=n~/.viminfo
-        " always maximize initial GUI window size
-        autocmd GUIEnter * simalt ~x 
+    if s:is_cygwin
+      " use separate viminfo to avoid weird permissions issues
+      set viminfo+=n~/.viminfo_cygwin
+    elseif s:is_windows
+      " use .viminfo instead of _viminfo
+      set viminfo+=n~/.viminfo
+      " always maximize initial GUI window size
+      autocmd GUIEnter * simalt ~x 
     endif
 endif
 
