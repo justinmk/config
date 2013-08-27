@@ -22,7 +22,7 @@ endif
 let mapleader = ","
 let g:mapleader = ","
 
-let s:is_cygwin = has('win32unix')
+let s:is_cygwin = has('win32unix') || has('win64unix')
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_unix = has('unix')
@@ -68,6 +68,7 @@ Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
 endif
 Bundle 'sjl/clam.vim'
+" Bundle 'yuratomo/w3m.vim'
 Bundle 'vim-scripts/dbext.vim'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
@@ -90,9 +91,10 @@ Bundle 'paradigm/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
+if !s:is_cygwin
 Bundle 'Valloric/MatchTagAlways'
+endif
 Bundle 'goldfeld/vim-seek'
-" Bundle 'Lokaltog/vim-powerline'
 Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
@@ -176,6 +178,7 @@ set background=dark
 set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
+set splitright
 
 set virtualedit=all "allow cursor to move anywhere in all modes
 
@@ -837,7 +840,6 @@ function! LoadSession()
 endfunction
 
 
-" auto commands ===============================================================
 if has("autocmd")
     " Jump to the last position when reopening a file
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -849,16 +851,21 @@ if has("autocmd")
         " set viminfo+=% "remember buffer list
         autocmd VimEnter * :call LoadSession()
     endif
+endif
 
-    if s:is_cygwin
-      " use separate viminfo to avoid weird permissions issues
-      set viminfo+=n~/.viminfo_cygwin
-    elseif s:is_windows
-      " use .viminfo instead of _viminfo
-      set viminfo+=n~/.viminfo
-      " always maximize initial GUI window size
-      autocmd GUIEnter * simalt ~x 
-    endif
+if s:is_cygwin
+  " use separate viminfo to avoid weird permissions issues
+  set viminfo+=n~/.viminfo_cygwin
+  " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
+  let &t_ti.="\e[1 q"
+  let &t_SI.="\e[5 q"
+  let &t_EI.="\e[1 q"
+  let &t_te.="\e[0 q"
+elseif s:is_windows
+  " use .viminfo instead of _viminfo
+  set viminfo+=n~/.viminfo
+  " always maximize initial GUI window size
+  autocmd GUIEnter * simalt ~x 
 endif
 
 " tree view
