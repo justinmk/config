@@ -241,8 +241,8 @@ endif
     "see :h 'highlight'
     "https://github.com/Pychimp/vim-luna
     let s:color_override = ' 
-          \   hi Visual        guifg=#262626 guibg=#ffff4d gui=NONE  ctermfg=235  ctermbg=227  cterm=NONE
-          \ | hi VisualNOS     guifg=#262626 guibg=#ffff4d gui=NONE  ctermfg=235  ctermbg=227  cterm=NONE
+          \   hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
+          \ | hi VisualNOS     guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
           \ | hi CursorLine    guibg=#293739 ctermbg=236
           \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
@@ -260,8 +260,8 @@ endif
     " expects &runtimepath/colors/{name}.vim.
     colorscheme molokai
 
-    if s:is_gui || s:is_mac
-      exe 'autocmd ColorScheme *' s:color_override
+    if s:is_gui || s:is_mac || s:is_cygwin
+      exe 'autocmd ColorScheme * '.s:color_override
     else
       exe s:color_override
     endif
