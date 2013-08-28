@@ -824,10 +824,15 @@ function! LoadSession()
   if filereadable(s:sessionlock) " session already open in another vim
     return 
   elseif !isdirectory(s:sessiondir) && !EnsureDir(s:sessiondir)
-      echoerr "failed to create session dir: " . s:sessiondir 
+    echoerr "failed to create session dir: " . s:sessiondir 
   endif
 
-  if 0 == writefile([''], s:sessionlock)
+  if -1 == writefile([''], s:sessionlock)
+    echoerr "failed to create session lock: " . s:sessionlock
+    return
+  endif
+
+  if filereadable(s:sessionfile)
     exe 'source ' s:sessionfile
   endif
 
