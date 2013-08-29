@@ -102,7 +102,9 @@ Bundle 'tomtom/tcomment_vim'
 Bundle 'ap/vim-css-color'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
+if exists("$GOPATH")
 Bundle 'Blackrush/vim-gocode'
+endif
 Bundle 'justinmk/vim-ipmotion'
 Bundle 'justinmk/vim-gtfo'
 Bundle 'xolox/vim-misc'
@@ -230,18 +232,25 @@ endif
     set t_Co=256
   endif
 
+  let s:color_force_high_contrast = ' 
+        \   hi Normal     ctermbg=black guibg=black ctermfg=white guifg=white
+        \ | hi NonText    ctermbg=black guibg=black ctermfg=white guifg=white
+        \'
+
   if !s:is_mac
-    autocmd ColorScheme * highlight Normal ctermbg=black guibg=black
-          \ | highlight NonText ctermbg=black guibg=black
+    exe s:color_force_high_contrast
+    exe 'autocmd ColorScheme * '.s:color_force_high_contrast
   endif
 
   if !s:is_gui && &t_Co <= 88
-    highlight CursorLine cterm=underline
+    hi CursorLine cterm=underline
   else
     "see :h 'highlight'
     "https://github.com/Pychimp/vim-luna
+    "hi Comment ctermfg=Cyan guifg=#afafaf
     let s:color_override = ' 
-          \   hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
+          \   hi Comment       guifg=#afafaf               gui=NONE  ctermfg=145               cterm=NONE
+          \ | hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi VisualNOS     guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
           \ | hi CursorLine    guibg=#293739 ctermbg=236
@@ -600,7 +609,6 @@ if exists("$GOPATH")
   endfor
 endif
 
-autocmd BufWrite *.go if exists("$GOPATH") | exe "keepjumps Fmt" | else | call TrimTrailingWhitespace() | endif
 autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
 
 " abbreviations
@@ -820,10 +828,9 @@ set sessionoptions-=blank
 let s:sessiondir  = expand("~/.vim/sessions")
 let s:sessionfile = expand(s:sessiondir . "/session.vim")
 let s:sessionlock = expand(s:sessiondir . "/session.lock")
+
 function! LoadSession()
-  if filereadable(s:sessionlock) " session already open in another vim
-    return 
-  elseif !isdirectory(s:sessiondir) && !EnsureDir(s:sessiondir)
+  if !isdirectory(s:sessiondir) && !EnsureDir(s:sessiondir)
     echoerr "failed to create session dir: " . s:sessiondir 
   endif
 
@@ -841,18 +848,35 @@ function! LoadSession()
   autocmd VimLeave * call delete(s:sessionlock)
 endfunction
 
+" augroup history_monitor
+"   au!
+"   autocmd VimLeave * call Debug_lost_history()
+"   autocmd VimEnter * call Debug_lost_history()
+"   autocmd BufEnter * call Debug_lost_history()
+" augroup END
+" func! Debug_lost_history()
+"   redir => l:foo
+"   silent! execute 'history'
+"   redir END
+" 
+"   let bar = split(l:foo, "\n")
+"   echo len(bar)
+" endf
 
-if has("autocmd")
-    " Jump to the last position when reopening a file
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" Jump to the last position when reopening a file
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-    " force windows to be sized equally after viewport resize
-    au VimResized * wincmd =
+" force windows to be sized equally after viewport resize
+au VimResized * wincmd =
 
-    if s:is_gui
-        " set viminfo+=% "remember buffer list
-        autocmd VimEnter * :call LoadSession()
-    endif
+if s:is_gui
+  if !filereadable(s:sessionlock)
+    "use a separate viminfo to avoid losing command history by other vim instances
+    set viminfo+=n~/.viminfo_session
+
+    " set viminfo+=% "remember buffer list
+    autocmd VimEnter * :call LoadSession()
+  endif
 endif
 
 if s:is_cygwin
@@ -864,8 +888,6 @@ if s:is_cygwin
   let &t_EI.="\e[1 q"
   let &t_te.="\e[0 q"
 elseif s:is_windows
-  " use .viminfo instead of _viminfo
-  set viminfo+=n~/.viminfo
   " always maximize initial GUI window size
   autocmd GUIEnter * simalt ~x 
 endif
