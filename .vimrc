@@ -85,10 +85,10 @@ Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
 " Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-speeddating'
-Bundle 'kshenoy/vim-signature'
+Bundle 'justinmk/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
-Bundle 'paradigm/TextObjectify'
+Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
@@ -141,6 +141,8 @@ if s:is_windows
   let g:gitgutter_realtime = 0
 endif
 
+let g:SignatureEnableDefaultMappings = 2
+
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
 " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
@@ -183,6 +185,7 @@ set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusl
 set foldmethod=marker
 set splitright
 
+set nojoinspaces
 set virtualedit=all "allow cursor to move anywhere in all modes
 
 if &startofline
@@ -314,64 +317,11 @@ func! TrimTrailingWhitespace()
   normal `zmz
 endfunc
 
-"return the syntax highlight group under the cursor ''
-function! CurrentWordSyntaxName()
+"return the syntax highlight group under the cursor
+function! GetSyntaxName()
     let l:name = synIDattr(synID(line('.'),col('.'),1),'name')
     return l:name == '' ? '' : '[' . l:name . ']'
 endfunction
-
-" HiCursorWords "{{{
-exec ((s:is_gui || &t_Co > 16) ? 'autocmd ColorScheme * ' : '') . 'highlight WordUnderTheCursor guifg=black guibg=white ctermfg=black ctermbg=white' 
-
-function! s:HiCursorWords__getHiName(linenum, colnum)
-  let hiname = synIDattr(synID(a:linenum, a:colnum, 0), "name")
-  let hiname = s:HiCursorWords__resolveHiName(hiname)
-  return hiname
-endfunction
-
-function! s:HiCursorWords__resolveHiName(hiname)
-  redir => resolved
-  silent execute 'highlight ' . a:hiname
-  redir END
-
-  if stridx(resolved, 'links to') == -1
-    return a:hiname
-  endif
-
-  return substitute(resolved, '\v(.*) links to ([^ ]+).*$', '\2', '')
-endfunction
-
-function! s:HiCursorWords__getWordUnderTheCursor(linestr, linenum, colnum)
-  "let word = substitute(a:linestr, '.*\(\<\k\{-}\%' . a:colnum . 'c\k\{-}\>\).*', '\1', '') "expand('<word>')
-  let word = matchstr(a:linestr, '\k*\%' . a:colnum . 'c\k\+')
-  if word == ''
-    return ''
-  endif
-  return '\V\<' . word . '\>'
-endfunction
-
-let s:HiCursorWords_hiGroupRegexp = ''
-function! s:HiCursorWords__execute()
-  if exists("w:HiCursorWords__matchId")
-    call matchdelete(w:HiCursorWords__matchId)
-    unlet w:HiCursorWords__matchId
-  endif
-
-  let linestr = getline('.')
-  let linenum = line('.')
-  let colnum = col('.')
-
-  "debug
-  "echo s:HiCursorWords__getHiName(linenum, colnum)
-
-  let word = s:HiCursorWords__getWordUnderTheCursor(linestr, linenum, colnum)
-  if strlen(word) != 0
-    if match(s:HiCursorWords__getHiName(linenum, colnum), s:HiCursorWords_hiGroupRegexp) == -1
-      return
-    endif
-    let w:HiCursorWords__matchId = matchadd('WordUnderTheCursor', word, 0)
-  endif
-endfunction " }}}
 
 " generate random number at end of current line 
 " credit: http://mo.morsi.org/blog/node/299
@@ -463,7 +413,7 @@ func! BufDeath_Comparebuf(b1, b2)
 endf
 
 func! s:buf_find_displayed_bufs()
-  " all buffers displayed in windows in any tab.
+  " all buffers displayed in any window, any tab.
   let s:displayedbufs = []
   for i in range(1, tabpagenr('$'))
     call extend(s:displayedbufs, tabpagebuflist(i))
@@ -471,29 +421,27 @@ func! s:buf_find_displayed_bufs()
   return s:displayedbufs
 endf
 
-func! s:buf_findvalid()
+func! s:buf_find_valid_next_bufs()
   "valid 'next' buffers 
-  "   EXCLUDE: current, unlisted, Unite, Vundle
+  "   EXCLUDE: current, unlisted, Unite
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
-              \ 'buflisted(v:val) '.
-              \ '&& ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) '.
-              \ '&& v:val != bufnr("%") '.
-              \ '&& bufname(v:val) !~# ''\*unite\*\|\[\(unite\|Vundle\)\]''')
-              " \ '&& (a:valid_even_if_open_in_other_win || -1 == index(tabpagebuflist(), v:val)) '.
+              \ 'buflisted(v:val) 
+              \  && ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) 
+              \  && v:val != bufnr("%") 
+              \  && -1 == index(tabpagebuflist(), v:val) 
+              \ ')
   call sort(l:valid_buffers, 'BufDeath_Comparebuf')
   return l:valid_buffers
 endf
 
 func! s:buf_switch_to_altbuff()
-  let l:valid_buffers = s:buf_findvalid()
-
-  if len(l:valid_buffers) > 0
-    " change to the 'alternate' buffer iff it is a 'valid' buffer.
-    if -1 < index(l:valid_buffers, bufnr("#"))
-      buffer #
-    else
-      " just pick the first 'valid' buffer.
+  " change to the 'alternate' buffer if it exists
+  if -1 != bufnr("#")
+    buffer #
+  else " change to first 'valid' buffer
+    let l:valid_buffers = s:buf_find_valid_next_bufs()
+    if len(l:valid_buffers) > 0
       exe 'buffer '.l:valid_buffers[0]
     endif
   endif
@@ -510,8 +458,7 @@ func! s:buf_kill(mercy)
   silent call <sid>buf_switch_to_altbuff()
 
   " obliterate the buffer and all of its related state (marks, local options, ...), 
-  " _iff_ it is not displaying in a _different_ window in the _current_ tab.
-  if bufexists(l:origbuf) && (-1 == bufwinnr(l:origbuf) || bufwinnr(l:origbuf) == bufwinnr(bufnr("%")))
+  if bufexists(l:origbuf) "some other mechanism may have deleted the buffer already.
     exe 'bwipeout! '.l:origbuf
   endif
 endf
@@ -531,6 +478,9 @@ nnoremap <leader>D "_D
 
 inoremap jj <esc>
 inoremap kk <esc>l
+nnoremap ' `
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 nnoremap <left> 3zh
 nnoremap <right> 3zl
 nnoremap <c-d> <PageDown>
@@ -569,8 +519,6 @@ nnoremap Q <nop>
 
 " turn off search highlighting
 nnoremap <silent> <leader>hs :nohlsearch<cr>
-" highlight current word
-nnoremap <silent> <leader>hw :call <sid>HiCursorWords__execute()<cr>
 
 func! ReadExCommandOutput(cmd)
   redir => l:message
@@ -773,15 +721,13 @@ function! s:clearUniteBuffers()
   endif
 endfunction
 
-" delete empty, non-alternate, non-visible, non-special buffers
-" ensure there is always a useful 'alternate' buffer
-" ensure that the next switched-to buffer is not already displayed in some other window in the current tab
+" delete empty, non-visible, non-special buffers having no significant undo stack.
+" TODO: exclude buffers that have an undo stack
 function! s:clear_empty_buffers()
-  " test for empty buffer:
-  "   expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
-  " :bufdo if line2byte(line("$")+1)<=2 | call add(empty_bufs, bufnr("%")) | endif
-  " if the buffer is loaded: we can just check its contents via getbufline() or ZyX's method.
   let displayedbufs = <sid>buf_find_displayed_bufs()
+
+  " if the buffer is loaded, just check to see if its content is empty:
+  "     [""] == getbufline(v:val, 1, 2)
   let empty_bufs = filter(range(1, bufnr('$')),
         \ 'bufloaded(v:val) 
         \  && 0 == getbufvar(v:val, "&modified") 
@@ -816,8 +762,8 @@ function! s:clear_empty_buffers()
 endfunction
 augroup clearuselessbuffers
   au!
-autocmd BufEnter * silent call <sid>clearUniteBuffers()
-autocmd BufEnter * silent call <sid>clear_empty_buffers()
+  autocmd BufEnter * silent call <sid>clearUniteBuffers()
+  autocmd BufEnter * silent call <sid>clear_empty_buffers()
 augroup END
 
 endif "}}}
@@ -864,7 +810,7 @@ endfunction
 " endf
 
 " Jump to the last position when reopening a file
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
 " force windows to be sized equally after viewport resize
 au VimResized * wincmd =
