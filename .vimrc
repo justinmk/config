@@ -63,13 +63,11 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'tomasr/molokai'
-" Bundle 'nanotech/jellybeans.vim'
 if !s:is_windows
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
 endif
 Bundle 'sjl/clam.vim'
-" Bundle 'yuratomo/w3m.vim'
 Bundle 'vim-scripts/dbext.vim'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
@@ -95,7 +93,7 @@ Bundle 'gaving/vim-textobj-argument'
 if !s:is_cygwin
 Bundle 'Valloric/MatchTagAlways'
 endif
-Bundle 'goldfeld/vim-seek'
+" Bundle 'goldfeld/vim-seek'
 Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
@@ -396,6 +394,7 @@ iab xdate <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 nnoremap gw <c-w>
 nnoremap gwW :setlocal winfixwidth<cr>
 nnoremap gwF :setlocal winfixheight<cr>
+nnoremap gwN :vnew<cr>
 
 " manage tabs
 nnoremap gwe :tabnew<cr>
@@ -476,9 +475,10 @@ noremap - $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
-" delete without overwriting yank register
-noremap <leader>d "_d
-nnoremap <leader>D "_D
+" delete without overwriting the default register
+nnoremap s "_d
+xnoremap s "_d
+nnoremap S "_D
 
 inoremap jj <esc>
 inoremap kk <esc>l
@@ -651,6 +651,7 @@ let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
 " Unite ======================================================================= {{{
+" https://github.com/Shougo/unite.vim/issues/347
 try
   call unite#custom#profile('files', 'filters', 'sorter_rank')
 catch E117

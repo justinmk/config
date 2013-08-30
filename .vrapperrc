@@ -14,11 +14,13 @@ inoremap kk <esc>l
 nnoremap ,bdd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
 nnoremap ,w  :w<cr>
-noremap ,d "_d
-nnoremap ,D "_D
+nnoremap s "_d
+xnoremap s "_d
+nnoremap S "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap ,hs :nohlsearch<cr>
+noremap 0 ^
 noremap - $
 
 " vrapper
