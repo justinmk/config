@@ -157,8 +157,10 @@ set encoding=utf-8
 
 try | lang en_US | catch | endtry
 
-if s:is_windows || s:is_cygwin || s:is_msysgit || s:is_ssh
+if s:is_msysgit || s:is_ssh
   set listchars=tab:>\ ,trail:.,extends:>,precedes:<,nbsp:+
+elseif s:is_windows || s:is_cygwin
+  set listchars=tab:▸\ ,trail:▫,extends:>,precedes:<,nbsp:+
 endif
 set list
 
@@ -184,6 +186,8 @@ set showtabline=1
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set foldmethod=marker
 set splitright
+set sidescroll=2
+set sidescrolloff=2
 
 set nojoinspaces
 set virtualedit=all "allow cursor to move anywhere in all modes
@@ -787,6 +791,7 @@ function! LoadSession()
 
   if filereadable(s:sessionfile)
     exe 'source ' s:sessionfile
+    filetype detect
   endif
 
   exe 'Obsession '.s:sessionfile
@@ -825,7 +830,7 @@ if s:is_gui
   endif
 endif
 
-if s:is_cygwin
+if s:is_cygwin || s:is_ssh
   " use separate viminfo to avoid weird permissions issues
   set viminfo+=n~/.viminfo_cygwin
   " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
