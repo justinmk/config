@@ -157,9 +157,9 @@ set encoding=utf-8
 
 try | lang en_US | catch | endtry
 
-if s:is_msysgit || s:is_ssh
+if s:is_msysgit
   set listchars=tab:>\ ,trail:.,extends:>,precedes:<,nbsp:+
-elseif s:is_windows || s:is_cygwin
+elseif s:is_windows || s:is_cygwin || s:is_ssh
   set listchars=tab:▸\ ,trail:▫,extends:>,precedes:<,nbsp:+
 endif
 set list
