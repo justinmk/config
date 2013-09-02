@@ -90,7 +90,6 @@ $ '
     GIT_PS1_SHOWCOLORHINTS=1
 fi
 
-#GNU-style aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
@@ -98,6 +97,20 @@ fi
 alias ls='ls -C --color=auto'
 alias l='ls -lrt'
 alias gitk='gitk --all'
+
+# change to parent directory matching partial string, eg:
+# in directory /home/foo/bar/baz, 'bd f' changes to /home/foo
+function bd () {
+  local old_dir=`pwd`
+  local new_dir=`echo $old_dir | sed 's|\(.*/'$1'[^/]*/\).*|\1|'`
+  index=`echo $new_dir | awk '{ print index($1,"/'$1'"); }'`
+  if [ $index -eq 0 ] ; then
+    echo "No such occurrence."
+  else
+    echo $new_dir
+    cd "$new_dir"
+  fi
+}
 
 #msysgit cygwin sets this, even over ssh; full cygwin sets this to 'xterm'.
 if [[ $TERM != 'cygwin' ]]; then

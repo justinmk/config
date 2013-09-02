@@ -29,6 +29,7 @@ let s:is_unix = has('unix')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
+let s:is_cygwin_ssh = !empty($SSH_CYGWIN) && $SSH_CYGWIN
 let s:is_vimRecentBuildWithLua = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 
 " 'is GUI' means vim is _not_ running within the terminal.
@@ -157,7 +158,7 @@ try | lang en_US | catch | endtry
 
 if s:is_msysgit
   set listchars=tab:>\ ,trail:.,extends:>,precedes:<,nbsp:+
-elseif s:is_windows || s:is_cygwin || s:is_ssh
+elseif s:is_windows || s:is_cygwin || s:is_cygwin_ssh
   set listchars=tab:▸\ ,trail:▫,extends:>,precedes:<,nbsp:+
 endif
 set list
@@ -831,9 +832,12 @@ if s:is_gui
   endif
 endif
 
-if s:is_cygwin || s:is_ssh
+if s:is_cygwin
   " use separate viminfo to avoid weird permissions issues
   set viminfo+=n~/.viminfo_cygwin
+endif
+
+if s:is_cygwin || s:is_cygwin_ssh
   " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
   let &t_ti.="\e[1 q"
   let &t_SI.="\e[5 q"
