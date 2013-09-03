@@ -58,7 +58,10 @@ endif
 filetype off " required!
 
 set runtimepath+=~/.vim/bundle/vundle/
-call vundle#rc()
+try | call vundle#rc() | catch | endtry
+let s:has_plugins=exists("*vundle#rc()")
+
+if s:has_plugins "{{{
 
 " let Vundle manage Vundle (required!)
 Bundle 'gmarik/vundle'
@@ -115,6 +118,8 @@ if s:is_vimRecentBuildWithLua
 Bundle 'Shougo/neocomplete.vim'
 endif
 
+endif "}}}
+
 filetype plugin indent on     " required!
 
 
@@ -141,6 +146,11 @@ if s:is_windows
 endif
 
 let g:SignatureEnableDefaultMappings = 2
+
+let g:airline#extensions#whitespace#enabled = 0
+if !s:is_gui
+  let g:airline_theme='simple'
+endif
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
@@ -182,7 +192,9 @@ set tm=3000
 set nonumber
 set background=dark
 set showtabline=1
+if s:has_plugins
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+endif
 set foldmethod=marker
 set splitright
 set sidescroll=2
@@ -233,7 +245,7 @@ endif
     au WinLeave * setlocal nocursorline
   augroup END
 
-  if &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
+  if s:has_plugins && &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
     " force colors
     set t_Co=256
   endif
@@ -876,3 +888,4 @@ if isdirectory(expand(s:dir))
   endif
 endif
 
+" r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
