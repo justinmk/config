@@ -58,7 +58,10 @@ endif
 filetype off " required!
 
 set runtimepath+=~/.vim/bundle/vundle/
-try | call vundle#rc() | catch | endtry
+try 
+  call vundle#rc() 
+catch E117
+endtry
 let s:has_plugins=exists("*vundle#rc()")
 
 if s:has_plugins "{{{
