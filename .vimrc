@@ -265,7 +265,10 @@ endif
     exe 'autocmd ColorScheme * '.s:color_force_high_contrast
   endif
 
-  if !s:is_gui && &t_Co <= 88
+  if s:is_msysgit
+    hi CursorLine  term=NONE cterm=NONE ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=NONE
+    hi ColorColumn term=NONE cterm=NONE ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=NONE
+  elseif !s:is_gui && &t_Co <= 88
     hi CursorLine cterm=underline
   else
     "see :h 'highlight'
@@ -471,13 +474,18 @@ endf
 " close the current buffer with a vengeance
 func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
+  let l:origbufname = bufname(l:origbuf)
   if a:mercy && &modified
-    echoerr 'buffer has unsaved changes'
+    echom 'buffer has unsaved changes'
     return
   endif
 
   silent call <sid>buf_switch_to_altbuff()
 
+  " remove the buffer filename (if any) from the args list.
+  if !empty(l:origbufname)
+    silent! exe 'argdelete '.l:origbufname
+  endif
   " obliterate the buffer and all of its related state (marks, local options, ...), 
   if bufexists(l:origbuf) "some other mechanism may have deleted the buffer already.
     exe 'bwipeout! '.l:origbuf
