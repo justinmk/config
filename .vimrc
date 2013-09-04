@@ -151,6 +151,10 @@ endif
 let g:SignatureEnableDefaultMappings = 2
 
 let g:airline#extensions#whitespace#enabled = 0
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
 if !s:is_gui
   let g:airline_theme='simple'
 endif
@@ -270,7 +274,7 @@ endif
     "https://github.com/Pychimp/vim-luna
     "hi Comment ctermfg=Cyan guifg=#afafaf
     let s:color_override = ' 
-          \   hi Comment       guifg=#afafaf               gui=NONE  ctermfg=145               cterm=NONE
+          \   hi Comment       guifg=#afafaf               gui=NONE  ctermfg=59                cterm=NONE
           \ | hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi VisualNOS     guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
@@ -499,10 +503,10 @@ nnoremap S "_D
 inoremap jj <esc>
 inoremap kk <esc>l
 nnoremap ' `
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
-nnoremap <left> 3zh
-nnoremap <right> 3zl
+nnoremap <C-e> 2<C-e>
+nnoremap <C-y> 2<C-y>
+nnoremap <left> 4zh
+nnoremap <right> 4zl
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
