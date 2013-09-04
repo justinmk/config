@@ -88,7 +88,6 @@ Bundle 'tpope/vim-rsi'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
-" Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-speeddating'
 Bundle 'justinmk/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
@@ -100,7 +99,6 @@ Bundle 'gaving/vim-textobj-argument'
 if !s:is_cygwin
 Bundle 'Valloric/MatchTagAlways'
 endif
-" Bundle 'goldfeld/vim-seek'
 Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
@@ -274,7 +272,7 @@ endif
     "https://github.com/Pychimp/vim-luna
     "hi Comment ctermfg=Cyan guifg=#afafaf
     let s:color_override = ' 
-          \   hi Comment       guifg=#afafaf               gui=NONE  ctermfg=59                cterm=NONE
+          \   hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
           \ | hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi VisualNOS     guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
@@ -474,7 +472,7 @@ endf
 func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
   if a:mercy && &modified
-    echom 'buffer has unsaved changes'
+    echoerr 'buffer has unsaved changes'
     return
   endif
 
