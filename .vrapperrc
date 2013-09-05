@@ -40,6 +40,14 @@ nnoremap <c-p> :eclipseopenresource<cr>
 eclipseaction eclipsecmdsearch org.eclipse.ui.window.quickAccess
 nnoremap <m-l> :eclipsecmdsearch<cr>
 
+" open file manager here
+eclipseaction openfmhere com.tetrade.eclipse.plugins.easyshell.command.shellExplore
+nnoremap gof :openfmhere<cr>
+
+" open terminal here
+eclipseaction opentermhere com.tetrade.eclipse.plugins.easyshell.command.shellOpen
+nnoremap got :opentermhere<cr>
+
 nnoremap ,v  :vim<cr>
 set autochdir
 set cleanindent
