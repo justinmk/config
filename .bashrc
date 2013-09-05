@@ -43,11 +43,16 @@ fi
 # =============================================================================
 
 # HIST* are bash-only variables, not environmental variables, so do not 'export'
-HISTCONTROL=erasedups
+# ignoredups only ignores _consecutive_ duplicates.
+HISTCONTROL=erasedups:ignoredups
 HISTSIZE=10000
 HISTFILESIZE=20000
+HISTIGNORE='cd:ls:bg:fg:history'
+HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
+# write history file after each command
+PROMPT_COMMAND='history -a'
 
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
