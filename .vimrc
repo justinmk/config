@@ -55,16 +55,14 @@ if &compatible
     " caution: this resets many settings, eg 'history'
     set nocompatible " be iMproved
 endif
+
+let s:has_plugins=filereadable(expand("~/.vim/bundle/vundle/autoload/vundle.vim"))
+if s:has_plugins "{{{
+
 filetype off " required!
 
 set runtimepath+=~/.vim/bundle/vundle/
-try 
-  call vundle#rc() 
-catch E117
-endtry
-let s:has_plugins=exists("*vundle#rc()")
-
-if s:has_plugins "{{{
+call vundle#rc() 
 
 " let Vundle manage Vundle (required!)
 Bundle 'gmarik/vundle'
@@ -182,7 +180,9 @@ set report=0
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
-"set ttyfast
+if !s:is_ssh
+set ttyfast
+endif
 set cmdheight=2 "The commandbar height
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
@@ -676,16 +676,14 @@ set tags=./tags;,tags;
 let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
-" Unite ======================================================================= {{{
-" https://github.com/Shougo/unite.vim/issues/347
-try
-  call unite#custom#profile('files', 'filters', 'sorter_rank')
-catch E117
-endtry
-if exists('*unite#custom#profile')
+if s:has_plugins "unite.vim =============================================== {{{
+call unite#custom#profile('files', 'filters', 'sorter_rank')
+
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 
+" TODO: https://github.com/bling/dotvim/blob/master/vimrc#L535
+"       https://github.com/Shougo/unite.vim/issues/347
 " see unite/custom.vim
 call unite#custom#source(
             \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
