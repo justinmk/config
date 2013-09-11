@@ -12,9 +12,9 @@ inoremap kk <esc>l
 nnoremap gwc :vsc Window.CloseDocumentWindow<cr>
 nnoremap <leader>bdd :vsc Window.CloseDocumentWindow<cr>
 nnoremap <leader>w  :w<cr>
-nnoremap s "_d
-xnoremap s "_d
-nnoremap S "_D
+nnoremap <leader>d "_d
+xnoremap <leader>d "_d
+nnoremap <leader>D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <leader>hs :nohlsearch<cr>

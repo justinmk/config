@@ -10,6 +10,17 @@
 "    source /path/to/.vimrc
 "==============================================================================
 
+let s:vimrc_first_run = !exists("mapleader")
+if s:vimrc_first_run
+  " ensure that we always start with vim defaults (as opposed to those set by the current system)
+  set all&
+  " caution: this resets many settings, eg 'history'
+  set nocompatible
+endif
+
+" removing this breaks alt/meta mappings (on win32 gvim at least).
+set encoding=utf-8
+
 if exists('&guioptions')
     "no toolbar, no menu bar, no left scroll bar
     set guioptions-=T guioptions-=m guioptions-=L guioptions-=l
@@ -51,11 +62,6 @@ fun! InstallVundle()
     silent !mkdir -p ~/.vim/bundle
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endfun
-
-if &compatible
-    " caution: this resets many settings, eg 'history'
-    set nocompatible " be iMproved
-endif
 
 let s:has_plugins=isdirectory(expand("~/.vim/bundle/vundle"))
 if s:has_plugins "{{{
@@ -148,7 +154,7 @@ endif
 let g:SignatureEnableDefaultMappings = 2
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
+" let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 3
 let g:airline#extensions#whitespace#enabled = 0
@@ -168,9 +174,6 @@ if !s:is_msysgit && !s:is_gui
     set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
           \ <m-t>=t <m-l>=l <m-h>=h
 endif
-
-" removing this breaks alt/meta mappings (on win32 gvim at least).
-set encoding=utf-8
 
 try | lang en_US | catch | endtry
 
@@ -250,10 +253,6 @@ elseif s:is_gui "linux or other
 endif
 
 "colorscheme {{{
-  augroup vimrc_colors
-    autocmd!
-  augroup END
-
   if s:has_plugins && &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
     " force colors
     set t_Co=256
@@ -266,7 +265,7 @@ endif
 
   if !s:is_mac
     exe s:color_force_high_contrast
-    exe 'autocmd vimrc_colors ColorScheme * '.s:color_force_high_contrast
+    exe 'autocmd ColorScheme * '.s:color_force_high_contrast
   endif
 
   if s:is_msysgit
@@ -296,11 +295,13 @@ endif
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
           \'
 
-    " expects &runtimepath/colors/{name}.vim.
-    colorscheme molokai
+    if s:vimrc_first_run "avoid re-triggering 'ColorScheme' event
+      " expects &runtimepath/colors/{name}.vim.
+      colorscheme molokai
+    endif
 
     if s:is_gui || s:is_mac || s:is_cygwin
-      exe 'autocmd vimrc_colors ColorScheme * '.s:color_override
+      exe 'autocmd ColorScheme * '.s:color_override
     else
       exe s:color_override
     endif
@@ -378,6 +379,53 @@ function! BreakAfter(s)
     execute ':%s/' . a:s . '/' . a:s . '\r/g'
 endfunction
 
+" differences to vim-seek:
+"   - adds to jumps list
+"   - multiline
+function! Sseek()
+  call SeekString(<sid>getNextNChars(2))
+endf
+func! SeekString(s)
+  if empty(a:s)
+    return
+  endif
+  try
+    "this does _not_ overwrite the / register
+    exec 'norm! /\V\C'.a:s."\<cr>"
+  catch E486
+    echo 'sseek: not found: '.a:s
+  endtry
+
+    " let [sl, sc] = getpos(a:0 ? "'<" : "'[")[1:2]
+    " let [el, ec] = getpos(a:0 ? "'>" : "']")[1:2]
+    " if a:vt == 'line' || a:vt == 'V'
+    "     call append(el, s)
+    "     call append(sl-1, s)
+    " elseif a:vt == 'block' || a:vt == "\<c-v>"
+    "     exe sl.','.el 's/\%'.sc.'c\|\%'.ec.'c.\zs/\=s/g|norm!``'
+    " else
+    "     exe el 's/\%'.ec.'c.\zs/\=s/|norm!``'
+    "     exe sl 's/\%'.sc.'c/\=s/|norm!``'
+    " endif
+endfunction
+
+function! s:getInputChar()
+  let c = getchar()
+  return type(c) == type(0) ? nr2char(c) : c
+endfunction
+function! s:getNextNChars(n)
+  let l:s = ''
+  for i in range(1, a:n)
+    let l:c = <sid>getInputChar()
+    if l:c =~ "\<esc>" || l:c =~ "\<c-c>"
+        return ""
+    endif
+    let l:s .= l:c
+  endfor
+  return l:s
+endfunction
+
+nnoremap <silent> s :<c-u>call Sseek()<cr>
 " =============================================================================
 " normal mode
 " =============================================================================
@@ -504,9 +552,9 @@ noremap - $
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
 " delete without overwriting the default register
-nnoremap s "_d
-xnoremap s "_d
-nnoremap S "_D
+nnoremap <leader>d "_d
+xnoremap <leader>d "_d
+nnoremap <leader>D "_D
 
 inoremap jj <esc>
 inoremap kk <esc>l
@@ -831,7 +879,6 @@ function! LoadSession()
 
   if filereadable(s:sessionfile)
     exe 'source ' s:sessionfile
-    filetype detect
   endif
 
   exe 'Obsession '.s:sessionfile
