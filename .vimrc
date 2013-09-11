@@ -21,6 +21,7 @@ endif
 
 let mapleader = ","
 let g:mapleader = ","
+nnoremap <silent> \ :norm! ,<cr>
 
 let s:is_cygwin = has('win32unix') || has('win64unix')
 let s:is_windows = has('win32') || has('win64')
@@ -56,7 +57,7 @@ if &compatible
     set nocompatible " be iMproved
 endif
 
-let s:has_plugins=filereadable(expand("~/.vim/bundle/vundle/autoload/vundle.vim"))
+let s:has_plugins=isdirectory(expand("~/.vim/bundle/vundle"))
 if s:has_plugins "{{{
 
 filetype off " required!
@@ -208,17 +209,19 @@ set sidescrolloff=2
 set nojoinspaces
 set virtualedit=all "allow cursor to move anywhere in all modes
 
-if &startofline
-" don't reset the cursor upon returning to a buffer:
-augroup StayPut
-  au!
-  " 1. disable 'startofline' temporarily while switching buffers, 
-  " 2. then re-enable it on CursorMoved, 
-  " 3. then clear the CursorMoved autocommand to avoid spam
-  autocmd BufLeave * set nostartofline | 
-      \ autocmd StayPut CursorMoved,CursorMovedI * set startofline | autocmd! StayPut CursorMoved,CursorMovedI
+" restore cursor position upon returning to a buffer, _without_ permanently 
+" setting 'nostartofline' (which affects many other behaviors).
+augroup vimrc_stayput
+  autocmd!
+  if &startofline
+    " 1. disable 'startofline' temporarily while switching buffers, 
+    " 2. then re-enable it on CursorMoved, 
+    " 3. then clear the CursorMoved autocommand to avoid spam
+    autocmd BufLeave * set nostartofline |
+          \ autocmd vimrc_stayput CursorMoved,CursorMovedI * set startofline |
+          \ autocmd! vimrc_stayput CursorMoved,CursorMovedI
+  endif
 augroup END
-endif
 
 " platform-specific settings
 if s:is_windows
@@ -243,11 +246,8 @@ elseif s:is_gui "linux or other
 endif
 
 "colorscheme {{{
-  "highlight line in the current window only
-  augroup CursorLine
-    au!
-    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-    au WinLeave * setlocal nocursorline
+  augroup vimrc_colors
+    autocmd!
   augroup END
 
   if s:has_plugins && &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
@@ -262,7 +262,7 @@ endif
 
   if !s:is_mac
     exe s:color_force_high_contrast
-    exe 'autocmd ColorScheme * '.s:color_force_high_contrast
+    exe 'autocmd vimrc_colors ColorScheme * '.s:color_force_high_contrast
   endif
 
   if s:is_msysgit
@@ -296,7 +296,7 @@ endif
     colorscheme molokai
 
     if s:is_gui || s:is_mac || s:is_cygwin
-      exe 'autocmd ColorScheme * '.s:color_override
+      exe 'autocmd vimrc_colors ColorScheme * '.s:color_override
     else
       exe s:color_override
     endif
@@ -316,8 +316,6 @@ set expandtab
 set tabstop=2
 set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
-
-autocmd FileType text setlocal tabstop=4 shiftwidth=4
 
 set linebreak "wrap long lines at 'breakat' character
 set textwidth=500
@@ -406,7 +404,7 @@ endfunc
 
 " abbreviations ===============================================================
 
-iab xdate <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
+iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -509,6 +507,7 @@ nnoremap S "_D
 inoremap jj <esc>
 inoremap kk <esc>l
 nnoremap ' `
+xnoremap ' `
 nnoremap <C-e> 2<C-e>
 nnoremap <C-y> 2<C-y>
 nnoremap <left> 4zh
@@ -560,13 +559,6 @@ func! ReadExCommandOutput(cmd)
 endf
 command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
 
-" python ======================================================================
-autocmd BufWrite *.py :call TrimTrailingWhitespace()
-
-au FileType python syn keyword pythonDecorator True None False self
-
-" javascript ==================================================================
-
 " golang ======================================================================
 " possible godoc solution    https://gist.github.com/mattn/569652
 "    Bundle 'thinca/vim-ref'
@@ -574,27 +566,26 @@ au FileType python syn keyword pythonDecorator True None False self
 "    let g:ref_open = 'vsplit'
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
 "    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
+augroup vimrc_golang
+  autocmd!
+  autocmd FileType go iab <buffer> err- if err != nil {<cr>log.Fatal(err)}<cr>
+  autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
 
-if exists("$GOPATH")
-  let s:gopaths = split($GOPATH, ':')
-  for s:gopath in s:gopaths
-    "set up Golint    https://github.com/golang/lint
-    if isdirectory(s:gopath."/src/github.com/golang/lint/misc/vim")
-      exe 'set runtimepath+='.s:gopath.'/src/github.com/golang/lint/misc/vim'
-      autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
-      break
-    endif
-  endfor
-endif
-
-autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
-
-" abbreviations
-au FileType go iab <buffer> ife if err != nil {<cr>log.Fatal(err)}<cr>
-au FileType go iab <buffer> ,,e if err != nil {<cr>log.Fatal(err)}<cr>
-au FileType go iab <buffer> er- if err != nil {<cr>log.Fatal(err)}<cr>
+  if exists("$GOPATH")
+    let s:gopaths = split($GOPATH, ':')
+    for s:gopath in s:gopaths
+      "set up Golint    https://github.com/golang/lint
+      if isdirectory(s:gopath."/src/github.com/golang/lint/misc/vim")
+        exe 'set runtimepath+='.s:gopath.'/src/github.com/golang/lint/misc/vim'
+        autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
+        break
+      endif
+    endfor
+  endif
+augroup END
 
 " clojure =====================================================================
+" :h 'iskeyword' =>  "When the 'lisp' option is on the '-' character is always included."
 "    https://github.com/tpope/vim-fireplace
 "    https://github.com/guns/vim-clojure-static
 "    https://github.com/guns/vim-sexp
@@ -605,11 +596,39 @@ au FileType go iab <buffer> er- if err != nil {<cr>log.Fatal(err)}<cr>
 "==============================================================================
 " vim grep/search/replace
 "==============================================================================
-nnoremap <leader>cc :botright copen<cr>
-"toggle quickfix window
-autocmd BufReadPost quickfix map <buffer> <leader>cc :cclose<cr>
-autocmd BufReadPost quickfix map <buffer> <c-p> <up>
-autocmd BufReadPost quickfix map <buffer> <c-n> <down>
+nnoremap <leader>qq :botright copen<cr>
+augroup vimrc_autocmd
+  autocmd!
+  "toggle quickfix window
+  autocmd BufReadPost quickfix map <buffer> <leader>qq :cclose<cr>|map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
+
+  autocmd FileType unite call s:unite_settings()
+
+  autocmd BufEnter * silent call <sid>clearUniteBuffers()
+  autocmd BufEnter * silent call <sid>clear_empty_buffers()
+
+  " Jump to the last position when reopening a file
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
+  " force windows to be sized equally after viewport resize
+  autocmd VimResized * wincmd =
+
+  autocmd FileType text setlocal tabstop=4 shiftwidth=4
+
+  autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+
+  autocmd BufWrite *.py :call TrimTrailingWhitespace()
+  autocmd FileType python syn keyword pythonDecorator True None False self
+
+  "highlight line in the current window only
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+
+  if s:is_windows
+    " always maximize initial GUI window size
+    autocmd GUIEnter * simalt ~x 
+  endif
+augroup END
 
 " :noau speeds up vimgrep
 noremap <leader>grep :<c-u>noau vimgrep // **<left><left><left><left>
@@ -638,8 +657,6 @@ xnoremap <leader>* :<c-u>noau vimgrep /<c-r>=<SID>VSetSearch('/')<cr>/ **<CR>
 " =============================================================================
 " autocomplete / omnicomplete / tags
 " =============================================================================
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-
 " Don't scan included files. Tags file is more performant.
 set complete-=i
 set completeopt-=preview
@@ -723,9 +740,8 @@ nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -start-i
 nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 
 " Custom mappings for the unite buffer
-autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
-  setlocal nolist nopaste
+  setlocal nopaste
   nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
@@ -789,11 +805,6 @@ function! s:clear_empty_buffers()
     exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
   endif
 endfunction
-augroup clearuselessbuffers
-  au!
-  autocmd BufEnter * silent call <sid>clearUniteBuffers()
-  autocmd BufEnter * silent call <sid>clear_empty_buffers()
-augroup END
 
 endif "}}}
 
@@ -824,27 +835,6 @@ function! LoadSession()
   autocmd VimLeave * call delete(s:sessionlock)
 endfunction
 
-" augroup history_monitor
-"   au!
-"   autocmd VimLeave * call Debug_lost_history()
-"   autocmd VimEnter * call Debug_lost_history()
-"   autocmd BufEnter * call Debug_lost_history()
-" augroup END
-" func! Debug_lost_history()
-"   redir => l:foo
-"   silent! execute 'history'
-"   redir END
-" 
-"   let bar = split(l:foo, "\n")
-"   echo len(bar)
-" endf
-
-" Jump to the last position when reopening a file
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-
-" force windows to be sized equally after viewport resize
-au VimResized * wincmd =
-
 if s:is_gui
   if !filereadable(s:sessionlock)
     "use a separate viminfo to avoid losing command history by other vim instances
@@ -866,9 +856,6 @@ if s:is_cygwin || s:is_cygwin_ssh
   let &t_SI.="\e[5 q"
   let &t_EI.="\e[1 q"
   let &t_te.="\e[0 q"
-elseif s:is_windows
-  " always maximize initial GUI window size
-  autocmd GUIEnter * simalt ~x 
 endif
 
 " tree view
