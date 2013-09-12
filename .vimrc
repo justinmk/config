@@ -157,6 +157,7 @@ let g:airline#extensions#tabline#enabled = 1
 " let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 3
+let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
@@ -265,7 +266,9 @@ endif
 
   if !s:is_mac
     exe s:color_force_high_contrast
-    exe 'autocmd ColorScheme * '.s:color_force_high_contrast
+    if s:vimrc_first_run
+      exe 'autocmd ColorScheme * '.s:color_force_high_contrast
+    endif
   endif
 
   if s:is_msysgit
@@ -301,7 +304,9 @@ endif
     endif
 
     if s:is_gui || s:is_mac || s:is_cygwin
-      exe 'autocmd ColorScheme * '.s:color_override
+      if s:vimrc_first_run
+        exe 'autocmd ColorScheme * '.s:color_override
+      endif
     else
       exe s:color_override
     endif
@@ -379,53 +384,64 @@ function! BreakAfter(s)
     execute ':%s/' . a:s . '/' . a:s . '\r/g'
 endfunction
 
-" differences to vim-seek:
-"   - adds to jumps list
-"   - multiline
-function! Sseek()
-  call SeekString(<sid>getNextNChars(2))
-endf
-func! SeekString(s)
+" vim-sneak scurries to a two-character location on any line
+"   - repeatable with ; or ,
+"   - without breaking f t ; ,
+"   - without replacing the / register
+"   - without triggering search results highlighting
+"   - (todo!) without adding noise to the / history
+"   - (todo?) doesn't add to your jumps (use ; or , instead)
+" TODO: map something other than F10
+func! SneakToString(s, isrepeat, isreverse)
+  " redraw!
   if empty(a:s)
     return
   endif
   try
-    "this does _not_ overwrite the / register
-    exec 'norm! /\V\C'.a:s."\<cr>"
+    "this does _not_ overwrite the / register (hooray! but why??)
+    let l:fwd_cmd = 'silent norm! /\V\C'.escape(a:s, '/\')."\<cr>"
+    let l:bkw_cmd = 'silent norm! ?\V\C'.escape(a:s, '?\')."\<cr>"
+    if !a:isreverse
+      silent exec l:fwd_cmd
+    else
+      silent exec l:bkw_cmd
+    endif
+
+    "found the string
+    if !a:isrepeat "this is a new search; set up the repeat mappings
+      exec "nnoremap <silent> ;  :<c-u>call SneakToString('".a:s."', 1, 0)\<cr>"
+      exec "nnoremap <silent> \\ :<c-u>call SneakToString('".a:s."', 1, 1)\<cr>"
+      "if f or F is invoked, unmap the temporary repeat mappings
+      nmap <silent> f <F10>f
+      nmap <silent> F <F10>F
+      nmap <silent> t <F10>t
+      nmap <silent> T <F10>T
+    endif
   catch E486
-    echo 'sseek: not found: '.a:s
+    redraw | echo 'not found: '.a:s
   endtry
-
-    " let [sl, sc] = getpos(a:0 ? "'<" : "'[")[1:2]
-    " let [el, ec] = getpos(a:0 ? "'>" : "']")[1:2]
-    " if a:vt == 'line' || a:vt == 'V'
-    "     call append(el, s)
-    "     call append(sl-1, s)
-    " elseif a:vt == 'block' || a:vt == "\<c-v>"
-    "     exe sl.','.el 's/\%'.sc.'c\|\%'.ec.'c.\zs/\=s/g|norm!``'
-    " else
-    "     exe el 's/\%'.ec.'c.\zs/\=s/|norm!``'
-    "     exe sl 's/\%'.sc.'c/\=s/|norm!``'
-    " endif
-endfunction
-
-function! s:getInputChar()
+endf
+func! s:getInputChar()
   let c = getchar()
   return type(c) == type(0) ? nr2char(c) : c
-endfunction
-function! s:getNextNChars(n)
+endf
+func! s:getNextNChars(n)
   let l:s = ''
   for i in range(1, a:n)
     let l:c = <sid>getInputChar()
-    if l:c =~ "\<esc>" || l:c =~ "\<c-c>"
-        return ""
+    if l:c ==? "\<esc>" || l:c ==? "\<c-c>"
+      return ""
     endif
     let l:s .= l:c
+    " redraw | 
+    " echo l:s
   endfor
   return l:s
-endfunction
+endf
+nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>exec "nnoremap \<silent> \\ :norm! ,\<cr>" <cr>
+nnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
+nnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
 
-nnoremap <silent> s :<c-u>call Sseek()<cr>
 " =============================================================================
 " normal mode
 " =============================================================================
@@ -471,6 +487,7 @@ nnoremap gwN :vnew<cr>
 nnoremap gwe :tabnew<cr>
 nnoremap gwT :wincmd T<cr>
 
+" manage buffers
 nnoremap <leader>bdd :call <SID>buf_kill(1)<cr>
 nnoremap <leader>bd! :call <SID>buf_kill(0)<cr>
 nnoremap <leader>be :enew<cr>
@@ -569,9 +586,6 @@ nnoremap <c-u> <PageUp>
 nnoremap <space> :
 xnoremap <space> :
 nnoremap <leader>w :w!<cr>
-
-"toggle/untoggle spell checking
-nnoremap <leader>ss :setlocal spell!<cr>
 
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> m`:m+<cr>``
