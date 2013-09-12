@@ -141,6 +141,12 @@ fun! EnsureDir(path)
     return isdirectory(a:path) 
 endfun
 
+func! EnsureFile(path)
+  let l:path = expand(a:path)
+  if !filereadable(l:path) && -1 == writefile([''], l:path)
+    echoerr "failed to create file: ".l:path
+  endif
+endf
 
 "==============================================================================
 " general settings / options
@@ -392,6 +398,9 @@ endfunction
 "   - (todo!) without adding noise to the / history
 "   - (todo?) doesn't add to your jumps (use ; or , instead)
 " TODO: map something other than F10
+"
+" stridx({haystack}, {needle} [, {start}]
+" get last index: strridx({haystack}, {needle} [, {start}])
 func! SneakToString(s, isrepeat, isreverse)
   " redraw!
   if empty(a:s)
@@ -442,6 +451,12 @@ nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar
 nnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
 nnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
 
+func! AppendToFile(file, lines) "credit ZyX: http://stackoverflow.com/a/8976314/152142
+  let l:file = expand(a:file)
+  call EnsureFile(l:file)
+  call writefile(readfile(l:file)+a:lines, l:file)
+endf
+
 " =============================================================================
 " normal mode
 " =============================================================================
@@ -456,8 +471,6 @@ nnoremap Y y$
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
-
-set pastetoggle=<leader>pp
 
 " paste current dir to command line
 cabbrev ]c <c-r>=expand("%:p:h")<cr>
@@ -481,10 +494,11 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 nnoremap gw <c-w>
 nnoremap gwW :setlocal winfixwidth<cr>
 nnoremap gwF :setlocal winfixheight<cr>
-nnoremap gwN :vnew<cr>
+nnoremap gwV :vnew<cr>
 
 " manage tabs
 nnoremap gwe :tabnew<cr>
+nnoremap gwC :tabclose<cr>
 nnoremap gwT :wincmd T<cr>
 
 " manage buffers
@@ -611,9 +625,6 @@ nnoremap U <nop>
 
 " disable Ex mode shortcut
 nnoremap Q <nop>
-
-" turn off search highlighting
-nnoremap <silent> <leader>hs :nohlsearch<cr>
 
 func! ReadExCommandOutput(cmd)
   redir => l:message

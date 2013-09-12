@@ -19,4 +19,7 @@
   statusHints = false
 [color]
   ui = auto
+[guitool "delete"]
+  cmd = rm $FILENAME
+  needsfile = yes
 
