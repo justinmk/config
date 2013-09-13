@@ -17,7 +17,7 @@ xnoremap <leader>d "_d
 nnoremap <leader>D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
-nnoremap <leader>hs :nohlsearch<cr>
+nnoremap <c-l> :nohlsearch<cr>
 noremap 0 ^
 noremap - $
 
@@ -31,6 +31,7 @@ nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
 nnoremap gr :vsc Edit.FindAllReferences<cr>
+" nnoremap gD :vsc ???<cr>
 nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
 
