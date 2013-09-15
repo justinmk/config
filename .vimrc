@@ -211,7 +211,9 @@ set novb t_vb=
 set tm=3000
 set nonumber
 set background=dark
+if !s:has_plugins
 set showtabline=1
+endif
 if s:has_plugins
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 endif
@@ -221,7 +223,6 @@ set sidescroll=2
 set sidescrolloff=2
 
 set nojoinspaces
-set virtualedit=all "allow cursor to move anywhere in all modes
 
 " restore cursor position upon returning to a buffer, _without_ permanently 
 " setting 'nostartofline' (which affects many other behaviors).
@@ -397,6 +398,8 @@ endfunction
 "   - without triggering search results highlighting
 "   - (todo!) without adding noise to the / history
 "   - (todo?) doesn't add to your jumps (use ; or , instead)
+"   - does not wrap
+"   - (todo) highlights additional matches until a key other than ; or , is pressed
 " TODO: map something other than F10
 "
 " stridx({haystack}, {needle} [, {start}]
@@ -407,19 +410,34 @@ func! SneakToString(s, isrepeat, isreverse)
     return
   endif
   try
-    "this does _not_ overwrite the / register (hooray! but why??)
     let l:fwd_cmd = 'silent norm! /\V\C'.escape(a:s, '/\')."\<cr>"
     let l:bkw_cmd = 'silent norm! ?\V\C'.escape(a:s, '?\')."\<cr>"
-    if !a:isreverse
-      silent exec l:fwd_cmd
-    else
-      silent exec l:bkw_cmd
+
+    let l:topline = line('w0') " w0 first line visible in current window 
+    let l:botline = line('w$') " w$ last line visible in current window
+    let l:curline = line('.')
+    " do not wrap
+    let l:searchoptions = 'W'
+    if a:isreverse
+      let l:searchoptions .= 'b'
     endif
+    if !a:isrepeat " save the jump on the initial invocation, _not_ repeats.
+      let l:searchoptions .= 's'
+    endif
+
+    let l:matchline = search('\C\V'.a:s, l:searchoptions)
+    let l:matchidx = -1
+    " while -1 == l:matchidx && l:curline <= l:botline
+    "   let l:matchidx = -1 stridx(getline(line('.')), a:s, col('.'))
+    "   let l:curline += 1
+    " endw
+
+    " redraw | echo 'match:' l:matchidx 'top:' l:topline 'bot:' l:botline
 
     "found the string
     if !a:isrepeat "this is a new search; set up the repeat mappings
-      exec "nnoremap <silent> ;  :<c-u>call SneakToString('".a:s."', 1, 0)\<cr>"
-      exec "nnoremap <silent> \\ :<c-u>call SneakToString('".a:s."', 1, 1)\<cr>"
+      exec 'nnoremap <silent> ; :<c-u>call SneakToString("'.escape(a:s, '"\').'", 1, 0)'."\<cr>"
+      exec 'nnoremap <silent> \ :<c-u>call SneakToString("'.escape(a:s, '"\').'", 1, 1)'."\<cr>"
       "if f or F is invoked, unmap the temporary repeat mappings
       nmap <silent> f <F10>f
       nmap <silent> F <F10>F
@@ -447,7 +465,7 @@ func! s:getNextNChars(n)
   endfor
   return l:s
 endf
-nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>exec "nnoremap \<silent> \\ :norm! ,\<cr>" <cr>
+nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<cr>
 nnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
 nnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
 
@@ -616,6 +634,9 @@ xnoremap . :normal .<CR>
 nnoremap j gj
 nnoremap k gk
 
+"allow cursor to move anywhere in all modes
+nnoremap cov :set <C-R>=empty(&virtualedit) ? 'virtualedit=all' : 'virtualedit='<CR><CR>
+
 " disable F1 help key
 noremap! <F1> <nop>
 noremap <F1> <nop>
@@ -682,7 +703,7 @@ augroup vimrc_autocmd
   autocmd FileType unite call s:unite_settings()
 
   autocmd BufEnter * silent call <sid>clearUniteBuffers()
-  autocmd BufEnter * silent call <sid>clear_empty_buffers()
+  autocmd CursorHold * silent call <sid>clear_empty_buffers()
 
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif

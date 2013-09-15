@@ -18,8 +18,10 @@
 [advice]
   statusHints = false
 [color]
+  # This is the default setting in Git ≥ 1.8.4.
   ui = auto
 [guitool "delete"]
   cmd = rm $FILENAME
   needsfile = yes
+  noconsole = yes
 
