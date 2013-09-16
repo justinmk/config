@@ -162,7 +162,7 @@ let g:SignatureEnableDefaultMappings = 2
 let g:airline#extensions#tabline#enabled = 1
 " let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
-let g:airline#extensions#tabline#buffer_min_count = 3
+let g:airline#extensions#tabline#buffer_min_count = 2
 let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline_left_sep = ''
@@ -401,9 +401,13 @@ endfunction
 "   - (todo?) doesn't add to your jumps (use ; or , instead)
 "   - does not wrap (wrap makes no sense)
 "   - (todo) highlights additional matches until a key other than ; or , is pressed
+"   - range => restrict search column to +/- range size
 " TODO: dot-repeat; visual mode; map something other than F10; multibyte chars?
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
-func! SneakToString(op, s, isrepeat, isreverse)
+" g@ and vim-repeat example: https://github.com/tpope/vim-commentary/blob/master/plugin/commentary.vim
+func! SneakToString(op, s, isrepeat, isreverse) abort "TODO: range
+  " echom 'v:count/prev='.v:count.'/'.v:prevcount.' v:reg='.v:register.' v:op='.v:operator
+
   if empty(a:s) "user canceled
     redraw | echo '' | return
   endif
@@ -446,19 +450,18 @@ func! SneakToString(op, s, isrepeat, isreverse)
     "this is a new search; set up the repeat mappings.
     exec printf('nnoremap <silent> ; :<c-u>call SneakToString("", "%s", 1, %d)'."\<cr>", escape(a:s, '"\'),  a:isreverse)
     exec printf('nnoremap <silent> \ :<c-u>call SneakToString("", "%s", 1, %d)'."\<cr>", escape(a:s, '"\'), !a:isreverse)
-    "if f or F is invoked, unmap the temporary repeat mappings
-    nmap <silent> f <F10>f
-    nmap <silent> F <F10>F
-    nmap <silent> t <F10>t
-    nmap <silent> T <F10>T
+
+    "if f/F/t/T is invoked, unmap the temporary repeat mappings
+    if empty(maparg("f", "n").maparg("F", "n").maparg("t", "n").maparg("T", "n"))
+      nmap <silent> f <F10>f|nmap <silent> F <F10>F|nmap <silent> t <F10>t|nmap <silent> T <F10>T
+    endif
 
     "on the initial invocation, only show matches after (before) the initial position.
     let l:pattern .= '\%'.l:gt_lt."''"
 
-    "window-scoped autocmd to remove highlight
     augroup SneakPlugin
       autocmd!
-      " autocmd InsertEnter,TextChanged <buffer> silent! call matchdelete(w:sneak_hl_id)
+      autocmd InsertEnter <buffer> silent! call matchdelete(w:sneak_hl_id)
     augroup END
   endif
 
@@ -488,8 +491,10 @@ endf
 augroup SneakPluginInit
   autocmd!
   if &background ==# 'dark'
+    highlight SneakPluginMatch guifg=black guibg=white ctermfg=black ctermbg=white
     autocmd ColorScheme * highlight SneakPluginMatch guifg=black guibg=white ctermfg=black ctermbg=white
   else
+    highlight SneakPluginMatch guifg=white guibg=black ctermfg=white ctermbg=black
     autocmd ColorScheme * highlight SneakPluginMatch guifg=white guibg=black ctermfg=white ctermbg=black
   endif
 augroup END
@@ -497,8 +502,7 @@ augroup END
 nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
 nnoremap <silent> s :<c-u>call SneakToString('', <sid>getNextNChars(2), 0, 0)<cr>
 nnoremap <silent> S :<c-u>call SneakToString('', <sid>getNextNChars(2), 0, 1)<cr>
-"<operator>v<motion> actually has a purpose in stock vim, 
-"but it is equivalent to v<motion><operator>
+"{op}v{motion} actually has a purpose in stock vim, but it is equivalent to v<motion><operator>
 onoremap <silent> z :<c-u>call SneakToString(v:operator, <sid>getNextNChars(2), 0, 0)<cr>
 onoremap <silent> Z :<c-u>call SneakToString(v:operator, <sid>getNextNChars(2), 0, 1)<cr>
 " xnoremap <silent> <leader>s <esc>:<c-u>call SneakToString(visualmode(),...)<cr>
