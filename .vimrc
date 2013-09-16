@@ -401,14 +401,11 @@ endfunction
 "   - (todo?) doesn't add to your jumps (use ; or , instead)
 "   - does not wrap (wrap makes no sense)
 "   - (todo) highlights additional matches until a key other than ; or , is pressed
-" TODO: map something other than F10
-" TODO: visual mode; operator-pending mode
-" TODO: multibyte chars?
+" TODO: dot-repeat; visual mode; map something other than F10; multibyte chars?
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
-func! SneakToString(s, isrepeat, isreverse)
+func! SneakToString(op, s, isrepeat, isreverse)
   if empty(a:s) "user canceled
-    redraw | echo ''
-    return
+    redraw | echo '' | return
   endif
 
   " do not wrap
@@ -418,9 +415,20 @@ func! SneakToString(s, isrepeat, isreverse)
   " save the jump on the initial invocation, _not_ repeats.
   if !a:isrepeat | let l:searchoptions .= 's' | endif
 
-  if !search('\C\V'.a:s, l:searchoptions) "jump to the first match, or exit
-    redraw | echo 'not found: '.a:s
-    return
+  if !empty(a:op)
+    let l:histreg = @/
+    " let [l:lin, l:col] = searchpos('\C\V'.a:s, l:searchoptions)
+    try
+      "until we can find a better way, operate on / and restore the history immediately after
+      exec 'norm! '.a:op.(a:isreverse ? '?' : '/').a:s."\<cr>"
+    catch E486
+      redraw | echo 'not found: '.a:s | return
+    finally
+      call histdel("/", histnr("/"))
+      let @/ = l:histreg
+    endtry
+  elseif !search('\C\V'.a:s, l:searchoptions) "jump to the first match, or exit
+    redraw | echo 'not found: '.a:s | return
   endif
 
   silent! call matchdelete(w:sneak_hl_id)
@@ -436,8 +444,8 @@ func! SneakToString(s, isrepeat, isreverse)
 
   if !a:isrepeat
     "this is a new search; set up the repeat mappings.
-    exec printf('nnoremap <silent> ; :<c-u>call SneakToString("%s", 1, %d)'."\<cr>", escape(a:s, '"\'),  a:isreverse)
-    exec printf('nnoremap <silent> \ :<c-u>call SneakToString("%s", 1, %d)'."\<cr>", escape(a:s, '"\'), !a:isreverse)
+    exec printf('nnoremap <silent> ; :<c-u>call SneakToString("", "%s", 1, %d)'."\<cr>", escape(a:s, '"\'),  a:isreverse)
+    exec printf('nnoremap <silent> \ :<c-u>call SneakToString("", "%s", 1, %d)'."\<cr>", escape(a:s, '"\'), !a:isreverse)
     "if f or F is invoked, unmap the temporary repeat mappings
     nmap <silent> f <F10>f
     nmap <silent> F <F10>F
@@ -450,7 +458,7 @@ func! SneakToString(s, isrepeat, isreverse)
     "window-scoped autocmd to remove highlight
     augroup SneakPlugin
       autocmd!
-      autocmd InsertEnter,TextChanged <buffer> silent! call matchdelete(w:sneak_hl_id)
+      " autocmd InsertEnter,TextChanged <buffer> silent! call matchdelete(w:sneak_hl_id)
     augroup END
   endif
 
@@ -487,10 +495,14 @@ augroup SneakPluginInit
 augroup END
 
 nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
-nnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
-nnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
-" xnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
-" xnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
+nnoremap <silent> s :<c-u>call SneakToString('', <sid>getNextNChars(2), 0, 0)<cr>
+nnoremap <silent> S :<c-u>call SneakToString('', <sid>getNextNChars(2), 0, 1)<cr>
+"<operator>v<motion> actually has a purpose in stock vim, 
+"but it is equivalent to v<motion><operator>
+onoremap <silent> z :<c-u>call SneakToString(v:operator, <sid>getNextNChars(2), 0, 0)<cr>
+onoremap <silent> Z :<c-u>call SneakToString(v:operator, <sid>getNextNChars(2), 0, 1)<cr>
+" xnoremap <silent> <leader>s <esc>:<c-u>call SneakToString(visualmode(),...)<cr>
+" xnoremap <silent> <leader>S <esc>:<c-u>call SneakToString(visualmode(),...)<cr>
 
 func! AppendToFile(file, lines)
   let l:file = expand(a:file)
