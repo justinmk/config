@@ -391,87 +391,111 @@ function! BreakAfter(s)
     execute ':%s/' . a:s . '/' . a:s . '\r/g'
 endfunction
 
-" vim-sneak scurries to a two-character location on any line
+" vim-sneak: minimalist vertical movement in Vim
 "   - repeatable with ; or ,
 "   - without breaking f t ; ,
 "   - without replacing the / register
 "   - without triggering search results highlighting
+"   - only shows highlights in current window
 "   - (todo!) without adding noise to the / history
 "   - (todo?) doesn't add to your jumps (use ; or , instead)
-"   - does not wrap
+"   - does not wrap (wrap makes no sense)
 "   - (todo) highlights additional matches until a key other than ; or , is pressed
 " TODO: map something other than F10
-"
-" stridx({haystack}, {needle} [, {start}]
-" get last index: strridx({haystack}, {needle} [, {start}])
+" TODO: visual mode; operator-pending mode
+" TODO: multibyte chars?
+" see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
 func! SneakToString(s, isrepeat, isreverse)
-  " redraw!
-  if empty(a:s)
+  if empty(a:s) "user canceled
+    redraw | echo ''
     return
   endif
-  try
-    let l:fwd_cmd = 'silent norm! /\V\C'.escape(a:s, '/\')."\<cr>"
-    let l:bkw_cmd = 'silent norm! ?\V\C'.escape(a:s, '?\')."\<cr>"
 
-    let l:topline = line('w0') " w0 first line visible in current window 
-    let l:botline = line('w$') " w$ last line visible in current window
-    let l:curline = line('.')
-    " do not wrap
-    let l:searchoptions = 'W'
-    if a:isreverse
-      let l:searchoptions .= 'b'
-    endif
-    if !a:isrepeat " save the jump on the initial invocation, _not_ repeats.
-      let l:searchoptions .= 's'
-    endif
+  " do not wrap
+  let l:searchoptions = 'W'
+  " search backwards
+  if a:isreverse | let l:searchoptions .= 'b' | endif
+  " save the jump on the initial invocation, _not_ repeats.
+  if !a:isrepeat | let l:searchoptions .= 's' | endif
 
-    let l:matchline = search('\C\V'.a:s, l:searchoptions)
-    let l:matchidx = -1
-    " while -1 == l:matchidx && l:curline <= l:botline
-    "   let l:matchidx = -1 stridx(getline(line('.')), a:s, col('.'))
-    "   let l:curline += 1
-    " endw
-
-    " redraw | echo 'match:' l:matchidx 'top:' l:topline 'bot:' l:botline
-
-    "found the string
-    if !a:isrepeat "this is a new search; set up the repeat mappings
-      exec 'nnoremap <silent> ; :<c-u>call SneakToString("'.escape(a:s, '"\').'", 1, 0)'."\<cr>"
-      exec 'nnoremap <silent> \ :<c-u>call SneakToString("'.escape(a:s, '"\').'", 1, 1)'."\<cr>"
-      "if f or F is invoked, unmap the temporary repeat mappings
-      nmap <silent> f <F10>f
-      nmap <silent> F <F10>F
-      nmap <silent> t <F10>t
-      nmap <silent> T <F10>T
-    endif
-  catch E486
+  if !search('\C\V'.a:s, l:searchoptions) "jump to the first match, or exit
     redraw | echo 'not found: '.a:s
-  endtry
+    return
+  endif
+
+  silent! call matchdelete(w:sneak_hl_id)
+
+  let l:startline_str = string(line('.') + (a:isreverse ? 1 : -1))
+  let l:startcol_str  = string(col('.')  + (a:isreverse ? 1 : -1))
+
+  "highlight matches at or below (above) the cursor position.
+  "    example: highlight string "ab" after line 42, column 5 
+  "             matchadd('foo', 'ab\%>42l\%5c', 1)
+  let l:gt_lt = a:isreverse ? '<' : '>'
+  let l:pattern = a:s.'\%'.l:gt_lt.l:startline_str.'l'
+
+  if !a:isrepeat
+    "this is a new search; set up the repeat mappings.
+    exec printf('nnoremap <silent> ; :<c-u>call SneakToString("%s", 1, %d)'."\<cr>", escape(a:s, '"\'),  a:isreverse)
+    exec printf('nnoremap <silent> \ :<c-u>call SneakToString("%s", 1, %d)'."\<cr>", escape(a:s, '"\'), !a:isreverse)
+    "if f or F is invoked, unmap the temporary repeat mappings
+    nmap <silent> f <F10>f
+    nmap <silent> F <F10>F
+    nmap <silent> t <F10>t
+    nmap <silent> T <F10>T
+
+    "on the initial invocation, only show matches after (before) the initial position.
+    let l:pattern .= '\%'.l:gt_lt."''"
+
+    "window-scoped autocmd to remove highlight
+    augroup SneakPlugin
+      autocmd!
+      autocmd InsertEnter,TextChanged <buffer> silent! call matchdelete(w:sneak_hl_id)
+    augroup END
+  endif
+
+  "perform the highlight...
+  "  - scope to window because matchadd() highlight is per-window.
+  "  - re-use w:sneak_hl_id if it exists (-1 lets matchadd() choose).
+  let w:sneak_hl_id = matchadd('SneakPluginMatch', l:pattern, 1, get(w:, 'sneak_hl_id', -1))
+
 endf
 func! s:getInputChar()
-  let c = getchar()
-  return type(c) == type(0) ? nr2char(c) : c
+  let l:c = getchar()
+  return type(l:c) == type(0) ? nr2char(l:c) : l:c
 endf
 func! s:getNextNChars(n)
   let l:s = ''
   for i in range(1, a:n)
     let l:c = <sid>getInputChar()
-    if l:c ==? "\<esc>" || l:c ==? "\<c-c>"
+    if -1 != index(["\<esc>", "\<c-c>", "\<backspace>", "\<del>"], l:c)
       return ""
     endif
     let l:s .= l:c
-    " redraw | 
-    " echo l:s
+    redraw | echo l:s
   endfor
   return l:s
 endf
-nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<cr>
+
+augroup SneakPluginInit
+  autocmd!
+  if &background ==# 'dark'
+    autocmd ColorScheme * highlight SneakPluginMatch guifg=black guibg=white ctermfg=black ctermbg=white
+  else
+    autocmd ColorScheme * highlight SneakPluginMatch guifg=white guibg=black ctermfg=white ctermbg=black
+  endif
+augroup END
+
+nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
 nnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
 nnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
+" xnoremap <silent> s :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 0)<cr>
+" xnoremap <silent> S :<c-u>call SneakToString(<sid>getNextNChars(2), 0, 1)<cr>
 
-func! AppendToFile(file, lines) "credit ZyX: http://stackoverflow.com/a/8976314/152142
+func! AppendToFile(file, lines)
   let l:file = expand(a:file)
   call EnsureFile(l:file)
+  "credit ZyX: http://stackoverflow.com/a/8976314/152142
   call writefile(readfile(l:file)+a:lines, l:file)
 endf
 
@@ -575,7 +599,7 @@ func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
   let l:origbufname = bufname(l:origbuf)
   if a:mercy && &modified
-    echom 'buffer has unsaved changes'
+    echom 'buffer has unsaved changes (use '.mapleader.'d! to override)'
     return
   endif
 
@@ -695,6 +719,19 @@ augroup END
 " vim grep/search/replace
 "==============================================================================
 nnoremap <leader>qq :botright copen<cr>
+augroup BufferDeath
+  autocmd!
+  " on BufLeave:
+  "   1. remove existing autocomand, if any
+  "   2. set up CursorHold autocommand
+  " on CursorHold:
+  "   1. call function
+  "   2. remove the autocommand to avoid spam
+  autocmd BufLeave * exec 'autocmd! BufferDeath CursorHold' |
+        \ autocmd BufferDeath CursorHold * silent call <sid>clear_empty_buffers() |
+        \ autocmd! BufferDeath CursorHold
+augroup END
+
 augroup vimrc_autocmd
   autocmd!
   "toggle quickfix window
@@ -703,7 +740,6 @@ augroup vimrc_autocmd
   autocmd FileType unite call s:unite_settings()
 
   autocmd BufEnter * silent call <sid>clearUniteBuffers()
-  autocmd CursorHold * silent call <sid>clear_empty_buffers()
 
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
@@ -717,6 +753,8 @@ augroup vimrc_autocmd
 
   autocmd BufWrite *.py :call TrimTrailingWhitespace()
   autocmd FileType python syn keyword pythonDecorator True None False self
+
+  autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
 
   "highlight line in the current window only
   autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
