@@ -738,8 +738,8 @@ augroup vimrc_autocmd
   autocmd BufReadPost quickfix map <buffer> <leader>qq :cclose<cr>|map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
 
   autocmd FileType unite call s:unite_settings()
-
-  autocmd BufEnter * silent call <sid>clearUniteBuffers()
+  " obliterate unite buffers (marks especially).
+  autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
 
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
@@ -884,22 +884,6 @@ function! s:unite_settings()
   imap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   " change directories in unite
   nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart)
-endfunction
-
-"TODO: :keepalt
-function! s:clearUniteBuffers()
-  "find [unite] or *unite* buffers to be wiped-out
-  "TODO: unite-outline buffers are listed (bug in unite-outline?), so we can't test !buflisted(v:val)
-  let displayedbufs = <sid>buf_find_displayed_bufs()
-  let unitebuffs = filter(range(1, bufnr('$')), 
-        \ '"nofile" ==# getbufvar(v:val, "&buftype") 
-        \  && -1 == index(displayedbufs, v:val) 
-        \  && bufname(v:val) =~# ''*unite*\|\[unite\]''')
-
-  " obliterate the buffers and their related state (marks especially).
-  if !empty(unitebuffs)
-    exe 'bwipeout! '.join(unitebuffs, ' ')
-  endif
 endfunction
 
 " delete empty, non-visible, non-special buffers having no significant undo stack.
