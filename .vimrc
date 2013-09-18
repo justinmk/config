@@ -409,7 +409,6 @@ endfunction
 "   - sneak is always literal (very nomagic)
 " http://stevelosh.com/blog/2011/09/writing-vim-plugins/
 " TODO: dot-repeat; visual mode; map something other than F10
-" TODO: multibyte char => :h virtcol()
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
 " g@ and vim-repeat example: https://github.com/tpope/vim-commentary/blob/master/plugin/commentary.vim
 func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
@@ -424,7 +423,10 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "  - highlight the vertical "tunnel" that the search is scoped-to
 
   let l:gt_lt = a:isreverse ? '<' : '>'
+  " [left_bound, right_bound] 
   let l:bounds = deepcopy(a:bounds)
+  "if range >0, it should at least be 2 (1 is too restrictive)
+  let l:count = a:count == 1 ? 2 : a:count
   " example: highlight string "ab" after line 42, column 5 
   "          matchadd('foo', 'ab\%>42l\%5c', 1)
   let l:scoped_pattern = ''
@@ -435,19 +437,22 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   " save the jump on the initial invocation, _not_ repeats.
   if !a:isrepeat | let l:searchoptions .= 's' | endif
 
-  if a:count > 0 || max(l:bounds) > 0 "narrow the search to a column of width +/- the specified range
-    if !empty(a:op) && -1 != index(["\<c-v>", "V", "v"], a:op)
+  if l:count > 0 || max(l:bounds) > 0 "narrow the search to a column of width +/- the specified range (v:count)
+    if !empty(a:op) && -1 == index(["\<c-v>", "V", "v"], a:op)
       redraw | echo 'sneak: range not supported in operator-pending mode' | return
     endif
-    " [left_bound, right_bound] 
     " use provided bounds if any, otherwise derive bounds from range
     if max(l:bounds) <= 0
-      "narrow the search pattern to the width specified by the user-entered 'range' (v:count).
-      let l:bounds[0] =  max([0, (col('.') - a:count - 1)])
-      let l:bounds[1] =  a:count + col('.') + 1
+      let l:bounds[0] =  max([0, (virtcol('.') - l:count - 1)])
+      "weird but true: Search('ab\%42v') won't match 'ab' in column 40 (Vim 7.4 beta)
+      "                   - so we bump it by +2
+      "                Yet, matchadd() highlights column 40 using the same pattern.
+      "                   - so we only bump matchadd() +1
+      let l:bounds[1] =  l:count + virtcol('.') + 2
     endif
     "matches *all* chars in the scope.
-    let l:scoped_pattern  .= '\%>'.l:bounds[0].'c\%<'.l:bounds[1].'c'
+    "important: use \%<42v (virtual column) instead of \%<42c (byte)
+    let l:scoped_pattern  .= '\%>'.l:bounds[0].'v\%<'.l:bounds[1].'v'
   endif
 
   if !empty(a:op)
@@ -464,6 +469,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   elseif !search('\C\V'.a:s.l:scoped_pattern, l:searchoptions) "jump to the first match, or exit
     redraw | echo 'not found: '.a:s | return
   endif
+  echom '\C\V'.a:s.l:scoped_pattern
 
   silent! call matchdelete(w:sneak_hl_id)
   silent! call matchdelete(w:sneak_sc_hl)
@@ -477,7 +483,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "Augment pattern bounds                           (+wiggle room), for performance...?
   let l:scoped_pattern .= '\%'.l:gt_lt.l:start_lin_str.'l\%>'.l:top.'l\%<'.l:bot.'l'
 
-  if a:count > 0
+  if l:count > 0
     "perform the scoped highlight...
     let w:sneak_sc_hl = matchadd('SneakPluginScope', l:scoped_pattern, 1, get(w:, 'sneak_sc_hl', -1))
   endif
@@ -485,9 +491,9 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   if !a:isrepeat
     "this is a new search; set up the repeat mappings.
     exec printf('nnoremap <silent> ; :<c-u>call SneakToString("", "%s", %d, 1, %d, [%d, %d])'."\<cr>", 
-          \ escape(a:s, '"\'), a:count, a:isreverse, l:bounds[0], l:bounds[1])
+          \ escape(a:s, '"\'), l:count, a:isreverse, l:bounds[0], l:bounds[1])
     exec printf('nnoremap <silent> \ :<c-u>call SneakToString("", "%s", %d, 1, %d, [%d, %d])'."\<cr>", 
-          \ escape(a:s, '"\'), a:count, !a:isreverse, l:bounds[0], l:bounds[1])
+          \ escape(a:s, '"\'), l:count, !a:isreverse, l:bounds[0], l:bounds[1])
 
     "if f/F/t/T is invoked, unmap the temporary repeat mappings
     if empty(maparg("f", "n").maparg("F", "n").maparg("t", "n").maparg("T", "n"))
@@ -495,7 +501,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
     endif
 
     "on the initial invocation, only show matches after (before) the current position.
-    let l:scoped_pattern .= '\%'.l:gt_lt."''"
+    " let l:scoped_pattern .= '\%'.l:gt_lt."''"
   endif
 
   augroup SneakPlugin
