@@ -407,7 +407,9 @@ endfunction
 "   - (todo) highlights additional matches until a key other than ; or , is pressed
 "   - range => restrict search column to +/- range size
 "   - sneak is always literal (very nomagic)
-" TODO: dot-repeat; visual mode; map something other than F10; multibyte chars?
+" http://stevelosh.com/blog/2011/09/writing-vim-plugins/
+" TODO: dot-repeat; visual mode; map something other than F10
+" TODO: multibyte char => :h virtcol()
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
 " g@ and vim-repeat example: https://github.com/tpope/vim-commentary/blob/master/plugin/commentary.vim
 func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
@@ -469,12 +471,20 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "position _after_ completed search
   let l:start_lin_str = string(line('.') + (a:isreverse ? 1 : -1))
 
+  let l:top = max([0, line('w0')-40])
+  let l:bot = min([line('$'), line('w$')+40])
   "                                                 Might as well scope to window height
   "Augment pattern bounds                           (+wiggle room), for performance...?
-  let l:scoped_pattern .= '\%'.l:gt_lt.l:start_lin_str.'l\%>'.max([0, line('w0')-40]).'l\%<'.(40+line('w$')).'l'
+  let l:scoped_pattern .= '\%'.l:gt_lt.l:start_lin_str.'l\%>'.l:top.'l\%<'.l:bot.'l'
 
   if a:count > 0
     "perform the scoped highlight...
+    let @x=@/
+    let l:whitespace = repeat(' ', 300)
+    exe l:top.','.l:bot.'s/$/'.l:whitespace.'/'
+    let @/=@x
+    "undo
+
     let w:sneak_sc_hl = matchadd('SneakPluginScope', l:scoped_pattern, 1, get(w:, 'sneak_sc_hl', -1))
   endif
 
