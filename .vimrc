@@ -479,12 +479,6 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
 
   if a:count > 0
     "perform the scoped highlight...
-    let @x=@/
-    let l:whitespace = repeat(' ', 300)
-    exe l:top.','.l:bot.'s/$/'.l:whitespace.'/'
-    let @/=@x
-    "undo
-
     let w:sneak_sc_hl = matchadd('SneakPluginScope', l:scoped_pattern, 1, get(w:, 'sneak_sc_hl', -1))
   endif
 
