@@ -407,10 +407,10 @@ endfunction
 "   - (todo) highlights additional matches until a key other than ; or , is pressed
 "   - range => restrict search column to +/- range size
 "   - sneak is always literal (very nomagic)
+"   - tested with Vim 7.2.330+
 " http://stevelosh.com/blog/2011/09/writing-vim-plugins/
-" TODO: dot-repeat; visual mode; map something other than F10
+" TODO: map something other than F10
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
-" g@ and vim-repeat example: https://github.com/tpope/vim-commentary/blob/master/plugin/commentary.vim
 func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   " echom 'v:count/prev='.v:count.'/'.v:prevcount.' v:reg='.v:register.' v:op='.v:operator
 
@@ -422,6 +422,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "  - highlight actual matches at or below (above) the cursor position
   "  - highlight the vertical "tunnel" that the search is scoped-to
 
+  let l:search = escape(a:s, '"\')
   let l:gt_lt = a:isreverse ? '<' : '>'
   " [left_bound, right_bound] 
   let l:bounds = deepcopy(a:bounds)
@@ -438,14 +439,14 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   if !a:isrepeat | let l:searchoptions .= 's' | endif
 
   if l:count > 0 || max(l:bounds) > 0 "narrow the search to a column of width +/- the specified range (v:count)
-    if !empty(a:op) && -1 == index(["\<c-v>", "V", "v"], a:op)
-      redraw | echo 'sneak: range not supported in operator-pending mode' | return
+    if !empty(a:op)
+      redraw | echo 'sneak: range not supported in visual mode or operator-pending mode' | return
     endif
     " use provided bounds if any, otherwise derive bounds from range
     if max(l:bounds) <= 0
       let l:bounds[0] =  max([0, (virtcol('.') - l:count - 1)])
       "weird but true: Search('ab\%42v') won't match 'ab' in column 40 (Vim 7.4 beta)
-      "                   - so we bump it by +2
+      "                   - so we bump it +2
       "                Yet, matchadd() highlights column 40 using the same pattern.
       "                   - so we only bump matchadd() +1
       let l:bounds[1] =  l:count + virtcol('.') + 2
@@ -455,21 +456,31 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
     let l:scoped_pattern  .= '\%>'.l:bounds[0].'v\%<'.l:bounds[1].'v'
   endif
 
-  if !empty(a:op)
+  if !empty(a:op) && !<sid>isvisualop(a:op) "operator-pending invocation
     let l:histreg = @/
     try
       "until we can find a better way, just invoke / and restore the history immediately after
-      exec 'norm! '.a:op.(a:isreverse ? '?' : '/').'\C\V'.a:s."\<cr>"
+      let g:sneak_last_op = 'norm! '.a:op.(a:isreverse ? '?' : '/').'\C\V'.l:search."\<cr>"
+      call <sid>sneak_perform_last_operation()
     catch E486
       redraw | echo 'not found: '.a:s | return
     finally
-      call histdel("/", histnr("/"))
+      call histdel("/", histnr("/")) "delete the last search from the history
       let @/ = l:histreg
     endtry
-  elseif !search('\C\V'.a:s.l:scoped_pattern, l:searchoptions) "jump to the first match, or exit
-    redraw | echo 'not found: '.a:s | return
+  else "jump to the first match, or exit
+    let l:matchpos = searchpos('\C\V'.l:search.l:scoped_pattern, l:searchoptions)
+    if 0 == max(l:matchpos)
+      redraw | echo 'not found: '.a:s | return
+    endif
   endif
-  echom '\C\V'.a:s.l:scoped_pattern
+  "search succeeded
+
+  "if the user was in visual mode, extend the selection.
+  if <sid>isvisualop(a:op)
+    norm! gv
+    call cursor(l:matchpos[0], l:matchpos[1])
+  endif
 
   silent! call matchdelete(w:sneak_hl_id)
   silent! call matchdelete(w:sneak_sc_hl)
@@ -479,8 +490,8 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
 
   let l:top = max([0, line('w0')-40])
   let l:bot = min([line('$'), line('w$')+40])
-  "                                                 Might as well scope to window height
-  "Augment pattern bounds                           (+wiggle room), for performance...?
+  "                                                   Might as well scope to window height
+  "Augment pattern bounds                             (+wiggle room), for performance...?
   let l:scoped_pattern .= '\%'.l:gt_lt.l:start_lin_str.'l\%>'.l:top.'l\%<'.l:bot.'l'
 
   if l:count > 0
@@ -490,10 +501,10 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
 
   if !a:isrepeat
     "this is a new search; set up the repeat mappings.
-    exec printf('nnoremap <silent> ; :<c-u>call SneakToString("", "%s", %d, 1, %d, [%d, %d])'."\<cr>", 
-          \ escape(a:s, '"\'), l:count, a:isreverse, l:bounds[0], l:bounds[1])
-    exec printf('nnoremap <silent> \ :<c-u>call SneakToString("", "%s", %d, 1, %d, [%d, %d])'."\<cr>", 
-          \ escape(a:s, '"\'), l:count, !a:isreverse, l:bounds[0], l:bounds[1])
+    call <sid>map('n', ';', "",   l:search, l:count,  a:isreverse, l:bounds)
+    call <sid>map('n', '\', "",   l:search, l:count, !a:isreverse, l:bounds)
+    call <sid>xmap('x', ';', a:op, l:search, l:count,  a:isreverse, l:bounds)
+    call <sid>xmap('x', '\', a:op, l:search, l:count, !a:isreverse, l:bounds)
 
     "if f/F/t/T is invoked, unmap the temporary repeat mappings
     if empty(maparg("f", "n").maparg("F", "n").maparg("t", "n").maparg("T", "n"))
@@ -518,7 +529,24 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "perform the match highlight...
   "  - scope to window because matchadd() highlight is per-window.
   "  - re-use w:sneak_hl_id if it exists (-1 lets matchadd() choose).
-  let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.a:s.l:scoped_pattern, 2, get(w:, 'sneak_hl_id', -1))
+  let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.l:search.l:scoped_pattern, 2, get(w:, 'sneak_hl_id', -1))
+endf
+func! s:sneak_perform_last_operation()
+  if !exists('g:sneak_last_op') | return | endif
+  exec g:sneak_last_op
+  silent! call repeat#set("\<Plug>SneakRepeat")
+endf
+nnoremap <silent> <Plug>SneakRepeat :<c-u>call <sid>sneak_perform_last_operation()<cr>
+func! s:map(mode, keyseq, op, search, count, isreverse, bounds)
+  exec printf('%snoremap <silent> %s :<c-u>call SneakToString("%s", "%s", %d, 1, %d, [%d, %d])'."\<cr>",
+        \ a:mode, a:keyseq, a:op, a:search, a:count, a:isreverse, a:bounds[0], a:bounds[1])
+endf
+func! s:xmap(mode, keyseq, op, search, count, isreverse, bounds)
+  exec printf('%snoremap <silent> %s <esc>:<c-u>call SneakToString("%s", "%s", %d, 1, %d, [%d, %d])'."\<cr>",
+        \ a:mode, a:keyseq, a:op, a:search, a:count, a:isreverse, a:bounds[0], a:bounds[1])
+endf
+func! s:isvisualop(op)
+  return -1 != index(["V", "v", "\<c-v>"], a:op)
 endf
 func! s:getInputChar()
   let l:c = getchar()
@@ -543,21 +571,21 @@ augroup SneakPluginInit
   autocmd ColorScheme * highlight SneakPluginScope guifg=black guibg=white ctermfg=black ctermbg=white
 
   if &background ==# 'dark'
-    highlight SneakPluginMatch guifg=black guibg=magenta ctermfg=black ctermbg=magenta
-    autocmd ColorScheme * highlight SneakPluginMatch guifg=black guibg=magenta ctermfg=black ctermbg=magenta
+    highlight SneakPluginMatch guifg=white guibg=magenta ctermfg=white ctermbg=magenta
+    autocmd ColorScheme * highlight SneakPluginMatch guifg=white guibg=magenta ctermfg=white ctermbg=magenta
   else
     highlight SneakPluginMatch guifg=white guibg=magenta ctermfg=white ctermbg=magenta
     autocmd ColorScheme * highlight SneakPluginMatch guifg=white guibg=magenta ctermfg=white ctermbg=magenta
   endif
 augroup END
 
-nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
-nnoremap <silent> s :<c-u>call SneakToString('', <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
-nnoremap <silent> S :<c-u>call SneakToString('', <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
-onoremap <silent> z :<c-u>call SneakToString(v:operator, <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
-onoremap <silent> Z :<c-u>call SneakToString(v:operator, <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
-" xnoremap <silent> <leader>s <esc>:<c-u>call SneakToString(visualmode(),...)<cr>
-" xnoremap <silent> <leader>S <esc>:<c-u>call SneakToString(visualmode(),...)<cr>
+nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>unmap \<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
+nnoremap <silent> s      :<c-u>call SneakToString('',           <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
+nnoremap <silent> S      :<c-u>call SneakToString('',           <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
+onoremap <silent> z      :<c-u>call SneakToString(v:operator,   <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
+onoremap <silent> Z      :<c-u>call SneakToString(v:operator,   <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
+xnoremap <silent> z <esc>:<c-u>call SneakToString(visualmode(), <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
+xnoremap <silent> Z <esc>:<c-u>call SneakToString(visualmode(), <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
 
 func! AppendToFile(file, lines)
   let l:file = expand(a:file)
