@@ -75,8 +75,6 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'tomasr/molokai'
-" 16-color theme for terminals and lost souls
-Bundle 'noahfrederick/vim-noctu'
 if !s:is_windows
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
@@ -99,11 +97,12 @@ Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
-Bundle 'justinmk/TextObjectify'
+" Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
 if !s:is_cygwin
+" delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Bundle 'Valloric/MatchTagAlways'
 endif
 Bundle 'bling/vim-airline'
@@ -202,7 +201,6 @@ set ttyfast
 endif
 set cmdheight=2 "The commandbar height
 set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
@@ -281,11 +279,9 @@ endif
   endif
 
   if s:is_msysgit
-    colorscheme noctu
     hi CursorLine  term=NONE cterm=NONE ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=NONE
     hi ColorColumn term=NONE cterm=NONE ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=NONE
   elseif !s:is_gui && &t_Co <= 88
-    colorscheme noctu
     hi CursorLine cterm=underline
   else
     "see :h 'highlight'
@@ -460,7 +456,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
     let l:histreg = @/
     try
       "until we can find a better way, just invoke / and restore the history immediately after
-      let g:sneak_last_op = 'norm! '.a:op.(a:isreverse ? '?' : '/').'\C\V'.l:search."\<cr>"
+      let s:sneak_last_op = 'norm! '.a:op.(a:isreverse ? '?' : '/').'\C\V'.l:search."\<cr>"
       call <sid>sneak_perform_last_operation()
     catch E486
       redraw | echo 'not found: '.a:s | return
@@ -532,8 +528,8 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.l:search.l:scoped_pattern, 2, get(w:, 'sneak_hl_id', -1))
 endf
 func! s:sneak_perform_last_operation()
-  if !exists('g:sneak_last_op') | return | endif
-  exec g:sneak_last_op
+  if !exists('s:sneak_last_op') | return | endif
+  exec s:sneak_last_op
   silent! call repeat#set("\<Plug>SneakRepeat")
 endf
 nnoremap <silent> <Plug>SneakRepeat :<c-u>call <sid>sneak_perform_last_operation()<cr>
@@ -629,8 +625,8 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 "==============================================================================
 " manage windows
 nnoremap gw <c-w>
-nnoremap gwW :setlocal winfixwidth<cr>
-nnoremap gwF :setlocal winfixheight<cr>
+nnoremap gwW :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
+nnoremap gwF :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
 
 " manage tabs
@@ -690,6 +686,7 @@ func! s:buf_switch_to_altbuff()
 endf
 
 " close the current buffer with a vengeance
+" BDSN: Buffer DiScipliNe
 func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
   let l:origbufname = bufname(l:origbuf)
