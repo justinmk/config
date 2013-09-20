@@ -408,8 +408,6 @@ endfunction
 " TODO: map something other than F10
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
 func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
-  " echom 'v:count/prev='.v:count.'/'.v:prevcount.' v:reg='.v:register.' v:op='.v:operator
-
   if empty(a:s) "user canceled
     redraw | echo '' | return
   endif
@@ -441,11 +439,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
     " use provided bounds if any, otherwise derive bounds from range
     if max(l:bounds) <= 0
       let l:bounds[0] =  max([0, (virtcol('.') - l:count - 1)])
-      "weird but true: Search('ab\%42v') won't match 'ab' in column 40 (Vim 7.4 beta)
-      "                   - so we bump it +2
-      "                Yet, matchadd() highlights column 40 using the same pattern.
-      "                   - so we only bump matchadd() +1
-      let l:bounds[1] =  l:count + virtcol('.') + 2
+      let l:bounds[1] =  l:count + virtcol('.') + 1
     endif
     "matches *all* chars in the scope.
     "important: use \%<42v (virtual column) instead of \%<42c (byte)
@@ -465,9 +459,13 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
       let @/ = l:histreg
     endtry
   else "jump to the first match, or exit
-    let l:matchpos = searchpos('\C\V'.l:search.l:scoped_pattern, l:searchoptions)
+    let l:matchpos = searchpos('\C\V'.l:scoped_pattern.'\zs'.l:search, l:searchoptions)
     if 0 == max(l:matchpos)
-      redraw | echo 'not found: '.a:s | return
+      if max(l:bounds) > 0
+        redraw | echo printf('not found (between columns %d-%d): %s', l:bounds[0], l:bounds[1], a:s) | return
+      else
+        redraw | echo 'not found: '.a:s | return
+      endif
     endif
   endif
   "search succeeded
@@ -506,9 +504,6 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
     if empty(maparg("f", "n").maparg("F", "n").maparg("t", "n").maparg("T", "n"))
       nmap <silent> f <F10>f|nmap <silent> F <F10>F|nmap <silent> t <F10>t|nmap <silent> T <F10>T
     endif
-
-    "on the initial invocation, only show matches after (before) the current position.
-    " let l:scoped_pattern .= '\%'.l:gt_lt."''"
   endif
 
   augroup SneakPlugin
@@ -525,7 +520,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "perform the match highlight...
   "  - scope to window because matchadd() highlight is per-window.
   "  - re-use w:sneak_hl_id if it exists (-1 lets matchadd() choose).
-  let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.l:search.l:scoped_pattern, 2, get(w:, 'sneak_hl_id', -1))
+  let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.l:scoped_pattern.'\zs'.l:search, 2, get(w:, 'sneak_hl_id', -1))
 endf
 func! s:sneak_perform_last_operation()
   if !exists('s:sneak_last_op') | return | endif
@@ -691,7 +686,7 @@ func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
   let l:origbufname = bufname(l:origbuf)
   if a:mercy && &modified
-    echom 'buffer has unsaved changes (use '.mapleader.'d! to override)'
+    echom 'buffer has unsaved changes (use '.g:mapleader.'d! to override)'
     return
   endif
 
