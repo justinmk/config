@@ -405,7 +405,7 @@ endfunction
 "   - sneak is always literal (very nomagic)
 "   - tested with Vim 7.2.330+
 " http://stevelosh.com/blog/2011/09/writing-vim-plugins/
-" TODO: map something other than F10
+" TODO: map something other than F10; yz should accept arbitrary registers
 " see also: easymotion, seek.vim, cleverf, https://github.com/svermeulen/vim-extended-ft
 func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   if empty(a:s) "user canceled
@@ -424,7 +424,9 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   let l:count = a:count == 1 ? 2 : a:count
   " example: highlight string "ab" after line 42, column 5 
   "          matchadd('foo', 'ab\%>42l\%5c', 1)
-  let l:scoped_pattern = ''
+  let l:match_pattern = ''
+  " pattern used to highlight the vertical "scope"
+  let l:scope_pattern = ''
   " do not wrap
   let l:searchoptions = 'W'
   " search backwards
@@ -438,12 +440,20 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
     endif
     " use provided bounds if any, otherwise derive bounds from range
     if max(l:bounds) <= 0
+      "these are the _logical_ bounds highlighted in 'scope' mode
       let l:bounds[0] =  max([0, (virtcol('.') - l:count - 1)])
       let l:bounds[1] =  l:count + virtcol('.') + 1
     endif
     "matches *all* chars in the scope.
-    "important: use \%<42v (virtual column) instead of \%<42c (byte)
-    let l:scoped_pattern  .= '\%>'.l:bounds[0].'v\%<'.l:bounds[1].'v'
+    "important: use \%<42v (virtual column) instead of \%<42c (byte column)
+    let l:scope_pattern .= '\%>'.l:bounds[0].'v\%<'.l:bounds[1].'v'
+  endif
+
+  if max(l:bounds) > 0
+    "adjust logical left-bound for the _match_ pattern by -len(s) so that if _any_
+    "char is within the logical bounds, it is considered a match.
+    let l:leftbound = max([0, (bounds[0] - len(a:s))])
+    let l:match_pattern .= '\%>'.l:leftbound.'v\%<'.l:bounds[1].'v'
   endif
 
   if !empty(a:op) && !<sid>isvisualop(a:op) "operator-pending invocation
@@ -459,7 +469,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
       let @/ = l:histreg
     endtry
   else "jump to the first match, or exit
-    let l:matchpos = searchpos('\C\V'.l:scoped_pattern.'\zs'.l:search, l:searchoptions)
+    let l:matchpos = searchpos('\C\V'.l:match_pattern.'\zs'.l:search, l:searchoptions)
     if 0 == max(l:matchpos)
       if max(l:bounds) > 0
         redraw | echo printf('not found (between columns %d-%d): %s', l:bounds[0], l:bounds[1], a:s) | return
@@ -482,15 +492,17 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "position _after_ completed search
   let l:start_lin_str = string(line('.') + (a:isreverse ? 1 : -1))
 
+  "Might as well scope to window height (+/- 40). TODO: profile this
   let l:top = max([0, line('w0')-40])
   let l:bot = min([line('$'), line('w$')+40])
-  "                                                   Might as well scope to window height
-  "Augment pattern bounds                             (+wiggle room), for performance...?
-  let l:scoped_pattern .= '\%'.l:gt_lt.l:start_lin_str.'l\%>'.l:top.'l\%<'.l:bot.'l'
+  let l:restrict_top_bot = '\%'.l:gt_lt.l:start_lin_str.'l\%>'.l:top.'l\%<'.l:bot.'l'
+  let l:scope_pattern .= l:restrict_top_bot
+  let l:match_pattern .= l:restrict_top_bot
+  let l:curln_pattern  = l:restrict_top_bot
 
   if l:count > 0
     "perform the scoped highlight...
-    let w:sneak_sc_hl = matchadd('SneakPluginScope', l:scoped_pattern, 1, get(w:, 'sneak_sc_hl', -1))
+    let w:sneak_sc_hl = matchadd('SneakPluginScope', l:scope_pattern, 1, get(w:, 'sneak_sc_hl', -1))
   endif
 
   if !a:isrepeat
@@ -520,7 +532,7 @@ func! SneakToString(op, s, count, isrepeat, isreverse, bounds) range abort
   "perform the match highlight...
   "  - scope to window because matchadd() highlight is per-window.
   "  - re-use w:sneak_hl_id if it exists (-1 lets matchadd() choose).
-  let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.l:scoped_pattern.'\zs'.l:search, 2, get(w:, 'sneak_hl_id', -1))
+  let w:sneak_hl_id = matchadd('SneakPluginMatch', '\C\V'.l:match_pattern.'\zs'.l:search, 2, get(w:, 'sneak_hl_id', -1))
 endf
 func! s:sneak_perform_last_operation()
   if !exists('s:sneak_last_op') | return | endif
@@ -570,9 +582,11 @@ augroup SneakPluginInit
   endif
 augroup END
 
-nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>unmap \<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
+nnoremap <F10> :<c-u>unmap f<bar>unmap F<bar>unmap t<bar>unmap T<bar>unmap ;<bar>exe 'unmap \'<bar>silent! call matchdelete(w:sneak_hl_id)<cr>
 nnoremap <silent> s      :<c-u>call SneakToString('',           <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
 nnoremap <silent> S      :<c-u>call SneakToString('',           <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
+nnoremap <silent> yz     :<c-u>call SneakToString('y',          <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
+nnoremap <silent> yZ     :<c-u>call SneakToString('y',          <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
 onoremap <silent> z      :<c-u>call SneakToString(v:operator,   <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
 onoremap <silent> Z      :<c-u>call SneakToString(v:operator,   <sid>getNextNChars(2), v:count, 0, 1, [0,0])<cr>
 xnoremap <silent> z <esc>:<c-u>call SneakToString(visualmode(), <sid>getNextNChars(2), v:count, 0, 0, [0,0])<cr>
