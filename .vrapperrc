@@ -15,7 +15,7 @@ nnoremap ,bdd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
 nnoremap ,w  :w<cr>
 nnoremap ,d "_d
-xnoremap ,d "_d
+vnoremap ,d "_d
 nnoremap ,D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==

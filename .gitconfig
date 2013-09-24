@@ -24,4 +24,9 @@
   cmd = rm $FILENAME
   needsfile = yes
   noconsole = yes
+[guitool "bash"]
+  # try 'start' (Windows), else we are on some sort of unix
+  cmd = cd `echo $FILENAME | sed s/[^/]*$//g`  && start bash --login > /dev/null 2>&1 || bash
+  needsfile = yes
+  noconsole = yes
 

@@ -26,7 +26,7 @@ nnoremap Y y$
 "vsvim
 nnoremap <c-o> :vsc View.NavigateBackward<cr>
 nnoremap <c-i> :vsc View.NavigateForward<cr>
-vnoremap gc :vsc Edit.CommentSelection<cr>
+xnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
