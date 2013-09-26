@@ -108,7 +108,7 @@ endif
 Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
-Bundle 'ap/vim-css-color'
+Bundle 'chrisbra/color_highlight'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-scala'
 if exists("$GOPATH")
@@ -118,7 +118,6 @@ Bundle 'justinmk/vim-ipmotion'
 Bundle 'justinmk/vim-gtfo'
 Bundle 'justinmk/vim-sneak'
 Bundle 'xolox/vim-misc'
-Bundle 'xolox/vim-easytags'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
@@ -162,7 +161,7 @@ endif
 let g:SignatureEnableDefaultMappings = 2
 
 let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 2
 let g:airline#extensions#tabline#tab_nr_type = 1
