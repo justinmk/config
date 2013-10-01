@@ -13,6 +13,8 @@ inoremap jj <esc>
 inoremap kk <esc>l
 nnoremap ,bdd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
+nnoremap <c-d> <PageDown>
+nnoremap <c-u> <PageUp>
 nnoremap ,w  :w<cr>
 nnoremap ,d "_d
 vnoremap ,d "_d

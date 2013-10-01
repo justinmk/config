@@ -11,6 +11,8 @@ inoremap jj <esc>
 inoremap kk <esc>l
 nnoremap gwc :vsc Window.CloseDocumentWindow<cr>
 nnoremap <leader>bdd :vsc Window.CloseDocumentWindow<cr>
+nnoremap <c-d> <PageDown>
+nnoremap <c-u> <PageUp>
 nnoremap <leader>w  :w<cr>
 nnoremap <leader>d "_d
 xnoremap <leader>d "_d
