@@ -460,21 +460,26 @@ endf
 
 func! s:buf_find_valid_next_bufs()
   "valid 'next' buffers 
-  "   EXCLUDE: current, unlisted, Unite
+  "   EXCLUDE: 
+  "     - current, unlisted, Unite
+  "     - directory buffers marked as 'readonly' and 'modified' (netrw often leaves a _listed_ buffer in this weird state)
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
               \ 'buflisted(v:val) 
               \  && ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) 
               \  && v:val != bufnr("%") 
               \  && -1 == index(tabpagebuflist(), v:val) 
+              \  && !(isdirectory(bufname(v:val)) && getbufvar(v:val, "&modified") && getbufvar(v:val, "&readonly"))
               \ ')
   call sort(l:valid_buffers, 'BufDeath_Comparebuf')
   return l:valid_buffers
 endf
 
 func! s:buf_switch_to_altbuff()
-  " change to the 'alternate' buffer if it exists
-  if -1 != bufnr("#")
+  " change to the 'alternate' buffer if:
+  "   - it exists, and 
+  "   - it is not the current buffer (yes, this really happens, eg with netrw)
+  if -1 != bufnr("#") && bufnr("#") != bufnr("%")
     buffer #
   else " change to first 'valid' buffer
     let l:valid_buffers = s:buf_find_valid_next_bufs()
