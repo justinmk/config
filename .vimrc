@@ -761,7 +761,6 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 " search hidden directories:
 " nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. <cr>
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files -start-insert file_mru file_rec <cr>
-nnoremap <c-n> :<C-u>UniteWithBufferDir -no-split -buffer-name=filescurrbuff -start-insert file_rec<cr>
 nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
