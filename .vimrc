@@ -101,7 +101,7 @@ Bundle 'zhaocai/DirDiff.vim'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'gaving/vim-textobj-argument'
-if !s:is_cygwin
+if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Bundle 'Valloric/MatchTagAlways'
 endif
@@ -618,7 +618,7 @@ nnoremap <leader>qq :botright copen<cr>
 augroup BufferDeath
   autocmd!
   " on BufLeave:
-  "   1. remove existing autocomand, if any
+  "   1. remove existing autocommand, if any
   "   2. set up CursorHold autocommand
   " on CursorHold:
   "   1. call function
@@ -630,8 +630,7 @@ augroup END
 
 augroup vimrc_autocmd
   autocmd!
-  "toggle quickfix window
-  autocmd BufReadPost quickfix map <buffer> <leader>qq :cclose<cr>|map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
+  autocmd BufReadPost quickfix map <buffer> map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
 
   autocmd FileType unite call s:unite_settings()
   " obliterate unite buffers (marks especially).
