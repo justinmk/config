@@ -1,5 +1,9 @@
 *.swp
 
+# ignore ctags file, but not 'tags' directory
+tags
+!tags/
+
 # OS-generated files
 .DS_Store
 .Spotlight-V100

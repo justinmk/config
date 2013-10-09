@@ -26,12 +26,12 @@
   noconsole = yes
 [guitool "bash"]
   # try 'start' (Windows), else we are on some sort of unix
-  cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start bash --login &> /dev/null || open -a Terminal
+  cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start bash --login &> /dev/null || open -a Terminal &> /dev/null 
   needsfile = yes
   noconsole = yes
 [guitool "filemanager"]
   # try 'start' (Windows), else we are on some sort of unix
-  cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start . &> /dev/null || open -a Terminal
+  cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start . &> /dev/null || open . &> /dev/null || xdg-open .
   needsfile = yes
   noconsole = yes
 
