@@ -32,7 +32,6 @@ endif
 
 let mapleader = ","
 let g:mapleader = ","
-nnoremap <silent> \ :norm! ,<cr>
 
 let s:is_cygwin = has('win32unix') || has('win64unix')
 let s:is_windows = has('win32') || has('win64')
@@ -43,6 +42,7 @@ let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
 let s:is_cygwin_ssh = !empty($SSH_CYGWIN) && $SSH_CYGWIN
 let s:is_vimRecentBuildWithLua = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
+let s:has_eclim = isdirectory(expand("~/.vim/eclim"))
 
 if s:is_windows && !s:is_cygwin && !s:is_msysgit
   set runtimepath+=~/.vim/
@@ -580,6 +580,18 @@ func! ReadExCommandOutput(cmd)
   "set nomodified
 endf
 command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
+
+" java ========================================================================
+augroup vimrc_java
+  autocmd!
+  autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
+  if s:has_eclim
+    autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
+          \ | nnoremap <buffer> <m-t> :<c-u>JavaHierarchy<cr>
+          \ | nnoremap <buffer> gjoi  :<c-u>JavaImportOrganize<cr>
+  endif
+augroup END
+
 
 " golang ======================================================================
 " possible godoc solution    https://gist.github.com/mattn/569652
