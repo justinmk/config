@@ -44,6 +44,10 @@ let s:is_ssh = !empty($SSH_TTY)
 let s:is_cygwin_ssh = !empty($SSH_CYGWIN) && $SSH_CYGWIN
 let s:is_vimRecentBuildWithLua = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 
+if s:is_windows && !s:is_cygwin && !s:is_msysgit
+  set runtimepath+=~/.vim/
+endif
+
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
 "   &term  = win32 //vimrc running in msysgit terminal
