@@ -183,8 +183,11 @@ endif
 " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !s:is_gui
-    set <m-p>=p <m-b>=b <m-o>=o <m-y>=y <m-j>=j <m-k>=k <m-r>=r
-          \ <m-t>=t <m-l>=l <m-h>=h
+    set <m-b>=b <m-h>=h <m-j>=j <m-k>=k <m-l>=l
+          \ <m-o>=o <m-p>=p <m-r>=r
+          \ <m-t>=t <m-y>=y
+          \ <m-]>=]
+    "duds?: m-d
 endif
 
 try | lang en_US | catch | endtry
@@ -408,9 +411,6 @@ xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
-" paste current dir to command line
-cabbrev ]c <c-r>=expand("%:p:h")<cr>
-
 " delete the 'head' of a path on the command line
 cno <c-o>dts <C-\>e<sid>deleteTillSlash()<cr>
 
@@ -422,6 +422,11 @@ endfunc
 " abbreviations ===============================================================
 
 iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
+
+" paste current dir to command line
+cabbrev ]c <c-r>=expand("%:p:h")<cr>
+
+cabbrev h h <bar> wincmd H<left><left><left><left><left><left><left><left><left><left><left>
 
 "==============================================================================
 " key mappings/bindings
@@ -543,6 +548,13 @@ nnoremap <space> :
 xnoremap <space> :
 nnoremap <leader>w :w!<cr>
 
+" map m-] to be the inverse of c-]
+nnoremap <m-]> <c-t>
+
+" always 'very magic'
+nnoremap / /\v
+cnoremap s/ s/\v
+
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> m`:m+<cr>``
 nnoremap <M-k> m`:m-2<cr>``
@@ -587,8 +599,9 @@ augroup vimrc_java
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
   if s:has_eclim
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
-          \ | nnoremap <buffer> <m-t> :<c-u>JavaHierarchy<cr>
+          \ | nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
           \ | nnoremap <buffer> gjoi  :<c-u>JavaImportOrganize<cr>
+          \ | nnoremap <buffer> <F2>  :<c-u>JavaDocPreview<cr>
   endif
 augroup END
 
