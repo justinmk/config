@@ -98,8 +98,9 @@ Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-speeddating'
+Bundle 'tpope/vim-endwise'
 Bundle 'kshenoy/vim-signature'
-Bundle 'jiangmiao/auto-pairs'
+" Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
 " Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
@@ -348,18 +349,14 @@ set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
 set smartindent
 set nowrap 
 
-if exists('&colorcolumn')
-    set colorcolumn=80 "highlight the specified column
-endif
-
 " =============================================================================
 " util functions
 " =============================================================================
 
 func! TrimTrailingWhitespace()
-  normal mz
+  let winview=winsaveview()
   %s/\s\+$//ge
-  normal `zmz
+  call winrestview(winview)
 endfunc
 
 "return the syntax highlight group under the cursor
@@ -681,8 +678,8 @@ augroup vimrc_autocmd
   autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
 
   "highlight line in the current window only
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline colorcolumn=80
+  autocmd WinLeave * setlocal nocursorline colorcolumn=
 
   if s:is_windows
     " always maximize initial GUI window size
