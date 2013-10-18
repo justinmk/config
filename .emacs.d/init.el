@@ -37,17 +37,9 @@
 (require 'init-misc)
 (require 'init-bindings)
 
-(seq ring-bell-function 'ignore)
+(setq ring-bell-function 'ignore)
 ;;; flash top/bottom line only
-(setq visible-bell 'top/bottom)
+; (setq visible-bell 'top/bottom)
 
 ;;; (unload-feature 'foo)
-
-
-
-
-
-
-
-
 
