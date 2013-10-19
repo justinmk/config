@@ -32,7 +32,7 @@ noremap - $
 eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
 nnoremap gr :eclipsefindref<cr>
 
-eclipseaction eclipsegotoimpl org.eclipse.jdt.ui.edit.text.java.open.implementation
+eclipseuiaction eclipsegotoimpl org.eclipse.jdt.ui.edit.text.java.open.implementation
 nnoremap gD :eclipsegotoimpl<cr>
 
 eclipseaction eclipsetogglebp org.eclipse.debug.ui.commands.ToggleBreakpoint
