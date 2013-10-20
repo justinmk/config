@@ -12,6 +12,7 @@
 (after 'evil-leader
   (evil-leader/set-leader ",")
   (evil-leader/set-key
+    "w" 'evil-write
     "e" 'eval-last-sexp
     "E" 'eval-defun
     "c" 'eshell
@@ -27,8 +28,7 @@
 (after 'evil
   (require-package 'key-chord)
   (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
   (after 'git-gutter+
     (evil-ex-define-cmd "Gw" 'git-gutter+-stage-hunks))
@@ -41,6 +41,23 @@
   (define-key evil-normal-state-map (kbd "SPC k") 'ido-kill-buffer)
   (define-key evil-normal-state-map (kbd "SPC t") 'helm-etags-select)
 
+    ;; Note: lexical-binding must be t in order for this to work correctly.
+   (defun make-conditional-key-translation (key-from key-to translate-keys-p)
+     "Make a Key Translation such that if the translate-keys-p function returns true,
+   key-from translates to key-to, else key-from translates to itself.  translate-keys-p
+   takes key-from as an argument. "
+     (define-key key-translation-map key-from
+       (lambda (prompt)
+         (if (funcall translate-keys-p key-from) key-to key-from))))
+   (defun my-translate-keys-p (key-from)
+     "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
+     (and
+       ;; Only allow a non identity translation if we're beginning a Key Sequence.
+       (equal key-from (this-command-keys))
+       (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
+   (define-key evil-normal-state-map "g" nil)
+   (define-key evil-motion-state-map "gw" 'evil-window-map)
+
   (define-key evil-normal-state-map (kbd "[ SPC") (lambda () (interactive) (evil-insert-newline-above) (forward-line)))
   (define-key evil-normal-state-map (kbd "] SPC") (lambda () (interactive) (evil-insert-newline-below) (forward-line -1)))
   (define-key evil-normal-state-map (kbd "[ e") (kbd "ddkP"))
@@ -50,11 +67,6 @@
 
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
-
-  (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
-  (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
-  (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
 
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
   (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
