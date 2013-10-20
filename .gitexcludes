@@ -1,3 +1,4 @@
+# Vim
 *.swp
 
 # ignore ctags file, but not 'tags' directory
@@ -10,6 +11,11 @@ tags
 .Trashes
 Thumbs.db
 Desktop.ini
+
+# Visual Studio
+bin
+obj
+*.suo
 
 # Compiled
 *.class
