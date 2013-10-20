@@ -40,7 +40,6 @@ let s:is_unix = has('unix')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
-let s:is_cygwin_ssh = !empty($SSH_CYGWIN) && $SSH_CYGWIN
 let s:is_vimRecentBuildWithLua = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim"))
 
@@ -219,14 +218,12 @@ set novb t_vb=
 set tm=3000
 set nonumber
 set background=dark
-if !s:has_plugins
-set showtabline=1
-endif
 if s:has_plugins
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+else
+set showtabline=1
 endif
 set foldmethod=marker
-set splitright
 set sidescroll=2
 set sidescrolloff=2
 
@@ -352,6 +349,9 @@ set nowrap
 " =============================================================================
 " util functions
 " =============================================================================
+
+" :help :DiffOrig
+command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
 func! TrimTrailingWhitespace()
   let winview=winsaveview()
@@ -550,7 +550,6 @@ nnoremap <m-]> <c-t>
 
 " always 'very magic'
 nnoremap / /\v
-cnoremap s/ s/\v
 
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> m`:m+<cr>``
@@ -677,9 +676,9 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
 
-  "highlight line in the current window only
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline colorcolumn=80
-  autocmd WinLeave * setlocal nocursorline colorcolumn=
+  "highlight in the current window only
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn colorcolumn=80
+  autocmd WinLeave * setlocal nocursorline nocursorcolumn colorcolumn=
 
   if s:is_windows
     " always maximize initial GUI window size
@@ -888,7 +887,7 @@ if s:is_cygwin
   set viminfo+=n~/.viminfo_cygwin
 endif
 
-if s:is_cygwin || s:is_cygwin_ssh
+if s:is_cygwin
   " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
   let &t_ti.="\e[1 q"
   let &t_SI.="\e[5 q"
