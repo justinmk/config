@@ -22,9 +22,6 @@
 (require-package 'nodejs-repl)
 
 
-(require-package 'coffee-mode)
-
-
 (require-package 'jade-mode)
 
 
