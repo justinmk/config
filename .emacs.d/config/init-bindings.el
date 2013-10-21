@@ -15,12 +15,16 @@
     "w" 'evil-write
     "e" 'eval-last-sexp
     "E" 'eval-defun
-    "c" 'eshell
+    "c" (lambda ()
+          (interactive)
+          (evil-window-split)
+          (eshell))
     "C" 'customize-group
     "b d" 'kill-this-buffer
     "v" (kbd "C-w v C-w l")
     "s" (kbd "C-w s C-w j")
     "g s" 'magit-status
+    "g l" 'magit-log
     "P" 'package-list-packages
     "h" help-map
     "h h" 'help-for-help-internal))
@@ -30,8 +34,13 @@
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
-  (after 'git-gutter+
-    (evil-ex-define-cmd "Gw" 'git-gutter+-stage-hunks))
+  (after 'git-gutter+-autoloads
+    (define-key evil-normal-state-map (kbd "[ h") 'git-gutter+-previous-hunk)
+    (define-key evil-normal-state-map (kbd "] h") 'git-gutter+-next-hunk)
+    (define-key evil-normal-state-map (kbd ", g a") 'git-gutter+-stage-hunks)
+    (define-key evil-normal-state-map (kbd ", g r") 'git-gutter+-revert-hunks)
+    (evil-ex-define-cmd "Gw" (lambda () (interactive) (git-gutter+-stage-whole-buffer))))
+
 
   (after 'smex
     (define-key evil-visual-state-map (kbd "SPC SPC") 'smex)
@@ -40,6 +49,8 @@
   (define-key evil-normal-state-map (kbd "M-l") 'switch-to-buffer)
   (define-key evil-normal-state-map (kbd "SPC k") 'ido-kill-buffer)
   (define-key evil-normal-state-map (kbd "SPC t") 'helm-etags-select)
+  (define-key evil-normal-state-map (kbd "SPC y") 'helm-show-kill-ring)
+  (define-key evil-normal-state-map (kbd "M-y") 'ido-find-file)
 
     ;; Note: lexical-binding must be t in order for this to work correctly.
    (defun make-conditional-key-translation (key-from key-to translate-keys-p)
@@ -120,6 +131,9 @@
 (define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit)
 
+(after 'comint
+  (define-key comint-mode-map [up] 'comint-previous-input)
+  (define-key comint-mode-map [down] 'comint-next-input))
 
 (after 'auto-complete
   (define-key ac-completing-map "\t" 'ac-expand)
