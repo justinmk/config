@@ -1,4 +1,5 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (unless (display-graphic-p) (menu-bar-mode -1))
 
@@ -24,6 +25,7 @@
 (require 'init-projectile)
 (require 'init-helm)
 (require 'init-ido)
+(require 'init-speedbar)
 
 (require 'init-git)
 (require 'init-flycheck)
