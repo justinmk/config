@@ -30,9 +30,4 @@
 (global-hl-line-mode +1)
 
 
-(require 'linum)
-(setq linum-format "%4d ")
-(global-linum-mode t)
-
-
 (provide 'init-eyecandy)
