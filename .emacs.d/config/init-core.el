@@ -87,6 +87,8 @@
 (which-function-mode t)
 (global-visual-line-mode)
 (blink-cursor-mode -1)
+(line-number-mode)
+(column-number-mode)
 
 
 (setq-default
