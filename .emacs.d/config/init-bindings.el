@@ -25,6 +25,7 @@
     "s" (kbd "C-w s C-w j")
     "g s" 'magit-status
     "g l" 'magit-log
+    "g d" 'vc-diff
     "P" 'package-list-packages
     "h" help-map
     "h h" 'help-for-help-internal))
@@ -43,14 +44,12 @@
 
 
   (after 'smex
-    (define-key evil-visual-state-map (kbd "SPC SPC") 'smex)
-    (define-key evil-normal-state-map (kbd "SPC SPC") 'smex))
-  (define-key evil-normal-state-map (kbd "SPC o") 'imenu)
+    (define-key evil-visual-state-map (kbd "SPC") 'smex)
+    (define-key evil-normal-state-map (kbd "SPC") 'smex))
+  (define-key evil-normal-state-map (kbd "M-o") 'imenu)
   (define-key evil-normal-state-map (kbd "M-l") 'switch-to-buffer)
-  (define-key evil-normal-state-map (kbd "SPC k") 'ido-kill-buffer)
-  (define-key evil-normal-state-map (kbd "SPC t") 'helm-etags-select)
-  (define-key evil-normal-state-map (kbd "SPC y") 'helm-show-kill-ring)
-  (define-key evil-normal-state-map (kbd "M-y") 'ido-find-file)
+  (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
+  (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
 
     ;; Note: lexical-binding must be t in order for this to work correctly.
    (defun make-conditional-key-translation (key-from key-to translate-keys-p)
