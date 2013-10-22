@@ -99,9 +99,6 @@
   ;; (define-key evil-normal-state-map (kbd "C-o") 'jumpc-jump-backward)
   ;; (define-key evil-normal-state-map (kbd "C-i") 'jumpc-jump-forward)
 
-  (after 'ag-autoloads
-    (define-key evil-normal-state-map (kbd "SPC /") 'ag-regexp-project-at-point))
-
   (after 'company
     (define-key evil-insert-state-map (kbd "TAB") 'my-company-tab)
     (define-key evil-insert-state-map [tab] 'my-company-tab))
