@@ -578,8 +578,9 @@ noremap <F1> <nop>
 " disable linewise undo
 nnoremap U <nop>
 
-" disable Ex mode shortcut
-nnoremap Q <nop>
+" disable Ex mode key and map it to something awesome
+nnoremap Q @@
+xnoremap Q @@
 
 func! ReadExCommandOutput(cmd)
   redir => l:message

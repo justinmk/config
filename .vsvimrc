@@ -10,6 +10,7 @@ nnoremap K i<cr><esc>k$
 inoremap jj <esc>
 inoremap kk <esc>l
 nnoremap gwc :vsc Window.CloseDocumentWindow<cr>
+nnoremap gwo :vsc FullScreen<cr>
 nnoremap <leader>bdd :vsc Window.CloseDocumentWindow<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
