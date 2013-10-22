@@ -8,12 +8,12 @@
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
 
 (require 'package)
-(setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+(defvar package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
-(require 'init-core)
 (require 'init-util)
+(require 'init-core)
 (require 'init-eyecandy)
 
 (require 'init-editor)
@@ -37,7 +37,6 @@
 (require 'init-markdown)
 
 (require 'init-evil)
-(require 'init-misc)
 (require 'init-bindings)
 
 (setq ring-bell-function 'ignore)
