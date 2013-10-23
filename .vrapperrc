@@ -59,3 +59,4 @@ set cleanindent
 set saney
 set gvimpath=/usr/local/bin/mvim
 
+source .vrapperrc.local

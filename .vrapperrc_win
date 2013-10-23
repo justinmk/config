@@ -1,5 +1,0 @@
-" mklink .vrapperrc C:\Users\foo\bar\.vrapperrc_win
-" mklink .vrapperrc_unix C:\Users\foo\bar\.vrapperrc
-source .vrapperrc_unix
-set gvimpath=C:/opt/vim/gvim.exe
-
