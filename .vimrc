@@ -217,7 +217,7 @@ set magic " change the way backslashes are used in search patterns
 set mat=5     " showmatch time (tenths of a second)
 set noerrorbells
 set novb t_vb=
-set tm=3000
+set timeoutlen=3000
 set nonumber
 set background=dark
 if s:has_plugins
@@ -333,6 +333,10 @@ let g:Powerline_stl_path_style = 'short'
 " text, tab and indent 
 "==============================================================================
 set formatoptions+=rn1
+if v:version > 703 || v:version == 703 && has("patch541")
+  " Delete comment character when joining commented lines
+  set formatoptions+=j
+endif
 " don't syntax-highlight long lines
 set synmaxcol=300
 
@@ -442,9 +446,10 @@ nnoremap gwC :tabclose<cr>
 nnoremap gwT :wincmd T<cr>
 
 " manage buffers
-nnoremap <leader>bdd :call <SID>buf_kill(1)<cr>
-nnoremap <leader>bd! :call <SID>buf_kill(0)<cr>
-nnoremap <leader>be :enew<cr>
+nnoremap <leader>bdd :<c-u>call <SID>buf_kill(1)<cr>
+nnoremap <leader>bd! :<c-u>call <SID>buf_kill(0)<cr>
+nnoremap <leader>be  :<c-u>enew<cr>
+nnoremap gb :<c-u>exec 'buffer '.v:count<cr>
 
 " set working directory to the current buffer's directory
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
@@ -551,7 +556,7 @@ nnoremap <leader>w :w!<cr>
 nnoremap <m-]> <c-t>
 
 " always 'very magic'
-nnoremap / /\v
+noremap / /\v
 
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> m`:m+<cr>``
@@ -614,7 +619,7 @@ augroup END
 "    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
   autocmd!
-  autocmd FileType go iab <buffer> err- if err != nil {<cr>log.Fatal(err)}<cr>
+  autocmd FileType go iabbrev <buffer> err- if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
   autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
 
   if exists("$GOPATH")
