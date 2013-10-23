@@ -119,6 +119,18 @@ function bd () {
   fi
 }
 
+# provide 'watch' for systems that do not have it.
+#   passive tail approach: http://stackoverflow.com/a/9574526/152142
+if ! command -v watch > /dev/null 2>&1 ; then
+  function watch() {
+    while sleep 1; do
+      # clear screen if possible
+      command -v clear > /dev/null 2>&1 && clear
+      "$@"
+    done
+  }
+fi
+
 #msysgit cygwin sets this, even over ssh; full cygwin sets this to 'xterm'.
 if [[ $TERM != 'cygwin' ]]; then
     alias tmux='tmux -2'

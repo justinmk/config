@@ -28,6 +28,8 @@ if exists('&guioptions')
     set guioptions-=M
     "use console dialogs instead of popup dialogs for simple choices.
     set guioptions+=rc
+    " disable cursor blinking for all modes
+    set guicursor+=a:blinkon0
 endif
 
 let mapleader = ","
