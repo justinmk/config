@@ -34,4 +34,7 @@
   cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start . &> /dev/null || open . &> /dev/null || xdg-open .
   needsfile = yes
   noconsole = yes
+[guitool "vim"]
+  cmd = source ~/.bashrc && gvim $FILENAME
+  noconsole = yes
 

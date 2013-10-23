@@ -4,8 +4,10 @@
 #   - Cygwin runs a login shell every time (sources .bash_profile)
 #   - Debian/Ubuntu sources .bash_profile on login; thereafter only .bashrc
 
-# Environment variables (non-bash-specific; bash-specific commands follow below)
+# Environment variables (non-bash-specific)
 # =============================================================================
+
+[ -f ~/.bashrc.local ] && source ~/.bashrc.local
 
 if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
     umask 0077
@@ -164,4 +166,3 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   . /etc/bash_completion
 fi
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
