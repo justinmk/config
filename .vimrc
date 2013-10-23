@@ -441,15 +441,15 @@ nnoremap gwF :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
 
 " manage tabs
-nnoremap gwe :tabnew<cr>
+nnoremap gwN :tabnew<cr>
 nnoremap gwC :tabclose<cr>
 nnoremap gwT :wincmd T<cr>
 
 " manage buffers
-nnoremap <leader>bdd :<c-u>call <SID>buf_kill(1)<cr>
-nnoremap <leader>bd! :<c-u>call <SID>buf_kill(0)<cr>
-nnoremap <leader>be  :<c-u>enew<cr>
-nnoremap gb :<c-u>exec 'buffer '.v:count<cr>
+nnoremap <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
+nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
+nnoremap <leader>bn  :<c-u>enew<cr>
+nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
 
 " set working directory to the current buffer's directory
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
@@ -636,13 +636,15 @@ augroup vimrc_golang
 augroup END
 
 " clojure =====================================================================
-" :h 'iskeyword' =>  "When the 'lisp' option is on the '-' character is always included."
+" When the 'lisp' option is on, the '-' character is considered a 'iskeyword' character.
 "    https://github.com/tpope/vim-fireplace
 "    https://github.com/guns/vim-clojure-static
 "    https://github.com/guns/vim-sexp
 "    https://bitbucket.org/kovisoft/slimv
 "    http://kovisoft.bitbucket.org/tutorial.html
 
+" csharp ======================================================================
+" $COMSPEC /k "C:/Program Files (x86)/Microsoft Visual Studio 11.0/Common7/Tools/vsvars32.bat"
 
 "==============================================================================
 " vim grep/search/replace
