@@ -29,6 +29,13 @@
 (setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
    (setq evil-emacs-state-modes nil)
 
+;;remove RET and SPC from evil-motion-state-map so they are available directly for modes that define them.
+   (defun my-move-key (keymap-from keymap-to key)
+     "Moves key binding from one keymap to another and delete from the old location. "
+     (define-key keymap-to key (lookup-key keymap-from key))
+     (define-key keymap-from key nil))
+   (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+   (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
 (global-evil-leader-mode)
 (evil-mode t)
