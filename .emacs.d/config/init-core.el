@@ -46,6 +46,8 @@
 ;; vc
 (setq vc-make-backup-files t)
 
+;; dired
+(require 'dired-x)
 
 ;; ediff
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -93,8 +95,10 @@
 
 
 (setq-default
- indent-tabs-mode nil
- show-trailing-whitespace t)
+ indent-tabs-mode nil)
+
+;; highlight trailing whitespace in files _only_
+(add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
 
 
 (provide 'init-core)

@@ -86,9 +86,6 @@
 
   (define-key evil-visual-state-map (kbd ", e") 'eval-region)
 
-  (define-key evil-insert-state-map (kbd "RET") 'evil-ret-and-indent)
-  (evil-define-key 'insert eshell-mode-map (kbd "RET") 'eshell-send-input)
-
   ;; emacs lisp
   (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") (kbd ", h f RET"))
 
