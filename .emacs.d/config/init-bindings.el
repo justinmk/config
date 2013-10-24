@@ -1,3 +1,9 @@
+(defmacro bind (&rest commands)
+  "Convience macro which creates a lambda interactive command."
+  `(lambda ()
+     (interactive)
+     ,@commands))
+
 (require-package 'guide-key)
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x" "C-c"))
@@ -9,14 +15,18 @@
   (global-set-key (kbd "C-x C-m") 'smex)
   (global-set-key (kbd "C-c C-m") 'smex))
 
+(after 'evil
+  (require-package 'key-chord)
+  (key-chord-mode 1)
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+
 (after 'evil-leader
   (evil-leader/set-leader ",")
   (evil-leader/set-key
     "w" 'evil-write
-    "e" 'eval-last-sexp
-    "E" 'eval-defun
-    "c" (lambda ()
-          (interactive)
+    "e" (kbd "C-x C-e") ;;'eval-last-sexp
+    "E" (kbd "C-M-x") ;;'eval-defun
+    "c" (bind
           (evil-window-split)
           (eshell))
     "C" 'customize-group
@@ -26,14 +36,12 @@
     "g s" 'magit-status
     "g l" 'magit-log
     "g d" 'vc-diff
-    "P" 'package-list-packages
+    "V" (bind (term "vim"))
     "h" help-map
     "h h" 'help-for-help-internal))
 
-(after 'evil
-  (require-package 'key-chord)
-  (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+(after 'evil-matchit
+  (define-key evil-normal-state-map "%" 'evilmi-jump-items))
 
   (after 'git-gutter+-autoloads
     (define-key evil-normal-state-map (kbd "[ h") 'git-gutter+-previous-hunk)
@@ -78,6 +86,8 @@
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
 
+  (define-key evil-insert-state-map (kbd "RET") (kbd "C-j"))
+
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
   (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
 
@@ -117,12 +127,16 @@
   (evil-ex-define-cmd "Qa" 'evil-quit-all)
   (evil-ex-define-cmd "QA" 'evil-quit-all))
 
-;; escape minibuffer
+;; minibuffer keymaps
+;;    esc key
 (define-key minibuffer-local-map [escape] 'my-minibuffer-keyboard-quit)
 (define-key minibuffer-local-ns-map [escape] 'my-minibuffer-keyboard-quit)
 (define-key minibuffer-local-completion-map [escape] 'my-minibuffer-keyboard-quit)
 (define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit)
+;;    other
+(define-key minibuffer-local-map (kbd "C-w") 'backward-kill-word)
+(define-key minibuffer-local-map (kbd "C-u") 'backward-kill-sentence)
 
 (after 'comint
   (define-key comint-mode-map [up] 'comint-previous-input)

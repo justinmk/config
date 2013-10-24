@@ -26,6 +26,10 @@
 (require 'evil-matchit)
 (require 'surround)
 
+(global-evil-leader-mode)
+(evil-mode t)
+(global-surround-mode 1)
+
 (setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
    (setq evil-emacs-state-modes nil)
 
@@ -36,10 +40,6 @@
      (define-key keymap-from key nil))
    (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
    (my-move-key evil-motion-state-map evil-normal-state-map " ")
-
-(global-evil-leader-mode)
-(evil-mode t)
-(global-surround-mode 1)
 
 (defun my-send-string-to-terminal (string)
   (unless (display-graphic-p) (send-string-to-terminal string)))

@@ -89,6 +89,7 @@
 
 (which-function-mode t)
 (global-visual-line-mode)
+(global-auto-revert-mode 1)
 (blink-cursor-mode -1)
 (line-number-mode)
 (column-number-mode)
