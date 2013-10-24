@@ -26,7 +26,9 @@
 (require 'evil-matchit)
 (require 'surround)
 
-(add-to-list 'evil-emacs-state-modes 'profiler-report-mode)
+(setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
+   (setq evil-emacs-state-modes nil)
+
 
 (global-evil-leader-mode)
 (evil-mode t)
