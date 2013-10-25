@@ -85,7 +85,7 @@ Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
 endif
 Bundle 'sjl/clam.vim'
-Bundle 'vim-scripts/dbext.vim'
+Bundle 'dbext.vim'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -164,6 +164,8 @@ if s:is_windows
   let g:gitgutter_realtime = 0
 endif
 
+let g:dbext_map_prefix = '<leader><leader>s'
+
 let g:SignatureEnableDefaultMappings = 2
 
 let g:airline#extensions#tabline#enabled = 1
@@ -186,7 +188,7 @@ endif
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !s:is_gui
     set <m-b>=b <m-h>=h <m-j>=j <m-k>=k <m-l>=l
-          \ <m-o>=o <m-p>=p <m-r>=r
+          \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r
           \ <m-t>=t <m-y>=y
           \ <m-]>=]
     "duds?: m-d
@@ -373,32 +375,50 @@ function! GetSyntaxName()
     return l:name == '' ? '' : '[' . l:name . ']'
 endfunction
 
-" generate random number at end of current line 
-" credit: http://mo.morsi.org/blog/node/299
-" usage:
-"   :Rand <CR>
-"   :Rand 100<CR>
-function! s:Rand(max)
-y a         
-redir @b    
-ruby << EOF
-  rmax = VIM::evaluate("a:max")
-  rmax = nil if rmax == ""
-  printf rand(rmax).to_s
-EOF
-redir END 
-    let @a = strpart(@a, 0, strlen(@a) - 1)
-    let @b = strpart(@b, 1, strlen(@b) - 1)
-    let @c = @a . @b
-    .s/.*/\=@c/g
-endfunction
-command! -nargs=? Rand :call <SID>Rand(<q-args>)
-
 func! AppendToFile(file, lines)
   let l:file = expand(a:file)
   call EnsureFile(l:file)
   "credit ZyX: http://stackoverflow.com/a/8976314/152142
   call writefile(readfile(l:file)+a:lines, l:file)
+endf
+
+"TODO:
+" http://vim.wikia.com/wiki/Have_Vim_check_automatically_if_the_file_has_changed_externally
+" http://www.vim.org/scripts/script.php?script_id=1714
+" FileChangedShell & :checktime
+let s:orig_updtime = &updatetime
+func! Blah()
+  let w = winsaveview()
+  e!
+  call winrestview(w)
+endf
+func! Tail(filepath)
+  exec 'split '.a:filepath
+
+  "initial cursor activity to kick CursorHold
+  let &updatetime=2000
+  call feedkeys("f\e")
+  let b:tail_follow = 0
+
+  let aubuff = '<buffer='.bufnr("%").'>'
+  let updtime = s:orig_updtime
+  augroup TailSmurf
+    au!
+    exec 'autocmd BufEnter,WinEnter '.aubuff.' let &updatetime=2000'
+    if s:is_windows
+      "force cursor activity to trigger next CursorHold
+      exec 'autocmd CursorHold '.aubuff.' call Blah() | call feedkeys("f\e") | if b:tail_follow | exec "norm! G" | endif'
+    else
+      "force cursor activity to trigger next CursorHold
+      " call AppendToFile("~/foo2.txt", [string(localtime())])
+      exec 'autocmd CursorHold '.aubuff.' checktime | call feedkeys("f\e")'
+      exec 'autocmd FileChangedShellPost '.aubuff.' if b:tail_follow | exec "norm! G" | endif'
+      exec 'autocmd FileChangedShell '.aubuff.' call Blah() '
+    endif
+    "one-time event to kick the updatetime initially
+    " exec 'autocmd CursorMoved '.aubuff.' let &updatetime=2000 | au! CursorMoved TailSmurf '.aubuff
+    exec 'autocmd BufHidden,WinLeave '.aubuff.' let &updatetime='.updtime
+  augroup END
 endf
 
 " =============================================================================
@@ -546,13 +566,13 @@ nnoremap ' `
 xnoremap ' `
 nnoremap <C-e> 2<C-e>
 nnoremap <C-y> 2<C-y>
-nnoremap <left> 4zh
-nnoremap <right> 4zl
+noremap <left> 4zh
+noremap <right> 4zl
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
 xnoremap <space> :
-nnoremap <leader>w :w!<cr>
+nnoremap <leader>w :w<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
@@ -688,9 +708,9 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
 
-  "highlight in the current window only
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn colorcolumn=80
-  autocmd WinLeave * setlocal nocursorline nocursorcolumn colorcolumn=
+  "highlight line/col in the current window only
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline | if exists('&colorcolumn') | setlocal colorcolumn=80 | endif
+  autocmd WinLeave * setlocal nocursorline | if exists('&colorcolumn') | setlocal colorcolumn= | endif
 
   if s:is_windows
     " always maximize initial GUI window size
@@ -809,6 +829,10 @@ nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 function! s:unite_settings()
   setlocal nopaste
   nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
+  nmap <buffer> <nowait> <C-q> <Plug>(unite_exit)
+  imap <buffer> <nowait> <C-q> <Plug>(unite_exit)
+  nmap <buffer> <nowait> <M-q> <Plug>(unite_exit)
+  imap <buffer> <nowait> <M-q> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   imap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
