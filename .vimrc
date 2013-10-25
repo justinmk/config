@@ -580,6 +580,9 @@ nnoremap <m-]> <c-t>
 " always 'very magic'
 noremap / /\v
 
+" select last inserted text
+nnoremap <leader>v. `[v`]
+
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> m`:m+<cr>``
 nnoremap <M-k> m`:m-2<cr>``
@@ -689,6 +692,9 @@ augroup vimrc_autocmd
   autocmd!
   autocmd BufReadPost quickfix map <buffer> map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
 
+  " Highlight VCS conflict markers
+  " autocmd BufEnter fugitive\:* match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
   autocmd FileType unite call s:unite_settings()
   " obliterate unite buffers (marks especially).
   autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
@@ -720,6 +726,8 @@ augroup END
 
 " :noau speeds up vimgrep
 noremap <leader>grep :<c-u>noau vimgrep // **<left><left><left><left>
+" search current buffer and open results in quickfix window
+nnoremap <leader>sb :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 " search and replace word under cursor
 nnoremap <leader>sr :<c-u>%s/\<<c-r><c-w>\>//gc<left><left><left>
 xnoremap <leader>sr :<c-u>%s/<c-r>=<SID>VSetSearch('/')<cr>//gc<left><left><left>
@@ -750,6 +758,20 @@ set complete-=i
 set completeopt-=preview
 set completeopt+=longest
 
+inoremap <C-Space> <C-x><C-o>
+if !s:is_gui
+  inoremap <C-@> <C-x><C-o>
+endif
+
+" syntaxcomplete provides basic completion for filetypes that lack a custom one.
+"   :h ft-syntax-omni
+if has("autocmd") && exists("+omnifunc")
+  autocmd Filetype *
+        \ if &omnifunc == "" |
+        \   setlocal omnifunc=syntaxcomplete#Complete |
+        \ endif
+endif
+
 if s:is_vimRecentBuildWithLua
     nnoremap <leader>neo :NeoCompleteEnable<cr>
     let g:neocomplete#enable_smart_case = 1
@@ -766,6 +788,9 @@ endif
 set wildmode=full
 set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe,*.jar,gwt-unitCache/*,*.cache.html
 
+" Files with these suffixes get a lower priority when matching a wildcard
+set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.dll
+
 if s:is_windows
     set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
     " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
@@ -776,8 +801,8 @@ endif
 "   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
 "   \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
 
-" important!: semicolon means 'walk up until tags/ is found'
-set tags=./tags;,tags;
+" important!: semicolon means 'walk up until found'
+set tags^=./tags;,tags;,~/.vimtags
 let g:easytags_auto_highlight = 0
 let g:easytags_dynamic_files = 1
 
