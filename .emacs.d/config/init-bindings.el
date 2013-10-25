@@ -55,7 +55,7 @@
     (define-key evil-visual-state-map (kbd "SPC") 'smex)
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
   (define-key evil-normal-state-map (kbd "M-o") 'imenu)
-  (define-key evil-normal-state-map (kbd "M-l") 'switch-to-buffer)
+  (define-key evil-normal-state-map (kbd "M-l") 'ibuffer) ;;'helm-buffers-list
   (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
   (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
 

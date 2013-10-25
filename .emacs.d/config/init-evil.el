@@ -30,8 +30,9 @@
 (evil-mode t)
 (global-surround-mode 1)
 
-(setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
-   (setq evil-emacs-state-modes nil)
+;; enable evil-mode everywhere!
+(setq evil-normal-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
+(setq evil-emacs-state-modes nil)
 
 ;;remove RET and SPC from evil-motion-state-map so they are available directly for modes that define them.
    (defun my-move-key (keymap-from keymap-to key)
