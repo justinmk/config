@@ -98,8 +98,23 @@
 (setq-default
  indent-tabs-mode nil)
 
+;; defer font-lock (improves scrolling speed, esp. for large files)
+(setq jit-lock-defer-time 0.05)
+
 ;; highlight trailing whitespace in files _only_
 (add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
+
+;; disable expensive features for very large files
+;;     http://stackoverflow.com/a/18317181/152142
+(defun my-large-file-on_enter-hook ()
+  "If a file is over a given size, make the buffer read only."
+  (when (> (buffer-size) (* 1024 1024))
+    (setq buffer-read-only t)
+    (buffer-disable-undo)
+    ;; (fundamental-mode)
+    ))
+
+(add-hook 'find-file-hook 'my-large-file-on_enter-hook)
 
 
 (provide 'init-core)
