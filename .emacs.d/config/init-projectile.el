@@ -4,6 +4,8 @@
 (require-package 'projectile)
 (require 'projectile)
 
+(setq projectile-show-paths-function 'projectile-hashify-with-relative-paths)
+
 (add-to-list 'projectile-globally-ignored-directories "elpa")
 (add-to-list 'projectile-globally-ignored-directories ".cache")
 
