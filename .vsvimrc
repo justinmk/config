@@ -34,7 +34,7 @@ nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
 nnoremap gr :vsc Edit.FindAllReferences<cr>
-" nnoremap gD :vsc ???<cr>
+nnoremap gD :vsc ReSharper.ReSharper_GotoImplementation<cr>
 nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
 
