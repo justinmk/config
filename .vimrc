@@ -86,6 +86,9 @@ Bundle 'tpope/vim-tbone'
 endif
 Bundle 'sjl/clam.vim'
 Bundle 'dbext.vim'
+" dbext profile example:
+"   let g:dbext_default_profile = 'default'
+"   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -983,5 +986,7 @@ if isdirectory(expand(s:dir))
     set undofile
   endif
 endif
+
+silent! source ~/.vimrc.local
 
 " r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
