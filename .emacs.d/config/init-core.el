@@ -2,6 +2,8 @@
       inhibit-startup-echo-area-message t
       inhibit-startup-message t)
 
+;; relax the GC frequency
+(setq gc-cons-threshold 20000000)
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
