@@ -19,9 +19,11 @@
 ;;   (after 'git-gutter+ (diminish 'git-gutter+-mode))
 ;;   )
 
-(if (eq system-type 'windows-nt)
-    (set-face-attribute 'default nil
-                        :family "Consolas" :height 110))
+
+(pcase (window-system)
+  (`ns (set-face-attribute 'default nil :height 135))
+  (`w32 (set-face-attribute 'default nil
+                        :family "Consolas" :height 110)))
 
 (global-hl-line-mode +1)
 
