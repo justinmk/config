@@ -28,8 +28,10 @@ if exists('&guioptions')
     set guioptions-=M
     "use console dialogs instead of popup dialogs for simple choices.
     set guioptions+=rc
-    " disable cursor blinking for all modes
-    set guicursor+=a:blinkon0
+    " cursor behavior:
+    "   - no blinking in normal/visual mode
+    "   - manic blinking in insert-mode
+    set guicursor+=n-v-c:blinkon0,sm:hor30-Cursor,i-ci:ver25-Cursor/lCursor-blinkwait30-blinkoff100-blinkon100
 endif
 
 let mapleader = ","
@@ -126,6 +128,7 @@ endif
 Bundle 'justinmk/vim-ipmotion'
 Bundle 'justinmk/vim-gtfo'
 Bundle 'justinmk/vim-sneak'
+" https://github.com/vim-scripts/surrparen
 Bundle 'xolox/vim-misc'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
@@ -168,6 +171,9 @@ if s:is_windows
 endif
 
 let g:dbext_map_prefix = '<leader><leader>s'
+
+" if this is enabled, Eclim deletes hidden buffers on tab-enter.
+let g:EclimBufferTabTracking = 0
 
 let g:SignatureEnableDefaultMappings = 2
 
@@ -670,6 +676,9 @@ augroup END
 "    https://github.com/guns/vim-sexp
 "    https://bitbucket.org/kovisoft/slimv
 "    http://kovisoft.bitbucket.org/tutorial.html
+
+" lua =========================================================================
+"    https://github.com/xolox/vim-lua-inspect
 
 " csharp ======================================================================
 " $COMSPEC /k "C:/Program Files (x86)/Microsoft Visual Studio 11.0/Common7/Tools/vsvars32.bat"
