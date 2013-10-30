@@ -35,8 +35,10 @@ nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
 nnoremap gr :vsc Edit.FindAllReferences<cr>
 nnoremap gD :vsc ReSharper.ReSharper_GotoImplementation<cr>
+nnoremap gR :vsc ReSharper.ReSharper_Rename<cr>
 nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
+nnoremap gss :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
 set hlsearch
 set autoindent
