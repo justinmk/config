@@ -24,6 +24,8 @@ nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
 noremap 0 ^
 noremap - $
+" workaround for https://github.com/vrapper/vrapper/issues/318#issuecomment-27528621
+nnoremap <C-I> <C-I>
 
 " vrapper
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
