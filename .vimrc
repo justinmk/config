@@ -575,8 +575,10 @@ nnoremap ' `
 xnoremap ' `
 nnoremap <C-e> 2<C-e>
 nnoremap <C-y> 2<C-y>
-noremap <left> 4zh
+noremap <left>  4zh
 noremap <right> 4zl
+noremap <c-left>  :<c-u>exec 'norm! '.(winwidth(0)/2).'zh'<cr>
+noremap <c-right> :<c-u>exec 'norm! '.(winwidth(0)/2).'zl'<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
