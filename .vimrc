@@ -121,7 +121,6 @@ Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'derekwyatt/vim-scala'
 if exists("$GOPATH")
 Bundle 'Blackrush/vim-gocode'
 endif
@@ -133,6 +132,7 @@ Bundle 'xolox/vim-misc'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
+Bundle 'junegunn/vader.vim'
 if s:is_vimRecentBuildWithLua
 Bundle 'Shougo/neocomplete.vim'
 endif
@@ -214,7 +214,6 @@ else
 endif
 set list
 
-set report=0
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
@@ -226,13 +225,14 @@ set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
-set magic " change the way backslashes are used in search patterns
-set mat=5     " showmatch time (tenths of a second)
-set noerrorbells
-set novb t_vb=
+set matchtime=3
+
+"audible bell persists (especially on MacVim) unless we:
+"   - *enable* visualbell, and
+"   - set its effect to be nothing.
+set noerrorbells visualbell t_vb=
+
 set timeoutlen=3000
-set nonumber
-set background=dark
 if s:has_plugins
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 else
@@ -273,8 +273,6 @@ elseif s:is_mac
     if s:is_gui
         "set guifont=Monaco:h16
         set guifont=Menlo:h14
-
-        let g:Powerline_symbols = 'unicode'
     endif
 elseif s:is_gui "linux or other
     set guifont=Monospace\ 10
@@ -340,8 +338,6 @@ endif
   endif
 "}}}
 
-let g:Powerline_stl_path_style = 'short'
-
 "==============================================================================
 " text, tab and indent 
 "==============================================================================
@@ -358,12 +354,13 @@ set tabstop=2
 set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
-set linebreak "wrap long lines at 'breakat' character
-set textwidth=500
+"wrap lines >80 chars at the 'breakat' character *if* 'wrap' is set.
+set linebreak
+set textwidth=80
+set nowrap
 
 set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
 set smartindent
-set nowrap 
 
 " =============================================================================
 " util functions
