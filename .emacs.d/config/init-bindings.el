@@ -55,7 +55,7 @@
     (define-key evil-visual-state-map (kbd "SPC") 'smex)
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
   (define-key evil-normal-state-map (kbd "M-o") 'imenu)
-  (define-key evil-normal-state-map (kbd "M-l") 'ibuffer) ;;'helm-buffers-list
+  (define-key evil-normal-state-map (kbd "M-l") 'switch-to-buffer) ;;'helm-buffers-list
   (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
   (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
 
@@ -86,7 +86,7 @@
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
 
-  (define-key evil-insert-state-map (kbd "RET") (kbd "C-j"))
+  ;; (define-key evil-insert-state-map (kbd "RET") (kbd "C-j"))
 
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
   (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
