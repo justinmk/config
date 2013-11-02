@@ -90,7 +90,7 @@ Bundle 'sjl/clam.vim'
 Bundle 'dbext.vim'
 " dbext profile example:
 "   let g:dbext_default_profile = 'default'
-"   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
+"   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
@@ -355,7 +355,6 @@ set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default 
 
 "wrap lines >80 chars at the 'breakat' character *if* 'wrap' is set.
 set linebreak
-set textwidth=80
 set nowrap
 
 set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
@@ -588,7 +587,9 @@ nnoremap <leader>w :w<cr>
 nnoremap <m-]> <c-t>
 
 " always 'very magic'
-noremap / /\v
+nnoremap / /\v
+" search within visual block
+xnoremap / <esc>/\v%V
 
 " select last inserted text
 nnoremap <leader>v. `[v`]
