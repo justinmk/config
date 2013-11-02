@@ -10,6 +10,9 @@
 (setq guide-key/recursive-key-sequence-flag t)
 (guide-key-mode 1)
 
+(global-set-key (kbd "M-o") 'ido-goto-symbol)
+(global-set-key (kbd "M-l") 'switch-to-buffer) ;;'helm-buffers-list
+
 (after 'smex
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key (kbd "C-x C-m") 'smex)
@@ -18,7 +21,8 @@
 (after 'evil
   (require-package 'key-chord)
   (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
 
 (after 'evil-leader
   (evil-leader/set-leader ",")
@@ -54,8 +58,6 @@
   (after 'smex
     (define-key evil-visual-state-map (kbd "SPC") 'smex)
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
-  (define-key evil-normal-state-map (kbd "M-o") 'imenu)
-  (define-key evil-normal-state-map (kbd "M-l") 'switch-to-buffer) ;;'helm-buffers-list
   (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
   (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
 

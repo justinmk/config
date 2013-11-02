@@ -5,19 +5,19 @@
 (require-package 'pretty-mode)
 (global-pretty-mode)
 
-;; (require-package 'diminish)
-;; (after 'diminish-autoloads
-;;   (diminish 'global-visual-line-mode)
-;;   (after 'undo-tree (diminish 'undo-tree-mode))
-;;   (after 'auto-complete (diminish 'auto-complete-mode))
-;;   (after 'projectile (diminish 'projectile-mode))
-;;   (after 'yasnippet (diminish 'yas-minor-mode))
-;;   (after 'guide-key (diminish 'guide-key-mode))
-;;   (after 'eldoc (diminish 'eldoc-mode))
-;;   (after 'smartparens (diminish 'smartparens-mode))
-;;   (after 'company (diminish 'company-mode))
-;;   (after 'git-gutter+ (diminish 'git-gutter+-mode))
-;;   )
+(require-package 'diminish)
+(after 'diminish-autoloads
+  (diminish 'global-visual-line-mode)
+  (after 'undo-tree (diminish 'undo-tree-mode))
+  (after 'auto-complete (diminish 'auto-complete-mode))
+  (after 'projectile (diminish 'projectile-mode))
+  (after 'yasnippet (diminish 'yas-minor-mode))
+  (after 'guide-key (diminish 'guide-key-mode))
+  (after 'eldoc (diminish 'eldoc-mode))
+  (after 'smartparens (diminish 'smartparens-mode))
+  (after 'company (diminish 'company-mode))
+  (after 'git-gutter+ (diminish 'git-gutter+-mode))
+  )
 
 
 (pcase (window-system)
