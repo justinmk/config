@@ -7,11 +7,20 @@ set incsearch
 set tabstop=4
 
 nnoremap K i<cr><esc>k$
-inoremap jj <esc>
+inoremap jk <esc>
+inoremap kj <esc>
 inoremap kk <esc>l
-nnoremap gwc :vsc Window.CloseDocumentWindow<cr>
+
 nnoremap gwo :vsc FullScreen<cr>
-nnoremap <leader>bdd :vsc Window.CloseDocumentWindow<cr>
+nnoremap gws :vsc Window.Split<cr>
+nnoremap gwc :vsc Window.Split<cr>
+nnoremap gwC :vsc Window.MovetoPreviousTabGroup<cr>
+nnoremap gwv :vsc Window.NewVerticalTabGroup<cr>
+nnoremap gwT :vsc Window.Float<cr>
+nnoremap gwj :vsc Window.NextSplitPane<cr>
+nnoremap gwk :vsc Window.PreviousSplitPane<cr>
+
+nnoremap <leader>bd :vsc Window.CloseDocumentWindow<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <leader>w  :w<cr>
@@ -26,35 +35,53 @@ noremap - $
 
 nnoremap Y y$
 
-"vsvim
 nnoremap <c-o> :vsc View.NavigateBackward<cr>
 nnoremap <c-i> :vsc View.NavigateForward<cr>
 xnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap ]q :vsc View.NextError<cr>
 nnoremap [q :vsc View.PreviousError<cr>
+
+
+" gs => expression manipulation
+" gz => inspect the current symbol
+" cr => refactor the current symbol
+" g/ => search for files and symbols
+
 nnoremap gr :vsc Edit.FindAllReferences<cr>
-nnoremap gD :vsc ReSharper.ReSharper_GotoImplementation<cr>
+" go to the type of the current symbol
+nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
 nnoremap gR :vsc ReSharper.ReSharper_Rename<cr>
+" show list of types/symbols/files
+nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
+nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
+nnoremap gzh :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
+nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_ClassHierarchy<cr>
+nnoremap gzT :vsc ReSharper.ReSharper_TypeHierarchy_ImplementationHierarchy<cr>
+nnoremap gzH :vsc ReSharper.ReSharper_ShowHierarchyWindow<cr>
+nnoremap gz. :vsc View.CallHierarchy<cr>
+nnoremap gzi :vsc ReSharper.ReSharper_GotoImplementation<cr>
+
+"bring up refactor menu
+noremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
+nnoremap crR :vsc ReSharper.ReSharper_Rename<cr>
+
+
+" 'omnibox'
+nnoremap <space> :vsc Window.QuickLaunch<cr>
+
 nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
-nnoremap gss :vsc SolutionExplorer.SyncWithActiveDocument<cr>
+nnoremap <bs> :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
 set hlsearch
 set autoindent
-set backspace=indent,eol,start
-set complete-=i
 set showmatch
 set expandtab
 set shiftwidth=4
-set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
-set nrformats-=octal
+set smarttab " Use 'shiftwidth' when using <Tab> in front of a line.
 set shiftround
 set ttimeout
 set ttimeoutlen=50
-
-if &history < 1000
-  set history=1000
-endif
 
 

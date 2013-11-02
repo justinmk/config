@@ -9,9 +9,10 @@ set incsearch
 set tabstop=4
 
 nnoremap K i<cr><esc>k$
-inoremap jj <esc>
+inoremap jk <esc>
+inoremap kj <esc>
 inoremap kk <esc>l
-nnoremap ,bdd :bdelete<cr>
+nnoremap ,bd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
@@ -24,8 +25,7 @@ nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
 noremap 0 ^
 noremap - $
-" workaround for https://github.com/vrapper/vrapper/issues/318#issuecomment-27528621
-nnoremap <C-I> <C-I>
+nnoremap <m-l> :ls<cr>
 
 " vrapper
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
@@ -45,7 +45,7 @@ nnoremap <c-p> :eclipseopenresource<cr>
 
 " amazing 'omnibox' that searches buffers, commands, views, menus, preferences, etc.
 eclipseaction eclipsecmdsearch org.eclipse.ui.window.quickAccess
-nnoremap <m-l> :eclipsecmdsearch<cr>
+nnoremap <space> :eclipsecmdsearch<cr>
 
 " open file manager here
 eclipseaction openfmhere com.tetrade.eclipse.plugins.easyshell.command.shellExplore

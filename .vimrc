@@ -96,7 +96,6 @@ Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-dispatch'
-Bundle 'tpope/vim-abolish'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-rsi'
@@ -196,11 +195,11 @@ endif
 " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !s:is_gui
-    set <m-b>=b <m-h>=h <m-j>=j <m-k>=k <m-l>=l
-          \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r
-          \ <m-t>=t <m-y>=y
+    "avoid: m-b m-d m-f
+    set <m-h>=h <m-j>=j <m-k>=k <m-l>=l
+          \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
+          \ <m-t>=t <m-x>=x <m-y>=y <m-z>=z
           \ <m-]>=]
-    "duds?: m-d
 endif
 
 try | lang en_US | catch | endtry
@@ -227,10 +226,10 @@ set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
 set matchtime=3
 
-"audible bell persists (especially on MacVim) unless we:
-"   - *enable* visualbell, and
-"   - set its effect to be nothing.
-set noerrorbells visualbell t_vb=
+set noerrorbells novisualbell t_vb=
+if s:is_mac "audible bell persists on MacVim unless we enable visualbell.
+  set visualbell
+endif
 
 set timeoutlen=3000
 if s:has_plugins
@@ -479,6 +478,8 @@ nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <leader>bn  :<c-u>enew<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
 
+" working with projects/directories
+nnoremap <bs> :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
 
@@ -566,7 +567,8 @@ nnoremap <leader>d "_d
 xnoremap <leader>d "_d
 nnoremap <leader>D "_D
 
-inoremap jj <esc>
+inoremap jk <esc>
+inoremap kj <esc>
 inoremap kk <esc>l
 nnoremap ' `
 xnoremap ' `
@@ -636,9 +638,9 @@ augroup vimrc_java
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
   if s:has_eclim
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
-          \ | nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
-          \ | nnoremap <buffer> gjoi  :<c-u>JavaImportOrganize<cr>
-          \ | nnoremap <buffer> <F2>  :<c-u>JavaDocPreview<cr>
+          \ | nnoremap <buffer> gzh :<c-u>JavaHierarchy<cr>
+          \ | nnoremap <buffer> cri  :<c-u>JavaImportOrganize<cr>
+          \ | nnoremap <buffer> gzc  :<c-u>JavaDocPreview<cr>
   endif
 augroup END
 
@@ -851,22 +853,22 @@ endif
 call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
 " search hidden directories:
-" nnoremap <c-p>   :Unite -no-split -buffer-name=files  -start-insert file_rec:. directory_rec:. <cr>
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files -start-insert file_mru file_rec <cr>
+nmap g/f <c-p>
 nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
 nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag -start-insert tag/include<cr>
+nmap g/t <m-t>
 nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank -start-insert history/yank<cr>
 nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -start-insert -buffer-name=cd -default-action=cd<CR>
+nmap g/d <leader>cd
 nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
   nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
-  nmap <buffer> <nowait> <C-q> <Plug>(unite_exit)
-  imap <buffer> <nowait> <C-q> <Plug>(unite_exit)
   nmap <buffer> <nowait> <M-q> <Plug>(unite_exit)
   imap <buffer> <nowait> <M-q> <Plug>(unite_exit)
   " refresh the cache
