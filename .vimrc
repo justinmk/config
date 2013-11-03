@@ -119,7 +119,7 @@ Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
-Bundle 'airblade/vim-gitgutter'
+Bundle 'mhinz/vim-signify'
 if exists("$GOPATH")
 Bundle 'Blackrush/vim-gocode'
 endif
@@ -163,13 +163,12 @@ endf
 "==============================================================================
 " general settings / options
 "==============================================================================
-let g:gitgutter_escape_grep = 1
-let g:gitgutter_eager = 0
-if s:is_windows
-  let g:gitgutter_realtime = 0
-endif
+let g:signify_vcs_list = [ 'git' ]
 
 let g:dbext_map_prefix = '<leader><leader>s'
+let g:dbext_default_history_file = expand('~/.dbext_sql_history')
+let g:dbext_default_history_size = 1000
+let g:dbext_default_history_max_entry = 10*1024
 
 " if this is enabled, Eclim deletes hidden buffers on tab-enter.
 let g:EclimBufferTabTracking = 0
@@ -786,17 +785,22 @@ if has("autocmd") && exists("+omnifunc")
         \ endif
 endif
 
+func! s:init_neocomplete()
+  nnoremap <leader>neo :NeoCompleteEnable<cr>
+  let g:neocomplete#enable_smart_case = 1
+  " if !exists('g:neocomplete#force_omni_input_patterns')
+  "   let g:neocomplete#force_omni_input_patterns = {}
+  " endif
+  if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+  endif
+  let omni = g:neocomplete#sources#omni#input_patterns
+  let omni.go  = '[^.[:digit:] *\t]\.\w*'
+  let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
+endf
+
 if s:is_vimRecentBuildWithLua
-    nnoremap <leader>neo :NeoCompleteEnable<cr>
-    let g:neocomplete#enable_smart_case = 1
-    if !exists('g:neocomplete#force_omni_input_patterns')
-        let g:neocomplete#force_omni_input_patterns = {}
-    endif
-    if !exists('g:neocomplete#sources#omni#input_patterns')
-        let g:neocomplete#sources#omni#input_patterns = {}
-    endif
-    let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
-    let g:neocomplete#force_omni_input_patterns.go = '[^.[:digit:] *\t]\.\w*'
+  call s:init_neocomplete()
 endif
 
 set wildmode=full
