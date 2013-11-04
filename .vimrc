@@ -476,7 +476,7 @@ nnoremap <leader>bn  :<c-u>enew<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
 
 " working with projects/directories
-nnoremap <bs> :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
+nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
 

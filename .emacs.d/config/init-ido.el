@@ -22,6 +22,7 @@
 (require-package 'smex)
 (require 'smex)
 (smex-initialize)
+(setq smex-history-length 100)
 
 ;; ido-enhanced imenu   http://www.emacswiki.org/emacs/ImenuMode#toc11
 (defun ido-goto-symbol (&optional symbol-list)

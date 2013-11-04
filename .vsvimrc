@@ -14,7 +14,9 @@ inoremap kk <esc>l
 nnoremap gwo :vsc FullScreen<cr>
 nnoremap gws :vsc Window.Split<cr>
 nnoremap gwc :vsc Window.Split<cr>
-nnoremap gwC :vsc Window.MovetoPreviousTabGroup<cr>
+nnoremap gwC :vsc Window.CloseDocumentWindow<cr>
+nnoremap gwH :vsc Window.MovetoPreviousTabGroup<cr>
+nnoremap gwL :vsc Window.MovetoNextTabGroup<cr>
 nnoremap gwv :vsc Window.NewVerticalTabGroup<cr>
 nnoremap gwT :vsc Window.Float<cr>
 nnoremap gwj :vsc Window.NextSplitPane<cr>
@@ -72,7 +74,7 @@ nnoremap <space> :vsc Window.QuickLaunch<cr>
 
 nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
-nnoremap <bs> :vsc SolutionExplorer.SyncWithActiveDocument<cr>
+nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
 set hlsearch
 set autoindent
