@@ -31,6 +31,8 @@
 (global-surround-mode 1)
 
 ;; enable evil-mode everywhere!
+;; TODO: this is probably more reasonable: https://github.com/prooftechnique/.emacs.d/blob/master/config/jhenahan-evil.el
+;;       also: https://github.com/edwtjo/evil-org-mode
 (setq evil-normal-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
 (setq evil-emacs-state-modes nil)
 
