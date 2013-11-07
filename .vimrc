@@ -116,6 +116,7 @@ Bundle 'Valloric/MatchTagAlways'
 endif
 Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
+Bundle 'pangloss/vim-javascript'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
 Bundle 'mhinz/vim-signify'
@@ -475,6 +476,9 @@ nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <leader>bn  :<c-u>enew<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
 
+" quickfix
+nnoremap <leader>q :botright copen<cr>
+
 " working with projects/directories
 nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
 " set working directory to the current buffer's directory
@@ -564,6 +568,22 @@ nnoremap <leader>d "_d
 xnoremap <leader>d "_d
 nnoremap <leader>D "_D
 
+func! s:replaceUntil(type)
+  let sel_save = &selection
+  let &selection = "inclusive"
+
+  if a:type == 'line'
+    silent normal! '[V']"_dp
+  elseif a:type == 'block'
+    silent normal! `[`]"_dp
+  else
+    silent normal! `[v`]"_dp
+  endif
+
+  let &selection = sel_save
+endf
+nnoremap <silent> cr :set opfunc=<sid>replaceUntil<CR>g@
+
 inoremap jk <esc>
 inoremap kj <esc>
 inoremap kk <esc>l
@@ -637,9 +657,10 @@ augroup vimrc_java
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
   if s:has_eclim
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
-          \ | nnoremap <buffer> gzh :<c-u>JavaHierarchy<cr>
-          \ | nnoremap <buffer> cri  :<c-u>JavaImportOrganize<cr>
-          \ | nnoremap <buffer> gzc  :<c-u>JavaDocPreview<cr>
+          \ | nnoremap <buffer> gzt   :<c-u>JavaHierarchy<cr>
+          \ | nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
+          \ | nnoremap <buffer> gzd   :<c-u>JavaDocPreview<cr>
+          \ | nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>
   endif
 augroup END
 
@@ -650,7 +671,7 @@ augroup END
 "    let g:ref_use_vimproc = 1
 "    let g:ref_open = 'vsplit'
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
-"    nno <leader>K :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
+"    nnoremap g/d :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
   autocmd!
   autocmd FileType go iabbrev <buffer> err- if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
@@ -683,10 +704,8 @@ augroup END
 " csharp ======================================================================
 " $COMSPEC /k "C:/Program Files (x86)/Microsoft Visual Studio 11.0/Common7/Tools/vsvars32.bat"
 
-"==============================================================================
-" vim grep/search/replace
-"==============================================================================
-nnoremap <leader>qq :botright copen<cr>
+
+
 augroup BufferDeath
   autocmd!
   " on BufLeave:
@@ -787,6 +806,7 @@ endif
 func! s:init_neocomplete()
   nnoremap <leader>neo :NeoCompleteEnable<cr>
   let g:neocomplete#enable_smart_case = 1
+  let g:neocomplete#enable_auto_select = 1
   " if !exists('g:neocomplete#force_omni_input_patterns')
   "   let g:neocomplete#force_omni_input_patterns = {}
   " endif
@@ -809,9 +829,8 @@ set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.
 set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.dll
 
 if s:is_windows
-    set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\* 
-    " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
-    " let g:ctrlp_buftag_ctags_bin = '~/bin/ctags.exe'
+  set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\*
+  let g:neocomplete#ctags_command = '~/bin/ctags.exe'
 endif
 
 " let g:ctrlp_custom_ignore = {
@@ -820,14 +839,16 @@ endif
 
 " important!: semicolon means 'walk up until found'
 set tags^=./tags;,tags;,~/.vimtags
-let g:easytags_auto_highlight = 0
-let g:easytags_dynamic_files = 1
 
 if s:has_plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
+let g:unite_source_file_mru_long_limit = 3000
+let g:unite_source_directory_mru_long_limit = 3000
+let g:unite_source_file_mru_time_format = "(%Y/%m/%d %H:%M)"
+let g:unite_source_buffer_time_format = "(%Y/%m/%d %H:%M)"
 
 " TODO: https://github.com/bling/dotvim/blob/master/vimrc#L535
 "       https://github.com/Shougo/unite.vim/issues/347
@@ -862,19 +883,19 @@ nmap g/f <c-p>
 nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
+" TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
 nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag -start-insert tag/include<cr>
 nmap g/t <m-t>
 nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank -start-insert history/yank<cr>
 nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -start-insert -buffer-name=cd -default-action=cd<CR>
-nmap g/d <leader>cd
 nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
 
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
   nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
-  nmap <buffer> <nowait> <M-q> <Plug>(unite_exit)
-  imap <buffer> <nowait> <M-q> <Plug>(unite_exit)
+  silent! umap! <C-g>
+  imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   imap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
