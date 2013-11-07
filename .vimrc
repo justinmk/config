@@ -973,8 +973,8 @@ if s:is_cygwin
   let &t_te.="\e[0 q"
 endif
 
-" tree view
-let g:netrw_liststyle = 3
+" tree view / disable until issue is fixed: https://code.google.com/p/vim/issues/detail?id=140
+" let g:netrw_liststyle = 3
 let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
