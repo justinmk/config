@@ -2,3 +2,7 @@
 --exclude=*.cache.html
 --exclude=*.nocache.js
 
+--langmap=javascript:.js
+# improve ctags handling of JavaScript by adding a definition for object literals
+--regex-javascript=/([A-Za-z0-9._$]+)[ \t]*[:=][ \t]*\{/\1/o,object/
+
