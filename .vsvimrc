@@ -17,6 +17,7 @@ nnoremap gwc :vsc Window.Split<cr>
 nnoremap gwC :vsc Window.CloseDocumentWindow<cr>
 nnoremap gwH :vsc Window.MovetoPreviousTabGroup<cr>
 nnoremap gwL :vsc Window.MovetoNextTabGroup<cr>
+nnoremap gwS :vsc Window.NewHorizontalTabGroup<cr>
 nnoremap gwv :vsc Window.NewVerticalTabGroup<cr>
 nnoremap gwT :vsc Window.Float<cr>
 nnoremap gwj :vsc Window.NextSplitPane<cr>
@@ -54,25 +55,38 @@ nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol
 nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
 nnoremap gR :vsc ReSharper.ReSharper_Rename<cr>
+" nnoremap <M-o> go to class member
+" nnoremap <M-t> go to tag/symbol
+
 " show list of types/symbols/files
 nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
-nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
-nnoremap gzh :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
-nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_ClassHierarchy<cr>
-nnoremap gzT :vsc ReSharper.ReSharper_TypeHierarchy_ImplementationHierarchy<cr>
-nnoremap gzH :vsc ReSharper.ReSharper_ShowHierarchyWindow<cr>
-nnoremap gz. :vsc View.CallHierarchy<cr>
-nnoremap gzi :vsc ReSharper.ReSharper_GotoImplementation<cr>
+" go to file
+nnoremap g/f :vsc ReSharper.ReSharper_GotoFile<cr>
+" grep everything
+nnoremap g// :vsc Edit.FindinFiles<cr>
 
-"bring up refactor menu
+nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
+nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
+nnoremap gzi :vsc ReSharper.ReSharper_GotoImplementation<cr>
+nnoremap gzd :vsc ReSharper.ReSharper_QuickDoc<cr>
+
+"show refactor menu
 noremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
 nnoremap crR :vsc ReSharper.ReSharper_Rename<cr>
+nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
+"show quickfix menu
+nnoremap <bs> :vsc ReSharper_AltEnter<cr>
 
+" expression manipulation
+nnoremap gsh :vsc ReSharper.ReSharper_MoveLeft<cr>
+nnoremap gsl :vsc ReSharper.ReSharper_MoveRight<cr>
+nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>
+nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
 
 " 'omnibox'
 nnoremap <space> :vsc Window.QuickLaunch<cr>
 
-nnoremap gb :vsc Debug.ToggleBreakpoint<cr>
+nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
 nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
