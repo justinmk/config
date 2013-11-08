@@ -58,8 +58,8 @@ nnoremap gR :vsc ReSharper.ReSharper_Rename<cr>
 " nnoremap <M-o> go to class member
 " nnoremap <M-t> go to tag/symbol
 
-" show list of types/symbols/files
-nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
+" go to anything (types/symbols/files)
+nnoremap <C-p> :vsc ReSharper.ReSharper_GotoType<cr>
 " go to file
 nnoremap g/f :vsc ReSharper.ReSharper_GotoFile<cr>
 " grep everything
@@ -78,6 +78,7 @@ nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
 nnoremap <bs> :vsc ReSharper_AltEnter<cr>
 
 " expression manipulation
+nnoremap gst :vsc Edit.WordTranspose<cr>
 nnoremap gsh :vsc ReSharper.ReSharper_MoveLeft<cr>
 nnoremap gsl :vsc ReSharper.ReSharper_MoveRight<cr>
 nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>

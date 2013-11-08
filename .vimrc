@@ -92,6 +92,7 @@ Bundle 'dbext.vim'
 "   let g:dbext_default_profile = 'default'
 "   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
 Bundle 'thinca/vim-quickrun'
+" Bundle 'xuhdev/SingleCompile'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
@@ -338,8 +339,8 @@ endif
 
 "==============================================================================
 " text, tab and indent 
-"==============================================================================
-set formatoptions+=rn1
+
+set formatoptions+=rno1l
 if v:version > 703 || v:version == 703 && has("patch541")
   " Delete comment character when joining commented lines
   set formatoptions+=j
@@ -352,7 +353,6 @@ set tabstop=2
 set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
-"wrap lines >80 chars at the 'breakat' character *if* 'wrap' is set.
 set linebreak
 set nowrap
 
@@ -361,7 +361,6 @@ set smartindent
 
 " =============================================================================
 " util functions
-" =============================================================================
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
