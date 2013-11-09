@@ -610,7 +610,7 @@ nnoremap / /\v
 xnoremap / <esc>/\v%V
 
 " select last inserted text
-nnoremap <leader>v. `[v`]
+nnoremap gV `[v`]
 
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <M-j> m`:m+<cr>``
