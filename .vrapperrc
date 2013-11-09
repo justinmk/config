@@ -59,6 +59,7 @@ nnoremap ,v  :vim<cr>
 set autochdir
 set cleanindent
 set saney
+set contentassistmode
 set gvimpath=/usr/local/bin/mvim
 
 source .vrapperrc.local

@@ -475,7 +475,6 @@ nnoremap gwT :wincmd T<cr>
 nnoremap <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
 nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <leader>bn  :<c-u>enew<cr>
-nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
 
 " quickfix
 nnoremap <leader>q :botright copen<cr>
