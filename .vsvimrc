@@ -42,8 +42,8 @@ nnoremap <c-o> :vsc View.NavigateBackward<cr>
 nnoremap <c-i> :vsc View.NavigateForward<cr>
 xnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
-nnoremap ]q :vsc View.NextError<cr>
-nnoremap [q :vsc View.PreviousError<cr>
+" nnoremap ]q :vsc View.NextError<cr>
+" nnoremap [q :vsc View.PreviousError<cr>
 
 
 " gs => expression manipulation
@@ -83,6 +83,10 @@ nnoremap gsh :vsc ReSharper.ReSharper_MoveLeft<cr>
 nnoremap gsl :vsc ReSharper.ReSharper_MoveRight<cr>
 nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>
 nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
+nnoremap ]q :vsc Edit.GoToNextLocation<cr>
+nnoremap [q :vsc Edit.GoToPrevLocation<cr>
+nnoremap ]l  :vsc Edit.NextHighlightedReference<cr>
+nnoremap [l  :vsc Edit.PreviousHighlightedReference<cr>
 
 " 'omnibox'
 nnoremap <space> :vsc Window.QuickLaunch<cr>

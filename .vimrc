@@ -10,8 +10,8 @@
 "    source /path/to/.vimrc
 "==============================================================================
 
-let s:vimrc_first_run = !exists("mapleader")
-if s:vimrc_first_run
+let s:starting = has('vim_starting')
+if s:starting
   " ensure that we always start with vim defaults (as opposed to those set by the current system)
   set all&
   " caution: this resets many settings, eg 'history'
@@ -44,10 +44,11 @@ let s:is_unix = has('unix')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
-let s:is_vimRecentBuildWithLua = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
+let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim"))
+let s:plugins=isdirectory(expand("~/.vim/bundle/vundle"))
 
-if s:is_windows && !s:is_cygwin && !s:is_msysgit
+if s:starting && s:is_windows && !s:is_cygwin && !s:is_msysgit
   set runtimepath+=~/.vim/
 endif
 
@@ -61,7 +62,6 @@ let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gu
 
 "==============================================================================
 " vundle   https://github.com/gmarik/vundle/
-"==============================================================================
 
 "boostrap vundle on new systems
 fun! InstallVundle()
@@ -70,12 +70,14 @@ fun! InstallVundle()
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endfun
 
-let s:has_plugins=isdirectory(expand("~/.vim/bundle/vundle"))
-if s:has_plugins "{{{
+if s:plugins "{{{
 
 filetype off " required!
 
-set runtimepath+=~/.vim/bundle/vundle/
+if s:starting
+  set runtimepath+=~/.vim/bundle/vundle/
+endif
+
 call vundle#rc() 
 
 " let Vundle manage Vundle (required!)
@@ -133,7 +135,7 @@ Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
 Bundle 'junegunn/vader.vim'
-if s:is_vimRecentBuildWithLua
+if s:lua_patch885
 Bundle 'Shougo/neocomplete.vim'
 endif
 
@@ -232,7 +234,7 @@ if s:is_mac "audible bell persists on MacVim unless we enable visualbell.
 endif
 
 set timeoutlen=3000
-if s:has_plugins
+if s:plugins
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 else
 set showtabline=1
@@ -278,7 +280,7 @@ elseif s:is_gui "linux or other
 endif
 
 "colorscheme {{{
-  if s:has_plugins && &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
+  if s:plugins && &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
     " force colors
     set t_Co=256
   endif
@@ -290,7 +292,7 @@ endif
 
   if !s:is_mac
     exe s:color_force_high_contrast
-    if s:vimrc_first_run
+    if s:starting
       exe 'autocmd ColorScheme * '.s:color_force_high_contrast
     endif
   endif
@@ -322,13 +324,13 @@ endif
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
           \'
 
-    if s:vimrc_first_run "avoid re-triggering 'ColorScheme' event
+    if s:starting "avoid re-triggering 'ColorScheme' event
       " expects &runtimepath/colors/{name}.vim.
       colorscheme molokai
     endif
 
     if s:is_gui || s:is_mac || s:is_cygwin
-      if s:vimrc_first_run
+      if s:starting
         exe 'autocmd ColorScheme * '.s:color_override
       endif
     else
@@ -817,7 +819,7 @@ func! s:init_neocomplete()
   let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
 endf
 
-if s:is_vimRecentBuildWithLua
+if s:lua_patch885
   call s:init_neocomplete()
 endif
 
@@ -839,9 +841,10 @@ endif
 " important!: semicolon means 'walk up until found'
 set tags^=./tags;,tags;,~/.vimtags
 
-if s:has_plugins "unite.vim =============================================== {{{
+if s:plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 
+"let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe')
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 let g:unite_source_file_mru_long_limit = 3000
