@@ -117,11 +117,12 @@ if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Bundle 'Valloric/MatchTagAlways'
 endif
-Bundle 'bling/vim-airline'
+" Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
+Bundle 'osyo-manga/vim-over'
 Bundle 'mhinz/vim-signify'
 if exists("$GOPATH")
 Bundle 'Blackrush/vim-gocode'
@@ -228,10 +229,8 @@ set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
 set matchtime=3
 
-set noerrorbells novisualbell t_vb=
-if s:is_mac "audible bell persists on MacVim unless we enable visualbell.
-  set visualbell
-endif
+"audible bell persists unless visualbell is enabled.
+set noerrorbells novisualbell t_vb= visualbell
 
 set timeoutlen=3000
 if s:plugins
@@ -398,6 +397,7 @@ func! Blah()
 endf
 func! Tail(filepath)
   exec 'split '.a:filepath
+  "TODO: disable undo for buffer
 
   "initial cursor activity to kick CursorHold
   let &updatetime=2000
@@ -441,7 +441,7 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
 " delete the 'head' of a path on the command line
-cno <c-o>dts <C-\>e<sid>deleteTillSlash()<cr>
+cno <c-o>/ <C-\>e<sid>deleteTillSlash()<cr>
 
 func! s:deleteTillSlash()
   return s:is_windows ? substitute(getcmdline(), '\(.*[/\\]\).*', '\1', '') : substitute(getcmdline(), '\(.*[/]\).*', '\1', '')
@@ -568,6 +568,20 @@ nnoremap <leader>d "_d
 xnoremap <leader>d "_d
 nnoremap <leader>D "_D
 
+" flash crosshairs to locate the cursor
+func! s:cursorping()
+  for i in range(1, 2)
+    setlocal cursorline cursorcolumn
+    redraw
+    sleep 50m
+    setlocal nocursorline nocursorcolumn
+    redraw
+    sleep 50m
+  endfor
+endf
+
+nnoremap <silent> <esc> :call <sid>cursorping()<CR>
+
 func! s:replaceUntil(type)
   let sel_save = &selection
   let &selection = "inclusive"
@@ -604,10 +618,8 @@ nnoremap <leader>w :w<cr>
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
 
-" always 'very magic'
-nnoremap / /\v
 " search within visual block
-xnoremap / <esc>/\v%V
+xnoremap / <esc>/\%V
 
 " select last inserted text
 nnoremap gV `[v`]
@@ -666,6 +678,8 @@ augroup END
 
 
 " golang ======================================================================
+" code search:
+"    https://sourcegraph.com/code.google.com/p/go/tree
 " possible godoc solution    https://gist.github.com/mattn/569652
 "    Bundle 'thinca/vim-ref'
 "    let g:ref_use_vimproc = 1
@@ -745,23 +759,23 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
 
-  "highlight line/col in the current window only
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline | if exists('&colorcolumn') | setlocal colorcolumn=80 | endif
-  autocmd WinLeave * setlocal nocursorline | if exists('&colorcolumn') | setlocal colorcolumn= | endif
+  "highlight line/col in the current window only, after idle
+  autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
+        \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved
+  autocmd WinLeave * setlocal nocursorline nocursorcolumn | silent! setlocal colorcolumn=
 
   if s:is_windows
     " always maximize initial GUI window size
-    autocmd GUIEnter * simalt ~x 
+    autocmd GUIEnter * simalt ~x
   endif
 augroup END
 
 " :noau speeds up vimgrep
-noremap <leader>grep :<c-u>noau vimgrep // **<left><left><left><left>
+noremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
-nnoremap <leader>sb :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
-" search and replace word under cursor
-nnoremap <leader>sr :<c-u>%s/\<<c-r><c-w>\>//gc<left><left><left>
-xnoremap <leader>sr :<c-u>%s/<c-r>=<SID>VSetSearch('/')<cr>//gc<left><left><left>
+nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
+" search and replace
+noremap <leader>sr :<c-u>OverCommandLine<cr>
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.
@@ -846,24 +860,17 @@ call unite#custom#profile('files', 'filters', 'sorter_rank')
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe')
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
-let g:unite_source_file_mru_long_limit = 3000
-let g:unite_source_directory_mru_long_limit = 3000
-let g:unite_source_file_mru_time_format = "(%Y/%m/%d %H:%M)"
-let g:unite_source_buffer_time_format = "(%Y/%m/%d %H:%M)"
+let g:unite_source_file_mru_time_format = "(%Y/%m/%d %H:%M) "
+let g:unite_source_buffer_time_format = "(%Y/%m/%d %H:%M) "
+let g:unite_enable_start_insert = 1
 
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
 " TODO: https://github.com/bling/dotvim/blob/master/vimrc#L535
 "       https://github.com/Shougo/unite.vim/issues/347
 " see unite/custom.vim
 call unite#custom#source(
-            \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
-            \ 'sorters',
-            \ ['sorter_ftime', 'sorter_rank'])
-call unite#custom#source(
-            \ 'buffer,file_rec/async,file_rec,file_mru,directory_rec,outline', 
-            \ 'matchers',
-            \ ['matcher_fuzzy'])
-call unite#custom#source(
-            \ 'file_rec/async,file_rec,file_mru', 
+            \ 'file_rec/async,file_rec,file_mru,directory_rec/async,directory_rec,directory_mru', 
             \ 'converters',
             \ ['converter_relative_abbr', 'converter_file_directory'])
 
@@ -879,23 +886,25 @@ endif
 call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
 " search hidden directories:
-nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files -start-insert file_mru file_rec <cr>
+nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
 nmap g/f <c-p>
-nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 " auto-generates an outline of the current buffer
-nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
+nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
-nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag -start-insert tag/include<cr>
+nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag tag/include<cr>
 nmap g/t <m-t>
-nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank -start-insert history/yank<cr>
-nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -start-insert -buffer-name=cd -default-action=cd<CR>
-nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes -start-insert<CR>
+nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
+imap     <m-y> <C-o><m-y>
+nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
+nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes<CR>
 
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
   nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
-  silent! umap! <C-g>
+  silent! unmap! <c-g>
+  imap <buffer> <c-a> <Plug>(unite_choose_action)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   " refresh the cache
   nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
