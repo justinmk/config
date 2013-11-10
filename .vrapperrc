@@ -1,7 +1,4 @@
-" vrapper bonus mappings:
-" gR    rename element
-" gc    toggle comment
-" gr    find all references
+" vrapper
 
 set ignorecase
 set smartcase
@@ -26,19 +23,53 @@ nnoremap <c-l> :nohlsearch<cr>
 noremap 0 ^
 noremap - $
 nnoremap <m-l> :ls<cr>
+" select last inserted text
+nnoremap gV `[v`]
 
 " vrapper
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
 " https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
 
+" temporary workaround for issue #333
+eclipseuiaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
+nnoremap gd :eclipsegotodef<cr>
+
 eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
 nnoremap gr :eclipsefindref<cr>
 
 eclipseuiaction eclipsegotoimpl org.eclipse.jdt.ui.edit.text.java.open.implementation
-nnoremap gD :eclipsegotoimpl<cr>
+nnoremap gI :eclipsegotoimpl<cr>
+
+" show type hierarchy relative to current type
+eclipseuiaction eclipsetypehier org.eclipse.jdt.ui.edit.text.java.open.hierarchy
+nnoremap gzt :eclipsetypehier<cr>
+
+" show documentation for current symbol
+eclipseuiaction eclipseshowdoc org.eclipse.ui.edit.text.showInformation
+nnoremap gzd :eclipseshowdoc<cr>
+
+" go to super implementation
+eclipseuiaction eclipsegotosuper org.eclipse.java.ui.edit.text.java.open.super.implementation
+nnoremap gzi :eclipsegotosuper<cr>
+
+"show refactor menu
+eclipseuiaction eclipserefactormenu org.eclipse.jdt.ui.edit.text.java.refactor.quickMenu
+nnoremap crr :eclipserefactormenu<cr>
+
+"show code-generation menu
+eclipseuiaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
+nnoremap crR :eclipsesrcgenmenu<cr>
+
+" rename current symbol
+eclipseuiaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
+nnoremap cR :eclipserename<cr>
+
+"show quickfix menu
+eclipseaction eclipsequickfix org.eclipse.jdt.ui.edit.text.java.correction.assist.proposals
+nnoremap <backspace> :eclipsequickfix<cr>
 
 eclipseaction eclipsetogglebp org.eclipse.debug.ui.commands.ToggleBreakpoint
-nnoremap gb :eclipsetogglebp<cr>
+nnoremap <insert> :eclipsetogglebp<cr>
 
 eclipseaction eclipseopenresource org.eclipse.ui.navigate.openResource
 nnoremap <c-p> :eclipseopenresource<cr>
@@ -46,6 +77,10 @@ nnoremap <c-p> :eclipseopenresource<cr>
 " amazing 'omnibox' that searches buffers, commands, views, menus, preferences, etc.
 eclipseaction eclipsecmdsearch org.eclipse.ui.window.quickAccess
 nnoremap <space> :eclipsecmdsearch<cr>
+
+" TODO: doesn't work, probably needs an argument
+" eclipseaction eclipseshowinpkgexplorer org.eclipse.ui.navigate.showIn
+" nnoremap ^ :eclipseshowinpkgexplorer<cr>
 
 " open file manager here
 eclipseaction openfmhere com.tetrade.eclipse.plugins.easyshell.command.shellExplore

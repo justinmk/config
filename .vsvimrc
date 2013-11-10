@@ -54,7 +54,8 @@ nnoremap gcc V:vsc Edit.CommentSelection<cr>
 nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol
 nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
-nnoremap gR :vsc ReSharper.ReSharper_Rename<cr>
+nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
+" nnoremap gR TODO
 " nnoremap <M-o> go to class member
 " nnoremap <M-t> go to tag/symbol
 
@@ -67,12 +68,13 @@ nnoremap g// :vsc Edit.FindinFiles<cr>
 
 nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
 nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
-nnoremap gzi :vsc ReSharper.ReSharper_GotoImplementation<cr>
 nnoremap gzd :vsc ReSharper.ReSharper_QuickDoc<cr>
 
 "show refactor menu
 noremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
-nnoremap crR :vsc ReSharper.ReSharper_Rename<cr>
+" TODO: show code-generation menu
+" noremap crR :vsc ???<cr>
+nnoremap cR :vsc Refactor.Rename<cr>
 nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
 "show quickfix menu
 nnoremap <bs> :vsc ReSharper_AltEnter<cr>
@@ -94,6 +96,12 @@ nnoremap <space> :vsc Window.QuickLaunch<cr>
 nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
 nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
+" toggle 'Track Active Item in Solution Explorer' option
+nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
+" highlight active document in Solution Explorer (VS 2012+)
+" nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
+" hack for backwards-compatibility with VS 2010
+nmap ^ coscos
 
 set hlsearch
 set autoindent
