@@ -117,7 +117,7 @@ if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Bundle 'Valloric/MatchTagAlways'
 endif
-" Bundle 'bling/vim-airline'
+Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'tomtom/tcomment_vim'
@@ -179,7 +179,7 @@ let g:EclimBufferTabTracking = 0
 
 let g:SignatureEnableDefaultMappings = 2
 
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 2
@@ -465,6 +465,16 @@ nnoremap gw <c-w>
 nnoremap gwW :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
 nnoremap gwF :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
+nnoremap <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
+
+" go to the previous window (or any other window if there is no 'previous' window).
+func! s:switch_to_alt_win()
+  let currwin = winnr()
+  wincmd p
+  if winnr() == currwin "window didn't change, so there was no 'previous' window.
+    wincmd W
+  endif
+endf
 
 " manage tabs
 nnoremap gwN :tabnew<cr>
@@ -580,7 +590,9 @@ func! s:cursorping()
   endfor
 endf
 
-nnoremap <silent> <esc> :call <sid>cursorping()<CR>
+if s:is_gui || !s:is_mac "broken in Terminal.app
+  nnoremap <silent> <esc> :call <sid>cursorping()<CR>
+endif
 
 func! s:replaceUntil(type)
   let sel_save = &selection
@@ -837,7 +849,7 @@ if s:lua_patch885
 endif
 
 set wildmode=full
-set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe,*.jar,gwt-unitCache/*,*.cache.html
+set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe,*.jar,opt/*,gwt-unitCache/*,*.cache.html
 
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.dll
@@ -877,7 +889,7 @@ call unite#custom#source(
 " extend default ignore pattern for file_rec source (same as directory_rec)
 let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] .
     \ '\|\.\%(jar\|jpg\|gif\|png\)$' .
-    \ '\|Downloads\|eclipse_workspace\|gwt-unitCache'
+    \ '\|opt\|Downloads\|eclipse_workspace\|gwt-unitCache'
 if s:is_windows
     let s:file_rec_ignore .= '\|AppData'
 elseif s:is_mac
