@@ -98,13 +98,10 @@ nnoremap <space> :vsc Window.QuickLaunch<cr>
 
 nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
-nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 " toggle 'Track Active Item in Solution Explorer' option
 nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
 " highlight active document in Solution Explorer (VS 2012+)
-" nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
-" hack for backwards-compatibility with VS 2010
-nmap ^ coscos
+nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
 nnoremap cow :vsc Edit.ToggleWordWrap<cr>
 
