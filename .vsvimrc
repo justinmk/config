@@ -106,6 +106,8 @@ nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
 " hack for backwards-compatibility with VS 2010
 nmap ^ coscos
 
+nnoremap cow :vsc Edit.ToggleWordWrap<cr>
+
 set hlsearch
 set autoindent
 set showmatch
