@@ -4,6 +4,8 @@
   ignorecase = false
   autocrlf = false
   excludesfile = ~/.gitexcludes
+[branch]
+	autosetuprebase = always
 [merge]
   tool = vimdiff
 [mergetool]
@@ -11,15 +13,32 @@
 [i18n]
   filesEncoding = utf-8
 [alias]
-  l = log --graph --pretty=format:'%C(bold yellow)%h%Creset%C(bold red)%d%Creset %s %C(bold green)(%cr) %C(bold cyan)<%an>%Creset' --abbrev-commit
+  l = log --graph --oneline --decorate
   d = diff --stat --color
-  s = status
+  s = status -sb
   co = checkout
 [advice]
   statusHints = false
 [color]
   # This is the default setting in Git ≥ 1.8.4.
   ui = auto
+[color "branch"]
+  current   = bold white green
+  local     = bold yellow
+  remote    = bold magenta
+[color "status"]
+  # staged changes
+  added     = bold green
+  updated   = bold white green
+  # un-staged changes
+  changed   = bold yellow
+  untracked = bold cyan
+  nobranch  = bold red white
+[color "diff"]
+  meta = bold cyan
+  frag = bold magenta
+  old  = bold red
+  new  = bold green
 [guitool "delete"]
   cmd = rm $FILENAME
   needsfile = yes
