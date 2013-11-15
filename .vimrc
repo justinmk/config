@@ -369,9 +369,11 @@ set smartindent
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
 func! TrimTrailingWhitespace()
+  let _s=@/
   let winview=winsaveview()
   %s/\s\+$//ge
   call winrestview(winview)
+  let @/=_s
 endfunc
 
 "return the syntax highlight group under the cursor
@@ -768,7 +770,7 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  autocmd BufWrite *.py :call TrimTrailingWhitespace()
+  autocmd BufWritePre *.py :call TrimTrailingWhitespace()
   autocmd FileType python syn keyword pythonDecorator True None False self
 
   autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
