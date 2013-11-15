@@ -171,7 +171,6 @@ let g:sneak#sprint = 1
 
 let g:signify_vcs_list = [ 'git' ]
 
-let g:dbext_map_prefix = '<leader><leader>s'
 let g:dbext_default_history_file = expand('~/.dbext_sql_history')
 let g:dbext_default_history_size = 1000
 let g:dbext_default_history_max_entry = 10*1024
@@ -773,8 +772,6 @@ augroup vimrc_autocmd
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
   autocmd FileType python syn keyword pythonDecorator True None False self
 
-  autocmd BufRead,BufNewFile *.vrapperrc setlocal ft=vim
-
   "highlight line/col in the current window only, after idle
   autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
         \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved
@@ -791,7 +788,7 @@ noremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 " search and replace
-noremap <leader>sr :<c-u>OverCommandLine<cr>%s/
+noremap gR :<c-u>OverCommandLine<cr>%s/
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.

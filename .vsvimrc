@@ -3,6 +3,7 @@
 
 let mapleader = ","
 let g:mapleader = ","
+nnoremap \ ,
 
 set ignorecase
 set smartcase
@@ -58,7 +59,7 @@ nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol
 nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
 nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
-" nnoremap gR TODO
+" nnoremap gR TODO: search & replace
 " nnoremap <M-o> go to class member
 " nnoremap <M-t> go to tag/symbol
 
