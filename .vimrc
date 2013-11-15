@@ -167,6 +167,8 @@ endf
 "==============================================================================
 " general settings / options
 "==============================================================================
+let g:sneak#sprint = 1
+
 let g:signify_vcs_list = [ 'git' ]
 
 let g:dbext_map_prefix = '<leader><leader>s'
@@ -174,8 +176,8 @@ let g:dbext_default_history_file = expand('~/.dbext_sql_history')
 let g:dbext_default_history_size = 1000
 let g:dbext_default_history_max_entry = 10*1024
 
-" if this is enabled, Eclim deletes hidden buffers on tab-enter.
-let g:EclimBufferTabTracking = 0
+let g:EclimBufferTabTracking = 0 "legacy version
+let g:EclimBuffersTabTracking = 0
 
 let g:SignatureEnableDefaultMappings = 2
 
@@ -787,7 +789,7 @@ noremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 " search and replace
-noremap <leader>sr :<c-u>OverCommandLine<cr>
+noremap <leader>sr :<c-u>OverCommandLine<cr>%s/
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.

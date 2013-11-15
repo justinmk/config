@@ -1,5 +1,5 @@
 " set global shortcut in Visual Studio options:
-"   Esc => Window.ActivateDocumentWindow
+"   Window.ActivateDocumentWindow => Esc
 
 let mapleader = ","
 let g:mapleader = ","

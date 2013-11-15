@@ -1,4 +1,6 @@
 " vrapper
+" set global shortcut in Eclipse options:
+"   Activate Editor => Esc
 
 set ignorecase
 set smartcase
