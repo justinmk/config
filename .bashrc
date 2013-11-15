@@ -59,6 +59,9 @@ PROMPT_COMMAND='history -a'
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
 
+# (bash 4+) enable recursive glob for grep, rsync, ls, ...
+shopt -s globstar &> /dev/null
+
 #disable ctrl-s scroll-lock
 command -v stty > /dev/null 2>&1 && stty -ixon
 
