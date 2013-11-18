@@ -112,6 +112,7 @@ Bundle 'zhaocai/DirDiff.vim'
 " Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
+Bundle 'https://github.com/guns/vim-sexp'
 Bundle 'gaving/vim-textobj-argument'
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
@@ -167,7 +168,7 @@ endf
 "==============================================================================
 " general settings / options
 "==============================================================================
-let g:sneak#sprint = 1
+let g:sneak#streak = 1
 
 let g:signify_vcs_list = [ 'git' ]
 
@@ -200,7 +201,7 @@ endif
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !s:is_gui
     "avoid: m-b m-d m-f
-    set <m-h>=h <m-j>=j <m-k>=k <m-l>=l
+    set <m-g>=g <m-h>=h <m-j>=j <m-k>=k <m-l>=l
           \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
           \ <m-t>=t <m-x>=x <m-y>=y <m-z>=z
           \ <m-]>=]
@@ -458,8 +459,6 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 " paste current dir to command line
 cabbrev ]c <c-r>=expand("%:p:h")<cr>
 
-cabbrev h h <bar> wincmd H<left><left><left><left><left><left><left><left><left><left><left>
-
 "==============================================================================
 " key mappings/bindings
 "==============================================================================
@@ -496,6 +495,8 @@ nnoremap <leader>q :botright copen<cr>
 nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
+" show the current working directory
+nnoremap <M-g> :<C-u>pwd<cr>
 
 func! BufDeath_Comparebuf(b1, b2)
   "prefer loaded buffers before unloaded buffers
@@ -583,6 +584,8 @@ nnoremap <leader>D "_D
 
 " flash crosshairs to locate the cursor
 func! s:cursorping()
+  let orig_cursorline = &cursorline
+
   for i in range(1, 2)
     setlocal cursorline cursorcolumn
     redraw
@@ -591,6 +594,8 @@ func! s:cursorping()
     redraw
     sleep 50m
   endfor
+
+  let &cursorline = orig_cursorline
 endf
 
 if s:is_gui || !s:is_mac "broken in Terminal.app
@@ -639,11 +644,12 @@ xnoremap / <esc>/\%V
 " select last inserted text
 nnoremap gV `[v`]
 
+"use ]e instead.
 "text bubbling: move text up/down with meta-[jk] 
-nnoremap <M-j> m`:m+<cr>``
-nnoremap <M-k> m`:m-2<cr>``
-xnoremap <M-j> :m'>+<cr>gv
-xnoremap <M-k> :m'<-2<cr>gv
+" nnoremap <M-j> m`:m+<cr>``
+" nnoremap <M-k> m`:m-2<cr>``
+" xnoremap <M-j> :m'>+<cr>gv
+" xnoremap <M-k> :m'<-2<cr>gv
 
 " replay @q macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
@@ -723,7 +729,6 @@ augroup END
 " When the 'lisp' option is on, the '-' character is considered a 'iskeyword' character.
 "    https://github.com/tpope/vim-fireplace
 "    https://github.com/guns/vim-clojure-static
-"    https://github.com/guns/vim-sexp
 "    https://bitbucket.org/kovisoft/slimv
 "    http://kovisoft.bitbucket.org/tutorial.html
 
@@ -750,7 +755,7 @@ augroup END
 
 augroup vimrc_autocmd
   autocmd!
-  autocmd BufReadPost quickfix map <buffer> map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
+  autocmd BufReadPost quickfix map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
 
   " Highlight VCS conflict markers
   " autocmd BufEnter fugitive\:* match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
@@ -772,10 +777,13 @@ augroup vimrc_autocmd
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
   autocmd FileType python syn keyword pythonDecorator True None False self
 
-  "highlight line/col in the current window only, after idle
+  if s:is_mac && s:is_gui "highlight line/col after idle
   autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
         \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved
-  autocmd WinLeave * setlocal nocursorline nocursorcolumn | silent! setlocal colorcolumn=
+  else
+    autocmd BufEnter,WinEnter * setlocal cursorline | silent! setlocal colorcolumn=80
+    autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
+  endif
 
   if s:is_windows
     " always maximize initial GUI window size
@@ -788,7 +796,7 @@ noremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 " search and replace
-noremap gR :<c-u>OverCommandLine<cr>%s/
+nnoremap gR :<c-u>OverCommandLine<cr>%s/
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.
