@@ -34,7 +34,7 @@ nnoremap gV `[v`]
 " https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
 
 " temporary workaround for issue #333
-eclipseuiaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
+eclipseaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
 nnoremap gd :eclipsegotodef<cr>
 
 eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
@@ -52,19 +52,19 @@ eclipseuiaction eclipseshowdoc org.eclipse.ui.edit.text.showInformation
 nnoremap gzd :eclipseshowdoc<cr>
 
 " go to super implementation
-eclipseuiaction eclipsegotosuper org.eclipse.java.ui.edit.text.java.open.super.implementation
+eclipseaction eclipsegotosuper org.eclipse.java.ui.edit.text.java.open.super.implementation
 nnoremap gzi :eclipsegotosuper<cr>
 
 "show refactor menu
-eclipseuiaction eclipserefactormenu org.eclipse.jdt.ui.edit.text.java.refactor.quickMenu
+eclipseaction eclipserefactormenu org.eclipse.jdt.ui.edit.text.java.refactor.quickMenu
 nnoremap crr :eclipserefactormenu<cr>
 
 "show code-generation menu
-eclipseuiaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
+eclipseaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
 nnoremap crR :eclipsesrcgenmenu<cr>
 
 " rename current symbol
-eclipseuiaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
+eclipseaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
 nnoremap cR :eclipserename<cr>
 
 "show quickfix menu
