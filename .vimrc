@@ -777,7 +777,7 @@ augroup vimrc_autocmd
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
   autocmd FileType python syn keyword pythonDecorator True None False self
 
-  if s:is_mac && s:is_gui "highlight line/col after idle
+  if s:is_mac "highlight line/col after idle
   autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
         \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved
   else
