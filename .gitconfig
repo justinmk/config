@@ -4,8 +4,13 @@
   ignorecase = false
   autocrlf = false
   excludesfile = ~/.gitexcludes
+  # Enable parallel index preload for some operations (diff, status).
+  preloadindex = true
 [branch]
-	autosetuprebase = always
+  autosetuprebase = always
+[push]
+  # default in Git ≥ 2.0
+  default = simple
 [merge]
   tool = vimdiff
 [mergetool]
@@ -20,7 +25,7 @@
 [advice]
   statusHints = false
 [color]
-  # This is the default setting in Git ≥ 1.8.4.
+  # default in Git ≥ 1.8.4
   ui = auto
 [color "branch"]
   current   = bold white green

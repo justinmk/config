@@ -16,6 +16,7 @@ Desktop.ini
 bin
 obj
 *.suo
+*.csproj.user
 
 # Compiled
 *.class
