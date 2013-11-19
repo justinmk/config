@@ -22,8 +22,8 @@ endif
 set encoding=utf-8
 
 if exists('&guioptions')
-    "no toolbar, no menu bar, no left scroll bar
-    set guioptions-=T guioptions-=m guioptions-=L guioptions-=l
+    "no toolbar, no menu bar, no left scroll bar, no gui tabs
+    set guioptions-=T guioptions-=m guioptions-=L guioptions-=l guioptions-=e
     "don't source &runtimepath/menu.vim. (must be done before 'filetype on' / 'syntax on')
     set guioptions-=M
     "use console dialogs instead of popup dialogs for simple choices.
@@ -467,7 +467,7 @@ nnoremap gw <c-w>
 nnoremap gwW :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
 nnoremap gwF :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
-nnoremap <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
+nnoremap <silent> $ :<C-u>call <sid>switch_to_alt_win()<cr>
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -571,9 +571,11 @@ endf
 nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
 
 "move to first non-blank character
-noremap 0 ^
+nnoremap 0 ^
+xnoremap 0 ^
 "move to last character 
-noremap - $
+nnoremap - $
+xnoremap - $
 
 " un-join (split) the current line at the cursor position
 nnoremap K i<cr><esc>k$
@@ -792,11 +794,12 @@ augroup vimrc_autocmd
 augroup END
 
 " :noau speeds up vimgrep
-noremap g// :<c-u>noau vimgrep // **<left><left><left><left>
+nnoremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 " search and replace
-nnoremap gR :<c-u>OverCommandLine<cr>%s/
+nnoremap g/r :<c-u>OverCommandLine<cr>%s/
+xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.
