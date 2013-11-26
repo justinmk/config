@@ -349,7 +349,7 @@ if v:version > 703 || v:version == 703 && has("patch541")
   set formatoptions+=j
 endif
 " don't syntax-highlight long lines
-set synmaxcol=300
+set synmaxcol=1000
 
 set expandtab
 set tabstop=2
@@ -648,10 +648,10 @@ nnoremap gV `[v`]
 
 "use ]e instead.
 "text bubbling: move text up/down with meta-[jk] 
-" nnoremap <M-j> m`:m+<cr>``
-" nnoremap <M-k> m`:m-2<cr>``
-" xnoremap <M-j> :m'>+<cr>gv
-" xnoremap <M-k> :m'<-2<cr>gv
+nnoremap <Down> m`:m+<cr>``
+nnoremap <Up>   m`:m-2<cr>``
+xnoremap <Down> :m'>+<cr>gv
+xnoremap <Up>   :m'<-2<cr>gv
 
 " replay @q macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
@@ -661,6 +661,8 @@ xnoremap . :normal .<CR>
 "j,k move by screen line instead of file line
 nnoremap j gj
 nnoremap k gk
+inoremap <Down> <C-o>gj
+inoremap <Up>   <C-o>gk
 
 "allow cursor to move anywhere in all modes
 nnoremap cov :set <C-R>=empty(&virtualedit) ? 'virtualedit=all' : 'virtualedit='<CR><CR>
@@ -845,13 +847,9 @@ func! s:init_neocomplete()
   nnoremap <leader>neo :NeoCompleteEnable<cr>
   let g:neocomplete#enable_smart_case = 1
   let g:neocomplete#enable_auto_select = 1
-  " if !exists('g:neocomplete#force_omni_input_patterns')
-  "   let g:neocomplete#force_omni_input_patterns = {}
-  " endif
-  if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-  endif
-  let omni = g:neocomplete#sources#omni#input_patterns
+  " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
+  let omni = get(g:, 'neocomplete#sources#omni#input_patterns', {})
+  let g:neocomplete#sources#omni#input_patterns = omni
   let omni.go  = '[^.[:digit:] *\t]\.\w*'
   let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
 endf
