@@ -10,8 +10,9 @@
 (setq guide-key/recursive-key-sequence-flag t)
 (guide-key-mode 1)
 
-(global-set-key (kbd "M-o") 'ido-goto-symbol)
-(global-set-key (kbd "M-l") 'switch-to-buffer) ;;'helm-buffers-list
+(global-set-key (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
+(global-set-key (kbd "M-l") 'helm-buffers-list) ;'switch-to-buffer
+(global-set-key (kbd "C-p") 'helm-projectile)
 
 (after 'smex
   (global-set-key (kbd "M-x") 'smex)
@@ -24,6 +25,7 @@
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
+  (define-key evil-normal-state-map (kbd "ZZ") 'evil-quit-all)
 
 (after 'evil-leader
   (evil-leader/set-leader ",")
@@ -49,8 +51,8 @@
   (define-key evil-normal-state-map "%" 'evilmi-jump-items))
 
   (after 'git-gutter+-autoloads
-    (define-key evil-normal-state-map (kbd "[ h") 'git-gutter+-previous-hunk)
-    (define-key evil-normal-state-map (kbd "] h") 'git-gutter+-next-hunk)
+    (define-key evil-normal-state-map (kbd "[ c") 'git-gutter+-previous-hunk)
+    (define-key evil-normal-state-map (kbd "] c") 'git-gutter+-next-hunk)
     (define-key evil-normal-state-map (kbd ", g a") 'git-gutter+-stage-hunks)
     (define-key evil-normal-state-map (kbd ", g r") 'git-gutter+-revert-hunks)
     (evil-ex-define-cmd "Gw" (lambda () (interactive) (git-gutter+-stage-whole-buffer))))
@@ -62,39 +64,20 @@
   (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
   (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
 
-    ;; Note: lexical-binding must be t in order for this to work correctly.
-   (defun make-conditional-key-translation (key-from key-to translate-keys-p)
-     "Make a Key Translation such that if the translate-keys-p function returns true,
-   key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-   takes key-from as an argument. "
-     (define-key key-translation-map key-from
-       (lambda (prompt)
-         (if (funcall translate-keys-p key-from) key-to key-from))))
-   (defun my-translate-keys-p (key-from)
-     "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
-     (and
-       ;; Only allow a non identity translation if we're beginning a Key Sequence.
-       (equal key-from (this-command-keys))
-       (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
-   (define-key evil-normal-state-map "g" nil)
-   (define-key evil-motion-state-map "gw" 'evil-window-map)
+  (define-key evil-normal-state-map "gw" nil)
+  (define-key evil-motion-state-map "gw" 'evil-window-map)
 
   (define-key evil-normal-state-map (kbd "[ SPC") (lambda () (interactive) (evil-insert-newline-above) (forward-line)))
   (define-key evil-normal-state-map (kbd "] SPC") (lambda () (interactive) (evil-insert-newline-below) (forward-line -1)))
-  (define-key evil-normal-state-map (kbd "[ e") (kbd "ddkP"))
-  (define-key evil-normal-state-map (kbd "] e") (kbd "ddp"))
   (define-key evil-normal-state-map (kbd "[ b") 'previous-buffer)
   (define-key evil-normal-state-map (kbd "] b") 'next-buffer)
 
-  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+  (define-key evil-normal-state-map (kbd "C-p") nil)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
-
-  ;; (define-key evil-insert-state-map (kbd "RET") (kbd "C-j"))
 
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
   (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
 
-  (define-key evil-normal-state-map (kbd "Q") 'my-window-killer)
   (define-key evil-normal-state-map (kbd "Y") (kbd "y$"))
 
   (define-key evil-visual-state-map (kbd ", e") 'eval-region)
@@ -125,10 +108,7 @@
       "l" 'magit-key-mode-popup-logging
       "h" 'magit-toggle-diff-refine-hunk))
 
-  ;; butter fingers
-  (evil-ex-define-cmd "Q" 'evil-quit)
-  (evil-ex-define-cmd "Qa" 'evil-quit-all)
-  (evil-ex-define-cmd "QA" 'evil-quit-all))
+  )
 
 ;; minibuffer keymaps
 ;;    esc key

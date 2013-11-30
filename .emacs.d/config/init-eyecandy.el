@@ -2,9 +2,6 @@
 (add-hook 'after-init-hook (sml/setup))
 
 
-(require-package 'pretty-mode)
-(global-pretty-mode)
-
 (require-package 'diminish)
 (after 'diminish-autoloads
   (diminish 'global-visual-line-mode)
@@ -27,5 +24,7 @@
 
 (global-hl-line-mode +1)
 
+(require-package 'color-theme-sanityinc-tomorrow)
+(load-theme 'sanityinc-tomorrow-bright)
 
 (provide 'init-eyecandy)
