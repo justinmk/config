@@ -467,7 +467,7 @@ nnoremap gw <c-w>
 nnoremap gwW :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
 nnoremap gwF :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
-nnoremap <silent> $ :<C-u>call <sid>switch_to_alt_win()<cr>
+nnoremap <silent> gww :<C-u>call <sid>switch_to_alt_win()<cr>
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -487,9 +487,10 @@ nnoremap gwT :wincmd T<cr>
 nnoremap <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
 nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <leader>bn  :<c-u>enew<cr>
+nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
 
-" quickfix
-nnoremap <leader>q :botright copen<cr>
+" quickfix window
+nnoremap <C-q> :botright copen<cr>
 
 " working with projects/directories
 nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
@@ -689,6 +690,8 @@ endf
 command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
 
 " java ========================================================================
+" gradle makeprg/quickfix settings:
+"   https://github.com/luciano-fiandesio/dotfiles/blob/master/.vim/compiler/gradle.vim
 augroup vimrc_java
   autocmd!
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist

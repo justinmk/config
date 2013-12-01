@@ -6,6 +6,8 @@
   excludesfile = ~/.gitexcludes
   # Enable parallel index preload for some operations (diff, status).
   preloadindex = true
+[gui]
+  gcwarning = false
 [branch]
   autosetuprebase = always
 [push]
