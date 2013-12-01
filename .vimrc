@@ -605,21 +605,30 @@ if s:is_gui || !s:is_mac "broken in Terminal.app
   nnoremap <silent> <esc> :call <sid>cursorping()<CR>
 endif
 
-func! s:replaceUntil(type)
+func! s:replace_without_yank(type)
   let sel_save = &selection
+  let l:col = col('.')
   let &selection = "inclusive"
 
   if a:type == 'line'
-    silent normal! '[V']"_dp
+    silent normal! '[V']"_d
   elseif a:type == 'block'
-    silent normal! `[`]"_dp
+    silent normal! `[`]"_d
   else
-    silent normal! `[v`]"_dp
+    silent normal! `[v`]"_d
+  endif
+
+  if col('.') == l:col "paste to the left.
+    silent normal! P
+  else "if the operation deleted the last column, then the cursor
+       "gets bumped left (because its original position no longer exists),
+       "so we need to paste to the right instead of the left.
+    silent normal! p
   endif
 
   let &selection = sel_save
 endf
-nnoremap <silent> cr :set opfunc=<sid>replaceUntil<CR>g@
+nnoremap <silent> cr :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
 
 inoremap jk <esc>
 inoremap kj <esc>
