@@ -181,7 +181,7 @@ let g:EclimBuffersTabTracking = 0
 
 let g:SignatureEnableDefaultMappings = 2
 
-" let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 2
@@ -628,7 +628,7 @@ func! s:replace_without_yank(type)
 
   let &selection = sel_save
 endf
-nnoremap <silent> cr :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
+nnoremap <silent> rr :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
 
 inoremap jk <esc>
 inoremap kj <esc>
@@ -656,7 +656,6 @@ xnoremap / <esc>/\%V
 " select last inserted text
 nnoremap gV `[v`]
 
-"use ]e instead.
 "text bubbling: move text up/down with meta-[jk] 
 nnoremap <Down> m`:m+<cr>``
 nnoremap <Up>   m`:m-2<cr>``
@@ -687,6 +686,9 @@ nnoremap U <nop>
 " disable Ex mode key and map it to something awesome
 nnoremap Q @@
 xnoremap Q @@
+
+nnoremap ZZ :<c-u>qa<cr>
+nnoremap ZQ :<c-u>qa!<cr>
 
 func! ReadExCommandOutput(cmd)
   redir => l:message
