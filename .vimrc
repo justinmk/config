@@ -464,10 +464,12 @@ cabbrev ]c <c-r>=expand("%:p:h")<cr>
 "==============================================================================
 " manage windows
 nnoremap gw <c-w>
-nnoremap gwW :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
-nnoremap gwF :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
+nnoremap gw<c-w> :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
+nnoremap gw<c-h> :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
 nnoremap <silent> gww :<C-u>call <sid>switch_to_alt_win()<cr>
+" fit the current window height to the text height
+nnoremap <expr> gw<bs> 'ggz'.line('$')."\<cr>"
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -808,7 +810,6 @@ augroup vimrc_autocmd
     autocmd GUIEnter * simalt ~x
   endif
 augroup END
-
 
 " https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
 " makes * and # work on visual mode too.
