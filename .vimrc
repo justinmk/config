@@ -809,6 +809,17 @@ augroup vimrc_autocmd
   endif
 augroup END
 
+
+" https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
+" makes * and # work on visual mode too.
+function! s:visual_search(cmdtype)
+  let l:temp = @s
+  exe "normal! \<esc>gv\"sy"
+  let l:foo = substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
+  let @s = l:temp
+  return l:foo
+endfunction
+
 " :noau speeds up vimgrep
 nnoremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
@@ -817,23 +828,36 @@ nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
 xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
 
-" https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
-" makes * and # work on visual mode too.
-function! s:VSetSearch(cmdtype)
-  let l:temp = @s
-  exe "normal! \<esc>gv\"sy"
-  let l:foo = substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
-  let @s = l:temp
-  return l:foo
-endfunction
-
 " in visual mode, press * or # to search for the current selection
-xnoremap * /\V<C-R>=<SID>VSetSearch('/')<cr><cr>
-xnoremap # ?\V<C-R>=<SID>VSetSearch('?')<cr><cr>
+xnoremap * /\V<C-R>=<SID>visual_search('/')<cr><cr>
+xnoremap # ?\V<C-R>=<SID>visual_search('?')<cr><cr>
 
-" recursively vimgrep for word under cursor or selection if you hit leader-star
-nnoremap <leader>* :<c-u>noau vimgrep /\V<c-r><c-w>/ **<CR>
-xnoremap <leader>* :<c-u>noau vimgrep /<c-r>=<SID>VSetSearch('/')<cr>/ **<CR>
+" recursively grep for word under cursor
+nnoremap g/* :<c-u>noau vimgrep /\V<c-r><c-w>/ **<CR>
+xnoremap g/* :<c-u>noau vimgrep /<c-r>=<SID>visual_search('/')<cr>/ **<CR>
+
+" show :ilist or ]I results in the quickfix window
+function! s:ilist_qf(start_at_cursor)
+  redir => output
+    silent! exec 'normal! '.(a:start_at_cursor ? ']I' : '[I')
+  redir END
+  let lines = split(output, '\n')
+  if lines[0] =~ '^Error detected'
+    echomsg "Could not find the word in file"
+    return
+  endif
+  let [filename, line_info] = [lines[0], lines[1:-1]]
+  "turn the :ilist output into a quickfix dictionary
+  let qf_entries = map(line_info, "{
+        \ 'filename': filename,
+        \ 'lnum': split(v:val)[1],
+        \ 'text': getline(split(v:val)[1])
+        \ }")
+  call setqflist(qf_entries)
+  cwindow
+endfunction
+nnoremap <silent> [I :call <sid>ilist_qf(0)<CR>
+nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 
 " =============================================================================
 " autocomplete / omnicomplete / tags
