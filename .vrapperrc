@@ -11,7 +11,6 @@ nnoremap \ ,
 nnoremap K i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
-inoremap kk <esc>l
 nnoremap ,bd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
 nnoremap <c-d> <PageDown>
@@ -28,6 +27,11 @@ noremap - $
 nnoremap <m-l> :ls<cr>
 " select last inserted text
 nnoremap gV `[v`]
+
+nnoremap <Down> :.,.m<space>.+1<cr>
+nnoremap <Up>   :.,.m<space>.-2<cr>
+vnoremap <Down> :m<space>.+1<cr>gv
+vnoremap <Up>   :m<space>.-2<cr>kgv
 
 " vrapper
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html

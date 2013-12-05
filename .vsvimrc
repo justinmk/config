@@ -13,7 +13,6 @@ set tabstop=4
 nnoremap K i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
-inoremap kk <esc>l
 
 nnoremap gwo :vsc FullScreen<cr>
 nnoremap gws :vsc Window.Split<cr>
@@ -40,14 +39,17 @@ nnoremap <c-l> :nohlsearch<cr>
 noremap 0 ^
 noremap - $
 
+nnoremap <Down> :m+1<cr>
+nnoremap <Up>   :m-2<cr>j
+xnoremap <Down> :m'>+1<cr>gv
+xnoremap <Up>   :m'<-2<cr>jgv
+
 nnoremap Y y$
 
 nnoremap <c-o> :vsc View.NavigateBackward<cr>
 nnoremap <c-i> :vsc View.NavigateForward<cr>
 xnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
-" nnoremap ]q :vsc View.NextError<cr>
-" nnoremap [q :vsc View.PreviousError<cr>
 
 
 " gs => expression manipulation
@@ -69,6 +71,8 @@ nnoremap <C-p> :vsc ReSharper.ReSharper_GotoType<cr>
 nnoremap g/f :vsc ReSharper.ReSharper_GotoFile<cr>
 " grep everything
 nnoremap g// :vsc Edit.FindinFiles<cr>
+" find/replace in current buffer
+nnoremap g/r :vsc Edit.Replace<cr>
 
 nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
 nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
@@ -89,6 +93,12 @@ nnoremap gsh :vsc ReSharper.ReSharper_MoveLeft<cr>
 nnoremap gsl :vsc ReSharper.ReSharper_MoveRight<cr>
 nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>
 nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
+
+" evaluate selection F#
+xnoremap <c-j> :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
+" evaluate current line F#
+nnoremap <c-j> :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
+
 nnoremap ]q :vsc Edit.GoToNextLocation<cr>
 nnoremap [q :vsc Edit.GoToPrevLocation<cr>
 nnoremap ]l  :vsc Edit.NextHighlightedReference<cr>

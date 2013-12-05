@@ -500,6 +500,10 @@ nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
+" insert the current file path
+nnoremap >fn i<c-r>=expand('%:p')<cr> 
+" insert the current file directory
+nnoremap >fd i<c-r>=expand('%:p:h').'/'<cr>
 
 func! BufDeath_Comparebuf(b1, b2)
   "prefer loaded buffers before unloaded buffers
@@ -634,7 +638,6 @@ nnoremap <silent> rr :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
 
 inoremap jk <esc>
 inoremap kj <esc>
-inoremap kk <esc>l
 nnoremap ' `
 xnoremap ' `
 nnoremap <C-e> 2<C-e>
