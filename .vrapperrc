@@ -8,7 +8,7 @@ set incsearch
 set tabstop=4
 
 nnoremap \ ,
-nnoremap K i<cr><esc>k$
+nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
 nnoremap ,bd :bdelete<cr>
@@ -22,8 +22,10 @@ nnoremap ,D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
-noremap 0 ^
-noremap - $
+xnoremap 0 ^
+xnoremap - $
+nnoremap 0 ^
+nnoremap - $
 nnoremap <m-l> :ls<cr>
 " select last inserted text
 nnoremap gV `[v`]
@@ -53,7 +55,7 @@ nnoremap gzt :eclipsetypehier<cr>
 
 " show documentation for current symbol
 eclipseuiaction eclipseshowdoc org.eclipse.ui.edit.text.showInformation
-nnoremap gzd :eclipseshowdoc<cr>
+nnoremap K   :eclipseshowdoc<cr>
 
 " go to super implementation
 eclipseaction eclipsegotosuper org.eclipse.java.ui.edit.text.java.open.super.implementation

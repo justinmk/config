@@ -10,7 +10,7 @@ set smartcase
 set incsearch
 set tabstop=4
 
-nnoremap K i<cr><esc>k$
+nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
 
@@ -36,8 +36,10 @@ nnoremap <leader>D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
-noremap 0 ^
-noremap - $
+xnoremap 0 ^
+xnoremap - $
+nnoremap 0 ^
+nnoremap - $
 
 nnoremap <Down> :m+1<cr>
 nnoremap <Up>   :m-2<cr>j
@@ -61,7 +63,6 @@ nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol
 nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
 nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
-" nnoremap gR TODO: search & replace
 " nnoremap <M-o> go to class member
 " nnoremap <M-t> go to tag/symbol
 
@@ -76,13 +77,15 @@ nnoremap g/r :vsc Edit.Replace<cr>
 
 nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
 nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
-nnoremap gzd :vsc ReSharper.ReSharper_QuickDoc<cr>
+nnoremap K   :vsc ReSharper.ReSharper_QuickDoc<cr>
 
 "show refactor menu
-noremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
+nnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
+xnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
 " TODO: show code-generation menu
-" noremap crR :vsc ???<cr>
+" nnoremap crR :vsc ???<cr>
 nnoremap cR :vsc Refactor.Rename<cr>
+xnoremap cR :vsc Refactor.Rename<cr>
 nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
 "show quickfix menu
 nnoremap <bs> :vsc ReSharper_AltEnter<cr>
@@ -95,9 +98,9 @@ nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>
 nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
 
 " evaluate selection F#
-xnoremap <c-j> :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
+xnoremap g<enter> :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
 " evaluate current line F#
-nnoremap <c-j> :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
+nnoremap g<space> :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
 
 nnoremap ]q :vsc Edit.GoToNextLocation<cr>
 nnoremap [q :vsc Edit.GoToPrevLocation<cr>
@@ -111,7 +114,7 @@ nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
 " toggle 'Track Active Item in Solution Explorer' option
 nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
-" highlight active document in Solution Explorer (VS 2012+)
+" highlight active file in Solution Explorer (VS 2012+)
 nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
 nnoremap cow :vsc Edit.ToggleWordWrap<cr>

@@ -512,6 +512,9 @@ nnoremap >fn i<c-r>=expand('%:p')<cr>
 " insert the current file directory
 nnoremap >fd i<c-r>=expand('%:p:h').'/'<cr>
 
+nmap g<enter> <Plug>(quickrun)
+xmap g<enter> <Plug>(quickrun)
+
 func! BufDeath_Comparebuf(b1, b2)
   "prefer loaded buffers before unloaded buffers
   if bufloaded(a:b1)
@@ -592,7 +595,7 @@ nnoremap - $
 xnoremap - $
 
 " un-join (split) the current line at the cursor position
-nnoremap K i<cr><esc>k$
+nnoremap <c-j> i<c-j><esc>k$
 " delete without overwriting the default register
 nnoremap <leader>d "_d
 xnoremap <leader>d "_d
@@ -649,10 +652,14 @@ nnoremap ' `
 xnoremap ' `
 nnoremap <C-e> 2<C-e>
 nnoremap <C-y> 2<C-y>
-noremap <left>  4zh
-noremap <right> 4zl
-noremap <c-left>  :<c-u>exec 'norm! '.(winwidth(0)/2).'zh'<cr>
-noremap <c-right> :<c-u>exec 'norm! '.(winwidth(0)/2).'zl'<cr>
+
+nnoremap <left>  4zh
+nnoremap <right> 4zl
+xnoremap <left>  4zh
+xnoremap <right> 4zl
+nnoremap <c-left>  :<c-u>exec 'norm! '.(winwidth(0)/2).'zh'<cr>
+nnoremap <c-right> :<c-u>exec 'norm! '.(winwidth(0)/2).'zl'<cr>
+
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
@@ -722,7 +729,7 @@ augroup vimrc_java
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
           \ | nnoremap <buffer> gzt   :<c-u>JavaHierarchy<cr>
           \ | nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
-          \ | nnoremap <buffer> gzd   :<c-u>JavaDocPreview<cr>
+          \ | nnoremap <buffer> K     :<c-u>JavaDocPreview<cr>
           \ | nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>
   endif
 augroup END
