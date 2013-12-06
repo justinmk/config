@@ -17,4 +17,11 @@
 
 (sp-local-pair 'js2-mode "{" nil :post-handlers '(:add (my-open-block-c-mode "C-j")))
 
+;; http://stackoverflow.com/a/2665369/152142
+(add-hook 'minibuffer-setup-hook 'conditionally-enable-smartparens)
+(defun conditionally-enable-smartparens ()
+  "enable smartparens-mode during eval-expression"
+  (if (eq this-command 'eval-expression)
+      (smartparens-mode 1)))
+
 (provide 'init-smartparens)
