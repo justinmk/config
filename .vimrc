@@ -287,8 +287,10 @@ endif
   endif
 
   let s:color_force_high_contrast = ' 
-        \   hi Normal     ctermbg=black guibg=black ctermfg=white guifg=white
-        \ | hi NonText    ctermbg=black guibg=black ctermfg=white guifg=white
+        \ if &background == "dark"
+        \ | hi Normal  guibg=black guifg=white ctermfg=255 ctermbg=0
+        \ | hi NonText guibg=black guifg=white ctermfg=255 ctermbg=0
+        \ | endif
         \'
 
   if !s:is_mac
@@ -306,11 +308,14 @@ endif
   else
     "see :h 'highlight'
     "https://github.com/Pychimp/vim-luna
-    "hi Comment ctermfg=Cyan guifg=#afafaf
-    let s:color_override = ' 
-          \   hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
-          \ | hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
+    let s:color_override = '
+          \   hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
           \ | hi VisualNOS     guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
+          \'
+
+    let s:color_override_dark = '
+          \ if &background == "dark"
+          \ | hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
           \ | hi CursorLine    guibg=#293739 ctermbg=236
           \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
@@ -323,6 +328,7 @@ endif
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
+          \ | endif
           \'
 
     if s:starting "avoid re-triggering 'ColorScheme' event
@@ -333,6 +339,7 @@ endif
     if s:is_gui || s:is_mac || s:is_cygwin
       if s:starting
         exe 'autocmd ColorScheme * '.s:color_override
+        exe 'autocmd ColorScheme * '.s:color_override_dark
       endif
     else
       exe s:color_override
