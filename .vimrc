@@ -118,6 +118,9 @@ if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Bundle 'Valloric/MatchTagAlways'
 endif
+if !s:is_cygwin && (has('python') || has('python3'))
+Bundle 'davidhalter/jedi-vim'
+endif
 Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
@@ -719,6 +722,17 @@ func! ReadExCommandOutput(cmd)
 endf
 command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
 
+" python ======================================================================
+augroup vimrc_python
+  autocmd!
+  autocmd FileType python syn keyword pythonDecorator True None False self
+  let g:jedi#auto_vim_configuration = 0
+  let g:jedi#goto_assignments_command = 'gd'
+  let g:jedi#goto_definitions_command = 'gD'
+  let g:jedi#rename_command = 'cR'
+  let g:jedi#usages_command = 'gr'
+augroup END
+
 " java ========================================================================
 " gradle makeprg/quickfix settings:
 "   https://github.com/luciano-fiandesio/dotfiles/blob/master/.vim/compiler/gradle.vim
@@ -812,7 +826,6 @@ augroup vimrc_autocmd
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
-  autocmd FileType python syn keyword pythonDecorator True None False self
 
   if s:is_mac "highlight line/col after idle
   autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
