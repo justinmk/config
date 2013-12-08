@@ -77,10 +77,18 @@
 
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
   (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
-
+  (define-key evil-normal-state-map (kbd "0") 'evil-first-non-blank)
+  (define-key evil-normal-state-map (kbd "-") 'evil-last-non-blank)
   (define-key evil-normal-state-map (kbd "Y") (kbd "y$"))
-
-  (define-key evil-visual-state-map (kbd ", e") 'eval-region)
+  
+  ;; file management
+  (define-key evil-normal-state-map "^" nil)
+  (define-key evil-normal-state-map (kbd "^")
+    (bind
+     (sr-speedbar-open)
+     (sr-speedbar-refresh)
+     (sr-speedbar-select-window)))
+  (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
 
   ;; emacs lisp
   (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") (kbd ", h f RET"))
