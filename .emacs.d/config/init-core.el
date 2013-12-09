@@ -95,10 +95,14 @@
 (blink-cursor-mode -1)
 (line-number-mode)
 (column-number-mode)
+(setq-default indent-tabs-mode nil)
 
-
-(setq-default
- indent-tabs-mode nil)
+(setq x-select-enable-clipboard t
+  save-interprogram-paste-before-kill t
+  ;; search everything, including noninteractive functions, non-customizable variables, ...
+  apropos-do-all t
+  ;; paste at cursor location instead of click location.
+  mouse-yank-at-point t)
 
 ;; defer font-lock (improves scrolling speed, esp. for large files)
 (setq jit-lock-defer-time 0.05)

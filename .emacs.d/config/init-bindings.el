@@ -13,6 +13,7 @@
 (global-set-key (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
 (global-set-key (kbd "M-l") 'helm-buffers-list) ;'switch-to-buffer
 (global-set-key (kbd "C-p") 'helm-projectile)
+(global-set-key (kbd "C-f") 'isearch-forward-regexp)
 
 (after 'smex
   (global-set-key (kbd "M-x") 'smex)
