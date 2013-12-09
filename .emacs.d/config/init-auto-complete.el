@@ -14,6 +14,9 @@
 
 (add-to-list 'ac-modes 'vimrc-mode)
 
+(custom-set-faces
+ '(ac-selection-face ((t (:foreground "white" :background "DodgerBlue" )))))
+
 (defadvice ac-expand (before advice-for-ac-expand activate)
   (when (yas-expand)
     (ac-stop)))
