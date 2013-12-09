@@ -1,5 +1,5 @@
 (defmacro bind (&rest commands)
-  "Convience macro which creates a lambda interactive command."
+  "Conveniece macro which creates a lambda interactive command."
   `(lambda ()
      (interactive)
      ,@commands))
@@ -27,28 +27,28 @@
   (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
   (define-key evil-normal-state-map (kbd "ZZ") 'evil-quit-all)
 
-(after 'evil-leader
-  (evil-leader/set-leader ",")
-  (evil-leader/set-key
-    "w" 'evil-write
-    "e" (kbd "C-x C-e") ;;'eval-last-sexp
-    "E" (kbd "C-M-x") ;;'eval-defun
-    "c" (bind
-          (evil-window-split)
-          (eshell))
-    "C" 'customize-group
-    "b d" 'kill-this-buffer
-    "v" (kbd "C-w v C-w l")
-    "s" (kbd "C-w s C-w j")
-    "g s" 'magit-status
-    "g l" 'magit-log
-    "g d" 'vc-diff
-    "V" (bind (term "vim"))
-    "h" help-map
-    "h h" 'help-for-help-internal))
+  (after 'evil-leader
+    (evil-leader/set-leader ",")
+    (evil-leader/set-key
+      "w" 'evil-write
+      "e" (kbd "C-x C-e") ;;'eval-last-sexp
+      "E" (kbd "C-M-x") ;;'eval-defun
+      "c" (bind
+           (evil-window-split)
+           (eshell))
+      "C" 'customize-group
+      "b d" 'kill-this-buffer
+      "v" (kbd "C-w v C-w l")
+      "s" (kbd "C-w s C-w j")
+      "g s" 'magit-status
+      "g l" 'magit-log
+      "g d" 'vc-diff
+      "V" (bind (term "vim"))
+      "h" help-map
+      "h h" 'help-for-help-internal))
 
-(after 'evil-matchit
-  (define-key evil-normal-state-map "%" 'evilmi-jump-items))
+  (after 'evil-matchit
+    (define-key evil-normal-state-map "%" 'evilmi-jump-items))
 
   (after 'git-gutter+-autoloads
     (define-key evil-normal-state-map (kbd "[ c") 'git-gutter+-previous-hunk)
@@ -116,7 +116,13 @@
       "l" 'magit-key-mode-popup-logging
       "h" 'magit-toggle-diff-refine-hunk))
 
-  )
+  ;; minibuffer keymaps
+  ;;    esc key
+  (define-key minibuffer-local-map [escape] 'my-minibuffer-keyboard-quit)
+  (define-key minibuffer-local-ns-map [escape] 'my-minibuffer-keyboard-quit)
+  (define-key minibuffer-local-completion-map [escape] 'my-minibuffer-keyboard-quit)
+  (define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
+  (define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit))
 
 ;; minibuffer keymaps
 ;;    esc key
