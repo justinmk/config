@@ -38,11 +38,9 @@
            (eshell))
       "C" 'customize-group
       "b d" 'kill-this-buffer
-      "v" (kbd "C-w v C-w l")
-      "s" (kbd "C-w s C-w j")
-      "g s" 'magit-status
-      "g l" 'magit-log
-      "g d" 'vc-diff
+      "v s" 'magit-status
+      "v l" 'magit-log
+      "v d" 'vc-diff
       "V" (bind (term "vim"))
       "h" help-map
       "h h" 'help-for-help-internal))
@@ -53,22 +51,24 @@
   (after 'git-gutter+-autoloads
     (define-key evil-normal-state-map (kbd "[ c") 'git-gutter+-previous-hunk)
     (define-key evil-normal-state-map (kbd "] c") 'git-gutter+-next-hunk)
-    (define-key evil-normal-state-map (kbd ", g a") 'git-gutter+-stage-hunks)
-    (define-key evil-normal-state-map (kbd ", g r") 'git-gutter+-revert-hunks)
-    (evil-ex-define-cmd "Gw" (lambda () (interactive) (git-gutter+-stage-whole-buffer))))
-
+    (define-key evil-normal-state-map (kbd ", v a") 'git-gutter+-stage-hunks)
+    (define-key evil-normal-state-map (kbd ", v r") 'git-gutter+-revert-hunks))
 
   (after 'smex
     (define-key evil-visual-state-map (kbd "SPC") 'smex)
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
+
   (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
   (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
 
   (define-key evil-normal-state-map "gw" nil)
   (define-key evil-motion-state-map "gw" 'evil-window-map)
 
-  (define-key evil-normal-state-map (kbd "[ SPC") (lambda () (interactive) (evil-insert-newline-above) (forward-line)))
-  (define-key evil-normal-state-map (kbd "] SPC") (lambda () (interactive) (evil-insert-newline-below) (forward-line -1)))
+  (define-key evil-normal-state-map "g/" nil)
+  (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/")))
+
+  (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
+  (define-key evil-normal-state-map (kbd "] SPC") (bind (evil-insert-newline-below) (forward-line -1)))
   (define-key evil-normal-state-map (kbd "[ b") 'previous-buffer)
   (define-key evil-normal-state-map (kbd "] b") 'next-buffer)
 
@@ -90,9 +90,22 @@
      (sr-speedbar-select-window)))
   (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
 
+  ;; execute/evaluate
+  (define-key evil-normal-state-map (kbd "g RET") nil)
+  (define-key evil-normal-state-map (kbd "g RET") 'eval-buffer)
+  (define-key evil-visual-state-map (kbd "g RET") 'eval-region)
+
+  ;; [s]-expression manipulation
+  (define-key evil-normal-state-map "gs" nil)
+  (define-key evil-normal-state-map (kbd "g s RET") 'eval-last-sexp)
+  (define-key evil-normal-state-map (kbd "g s s") 'sp-forward-slurp-sexp)
+  (define-key evil-normal-state-map (kbd "g s S") 'sp-backward-slurp-sexp)
+  (define-key evil-normal-state-map (kbd "g s b") 'sp-forward-barf-sexp)
+  (define-key evil-normal-state-map (kbd "g s B") 'sp-backward-barf-sexp)
+
   ;; emacs lisp
   (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") (kbd ", h f RET"))
-
+  
   ;; proper jump lists
   ;; (require-package 'jumpc)
   ;; (jumpc)
@@ -102,6 +115,9 @@
   (after 'company
     (define-key evil-insert-state-map (kbd "TAB") 'my-company-tab)
     (define-key evil-insert-state-map [tab] 'my-company-tab))
+  
+  (after 'auto-complete
+    (define-key evil-insert-state-map (kbd "C-SPC") 'auto-complete))
 
   (after 'multiple-cursors
     (define-key evil-emacs-state-map (kbd "C->") 'mc/mark-next-like-this)
@@ -124,13 +140,6 @@
   (define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
   (define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit))
 
-;; minibuffer keymaps
-;;    esc key
-(define-key minibuffer-local-map [escape] 'my-minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'my-minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'my-minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit)
 ;;    other
 (define-key minibuffer-local-map (kbd "C-w") 'backward-kill-word)
 (define-key minibuffer-local-map (kbd "C-u") 'backward-kill-sentence)
@@ -161,7 +170,7 @@
 
 ;; have no use for these default bindings
 (global-unset-key (kbd "C-x m"))
-(global-set-key (kbd "C-x C-c") (lambda () (interactive) (message "Thou shall not quit!")))
+(global-set-key (kbd "C-x C-c") (bind (message "Thou shall not quit!")))
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
 
 
