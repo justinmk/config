@@ -90,21 +90,31 @@
      (sr-speedbar-select-window)))
   (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
 
-  ;; execute/evaluate
-  (define-key evil-normal-state-map (kbd "g RET") nil)
-  (define-key evil-normal-state-map (kbd "g RET") 'eval-buffer)
-  (define-key evil-visual-state-map (kbd "g RET") 'eval-region)
-
   ;; [s]-expression manipulation
+  (define-key evil-normal-state-map (kbd "g RET") nil)
   (define-key evil-normal-state-map "gs" nil)
-  (define-key evil-normal-state-map (kbd "g s RET") 'eval-last-sexp)
   (define-key evil-normal-state-map (kbd "g s s") 'sp-forward-slurp-sexp)
   (define-key evil-normal-state-map (kbd "g s S") 'sp-backward-slurp-sexp)
   (define-key evil-normal-state-map (kbd "g s b") 'sp-forward-barf-sexp)
   (define-key evil-normal-state-map (kbd "g s B") 'sp-backward-barf-sexp)
 
   ;; emacs lisp
-  (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") (kbd ", h f RET"))
+  (evil-define-key 'normal emacs-lisp-mode-map
+    (kbd "gd") 'find-function
+    (kbd "K") (kbd ", h f RET")
+    (kbd "g s RET") 'eval-last-sexp
+    (kbd "g RET") 'eval-buffer)
+  (evil-define-key 'visual emacs-lisp-mode-map
+    (kbd "g RET") 'eval-region)
+
+  ;; clojure / cider
+  (evil-define-key 'normal clojure-mode-map
+    (kbd "gd") 'cider-jump
+    (kbd "K") 'cider-doc
+    (kbd "g s RET") 'cider-eval-last-sexp
+    (kbd "g RET") 'cider-eval-buffer)
+  (evil-define-key 'visual clojure-mode-map
+    (kbd "g RET") 'cider-eval-region)
   
   ;; proper jump lists
   ;; (require-package 'jumpc)

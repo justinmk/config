@@ -1,4 +1,5 @@
 (require-package 'rainbow-delimiters)
+(require-package 'clojure-mode)
 (require-package 'cider)
 
 (defun my-lisp-hook ()
