@@ -100,7 +100,7 @@ nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
 " evaluate selection F#
 xnoremap g<enter> :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
 " evaluate current line F#
-nnoremap g<space> :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
+nnoremap gs<enter> :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
 
 nnoremap ]q :vsc Edit.GoToNextLocation<cr>
 nnoremap [q :vsc Edit.GoToPrevLocation<cr>
