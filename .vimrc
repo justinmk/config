@@ -109,6 +109,7 @@ Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
+Bundle 'mbbill/undotree'
 " Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
@@ -515,8 +516,18 @@ nnoremap >fn i<c-r>=expand('%:p')<cr>
 " insert the current file directory
 nnoremap >fd i<c-r>=expand('%:p:h').'/'<cr>
 
+" execute/evaluate
 nmap g<enter> <Plug>(quickrun)
 xmap g<enter> <Plug>(quickrun)
+
+" filter
+" nnoremap c<cr>jj    :%!python -m json.tool<cr>
+" nnoremap z<cr>jj    :%!python -m json.tool<cr>
+nnoremap c<space>jj :%!python -m json.tool<cr>
+
+" align
+" nnoremap c<space>       :easyalign...
+" xnoremap <space><space> :easyalign...
 
 func! BufDeath_Comparebuf(b1, b2)
   "prefer loaded buffers before unloaded buffers
@@ -666,7 +677,6 @@ nnoremap <c-right> :<c-u>exec 'norm! '.(winwidth(0)/2).'zl'<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
-xnoremap <space> :
 nnoremap <leader>w :w<cr>
 
 " map m-] to be the inverse of c-]
@@ -915,12 +925,12 @@ endif
 func! s:init_neocomplete()
   nnoremap <leader>neo :NeoCompleteEnable<cr>
   let g:neocomplete#enable_smart_case = 1
-  let g:neocomplete#enable_auto_select = 1
   " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
   let omni = get(g:, 'neocomplete#sources#omni#input_patterns', {})
   let g:neocomplete#sources#omni#input_patterns = omni
   let omni.go  = '[^.[:digit:] *\t]\.\w*'
   let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
+  let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 endf
 
 if s:lua_patch885
@@ -1114,11 +1124,8 @@ if isdirectory(expand(s:dir))
   if &backupdir =~# '^\.,'
     let &backupdir = expand(s:dir) . '/backup//,' . &backupdir
   endif
-  if exists('+undodir') && &undodir =~# '^\.\%(,\|$\)'
+  if has("persistent_undo") && &undodir =~# '^\.\%(,\|$\)'
     let &undodir = expand(s:dir) . '/undo//,' . &undodir
-  endif
-
-  if exists('+undofile')
     set undofile
   endif
 endif
