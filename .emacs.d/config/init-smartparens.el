@@ -12,7 +12,7 @@
   (when (eq action 'insert)
     (newline)
     (indent-according-to-mode)
-    (previous-line)
+    (forward-line -1) ;(previous-line)
     (indent-according-to-mode)))
 
 (sp-local-pair '(js-mode js2-mode) "{" nil :post-handlers '(:add (my-open-block-c-mode "C-j")))

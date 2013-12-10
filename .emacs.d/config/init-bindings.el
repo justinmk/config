@@ -178,8 +178,8 @@
   (define-key comint-mode-map [down] 'comint-next-input))
 
 (after 'auto-complete
-  (define-key ac-completing-map "\t" 'ac-expand)
-  (define-key ac-completing-map [tab] 'ac-expand)
+  ;; (define-key ac-completing-map "\t" 'ac-expand)
+  ;; (define-key ac-completing-map [tab] 'ac-expand)
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous))
 
