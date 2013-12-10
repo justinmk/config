@@ -9,16 +9,19 @@
 (setq ac-quick-help-height 30)
 (setq ac-show-menu-immediately-on-auto-complete t)
 
-(ac-config-default)
-
-(after 'linum
-  (ac-linum-workaround))
-
-(dolist (mode '(vimrc-mode html-mode stylus-mode))
+(dolist (mode '(vimrc-mode
+                html-mode stylus-mode
+                ;; shell-mode term-mode terminal-mode eshell-mode comint-mode
+                ))
   (add-to-list 'ac-modes mode))
 
 (custom-set-faces
  '(ac-selection-face ((t (:foreground "white" :background "DodgerBlue" )))))
+
+(ac-config-default)
+
+(after 'linum
+  (ac-linum-workaround))
 
 (defadvice ac-expand (before advice-for-ac-expand activate)
   (when (yas-expand)

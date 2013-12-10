@@ -5,9 +5,9 @@
 (setq yas-also-auto-indent-first-line t)
 (setq yas-prompt-functions '(yas/ido-prompt yas/completing-prompt))
 
-(yas-reload-all)
-
 (add-hook 'prog-mode-hook 'yas-minor-mode)
 (add-hook 'html-mode-hook 'yas-minor-mode)
+
+(yas-reload-all)
 
 (provide 'init-yasnippet)

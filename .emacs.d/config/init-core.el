@@ -24,10 +24,6 @@
 (savehist-mode +1)
 
 
-(setq mark-ring-max 64)
-(setq global-mark-ring-max 128)
-
-
 ;; recent files
 (require 'recentf)
 (setq recentf-save-file (concat user-emacs-directory ".cache/recentf")
@@ -68,10 +64,8 @@
 
 
 ;; better scrolling
-(setq scroll-margin 3
-      scroll-conservatively 9999
+(setq scroll-conservatively 9999
       scroll-preserve-screen-position t)
-
 
 ;; better buffer names for duplicates
 (require 'uniquify)
@@ -90,11 +84,15 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(setq sentence-end-double-space nil)
+(setq sentence-end-double-space nil
+      mark-ring-max 64
+      global-mark-ring-max 128)
+
 
 (which-function-mode t)
 (global-visual-line-mode)
 (global-auto-revert-mode 1)
+(electric-indent-mode t)
 (blink-cursor-mode -1)
 (line-number-mode)
 (column-number-mode)

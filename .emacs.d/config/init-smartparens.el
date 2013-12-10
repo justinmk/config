@@ -15,7 +15,9 @@
     (forward-line -1) ;(previous-line)
     (indent-according-to-mode)))
 
-(sp-local-pair '(js-mode js2-mode) "{" nil :post-handlers '(:add (my-open-block-c-mode "C-j")))
+;; auto-pair {} and [] everywhere
+(sp-pair "{" nil :post-handlers '(:add (my-open-block-c-mode "RET")))
+(sp-pair "[" nil :post-handlers '(:add (my-open-block-c-mode "RET")))
 
 ;; http://stackoverflow.com/a/2665369/152142
 (add-hook 'minibuffer-setup-hook 'conditionally-enable-smartparens)

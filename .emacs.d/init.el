@@ -11,6 +11,7 @@
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
+(setq package-enable-at-startup nil)
 
 (require 'init-util)
 (require 'init-core)
@@ -19,7 +20,7 @@
 (require 'init-editor)
 (require 'init-smartparens)
 
-(require 'init-yasnippet)
+; (require 'init-yasnippet)
 (require 'init-auto-complete)
 ; (require 'init-company)
 
