@@ -132,6 +132,7 @@ Bundle 'mhinz/vim-signify'
 if exists("$GOPATH")
 Bundle 'Blackrush/vim-gocode'
 endif
+Bundle 'bruno-/vim-vertical-move'
 Bundle 'justinmk/vim-ipmotion'
 Bundle 'justinmk/vim-gtfo'
 Bundle 'justinmk/vim-sneak'
@@ -173,6 +174,14 @@ endf
 " general settings / options
 "==============================================================================
 let g:sneak#streak = 1
+
+let g:vertical_move_default_mapping = 0
+nmap <silent> gj <Plug>(vertical_move_down)
+nmap <silent> gk <Plug>(vertical_move_up)
+xmap <silent> gj <Plug>(vertical_move_down)
+xmap <silent> gk <Plug>(vertical_move_up)
+omap <silent> gj <Plug>(vertical_move_down)
+omap <silent> gk <Plug>(vertical_move_up)
 
 let g:signify_vcs_list = [ 'git' ]
 
