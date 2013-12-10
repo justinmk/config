@@ -46,6 +46,3 @@
 ;; session save/restore
 ;; TODO: this always complains about the lock file it _just_ created...
 ;; (desktop-save-mode 1)
-
-;;; (unload-feature 'foo)
-

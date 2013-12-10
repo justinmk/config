@@ -48,6 +48,9 @@
 ;; vc
 (setq vc-make-backup-files t)
 
+;; narrowing
+(put 'narrow-to-region 'disabled nil)
+
 ;; dired
 (require 'dired-x)
 

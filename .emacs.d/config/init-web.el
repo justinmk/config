@@ -4,15 +4,13 @@
 
 
 (require-package 'js2-mode)
+(require-package 'ac-js2)
+(require-package 'tern)
+(require-package 'tern-auto-complete)
+
 (after 'js2-mode-autoloads
   (setq auto-mode-alist (cons '("\\.js\\'" . js2-mode) auto-mode-alist)))
 
-
-(require-package 'ac-js2)
-
-
-(require-package 'tern)
-(require-package 'tern-auto-complete)
 (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
 (after 'tern
   (require 'tern-auto-complete)

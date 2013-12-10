@@ -101,6 +101,7 @@
      (sr-speedbar-refresh)
      (sr-speedbar-select-window)))
   (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
+  (define-key evil-visual-state-map (kbd "g x") 'my-google)
   ;; unbind default 'g' binding in speedbar
   (define-key speedbar-mode-map (kbd "g") nil)
 
