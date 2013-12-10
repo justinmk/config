@@ -15,7 +15,7 @@
     (previous-line)
     (indent-according-to-mode)))
 
-(sp-local-pair 'js2-mode "{" nil :post-handlers '(:add (my-open-block-c-mode "C-j")))
+(sp-local-pair '(js-mode js2-mode) "{" nil :post-handlers '(:add (my-open-block-c-mode "C-j")))
 
 ;; http://stackoverflow.com/a/2665369/152142
 (add-hook 'minibuffer-setup-hook 'conditionally-enable-smartparens)

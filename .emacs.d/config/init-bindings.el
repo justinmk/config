@@ -13,7 +13,6 @@
 (global-set-key (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
 (global-set-key (kbd "M-l") 'helm-buffers-list) ;'switch-to-buffer
 (global-set-key (kbd "C-p") 'helm-projectile)
-(global-set-key (kbd "C-f") 'isearch-forward-regexp)
 
 (after 'smex
   (global-set-key (kbd "M-x") 'smex)
@@ -27,6 +26,9 @@
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
   (define-key evil-normal-state-map (kbd "ZZ") 'evil-quit-all)
+
+  (global-unset-key (kbd "C-l"))
+  (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
 
   (after 'evil-leader
     (evil-leader/set-leader ",")
@@ -60,19 +62,27 @@
     (define-key evil-visual-state-map (kbd "SPC") 'smex)
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
 
-  (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
-  (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
+  (after 'helm-autoloads
+    (define-key evil-normal-state-map (kbd "g / F") 'helm-recentf)
+    (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
+    (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
+    (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring)
+    (define-key evil-motion-state-map (kbd "C-f") nil)
+    (global-set-key (kbd "C-f") 'helm-swoop))
 
   (define-key evil-normal-state-map "gw" nil)
   (define-key evil-motion-state-map "gw" 'evil-window-map)
 
   (define-key evil-normal-state-map "g/" nil)
-  (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/")))
+  (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
+  (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
   (define-key evil-normal-state-map (kbd "] SPC") (bind (evil-insert-newline-below) (forward-line -1)))
   (define-key evil-normal-state-map (kbd "[ b") 'previous-buffer)
   (define-key evil-normal-state-map (kbd "] b") 'next-buffer)
+  (define-key evil-normal-state-map (kbd "[ q") 'previous-error)
+  (define-key evil-normal-state-map (kbd "] q") 'next-error)
 
   (define-key evil-normal-state-map (kbd "C-p") nil)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
@@ -91,6 +101,8 @@
      (sr-speedbar-refresh)
      (sr-speedbar-select-window)))
   (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
+  ;; unbind default 'g' binding in speedbar
+  (define-key speedbar-mode-map (kbd "g") nil)
 
   ;; [s]-expression manipulation
   (define-key evil-normal-state-map (kbd "g RET") nil)
