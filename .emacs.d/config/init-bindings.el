@@ -42,6 +42,7 @@
       "v s" 'magit-status
       "v l" 'magit-log
       "v d" 'vc-diff
+      "v m" 'git-messenger:popup-message
       "V" (bind (term "vim"))
       "h" help-map
       "h h" 'help-for-help-internal))

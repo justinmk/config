@@ -1,7 +1,11 @@
 (require-package 'magit)
 (require-package 'gist)
+(require-package 'git-messenger)
 
 (defvar magit-diff-options '("--histogram"))
+
+(require 'git-messenger)
+(setq git-messenger:show-detail t)
 
 (if (display-graphic-p)
     (progn
