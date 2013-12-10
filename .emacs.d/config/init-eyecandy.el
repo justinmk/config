@@ -1,5 +1,7 @@
 (require-package 'smart-mode-line)
-(add-hook 'after-init-hook (sml/setup))
+(require 'smart-mode-line)
+(setq sml/theme 'dark)
+(sml/setup)
 
 
 (require-package 'diminish)
@@ -14,6 +16,7 @@
   (after 'smartparens (diminish 'smartparens-mode))
   (after 'company (diminish 'company-mode))
   (after 'git-gutter+ (diminish 'git-gutter+-mode))
+  (after 'elisp-slime-nav (diminish 'elisp-slime-nav-mode))
   )
 
 

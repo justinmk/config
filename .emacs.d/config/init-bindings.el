@@ -83,6 +83,8 @@
   (define-key evil-normal-state-map (kbd "] b") 'next-buffer)
   (define-key evil-normal-state-map (kbd "[ q") 'previous-error)
   (define-key evil-normal-state-map (kbd "] q") 'next-error)
+  
+  (define-key evil-normal-state-map (kbd "g V") (kbd "` [ v ` ]"))
 
   (define-key evil-normal-state-map (kbd "C-p") nil)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
@@ -114,9 +116,11 @@
   (define-key evil-normal-state-map (kbd "g s B") 'sp-backward-barf-sexp)
 
   ;; emacs lisp
+  (after 'elisp-slime-nav-autoloads
+    (evil-define-key 'normal emacs-lisp-mode-map
+      (kbd "g d") 'elisp-slime-nav-find-elisp-thing-at-point
+      (kbd "K")   'elisp-slime-nav-describe-elisp-thing-at-point))
   (evil-define-key 'normal emacs-lisp-mode-map
-    (kbd "gd") 'find-function
-    (kbd "K") (kbd ", h f RET")
     (kbd "g s RET") 'eval-last-sexp
     (kbd "g RET") 'eval-buffer)
   (evil-define-key 'visual emacs-lisp-mode-map
@@ -124,7 +128,7 @@
 
   ;; clojure / cider
   (evil-define-key 'normal clojure-mode-map
-    (kbd "gd") 'cider-jump
+    (kbd "g d") 'cider-jump
     (kbd "K") 'cider-doc
     (kbd "g s RET") 'cider-eval-last-sexp
     (kbd "g RET") 'cider-eval-buffer)

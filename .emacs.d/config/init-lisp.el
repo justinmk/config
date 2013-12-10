@@ -1,9 +1,11 @@
 (require-package 'rainbow-delimiters)
+(require-package 'elisp-slime-nav)
 (require-package 'clojure-mode)
 (require-package 'cider)
 
 (defun my-lisp-hook ()
   (progn
+    (elisp-slime-nav-mode)
     (turn-on-eldoc-mode)
     (rainbow-delimiters-mode t)))
 
