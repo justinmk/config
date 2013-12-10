@@ -22,7 +22,7 @@
 [alias]
   l = log --graph --oneline --decorate
   d = diff --stat --color
-  s = status -sb
+  s = !git status -sb && git stash list
   co = checkout
 [advice]
   statusHints = false
