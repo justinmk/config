@@ -66,7 +66,7 @@ let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gu
 "boostrap vundle on new systems
 fun! InstallVundle()
     echo "Installing Vundle..."
-    silent !mkdir -p ~/.vim/bundle
+    silent call mkdir(expand("~/.vim/bundle"), 'p')
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endfun
 
@@ -153,14 +153,10 @@ filetype plugin indent on     " required!
 
 fun! EnsureDir(path)
     let l:path = expand(a:path)
-    if (filewritable(l:path) != 2)
-        if s:is_windows
-            exe 'silent !mkdir "' . l:path . '"'
-        else
-            exe 'silent !mkdir -p "' . l:path . '"'
-        endif
+    if !isdirectory(l:path)
+      call mkdir(l:path, 'p')
     endif
-    return isdirectory(a:path) 
+    return isdirectory(l:path)
 endfun
 
 func! EnsureFile(path)
@@ -852,6 +848,10 @@ augroup vimrc_autocmd
   else
     autocmd BufEnter,WinEnter * setlocal cursorline | silent! setlocal colorcolumn=80
     autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
+  endif
+
+  if exists("*mkdir") "auto-create directories for new files
+    au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
   endif
 
   if s:is_windows
