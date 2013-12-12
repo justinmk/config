@@ -5,6 +5,11 @@
       `(("." . ,(concat user-emacs-directory ".cache/undo"))))
 (global-undo-tree-mode)
 
+(add-hook 'text-mode-hook
+          '(lambda ()
+             (setq indent-tabs-mode nil)
+             (setq tab-width 4)
+             (setq indent-line-function (quote insert-tab))))
 
 (require-package 'multiple-cursors)
 (require 'multiple-cursors)
