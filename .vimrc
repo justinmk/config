@@ -797,55 +797,50 @@ augroup vimrc_golang
   endif
 augroup END
 
-" clojure =====================================================================
+" clojure/lisp ================================================================
 " When the 'lisp' option is on, the '-' character is considered a 'iskeyword' character.
 "    https://github.com/tpope/vim-fireplace
 "    https://github.com/guns/vim-clojure-static
 "    https://bitbucket.org/kovisoft/slimv
 "    http://kovisoft.bitbucket.org/tutorial.html
 
+let g:sexp_enable_insert_mode_mappings = 0
 let g:sexp_mappings = {
       \ 'sexp_outer_list':                'af',
       \ 'sexp_inner_list':                'if',
       \ 'sexp_outer_top_list':            'aF',
       \ 'sexp_inner_top_list':            'iF',
-      \ 'sexp_outer_string':              'as',
-      \ 'sexp_inner_string':              'is',
+      \ 'sexp_outer_string':              '',
+      \ 'sexp_inner_string':              '',
       \ 'sexp_outer_element':             'ae',
       \ 'sexp_inner_element':             'ie',
       \ 'sexp_move_to_prev_bracket':      '(',
       \ 'sexp_move_to_next_bracket':      ')',
-      \ 'sexp_move_to_prev_element_head': '<M-b>',
-      \ 'sexp_move_to_next_element_head': '<M-w>',
-      \ 'sexp_move_to_prev_element_tail': 'g<M-e>',
-      \ 'sexp_move_to_next_element_tail': '<M-e>',
-      \ 'sexp_move_to_prev_top_element':  '[[',
-      \ 'sexp_move_to_next_top_element':  ']]',
-      \ 'sexp_select_prev_element':       '[e',
-      \ 'sexp_select_next_element':       ']e',
-      \ 'sexp_indent':                    '==',
-      \ 'sexp_indent_top':                '=-',
-      \ 'sexp_round_head_wrap_list':      '<LocalLeader>i',
-      \ 'sexp_round_tail_wrap_list':      '<LocalLeader>I',
-      \ 'sexp_square_head_wrap_list':     '<LocalLeader>[',
-      \ 'sexp_square_tail_wrap_list':     '<LocalLeader>]',
-      \ 'sexp_curly_head_wrap_list':      '<LocalLeader>{',
-      \ 'sexp_curly_tail_wrap_list':      '<LocalLeader>}',
-      \ 'sexp_round_head_wrap_element':   '<LocalLeader>w',
-      \ 'sexp_round_tail_wrap_element':   '<LocalLeader>W',
-      \ 'sexp_square_head_wrap_element':  '<LocalLeader>e[',
-      \ 'sexp_square_tail_wrap_element':  '<LocalLeader>e]',
-      \ 'sexp_curly_head_wrap_element':   '<LocalLeader>e{',
-      \ 'sexp_curly_tail_wrap_element':   '<LocalLeader>e}',
-      \ 'sexp_insert_at_list_head':       '<LocalLeader>h',
-      \ 'sexp_insert_at_list_tail':       '<LocalLeader>l',
-      \ 'sexp_splice_list':               '<LocalLeader>@',
-      \ 'sexp_raise_list':                '<LocalLeader>o',
-      \ 'sexp_raise_element':             '<LocalLeader>O',
-      \ 'sexp_swap_list_backward':        '<M-k>',
-      \ 'sexp_swap_list_forward':         '<M-j>',
-      \ 'sexp_swap_element_backward':     '<M-h>',
-      \ 'sexp_swap_element_forward':      '<M-l>',
+      \ 'sexp_move_to_prev_element_head': '<M-k>',
+      \ 'sexp_move_to_next_element_head': '<M-j>',
+      \ 'sexp_move_to_prev_element_tail': '',
+      \ 'sexp_move_to_next_element_tail': '',
+      \ 'sexp_round_head_wrap_list':      'gs(',
+      \ 'sexp_round_tail_wrap_list':      'gs)',
+      \ 'sexp_square_head_wrap_list':     'gs[',
+      \ 'sexp_square_tail_wrap_list':     'gs]',
+      \ 'sexp_curly_head_wrap_list':      'gs{',
+      \ 'sexp_curly_tail_wrap_list':      'gs}',
+      \ 'sexp_round_head_wrap_element':   'z(',
+      \ 'sexp_round_tail_wrap_element':   'z)',
+      \ 'sexp_square_head_wrap_element':  'z[',
+      \ 'sexp_square_tail_wrap_element':  'z]',
+      \ 'sexp_curly_head_wrap_element':   'z{',
+      \ 'sexp_curly_tail_wrap_element':   'z}',
+      \ 'sexp_insert_at_list_head':       'gsI',
+      \ 'sexp_insert_at_list_tail':       'gsA',
+      \ 'sexp_splice_list':               '',
+      \ 'sexp_raise_list':                'gsO',
+      \ 'sexp_raise_element':             'gso',
+      \ 'sexp_swap_list_backward':        'gsF',
+      \ 'sexp_swap_list_forward':         'gsf',
+      \ 'sexp_swap_element_backward':     'gsE',
+      \ 'sexp_swap_element_forward':      'gse',
       \ 'sexp_emit_head_element':         'gsB',
       \ 'sexp_emit_tail_element':         'gsb',
       \ 'sexp_capture_prev_element':      'gsS',
@@ -898,7 +893,7 @@ augroup vimrc_autocmd
 
   if s:is_mac "highlight line/col after idle
   autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
-        \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved
+        \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved,CursorMovedI
   else
     autocmd BufEnter,WinEnter * setlocal cursorline | silent! setlocal colorcolumn=80
     autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
