@@ -11,7 +11,6 @@
 (guide-key-mode 1)
 
 (global-set-key (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
-(global-set-key (kbd "M-l") 'helm-buffers-list) ;'switch-to-buffer
 (global-set-key (kbd "C-p") 'helm-projectile)
 
 (after 'smex
@@ -34,8 +33,6 @@
     (evil-leader/set-leader ",")
     (evil-leader/set-key
       "w" 'evil-write
-      "e" (kbd "C-x C-e") ;;'eval-last-sexp
-      "E" (kbd "C-M-x") ;;'eval-defun
       "c" (bind
            (evil-window-split)
            (eshell))
@@ -76,6 +73,7 @@
   (define-key evil-normal-state-map "g/" nil)
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
+  (define-key evil-normal-state-map (kbd "g / b") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
   (define-key evil-normal-state-map (kbd "] SPC") (bind (evil-insert-newline-below) (forward-line -1)))
@@ -107,7 +105,7 @@
   ;; unbind default 'g' binding in speedbar
   (define-key speedbar-mode-map (kbd "g") nil)
 
-  ;; [s]-expression manipulation
+  ;; [s-]expression manipulation
   (define-key evil-normal-state-map (kbd "g RET") nil)
   (define-key evil-normal-state-map "gs" nil)
   (define-key evil-normal-state-map (kbd "g s s") 'sp-forward-slurp-sexp)

@@ -675,8 +675,6 @@ inoremap jk <esc>
 inoremap kj <esc>
 nnoremap ' `
 xnoremap ' `
-nnoremap <C-e> 2<C-e>
-nnoremap <C-y> 2<C-y>
 
 nnoremap <left>  4zh
 nnoremap <right> 4zl
@@ -778,7 +776,7 @@ augroup END
 "    let g:ref_use_vimproc = 1
 "    let g:ref_open = 'vsplit'
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/')
-"    nnoremap g/d :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
+"    nnoremap g/k :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
   autocmd!
   autocmd FileType go iabbrev <buffer> err- if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
@@ -1047,7 +1045,8 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 " search hidden directories:
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
 nmap g/f <c-p>
-nnoremap <m-l> :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
+nnoremap g/b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
+nmap <m-l> g/b
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
