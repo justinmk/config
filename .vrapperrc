@@ -22,8 +22,8 @@ nnoremap ,D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
-xnoremap 0 ^
-xnoremap - $
+vnoremap 0 ^
+vnoremap - $
 nnoremap 0 ^
 nnoremap - $
 nnoremap <m-l> :ls<cr>
@@ -40,7 +40,8 @@ vnoremap <Up>   :m<space>.-2<cr>kgv
 " https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
 
 " temporary workaround for issue #333
-eclipseaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
+au "Java Editor" eclipseaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
+au "Dart Editor" eclipseaction eclipsegotodef com.google.dart.tools.ui.edit.text.dart.open.editor
 nnoremap gd :eclipsegotodef<cr>
 
 eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
@@ -70,12 +71,22 @@ eclipseaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMe
 nnoremap crR :eclipsesrcgenmenu<cr>
 
 " rename current symbol
-eclipseaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
+au "Java Editor" eclipseaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
+au "Dart Editor" eclipseaction eclipserename com.google.dart.tools.ui.edit.text.dart.rename.element
 nnoremap cR :eclipserename<cr>
 
 "show quickfix menu
 eclipseaction eclipsequickfix org.eclipse.jdt.ui.edit.text.java.correction.assist.proposals
 nnoremap <backspace> :eclipsequickfix<cr>
+
+au "Java Editor" eclipseaction eclipsequickfix org.eclipse.jdt.ui.edit.text.java.correction.assist.proposals
+au "Dart Editor" eclipseaction eclipsequickfix com.google.dart.tools.ui.specific_content_assist.command
+nnoremap <backspace> :eclipsequickfix<cr>
+vnoremap <backspace> :eclipsequickfix<cr>
+
+au "Dart Editor" eclipseaction eclipsetogglecomment com.google.dart.tools.ui.edit.text.dart.toggle.comment
+au "Dart Editor" nnoremap gcc :eclipsetogglecomment<cr>
+au "Dart Editor" vnoremap gc  :eclipsetogglecomment<cr>
 
 eclipseaction eclipsetogglebp org.eclipse.debug.ui.commands.ToggleBreakpoint
 nnoremap <insert> :eclipsetogglebp<cr>
