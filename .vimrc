@@ -113,7 +113,7 @@ Bundle 'mbbill/undotree'
 " Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
-Bundle 'https://github.com/guns/vim-sexp'
+Bundle 'guns/vim-sexp'
 Bundle 'gaving/vim-textobj-argument'
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
@@ -744,7 +744,7 @@ command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
 " python ======================================================================
 augroup vimrc_python
   autocmd!
-  autocmd FileType python syn keyword pythonDecorator True None False self
+  autocmd FileType python syn keyword pythonDecorator True None False self | setlocal nosmartindent
   let g:jedi#auto_vim_configuration = 0
   let g:jedi#goto_assignments_command = 'gd'
   let g:jedi#goto_definitions_command = 'gD'
