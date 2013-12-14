@@ -508,7 +508,8 @@ nnoremap gwT :wincmd T<cr>
 nnoremap <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
 nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <leader>bn  :<c-u>enew<cr>
-nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bn')<cr>
+nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
+nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
 " quickfix window
 nnoremap <C-q> :botright copen<cr>
@@ -1043,7 +1044,6 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
 nmap g/f <c-p>
 nnoremap g/b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
-nmap <m-l> g/b
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
