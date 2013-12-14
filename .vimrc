@@ -84,6 +84,8 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'tomasr/molokai'
+Bundle 'junegunn/seoul256.vim'
+let g:seoul256_background=234
 if !s:is_windows
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
@@ -321,43 +323,38 @@ endif
   elseif !s:is_gui && &t_Co <= 88
     hi CursorLine cterm=underline
   else
-    "see :h 'highlight'
-    "https://github.com/Pychimp/vim-luna
     let s:color_override = '
-          \   hi Visual        guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
-          \ | hi VisualNOS     guifg=#ffffff guibg=#ff5f00 gui=NONE  ctermfg=255  ctermbg=202  cterm=NONE
+          \   hi Visual        ctermbg=23 guibg=#007475
+          \ | hi VisualNOS     term=bold,underline cterm=bold,underline ctermbg=23 gui=bold,underline guibg=#007475
           \'
 
     let s:color_override_dark = '
           \ if &background == "dark"
           \ | hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
-          \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE  ctermfg=black
+          \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE
           \ | hi CursorLine    guibg=#293739 ctermbg=236
           \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
           \ | hi PmenuSbar     guibg=#857f78
           \ | hi PmenuThumb    guifg=#242321
-          \ | hi WildMenu      gui=none cterm=none guifg=#f8f6f2 guibg=#0a9dff ctermfg=black ctermbg=39
+          \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
           \ | hi IncSearch     guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
-          \ | hi Search        guifg=black guibg=LightGoldenrod1 ctermfg=black ctermbg=227 gui=none cterm=NONE
+          \ | hi Search        guifg=#ffffff guibg=#ff9933 gui=NONE  ctermfg=255  ctermbg=208  cterm=NONE
           \ | hi DiffAdd       guifg=#ffffff guibg=#006600 gui=NONE  ctermfg=231  ctermbg=22   cterm=NONE 
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
+          \ | hi TODO          guifg=#00bcbc guibg=#ffff87 gui=bold
           \ | endif
           \'
 
-    if s:starting "avoid re-triggering 'ColorScheme' event
+    if s:starting "only on startup
+      exe 'autocmd ColorScheme * '.s:color_override
+      exe 'autocmd ColorScheme * '.s:color_override_dark
       " expects &runtimepath/colors/{name}.vim.
       colorscheme molokai
-    endif
-
-    if s:is_gui || s:is_mac || s:is_cygwin
-      if s:starting
-        exe 'autocmd ColorScheme * '.s:color_override
-        exe 'autocmd ColorScheme * '.s:color_override_dark
+      if !(s:is_gui || s:is_mac || s:is_cygwin)
+        exe s:color_override
       endif
-    else
-      exe s:color_override
     endif
   endif
 "}}}
