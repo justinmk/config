@@ -73,6 +73,7 @@
   (define-key evil-normal-state-map "g/" nil)
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
+  (define-key evil-normal-state-map (kbd "s") 'evil-search-forward) ;search lines
   (define-key evil-normal-state-map (kbd "g / b") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
@@ -108,10 +109,15 @@
   ;; [s-]expression manipulation
   (define-key evil-normal-state-map (kbd "g RET") nil)
   (define-key evil-normal-state-map "gs" nil)
-  (define-key evil-normal-state-map (kbd "g s s") 'sp-forward-slurp-sexp)
+  (define-key evil-normal-state-map (kbd "g s s") 'sp-slurp-hybrid-sexp)
   (define-key evil-normal-state-map (kbd "g s S") 'sp-backward-slurp-sexp)
   (define-key evil-normal-state-map (kbd "g s b") 'sp-forward-barf-sexp)
   (define-key evil-normal-state-map (kbd "g s B") 'sp-backward-barf-sexp)
+  (define-key evil-normal-state-map (kbd "g s t") 'transpose-sexps)
+  ;; for lisps, use non-hybrid commands.
+  (dolist (modemap '(emacs-lisp-mode-map clojure-mode-map lisp-mode-map))
+    (evil-define-key 'normal modemap
+      (kbd "g s s") 'sp-forward-slurp-sexp))
 
   ;; emacs lisp
   (after 'elisp-slime-nav-autoloads
