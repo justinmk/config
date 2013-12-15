@@ -174,12 +174,6 @@ endf
 let g:sneak#streak = 1
 
 let g:vertical_move_default_mapping = 0
-nmap <silent> gj <Plug>(vertical_move_down)
-nmap <silent> gk <Plug>(vertical_move_up)
-xmap <silent> gj <Plug>(vertical_move_down)
-xmap <silent> gk <Plug>(vertical_move_up)
-omap <silent> gj <Plug>(vertical_move_down)
-omap <silent> gk <Plug>(vertical_move_up)
 nmap <silent> + <Plug>(vertical_move_down)
 nmap <silent> _ <Plug>(vertical_move_up)
 xmap <silent> + <Plug>(vertical_move_down)
