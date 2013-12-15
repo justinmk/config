@@ -181,3 +181,13 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   . /etc/bash_completion
 fi
 
+if [ -f ~/.fzf.bash ]; then
+  source ~/.fzf.bash
+  f() { # fzf / includes hidden directories
+    find . -name .git -prune -o $1 -print 2> /dev/null | sed 's@^..\(.*\)$@\1@' | fzf -x
+  }
+  fd() { # fzf / change to directory
+    cd $(f "-type d")
+  }
+fi
+
