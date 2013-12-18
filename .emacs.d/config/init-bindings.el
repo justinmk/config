@@ -106,7 +106,7 @@
   ;; unbind default 'g' binding in speedbar
   (define-key speedbar-mode-map (kbd "g") nil)
 
-  ;; [s-]expression manipulation
+  ;; sexp manipulation
   (define-key evil-normal-state-map (kbd "g RET") nil)
   (define-key evil-normal-state-map "gs" nil)
   (define-key evil-normal-state-map (kbd "g s s") 'sp-slurp-hybrid-sexp)

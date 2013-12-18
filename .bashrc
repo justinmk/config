@@ -49,7 +49,7 @@ fi
 HISTCONTROL=erasedups:ignoredups
 HISTSIZE=20000
 HISTFILESIZE=20000
-HISTIGNORE='cd:ls:bg:fg:history'
+HISTIGNORE='cd:ls:bg:fg:history:f:fd'
 HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -184,7 +184,7 @@ fi
 if [ -f ~/.fzf.bash ]; then
   source ~/.fzf.bash
   f() { # fzf / includes hidden directories
-    find . -name .git -prune -o $1 -print 2> /dev/null | sed 's@^..\(.*\)$@\1@' | fzf -x
+    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | fzf -x
   }
   fd() { # fzf / change to directory
     cd $(f "-type d")

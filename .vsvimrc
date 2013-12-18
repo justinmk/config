@@ -13,6 +13,8 @@ set tabstop=4
 nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
+nnoremap s /
+nnoremap S ?
 
 nnoremap gwo :vsc FullScreen<cr>
 nnoremap gws :vsc Window.Split<cr>

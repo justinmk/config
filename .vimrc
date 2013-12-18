@@ -789,10 +789,10 @@ augroup END
 
 " clojure/lisp ================================================================
 " When the 'lisp' option is on, the '-' character is considered a 'iskeyword' character.
-"    https://github.com/tpope/vim-fireplace
 "    https://github.com/guns/vim-clojure-static
-"    https://bitbucket.org/kovisoft/slimv
-"    http://kovisoft.bitbucket.org/tutorial.html
+
+"transpose words, preserving punctuation
+nnoremap gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1\r,<CR>kgJ:nohl<CR>
 
 let g:sexp_enable_insert_mode_mappings = 0
 let g:sexp_mappings = {
@@ -827,10 +827,10 @@ let g:sexp_mappings = {
       \ 'sexp_splice_list':               '',
       \ 'sexp_raise_list':                'gsO',
       \ 'sexp_raise_element':             'gso',
-      \ 'sexp_swap_list_backward':        'gsF',
-      \ 'sexp_swap_list_forward':         'gsf',
-      \ 'sexp_swap_element_backward':     'gsE',
-      \ 'sexp_swap_element_forward':      'gse',
+      \ 'sexp_swap_list_backward':        'gsH',
+      \ 'sexp_swap_list_forward':         'gsL',
+      \ 'sexp_swap_element_backward':     'gsh',
+      \ 'sexp_swap_element_forward':      'gsl',
       \ 'sexp_emit_head_element':         'gsB',
       \ 'sexp_emit_tail_element':         'gsb',
       \ 'sexp_capture_prev_element':      'gsS',

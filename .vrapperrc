@@ -11,6 +11,8 @@ nnoremap \ ,
 nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
+nnoremap s /
+nnoremap S ?
 nnoremap ,bd :bdelete<cr>
 nnoremap gwc :bdelete<cr>
 nnoremap <c-d> <PageDown>

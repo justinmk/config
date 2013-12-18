@@ -9,6 +9,7 @@
 (setq ac-quick-help-height 30)
 (setq ac-show-menu-immediately-on-auto-complete t)
 
+(define-key ac-complete-mode-map (kbd "SPC") 'ac-complete)
 (dolist (mode '(vimrc-mode
                 html-mode stylus-mode
                 ;; shell-mode term-mode terminal-mode eshell-mode comint-mode
@@ -22,9 +23,5 @@
 
 (after 'linum
   (ac-linum-workaround))
-
-(defadvice ac-expand (before advice-for-ac-expand activate)
-  (when (yas-expand)
-    (ac-stop)))
 
 (provide 'init-auto-complete)
