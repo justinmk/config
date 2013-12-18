@@ -337,7 +337,7 @@ endif
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
-          \ | hi TODO          guifg=#00bcbc guibg=#ffff87 gui=bold
+          \ | hi TODO          guibg=#00acbc guifg=#ffff87 gui=bold,underline
           \ | endif
           \'
 
@@ -793,6 +793,8 @@ augroup END
 
 "transpose words, preserving punctuation
 nnoremap gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1\r,<CR>kgJ:nohl<CR>
+"transpose WORDs, preserving whitespace
+nnoremap gsT :s,\v(\S+)(\s*\W*%#\W*\s*)(\S+),\3\2\1\r,<CR>kgJ:nohl<CR>
 
 let g:sexp_enable_insert_mode_mappings = 0
 let g:sexp_mappings = {
