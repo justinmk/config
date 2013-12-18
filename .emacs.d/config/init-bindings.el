@@ -146,8 +146,8 @@
   ;; (define-key evil-normal-state-map (kbd "C-i") 'jumpc-jump-forward)
 
   (after 'company
-    (define-key evil-insert-state-map (kbd "TAB") 'my-company-tab)
-    (define-key evil-insert-state-map [tab] 'my-company-tab))
+    (define-key evil-insert-state-map (kbd "TAB") 'company-complete-common)
+    (define-key evil-insert-state-map [tab] 'company-complete-common))
   
   (after 'auto-complete
     (define-key evil-insert-state-map (kbd "C-SPC") 'auto-complete))
@@ -189,8 +189,8 @@
 
 
 (after 'company
-  (define-key company-active-map "\t" 'my-company-tab)
-  (define-key company-active-map [tab] 'my-company-tab)
+  (define-key company-active-map "\t" 'company-complete-common)
+  (define-key company-active-map [tab] 'company-complete-common)
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous))
 

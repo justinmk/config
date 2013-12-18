@@ -20,7 +20,6 @@
 (require 'init-editor)
 (require 'init-smartparens)
 
-; (require 'init-yasnippet)
 (require 'init-auto-complete)
 ; (require 'init-company)
 

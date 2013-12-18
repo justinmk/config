@@ -10,7 +10,6 @@
   (after 'undo-tree (diminish 'undo-tree-mode))
   (after 'auto-complete (diminish 'auto-complete-mode))
   (after 'projectile (diminish 'projectile-mode))
-  (after 'yasnippet (diminish 'yas-minor-mode))
   (after 'guide-key (diminish 'guide-key-mode))
   (after 'eldoc (diminish 'eldoc-mode))
   (after 'smartparens (diminish 'smartparens-mode))
@@ -28,6 +27,8 @@
 (global-hl-line-mode +1)
 
 (require-package 'color-theme-sanityinc-tomorrow)
-(load-theme 'sanityinc-tomorrow-bright)
+(require-package 'zenburn-theme)
+;; (load-theme 'sanityinc-tomorrow-bright)
+(load-theme 'zenburn)
 
 (provide 'init-eyecandy)

@@ -13,9 +13,4 @@
 
 (global-company-mode t)
 
-(defun my-company-tab ()
-  (interactive)
-  (when (null (yas-expand))
-    (company-complete-common)))
-
 (provide 'init-company)
