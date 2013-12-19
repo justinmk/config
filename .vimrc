@@ -994,7 +994,7 @@ set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.
 set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.dll
 
 if s:is_windows
-  set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\*
+  set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\*,*.pch,*.ipch,*.pdb,*.sdf
   let g:neocomplete#ctags_command = '~/bin/ctags.exe'
 endif
 
