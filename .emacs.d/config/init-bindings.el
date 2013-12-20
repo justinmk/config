@@ -42,7 +42,7 @@
       "v l" 'magit-log
       "v d" 'vc-diff
       "v m" 'git-messenger:popup-message
-      "V" (bind (term "vim")))
+      "V" (bind (term "vim"))))
 
   (after 'evil-matchit
     (define-key evil-normal-state-map "%" 'evilmi-jump-items))
