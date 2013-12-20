@@ -111,6 +111,7 @@ Bundle 'tpope/vim-speeddating'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
+Bundle 'AndrewRadev/linediff.vim'
 Bundle 'mbbill/undotree'
 " Bundle 'justinmk/TextObjectify'
 Bundle 'kana/vim-textobj-user'
@@ -444,9 +445,6 @@ endf
 
 " =============================================================================
 " normal mode
-" =============================================================================
-" Remove the Windows ^M - when the encodings gets messed up
-" nnoremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
@@ -474,7 +472,7 @@ cabbrev ]c <c-r>=expand("%:p:h")<cr>
 
 "==============================================================================
 " key mappings/bindings
-"==============================================================================
+
 " manage windows
 nnoremap gw <c-w>
 nnoremap gw<c-w> :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
@@ -518,6 +516,10 @@ nnoremap <M-g> :<C-u>pwd<cr>
 nnoremap >fn i<c-r>=expand('%:p')<cr> 
 " insert the current file directory
 nnoremap >fd i<c-r>=expand('%:p:h').'/'<cr>
+
+" version control
+xnoremap <leader>v  :Linediff<cr>
+nnoremap <leader>vd :Gdiff<cr>
 
 " execute/evaluate
 nmap g<enter> <Plug>(quickrun)
@@ -689,12 +691,6 @@ xnoremap / <esc>/\%V
 " select last inserted text
 nnoremap gV `[v`]
 
-"text bubbling: move text up/down with meta-[jk] 
-nnoremap <Down> m`:m+<cr>``
-nnoremap <Up>   m`:m-2<cr>``
-xnoremap <Down> :m'>+<cr>gv
-xnoremap <Up>   :m'<-2<cr>gv
-
 " replay @q macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
 " repeat last command for each line of a visual selection
@@ -763,6 +759,8 @@ augroup END
 " golang ======================================================================
 " code search:
 "    https://sourcegraph.com/code.google.com/p/go/tree
+" code navigation/inspection(!!!):
+"   https://github.com/AndrewRadev/go-oracle.vim
 " possible godoc solution    https://gist.github.com/mattn/569652
 "    Bundle 'thinca/vim-ref'
 "    let g:ref_use_vimproc = 1
@@ -1038,7 +1036,7 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 
 " search hidden directories:
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
-nmap g/f <c-p>
+nnoremap g/f :<C-u>Unite -no-split -buffer-name=functions function<cr>
 nnoremap g/b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
@@ -1048,7 +1046,7 @@ nmap g/t <m-t>
 nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
 imap     <m-y> <C-o><m-y>
 nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
-nnoremap <leader>ps :<C-u>Unite process -buffer-name=processes<CR>
+nnoremap g/ps :<C-u>Unite process -buffer-name=processes<CR>
 
 " Custom mappings for the unite buffer
 function! s:unite_settings()
