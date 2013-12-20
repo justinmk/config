@@ -2,7 +2,7 @@
 "                 http://files.kaoriya.net/vim/
 "                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
 " MacVim with homebrew:
-"   brew install macvim --with-cscope --with-lua --HEAD --override-system-vim
+"   brew install macvim --with-cscope --with-lua --with-luajit --HEAD --override-system-vim
 "   brew linkapps --system
 "
 " If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
@@ -994,7 +994,7 @@ set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.
 set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.dll
 
 if s:is_windows
-  set wildignore+=Windows\\*,Program\ Files\\*,Program\ Files\ \(x86\)\\*,*.pch,*.ipch,*.pdb,*.sdf
+  set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo
   let g:neocomplete#ctags_command = '~/bin/ctags.exe'
 endif
 
