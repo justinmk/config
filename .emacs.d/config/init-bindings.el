@@ -117,6 +117,29 @@
     (evil-define-key 'normal modemap
       (kbd "g s s") 'sp-forward-slurp-sexp))
 
+  ;; sexp motion
+  (global-unset-key (kbd "M-j"))
+  (global-unset-key (kbd "M-k"))
+  (global-unset-key (kbd "M-h"))
+  (global-unset-key (kbd "M-l"))
+  ;; (define-key evil-normal-state-map (kbd "M-j") 'sp-beginning-of-next-sexp)
+  (define-key evil-normal-state-map (kbd "M-j") (bind
+                                                 (evil-append 1)
+                                                 (sp-forward-sexp)
+                                                 (evil-normal-state)))
+  ;; (define-key evil-normal-state-map (kbd "M-k") 'sp-beginning-of-previous-sexp)
+  (define-key evil-normal-state-map (kbd "M-k") (bind
+                                                 (sp-backward-sexp)
+                                                 ))
+  (define-key evil-normal-state-map (kbd "M-h") (bind
+                                                 (evil-append 1)
+                                                 (sp-up-sexp)
+                                                 (evil-normal-state)))
+  (define-key evil-normal-state-map (kbd "M-l") (bind
+                                                 (evil-append 1)
+                                                 (sp-down-sexp)
+                                                 (evil-normal-state)))
+
   ;; emacs lisp
   (after 'elisp-slime-nav-autoloads
     (evil-define-key 'normal emacs-lisp-mode-map
