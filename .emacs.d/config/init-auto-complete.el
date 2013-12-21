@@ -10,15 +10,23 @@
 (setq ac-show-menu-immediately-on-auto-complete t)
 
 (define-key ac-complete-mode-map (kbd "SPC") 'ac-complete)
-(dolist (mode '(vimrc-mode
-                html-mode stylus-mode
-                ;; shell-mode term-mode terminal-mode eshell-mode comint-mode
-                ))
-  (add-to-list 'ac-modes mode))
+
+(eval-after-load "auto-complete"
+  (dolist (mode '(vimrc-mode
+                  html-mode stylus-mode cider-repl-mode
+
+                  ;; shell-mode term-mode terminal-mode eshell-mode comint-mode
+                  ))
+    (add-to-list 'ac-modes mode)))
 
 (custom-set-faces
  '(ac-selection-face ((t (:foreground "white" :background "DodgerBlue" )))))
 
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (ac-config-default)
 
 (after 'linum
