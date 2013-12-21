@@ -29,7 +29,9 @@
 (require-package 'color-theme-sanityinc-tomorrow)
 (require-package 'zenburn-theme)
 (require-package 'moe-theme)
-;; (load-theme 'sanityinc-tomorrow-bright)
-(load-theme 'moe-dark)
+
+(after 'moe-theme-autoloads
+  ;;(load-theme 'sanityinc-tomorrow-bright)
+  (load-theme 'moe-dark t))
 
 (provide 'init-eyecandy)
