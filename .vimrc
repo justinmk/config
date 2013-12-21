@@ -881,13 +881,8 @@ augroup vimrc_autocmd
 
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
 
-  if s:is_mac "highlight line/col after idle
-  autocmd CursorHold * setlocal cursorline cursorcolumn | silent! setlocal colorcolumn=80
-        \ | autocmd vimrc_autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn | au! vimrc_autocmd CursorMoved,CursorMovedI
-  else
-    autocmd BufEnter,WinEnter * setlocal cursorline | silent! setlocal colorcolumn=80
-    autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
-  endif
+  autocmd BufEnter,WinEnter * setlocal cursorline | silent! setlocal colorcolumn=80
+  autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
 
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
