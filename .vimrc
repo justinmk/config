@@ -1002,9 +1002,10 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 " TODO: https://github.com/bling/dotvim/blob/master/vimrc#L535
 "       https://github.com/Shougo/unite.vim/issues/347
-" see unite/custom.vim
-call unite#custom#source(
-            \ 'file_rec/async,file_rec,file_mru,directory_rec/async,directory_rec,directory_mru', 
+let s:unite_sources = 'file_rec/async,file_rec,file_mru,directory_rec/async,directory_rec,directory_mru'
+let g:unite_source_rec_max_cache_files = 5000
+call unite#custom#source(s:unite_sources, 'max_candidates', 5000)
+call unite#custom#source(s:unite_sources,
             \ 'converters',
             \ ['converter_relative_abbr', 'converter_file_directory'])
 
@@ -1022,7 +1023,7 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 " search hidden directories:
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
 nnoremap g/f :<C-u>Unite -no-split -buffer-name=functions function<cr>
-nnoremap g/b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
+nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
