@@ -1,5 +1,5 @@
 (defmacro bind (&rest commands)
-  "Conveniece macro which creates a lambda interactive command."
+  "Convenience macro which creates a lambda interactive command."
   `(lambda ()
      (interactive)
      ,@commands))
@@ -33,9 +33,6 @@
     (evil-leader/set-leader ",")
     (evil-leader/set-key
       "w" 'evil-write
-      "c" (bind
-           (evil-window-split)
-           (eshell))
       "C" 'customize-group
       "b d" 'kill-this-buffer
       "v s" 'magit-status
@@ -71,7 +68,7 @@
   (define-key evil-normal-state-map "g/" nil)
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
-  (define-key evil-normal-state-map (kbd "s") 'evil-search-forward) ;search lines
+  (define-key evil-normal-state-map (kbd "s") 'evil-search-forward)
   (define-key evil-normal-state-map (kbd "g / b") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
@@ -80,7 +77,7 @@
   (define-key evil-normal-state-map (kbd "] b") 'next-buffer)
   (define-key evil-normal-state-map (kbd "[ q") 'previous-error)
   (define-key evil-normal-state-map (kbd "] q") 'next-error)
-  
+
   (define-key evil-normal-state-map (kbd "g V") (kbd "` [ v ` ]"))
 
   (define-key evil-normal-state-map (kbd "C-p") nil)
@@ -91,7 +88,17 @@
   (define-key evil-normal-state-map (kbd "0") 'evil-first-non-blank)
   (define-key evil-normal-state-map (kbd "-") 'evil-last-non-blank)
   (define-key evil-normal-state-map (kbd "Y") (kbd "y$"))
-  
+
+  ;; (define-key evil-normal-state-map (kbd "c o") nil)
+  ;; (define-key evil-normal-state-map (kbd "c o w")
+  ;;   (bind
+  ;;    (toggle-truncate-lines)))
+
+  (define-key evil-normal-state-map (kbd "g o t")
+    (bind
+     (evil-window-split)
+     (eshell)))
+
   ;; file management
   (define-key evil-normal-state-map "^" nil)
   (define-key evil-normal-state-map (kbd "^")
@@ -182,9 +189,14 @@
 
   (after 'magit
     (evil-add-hjkl-bindings magit-status-mode-map 'emacs
-      "K" 'magit-discard-item
       "l" 'magit-key-mode-popup-logging
-      "h" 'magit-toggle-diff-refine-hunk))
+      "h" 'magit-toggle-diff-refine-hunk)
+    (evil-define-key 'normal magit-status-mode-map
+      (kbd "[ c") 'magit-goto-previous-section
+      (kbd "] c") 'magit-goto-next-section))
+  (evil-define-key 'normal diff-mode-map
+    (kbd "[ c") 'diff-hunk-prev
+    (kbd "] c") 'diff-hunk-next)
 
   ;; minibuffer keymaps
   ;;    esc key

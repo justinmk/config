@@ -14,7 +14,7 @@
       (git-gutter+-toggle-fringe))
   (require-package 'git-gutter+))
 
-(after 'git-gutter+
+(after 'git-gutter+-autoloads
   (global-git-gutter+-mode))
 
 (provide 'init-git)
