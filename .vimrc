@@ -620,26 +620,6 @@ nnoremap <leader>d "_d
 xnoremap <leader>d "_d
 nnoremap <leader>D "_D
 
-" flash crosshairs to locate the cursor
-func! s:cursorping()
-  let orig_cursorline = &cursorline
-
-  for i in range(1, 2)
-    setlocal cursorline cursorcolumn
-    redraw
-    sleep 50m
-    setlocal nocursorline nocursorcolumn
-    redraw
-    sleep 50m
-  endfor
-
-  let &cursorline = orig_cursorline
-endf
-
-if s:is_gui || !s:is_mac "broken in Terminal.app
-  nnoremap <silent> <esc> :call <sid>cursorping()<CR>
-endif
-
 func! s:replace_without_yank(type)
   let sel_save = &selection
   let l:col = col('.')
@@ -718,6 +698,16 @@ xnoremap Q @@
 
 nnoremap ZZ :<c-u>qa<cr>
 nnoremap ZQ :<c-u>qa!<cr>
+
+func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without moving the cursor
+  let pos = [line(".") + a:line_offset, col(".") + a:col_offset]
+  exe "norm ".a:keyseq
+  call cursor(pos)
+endf
+
+inoremap ,o <c-o>:<c-u>call <sid>do_in_place("o", 0, 0)<cr>
+inoremap ,O <c-o>:<c-u>call <sid>do_in_place("O", 1, 0)<cr>
+
 
 func! ReadExCommandOutput(cmd)
   redir => l:message
