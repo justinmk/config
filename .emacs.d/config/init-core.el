@@ -108,8 +108,13 @@
 ;; defer font-lock (improves scrolling speed, esp. for large files)
 (setq jit-lock-defer-time 0.05)
 
-;; highlight trailing whitespace in files _only_
-(add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
+(add-hook 'find-file-hook
+          (lambda ()
+            ;; disable word-wrap by default
+            (setq truncate-lines t)
+            (setq truncate-partial-width-windows nil)
+            ;; highlight trailing whitespace in files _only_
+            (setq show-trailing-whitespace t)))
 
 ;; disable expensive features for very large files
 ;;     http://stackoverflow.com/a/18317181/152142
