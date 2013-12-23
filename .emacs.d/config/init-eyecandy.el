@@ -26,12 +26,21 @@
 
 (global-hl-line-mode +1)
 
-(require-package 'color-theme-sanityinc-tomorrow)
-(require-package 'zenburn-theme)
+;; force sRGB on Mac OS X   http://www.reddit.com/r/emacs/comments/1thijn/
+(setq ns-use-srgb-colorspace t)
+
+;; (require-package 'color-theme-sanityinc-tomorrow)
+;; (require-package 'zenburn-theme)
 (require-package 'moe-theme)
 
 (after 'moe-theme-autoloads
-  ;;(load-theme 'sanityinc-tomorrow-bright)
+  ;; (load-theme 'sanityinc-tomorrow-night)
   (load-theme 'moe-dark t))
+
+;; fight the "low contrast" fad.
+(set-face-attribute 'default nil
+                    :background "#222222"
+                    :foreground "white")
+
 
 (provide 'init-eyecandy)

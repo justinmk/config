@@ -32,6 +32,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                            (buffer-substring (region-beginning) (region-end))
                          (read-string "Search Google: "))))))
 
+(defun my-show-current-active-minor-modes ()
+  "List the current active minor modes."
+  (interactive)
+  (print (mapcar (lambda(x)(car(rassq x minor-mode-map-alist)))(current-minor-mode-maps))))
+
 (defun my-eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)

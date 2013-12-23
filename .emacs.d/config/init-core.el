@@ -88,6 +88,9 @@
       mark-ring-max 64
       global-mark-ring-max 128)
 
+;; highlight entire sexp instead of just the parens.
+(show-paren-mode t)
+(setq show-paren-style 'expression)
 
 (which-function-mode t)
 (global-visual-line-mode)

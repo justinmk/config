@@ -1,3 +1,7 @@
+(require 'evil)
+(require 'clojure-mode)
+(require 'key-chord)
+
 (defmacro bind (&rest commands)
   "Convenience macro which creates a lambda interactive command."
   `(lambda ()
@@ -69,7 +73,7 @@
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
   (define-key evil-normal-state-map (kbd "s") 'evil-search-forward)
-  (define-key evil-normal-state-map (kbd "g / b") 'helm-buffers-list) ;'switch-to-buffer
+  (define-key evil-normal-state-map (kbd "g l") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
   (define-key evil-normal-state-map (kbd "] SPC") (bind (evil-insert-newline-below) (forward-line -1)))
@@ -120,7 +124,7 @@
   (define-key evil-normal-state-map (kbd "g s B") 'sp-backward-barf-sexp)
   (define-key evil-normal-state-map (kbd "g s t") 'transpose-sexps)
   ;; for lisps, use non-hybrid commands.
-  (dolist (modemap '(emacs-lisp-mode-map clojure-mode-map lisp-mode-map))
+  (dolist (modemap '(clojure-mode-map lisp-mode-shared-map elisp-slime-nav-mode-map emacs-lisp-mode-map lisp-interaction-mode-map lisp-mode-map))
     (evil-define-key 'normal modemap
       (kbd "g s s") 'sp-forward-slurp-sexp))
 
