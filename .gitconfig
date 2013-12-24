@@ -10,6 +10,8 @@
   gcwarning = false
 [branch]
   autosetuprebase = always
+[pull]
+  rebase = true
 [push]
   # default in Git ≥ 2.0
   default = simple
