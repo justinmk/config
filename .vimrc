@@ -781,9 +781,9 @@ augroup END
 "    https://github.com/guns/vim-clojure-static
 
 "transpose words, preserving punctuation
-nnoremap gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1\r,<CR>kgJ:nohl<CR>
+nnoremap <silent> gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1,<bar>nohl<CR>
 "transpose WORDs, preserving whitespace
-nnoremap gsT :s,\v(\S+)(\s*\W*%#\W*\s*)(\S+),\3\2\1\r,<CR>kgJ:nohl<CR>
+nnoremap <silent> gsT :s,\v(\S+)(\s*\S*%#\S*\s*)(\S+),\3\2\1,<bar>nohl<CR>
 
 let g:sexp_enable_insert_mode_mappings = 0
 let g:sexp_mappings = {
