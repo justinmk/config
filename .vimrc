@@ -384,9 +384,10 @@ command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis |
 
 func! TrimTrailingWhitespace()
   let _s=@/
-  let winview=winsaveview()
+  let _w=winsaveview()
   %s/\s\+$//ge
-  call winrestview(winview)
+  call winrestview(_w)
+  call histdel("/", histnr("/"))
   let @/=_s
 endfunc
 
