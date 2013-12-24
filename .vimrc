@@ -332,8 +332,8 @@ endif
           \ | hi PmenuSbar     guibg=#857f78
           \ | hi PmenuThumb    guifg=#242321
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
-          \ | hi IncSearch     guifg=white guibg=LimeGreen ctermfg=black ctermbg=154 gui=bold cterm=NONE
-          \ | hi Search        guifg=#ffffff guibg=#ff9933 gui=NONE  ctermfg=255  ctermbg=208  cterm=NONE
+          \ | hi IncSearch     guifg=white   guibg=LimeGreen         ctermfg=NONE ctermbg=154 gui=bold cterm=NONE
+          \ | hi Search        guifg=white   guibg=#FF870A gui=NONE  ctermfg=255  ctermbg=208  cterm=NONE
           \ | hi DiffAdd       guifg=#ffffff guibg=#006600 gui=NONE  ctermfg=231  ctermbg=22   cterm=NONE 
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
@@ -972,19 +972,15 @@ if s:lua_patch885
 endif
 
 set wildmode=full
-set wildignore+=tags,*.o,*.obj,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*.so,*.swp,*.zip,*.exe,*.jar,opt/*,gwt-unitCache/*,*.cache.html
+set wildignore+=tags,*.o,*.obj,*.dll,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
 
 " Files with these suffixes get a lower priority when matching a wildcard
-set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.dll
+set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 
 if s:is_windows
-  set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo
+  set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*\\AppData\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo,*.ntuser,*.blf,*.dat,*.regtrans-ms
   let g:neocomplete#ctags_command = '~/bin/ctags.exe'
 endif
-
-" let g:ctrlp_custom_ignore = {
-"   \ 'dir':  '\v[\/]\.(git|hg|svn|cache)$|AppData|eclipse_workspace|grimoire-remote',
-"   \ 'file': '\v\~$|\.(exe|so|dll|pdf|ntuser|blf|dat|regtrans-ms|o|swp|pyc|wav|mp3|ogg|blend)$' }
 
 " important!: semicolon means 'walk up until found'
 set tags^=./tags;,tags;,~/.vimtags
@@ -1013,7 +1009,7 @@ call unite#custom#source(s:unite_sources,
 " extend default ignore pattern for file_rec source (same as directory_rec)
 let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] .
     \ '\|\.\%(jar\|jpg\|gif\|png\)$' .
-    \ '\|opt\|Downloads\|eclipse_workspace\|gwt-unitCache'
+    \ '\|opt\|Downloads\|eclipse_workspace\|gwt-unitCache\|grimoire-remote'
 if s:is_windows
     let s:file_rec_ignore .= '\|AppData'
 elseif s:is_mac
