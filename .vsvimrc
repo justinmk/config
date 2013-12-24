@@ -43,10 +43,10 @@ xnoremap - $
 nnoremap 0 ^
 nnoremap - $
 
-nnoremap <Down> :m+1<cr>
-nnoremap <Up>   :m-2<cr>j
-xnoremap <Down> :m'>+1<cr>gv
-xnoremap <Up>   :m'<-2<cr>jgv
+nnoremap ]e :m+1<cr>
+nnoremap [e :m-2<cr>j
+xnoremap ]e :m'>+1<cr>gv
+xnoremap [e :m'<-2<cr>jgv
 
 nnoremap Y y$
 
