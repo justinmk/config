@@ -1038,9 +1038,6 @@ function! s:unite_settings()
   silent! unmap! <c-g>
   imap <buffer> <c-a> <Plug>(unite_choose_action)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
-  " refresh the cache
-  nmap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
-  imap <buffer> <nowait> <F5>  <Plug>(unite_redraw)
   " change directories in unite
   nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart)
 endfunction
