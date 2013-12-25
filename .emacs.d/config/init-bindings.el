@@ -1,6 +1,7 @@
 (require 'evil)
 (require 'clojure-mode)
 (require 'key-chord)
+(require 'speedbar)
 
 (defmacro bind (&rest commands)
   "Convenience macro which creates a lambda interactive command."
@@ -151,25 +152,32 @@
                                                  (sp-down-sexp)
                                                  (evil-normal-state)))
 
+  ;; expression evaluation
+  (define-key evil-normal-state-map (kbd "RET") nil)
+  (define-key evil-visual-state-map (kbd "RET") nil)
+
   ;; emacs lisp
   (after 'elisp-slime-nav-autoloads
     (evil-define-key 'normal emacs-lisp-mode-map
       (kbd "g d") 'elisp-slime-nav-find-elisp-thing-at-point
       (kbd "K")   'elisp-slime-nav-describe-elisp-thing-at-point))
   (evil-define-key 'normal emacs-lisp-mode-map
-    (kbd "g s RET") 'eval-last-sexp
-    (kbd "g RET") 'eval-buffer)
+    (kbd "RET") 'eval-last-sexp
+    (kbd "g X") 'eval-buffer)
   (evil-define-key 'visual emacs-lisp-mode-map
-    (kbd "g RET") 'eval-region)
+    (kbd "RET") 'eval-region)
 
   ;; clojure / cider
   (evil-define-key 'normal clojure-mode-map
     (kbd "g d") 'cider-jump
     (kbd "K") 'cider-doc
-    (kbd "g s RET") 'cider-eval-last-sexp
-    (kbd "g RET") 'cider-eval-buffer)
+    (kbd "g K") 'cider-javadoc
+    (kbd "RET") 'cider-eval-last-sexp
+    (kbd "g X") 'cider-eval-buffer)
   (evil-define-key 'visual clojure-mode-map
-    (kbd "g RET") 'cider-eval-region)
+    (kbd "RET") 'cider-eval-region)
+  (evil-define-key 'normal cider-repl-mode-map (kbd "g K") 'cider-javadoc)
+  (evil-define-key 'normal cider-mode-map (kbd "g K") 'cider-javadoc)
   
   ;; proper jump lists
   ;; (require-package 'jumpc)
