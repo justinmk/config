@@ -1,7 +1,11 @@
 (require-package 'smart-mode-line)
 (require 'smart-mode-line)
+(require-package 'pos-tip)
+(require 'pos-tip)
+
 (setq sml/theme 'dark)
 (sml/setup)
+
 
 
 (require-package 'diminish)
@@ -21,8 +25,12 @@
 
 (pcase (window-system)
   (`ns (set-face-attribute 'default nil :height 135))
-  (`w32 (set-face-attribute 'default nil
-                        :family "Consolas" :height 110)))
+  (`w32 (progn
+          ;;may be needed on Windows:
+          (pos-tip-w32-max-width-height)   ; Maximize frame temporarily
+          ;(pos-tip-w32-max-width-height t) ; Keep frame maximized
+          (set-face-attribute 'default nil
+                        :family "Consolas" :height 110))))
 
 (global-hl-line-mode +1)
 
