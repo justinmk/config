@@ -515,7 +515,7 @@ nnoremap <C-q> :botright copen<cr>
 " nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
 nmap ^ <Plug>VinegarUp
 " set working directory to the current buffer's directory
-nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
+nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
 " insert the current file path
@@ -1029,6 +1029,7 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 " search hidden directories:
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
 nnoremap g/f :<C-u>Unite -no-split -buffer-name=functions function<cr>
+nnoremap g/l :<C-u>Unite -no-split -buffer-name=lines line<cr>
 nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
@@ -1037,7 +1038,7 @@ nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag tag/include<cr>
 nmap g/t <m-t>
 nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
 imap     <m-y> <C-o><m-y>
-nnoremap <leader>cd :<C-u>Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
+nnoremap g/d  :<C-u>Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
 nnoremap g/ps :<C-u>Unite process -buffer-name=processes<CR>
 
 " Custom mappings for the unite buffer
