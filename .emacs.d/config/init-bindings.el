@@ -134,23 +134,20 @@
   (global-unset-key (kbd "M-k"))
   (global-unset-key (kbd "M-h"))
   (global-unset-key (kbd "M-l"))
-  ;; (define-key evil-normal-state-map (kbd "M-j") 'sp-beginning-of-next-sexp)
+  (define-key evil-normal-state-map (kbd ")") (bind
+                                                 (evil-append 1)
+                                                 (sp-beginning-of-next-sexp)
+                                                 (evil-normal-state)))
+  (define-key evil-normal-state-map (kbd "(") (bind
+                                                 (evil-append 1)
+                                                 (sp-beginning-of-previous-sexp)
+                                                 (evil-normal-state)))
   (define-key evil-normal-state-map (kbd "M-j") (bind
-                                                 (evil-append 1)
-                                                 (sp-forward-sexp)
-                                                 (evil-normal-state)))
-  ;; (define-key evil-normal-state-map (kbd "M-k") 'sp-beginning-of-previous-sexp)
-  (define-key evil-normal-state-map (kbd "M-k") (bind
-                                                 (sp-backward-sexp)
-                                                 ))
-  (define-key evil-normal-state-map (kbd "M-h") (bind
-                                                 (evil-append 1)
-                                                 (sp-up-sexp)
-                                                 (evil-normal-state)))
-  (define-key evil-normal-state-map (kbd "M-l") (bind
                                                  (evil-append 1)
                                                  (sp-down-sexp)
                                                  (evil-normal-state)))
+  (define-key evil-normal-state-map (kbd "M-k") (bind
+                                                 (sp-backward-up-sexp)))
 
   ;; expression evaluation
   (define-key evil-normal-state-map (kbd "RET") nil)

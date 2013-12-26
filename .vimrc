@@ -786,6 +786,11 @@ nnoremap <silent> gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1,<bar>nohl<CR>
 "transpose WORDs, preserving whitespace
 nnoremap <silent> gsT :s,\v(\S+)(\s*\S*%#\S*\s*)(\S+),\3\2\1,<bar>nohl<CR>
 
+"cf. emacs 'sp-down-sexp'
+nmap <M-j> l<Plug>(sexp_move_to_next_element_head)
+"cf. emacs 'sp-up-sexp'
+nmap <M-k> h<Plug>(sexp_move_to_prev_element_head)
+
 let g:sexp_enable_insert_mode_mappings = 0
 let g:sexp_mappings = {
       \ 'sexp_outer_list':                'af',
