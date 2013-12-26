@@ -194,7 +194,8 @@ let g:dbext_default_history_max_entry = 10*1024
 let g:EclimBufferTabTracking = 0 "legacy version
 let g:EclimBuffersTabTracking = 0
 
-let g:SignatureEnableDefaultMappings = 2
+let g:SignatureMap = { 'GotoNextLineAlpha': "", 'GotoPrevLineAlpha': "", 'GotoNextSpotAlpha': "", 'GotoPrevSpotAlpha': "",
+                     \ 'GotoNextLineByPos': "", 'GotoPrevLineByPos': "", 'GotoNextSpotByPos': "]'", 'GotoPrevSpotByPos': "['", }
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
