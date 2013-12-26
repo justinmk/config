@@ -117,6 +117,8 @@ Bundle 'mbbill/undotree'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 Bundle 'guns/vim-sexp'
+Bundle 'guns/vim-clojure-static'
+Bundle 'tpope/vim-fireplace'
 Bundle 'gaving/vim-textobj-argument'
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
@@ -514,17 +516,17 @@ nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
 " insert the current file path
-nnoremap >fn i<c-r>=expand('%:p')<cr> 
+nnoremap <leader>fn i<c-r>=expand('%:p')<cr> 
 " insert the current file directory
-nnoremap >fd i<c-r>=expand('%:p:h').'/'<cr>
+nnoremap <leader>fd i<c-r>=expand('%:p:h').'/'<cr>
 
 " version control
 xnoremap <leader>v  :Linediff<cr>
 nnoremap <leader>vd :Gdiff<cr>
 
 " execute/evaluate
-nmap g<enter> <Plug>(quickrun)
-xmap g<enter> <Plug>(quickrun)
+nmap gX      <Plug>(quickrun)
+xmap <enter> <Plug>(quickrun)
 
 " filter
 " nnoremap c<cr>jj    :%!python -m json.tool<cr>
@@ -778,8 +780,6 @@ augroup vimrc_golang
 augroup END
 
 " clojure/lisp ================================================================
-" When the 'lisp' option is on, the '-' character is considered a 'iskeyword' character.
-"    https://github.com/guns/vim-clojure-static
 
 "transpose words, preserving punctuation
 nnoremap <silent> gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1,<bar>nohl<CR>
@@ -792,41 +792,41 @@ let g:sexp_mappings = {
       \ 'sexp_inner_list':                'if',
       \ 'sexp_outer_top_list':            'aF',
       \ 'sexp_inner_top_list':            'iF',
-      \ 'sexp_outer_string':              '',
-      \ 'sexp_inner_string':              '',
       \ 'sexp_outer_element':             'ae',
       \ 'sexp_inner_element':             'ie',
-      \ 'sexp_move_to_prev_bracket':      '(',
-      \ 'sexp_move_to_next_bracket':      ')',
-      \ 'sexp_move_to_prev_element_head': '<M-k>',
-      \ 'sexp_move_to_next_element_head': '<M-j>',
-      \ 'sexp_move_to_prev_element_tail': '',
-      \ 'sexp_move_to_next_element_tail': '',
-      \ 'sexp_round_head_wrap_list':      'gs(',
-      \ 'sexp_round_tail_wrap_list':      'gs)',
-      \ 'sexp_square_head_wrap_list':     'gs[',
-      \ 'sexp_square_tail_wrap_list':     'gs]',
-      \ 'sexp_curly_head_wrap_list':      'gs{',
-      \ 'sexp_curly_tail_wrap_list':      'gs}',
-      \ 'sexp_round_head_wrap_element':   'z(',
-      \ 'sexp_round_tail_wrap_element':   'z)',
-      \ 'sexp_square_head_wrap_element':  'z[',
-      \ 'sexp_square_tail_wrap_element':  'z]',
-      \ 'sexp_curly_head_wrap_element':   'z{',
-      \ 'sexp_curly_tail_wrap_element':   'z}',
-      \ 'sexp_insert_at_list_head':       'gsI',
-      \ 'sexp_insert_at_list_tail':       'gsA',
-      \ 'sexp_splice_list':               '',
+      \ 'sexp_move_to_prev_element_head': '(',
+      \ 'sexp_move_to_next_element_head': ')',
+      \ 'sexp_round_head_wrap_list':      'gS(',
+      \ 'sexp_round_tail_wrap_list':      'gS)',
+      \ 'sexp_square_head_wrap_list':     'gS[',
+      \ 'sexp_square_tail_wrap_list':     'gS]',
+      \ 'sexp_curly_head_wrap_list':      'gS{',
+      \ 'sexp_curly_tail_wrap_list':      'gS}',
+      \ 'sexp_round_head_wrap_element':   'gs(',
+      \ 'sexp_round_tail_wrap_element':   'gs)',
+      \ 'sexp_square_head_wrap_element':  'gs[',
+      \ 'sexp_square_tail_wrap_element':  'gs]',
+      \ 'sexp_curly_head_wrap_element':   'gs{',
+      \ 'sexp_curly_tail_wrap_element':   'gs}',
+      \ 'sexp_insert_at_list_head':       '<I',
+      \ 'sexp_insert_at_list_tail':       '>I',
+      \ 'sexp_splice_list':               'dsf',
       \ 'sexp_raise_list':                'gsO',
       \ 'sexp_raise_element':             'gso',
-      \ 'sexp_swap_list_backward':        'gsH',
-      \ 'sexp_swap_list_forward':         'gsL',
-      \ 'sexp_swap_element_backward':     'gsh',
-      \ 'sexp_swap_element_forward':      'gsl',
+      \ 'sexp_swap_list_backward':        '<f',
+      \ 'sexp_swap_list_forward':         '>f',
+      \ 'sexp_swap_element_backward':     '<e',
+      \ 'sexp_swap_element_forward':      '>e',
       \ 'sexp_emit_head_element':         'gsB',
       \ 'sexp_emit_tail_element':         'gsb',
       \ 'sexp_capture_prev_element':      'gsS',
       \ 'sexp_capture_next_element':      'gss',
+      \ 'sexp_move_to_prev_bracket':      '',
+      \ 'sexp_move_to_next_bracket':      '',
+      \ 'sexp_outer_string':              '',
+      \ 'sexp_inner_string':              '',
+      \ 'sexp_move_to_prev_element_tail': '',
+      \ 'sexp_move_to_next_element_tail': '',
       \ }
 
 " lua =========================================================================
