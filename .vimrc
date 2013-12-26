@@ -108,6 +108,7 @@ Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-speeddating'
+Bundle 'tpope/vim-vinegar'
 Bundle 'kshenoy/vim-signature'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'zhaocai/DirDiff.vim'
@@ -510,7 +511,8 @@ nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 nnoremap <C-q> :botright copen<cr>
 
 " working with projects/directories
-nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
+" nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
+nmap ^ <Plug>VinegarUp
 " set working directory to the current buffer's directory
 nnoremap <leader>cw :cd %:p:h<bar>pwd<cr>
 " show the current working directory
