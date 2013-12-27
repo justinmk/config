@@ -9,6 +9,13 @@
 "    set runtimepath+=/path/to/.vim
 "    source /path/to/.vimrc
 "==============================================================================
+" Windows Registry Editor Version 5.00
+"
+" [HKEY_CLASSES_ROOT\*\shell\Edit with Vim]
+"
+" [HKEY_CLASSES_ROOT\*\shell\Edit with Vim\command]
+" @="C:\\opt\\vim\\gvim.exe \"%L\""
+"==============================================================================
 
 let s:starting = has('vim_starting')
 if s:starting
@@ -1127,7 +1134,7 @@ if s:is_gui
     set viminfo+=n~/.viminfo_session
 
     " set viminfo+=% "remember buffer list
-    autocmd VimEnter * :call LoadSession()
+    autocmd VimEnter * nested call LoadSession()
   endif
 endif
 
