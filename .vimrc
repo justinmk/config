@@ -186,6 +186,7 @@ omap <silent> + <Plug>(vertical_move_down)
 omap <silent> _ <Plug>(vertical_move_up)
 
 let g:signify_vcs_list = [ 'git' ]
+let g:linediff_buffer_type = 'scratch'
 
 let g:dbext_default_history_file = expand('~/.dbext_sql_history')
 let g:dbext_default_history_size = 1000
