@@ -36,6 +36,8 @@
 (require 'init-lisp)
 (require 'init-markdown)
 
+(require-package 'ace-jump-mode)
+
 (require 'init-evil)
 (require 'init-bindings)
 

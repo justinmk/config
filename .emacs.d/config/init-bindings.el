@@ -31,6 +31,13 @@
   (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
   (define-key evil-normal-state-map (kbd "ZZ") 'evil-quit-all)
 
+  (define-key evil-normal-state-map (kbd "g /") nil)
+  (define-key evil-normal-state-map (kbd "g w") nil)
+  (define-key evil-motion-state-map (kbd "C-f") nil)
+  (define-key evil-normal-state-map (kbd "RET") nil)
+  (define-key evil-visual-state-map (kbd "RET") nil)
+  (define-key evil-normal-state-map (kbd "C-p") nil)
+
   (global-unset-key (kbd "C-l"))
   (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
 
@@ -64,16 +71,13 @@
     (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
     (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
     (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring)
-    (define-key evil-motion-state-map (kbd "C-f") nil)
     (global-set-key (kbd "C-f") 'helm-swoop))
 
-  (define-key evil-normal-state-map "gw" nil)
-  (define-key evil-motion-state-map "gw" 'evil-window-map)
+  (define-key evil-motion-state-map (kbd "g w") 'evil-window-map)
 
-  (define-key evil-normal-state-map "g/" nil)
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
-  (define-key evil-normal-state-map (kbd "s") 'evil-search-forward)
+  (define-key evil-normal-state-map (kbd "s") 'evil-ace-jump-char-mode)
   (define-key evil-normal-state-map (kbd "g l") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
@@ -85,7 +89,6 @@
 
   (define-key evil-normal-state-map (kbd "g V") (kbd "` [ v ` ]"))
 
-  (define-key evil-normal-state-map (kbd "C-p") nil)
   (define-key evil-normal-state-map (kbd "C-q") 'universal-argument)
 
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
@@ -119,6 +122,22 @@
   ;; sexp manipulation
   (define-key evil-normal-state-map (kbd "g RET") nil)
   (define-key evil-normal-state-map "gs" nil)
+  (dolist (pair '("(" "[" "{"))
+    (define-key evil-normal-state-map (kbd (concat "g s " pair))
+      `(lambda ()
+        (interactive)
+        (sp-select-next-thing)
+        (sp-wrap-with-pair ,pair)
+        (sp-beginning-of-sexp)
+        (evil-insert 1)
+        (insert " ")
+        (left-char 1))))
+  (define-key evil-normal-state-map (kbd "g s )")
+    (bind (sp-select-next-thing) (sp-wrap-with-pair "(") (sp-end-of-sexp 1) (evil-insert 1)))
+  (define-key evil-normal-state-map (kbd "g s ]")
+    (bind (sp-select-next-thing) (sp-wrap-with-pair "[") (sp-end-of-sexp 1) (evil-insert 1)))
+  (define-key evil-normal-state-map (kbd "g s }")
+    (bind (sp-select-next-thing) (sp-wrap-with-pair "{") (sp-end-of-sexp 1) (evil-insert 1)))
   (define-key evil-normal-state-map (kbd "g s s") 'sp-slurp-hybrid-sexp)
   (define-key evil-normal-state-map (kbd "g s S") 'sp-backward-slurp-sexp)
   (define-key evil-normal-state-map (kbd "g s b") 'sp-forward-barf-sexp)
@@ -150,8 +169,6 @@
                                                  (sp-backward-up-sexp)))
 
   ;; expression evaluation
-  (define-key evil-normal-state-map (kbd "RET") nil)
-  (define-key evil-visual-state-map (kbd "RET") nil)
 
   ;; emacs lisp
   (after 'elisp-slime-nav-autoloads

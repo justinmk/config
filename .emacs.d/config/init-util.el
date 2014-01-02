@@ -12,6 +12,17 @@
       (package-refresh-contents))
     (package-install package)))
 
+(defun describe-thing-in-popup ()
+  (interactive)
+  (let* ((thing (symbol-at-point))
+         (help-xref-following t)
+         (description (with-temp-buffer
+                        (help-mode)
+                        (help-xref-interned thing)
+                        (buffer-string))))
+    (pos-tip-show description
+                  :timeout -1)))
+
 (defun my-minibuffer-keyboard-quit ()
   "Abort recursive edit.
 In Delete Selection mode, if the mark is active, just deactivate it;
