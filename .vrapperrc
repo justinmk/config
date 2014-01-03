@@ -41,6 +41,12 @@ vnoremap [e :m<space>.-2<cr>kgv
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
 " https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
 
+" https://github.com/vrapper/vrapper/issues/352
+eclipseaction eclipsenextmember org.eclipse.jdt.ui.edit.text.java.goto.next.member
+nnoremap ]] :eclipsenextmember<cr>
+eclipseaction eclipseprevmember org.eclipse.jdt.ui.edit.text.java.goto.previous.member
+nnoremap [[ :eclipseprevmember<cr>
+
 " sexp motion
 " nice try but... no.
 " eclipseaction eclipsenextelement org.eclipse.jdt.ui.edit.text.java.select.next
