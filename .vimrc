@@ -520,8 +520,17 @@ nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 nnoremap <C-q> :botright copen<cr>
 
 " working with projects/directories
-" nnoremap ^ :exec get(w:, "netrw_winnr", 0) ? 'Rexplore' : 'Vexplore'<cr>
-nmap ^ <Plug>VinegarUp
+func! s:focus_netrw_window()
+  " find existing netrw window, if any
+  let w = filter(range(1, winnr('$')), 'getwinvar(v:val, "netrw_winnr")')
+  if len(w) > 0 "switch to the existing netrw window
+    exe w[0].'wincmd W'
+  else
+    if exists(":Lexplore") | Lexplore | else | Vexplore | endif
+    40wincmd |
+  endif
+endf
+nnoremap ^ :call <sid>focus_netrw_window()<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 " show the current working directory
@@ -1151,8 +1160,10 @@ if s:is_cygwin
   let &t_te.="\e[0 q"
 endif
 
-" tree view / disable until issue is fixed: https://code.google.com/p/vim/issues/detail?id=140
-" let g:netrw_liststyle = 3
+" tree view / only enable for later versions of netrw (which have Lexplore)
+if exists(":Lexplore")
+let g:netrw_liststyle = 3
+endif
 let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
