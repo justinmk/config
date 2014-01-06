@@ -183,6 +183,13 @@ endf
 " general settings / options
 "==============================================================================
 let g:sneak#streak = 1
+let g:sneak#use_ic_scs = 1
+nnoremap f :Sneak!         1<cr>
+nnoremap F :SneakBackward! 1<cr>
+xnoremap f :<c-u>SneakV!         1<cr>
+xnoremap F :<c-u>SneakVBackward! 1<cr>
+onoremap f :Sneak!         1<cr>
+onoremap F :SneakBackward! 1<cr>
 
 let g:vertical_move_default_mapping = 0
 nmap <silent> + <Plug>(vertical_move_down)
