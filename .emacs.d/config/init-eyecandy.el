@@ -22,6 +22,11 @@
   (after 'elisp-slime-nav (diminish 'elisp-slime-nav-mode))
   )
 
+(custom-set-faces
+ ;; init file should contain only one custom-set-faces. If there is more than one, they won't work right.
+ '(ac-selection-face ((t (:foreground "white" :background "DodgerBlue"))))
+ '(cursor ((t (:background "chartreuse"))))
+ '(vertical-border ((t (:background "#8a8a8a" :foreground "lemon chiffon")))))
 
 (pcase (window-system)
   (`ns (set-face-attribute 'default nil :height 135))

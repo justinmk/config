@@ -78,6 +78,7 @@
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
   (define-key evil-normal-state-map (kbd "s") 'evil-ace-jump-char-mode)
+  (define-key evil-normal-state-map (kbd "S") 'evil-ace-jump-char-mode)
   (define-key evil-normal-state-map (kbd "g l") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
@@ -114,10 +115,12 @@
      (sr-speedbar-open)
      (sr-speedbar-refresh)
      (sr-speedbar-select-window)))
-  (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
-  (define-key evil-visual-state-map (kbd "g x") 'my-google)
   ;; unbind default 'g' binding in speedbar
   (define-key speedbar-mode-map (kbd "g") nil)
+  (evil-define-key 'normal speedbar-mode-map
+    (kbd "-") 'speedbar-up-directory)
+  (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
+  (define-key evil-visual-state-map (kbd "g x") 'my-google)
 
   ;; sexp manipulation
   (define-key evil-normal-state-map (kbd "g RET") nil)
