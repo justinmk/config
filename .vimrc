@@ -529,9 +529,9 @@ nnoremap gwC :tabclose<cr>
 nnoremap gwT :wincmd T<cr>
 
 " manage buffers
-nnoremap <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
-nnoremap <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
-nnoremap <leader>bn  :<c-u>enew<cr>
+nnoremap <silent> <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
+nnoremap <silent> <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
+nnoremap <silent> <leader>bn  :<c-u>enew<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
@@ -543,19 +543,20 @@ func! s:focus_netrw_window()
   " find existing netrw window, if any
   let w = filter(range(1, winnr('$')), 'getwinvar(v:val, "netrw_winnr")')
   if len(w) > 0 "switch to the existing netrw window
-    exe w[0].'wincmd W'
+    exe w[0] 'wincmd W'
   else
-    if exists(":Lexplore") | Lexplore | else | Vexplore | endif
-    40wincmd |
+    Vexplore
   endif
+  40 wincmd |
+  setlocal winfixwidth
 endf
-nnoremap ^ :call <sid>focus_netrw_window()<cr>
+nnoremap <silent> ^ :call <sid>focus_netrw_window()<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
 " insert the current file path
-nnoremap <leader>fn i<c-r>=<sid>expand('%:p')<cr> 
+nnoremap <leader>fn i<c-r>=<sid>expand('%:p')<cr>
 " insert the current file directory
 nnoremap <leader>fd i<c-r>=<sid>expand('%:p:h').'/'<cr>
 
@@ -917,7 +918,7 @@ augroup vimrc_autocmd
 
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
 
-  autocmd BufEnter,WinEnter * setlocal cursorline | silent! setlocal colorcolumn=80
+  autocmd BufEnter,WinEnter * setlocal cursorline | if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
   autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
 
   if exists("*mkdir") "auto-create directories for new files
