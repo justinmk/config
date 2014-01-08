@@ -96,8 +96,6 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'tomasr/molokai'
-Bundle 'junegunn/seoul256.vim'
-let g:seoul256_background=234
 if !s:is_windows
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
@@ -146,6 +144,7 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
 Bundle 'osyo-manga/vim-over'
+Bundle 'terryma/vim-expand-region'
 Bundle 'mhinz/vim-signify'
 if exists("$GOPATH")
 Bundle 'Blackrush/vim-gocode'
@@ -203,6 +202,9 @@ xnoremap F :<c-u>SneakVBackward! 1<cr>
 onoremap f :Sneak!         1<cr>
 onoremap F :SneakBackward! 1<cr>
 
+xmap m     <Plug>(expand_region_expand)
+xmap <m-m> <Plug>(expand_region_shrink)
+
 let g:vertical_move_default_mapping = 0
 nmap <silent> + <Plug>(vertical_move_down)
 nmap <silent> _ <Plug>(vertical_move_up)
@@ -244,7 +246,7 @@ endif
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !s:is_gui
     "avoid: m-b m-d m-f
-    set <m-g>=g <m-h>=h <m-j>=j <m-k>=k <m-l>=l
+    set <m-g>=g <m-h>=h <m-j>=j <m-k>=k <m-l>=l <m-m>=m
           \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
           \ <m-t>=t <m-x>=x <m-y>=y <m-z>=z
           \ <m-]>=]

@@ -216,6 +216,13 @@
     (define-key evil-normal-state-map (kbd "C->") 'mc/mark-next-like-this)
     (define-key evil-normal-state-map (kbd "C-<") 'mc/mark-previous-like-this))
 
+  (after 'expand-region
+    (define-key evil-visual-state-map "m" 'er/expand-region)
+    (define-key evil-visual-state-map (kbd "M-m") nil)
+    (define-key evil-visual-state-map (kbd "M-m") (lambda ()
+                                                    (interactive)
+                                                    (er/expand-region -1))))
+
   (after 'magit
     (evil-add-hjkl-bindings magit-status-mode-map 'emacs
       "l" 'magit-key-mode-popup-logging
