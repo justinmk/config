@@ -41,11 +41,6 @@ if exists('&guioptions')
     set guicursor+=n-v-c:blinkon0,sm:hor30-Cursor,i-ci:ver25-Cursor/lCursor-blinkwait30-blinkoff100-blinkon100
 endif
 
-func! s:expand(s) "workaround expand() + wildignore
-  let expanded = expand(a:s)
-  return empty(expanded) ? a:s : expanded
-endf
-
 let mapleader = ","
 let g:mapleader = ","
 
@@ -57,8 +52,8 @@ let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
 let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
-let s:has_eclim = isdirectory(s:expand("~/.vim/eclim"))
-let s:plugins=isdirectory(s:expand("~/.vim/bundle/vundle"))
+let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
+let s:plugins=isdirectory(expand("~/.vim/bundle/vundle", 1))
 
 if s:starting && s:is_windows && !s:is_cygwin && !s:is_msysgit
   set runtimepath+=~/.vim/
@@ -78,7 +73,7 @@ let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gu
 "boostrap vundle on new systems
 fun! InstallVundle()
     echo "Installing Vundle..."
-    silent call mkdir(s:expand("~/.vim/bundle"), 'p')
+    silent call mkdir(expand("~/.vim/bundle", 1), 'p')
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endfun
 
@@ -170,10 +165,10 @@ filetype plugin indent on     " required!
 
 func! EnsureDir(path)
   "trim
-  let l:path = s:expand(substitute(a:path,  '\s\+', '', 'g'))
+  let l:path = expand(substitute(a:path,  '\s\+', '', 'g'), 1)
 
   if empty(l:path)
-    echom "EnsureDir(): invalid path, or expand() is broken: ".a:path
+    echom "EnsureDir(): invalid path: ".a:path
     return 0 "path is empty/blank.
   endif
 
@@ -184,7 +179,7 @@ func! EnsureDir(path)
 endfun
 
 func! EnsureFile(path)
-  let l:path = s:expand(a:path)
+  let l:path = expand(a:path, 1)
   if !filereadable(l:path) && -1 == writefile([''], l:path)
     echoerr "failed to create file: ".l:path
   endif
@@ -216,7 +211,7 @@ omap <silent> _ <Plug>(vertical_move_up)
 let g:signify_vcs_list = [ 'git' ]
 let g:linediff_buffer_type = 'scratch'
 
-let g:dbext_default_history_file = s:expand('~/.dbext_sql_history')
+let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
 let g:dbext_default_history_size = 1000
 let g:dbext_default_history_max_entry = 10*1024
 
@@ -431,7 +426,7 @@ function! GetSyntaxName()
 endfunction
 
 func! AppendToFile(file, lines)
-  let l:file = s:expand(a:file)
+  let l:file = expand(a:file, 1)
   call EnsureFile(l:file)
   "credit ZyX: http://stackoverflow.com/a/8976314/152142
   call writefile(readfile(l:file)+a:lines, l:file)
@@ -502,7 +497,7 @@ endfunc
 iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 " paste current dir to command line
-cabbrev ]c <c-r>=<sid>expand("%:p:h")<cr>
+cabbrev ]c <c-r>=expand("%:p:h", 1)<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -558,9 +553,9 @@ nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
 " insert the current file path
-nnoremap <leader>fn i<c-r>=<sid>expand('%:p')<cr>
+nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
 " insert the current file directory
-nnoremap <leader>fd i<c-r>=<sid>expand('%:p:h').'/'<cr>
+nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
 
 " version control
 xnoremap <leader>v  :Linediff<cr>
@@ -801,7 +796,7 @@ augroup END
 "    Bundle 'thinca/vim-ref'
 "    let g:ref_use_vimproc = 1
 "    let g:ref_open = 'vsplit'
-"    let g:ref_cache_dir = <sid>expand('~/.vim/tmp/ref_cache/')
+"    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/', 1)
 "    nnoremap g/k :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
   autocmd!
@@ -1038,7 +1033,7 @@ set tags^=./tags;,tags;,~/.vimtags
 if s:plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 
-"let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe')
+"let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
 let g:unite_source_file_mru_time_format = "(%Y/%m/%d %H:%M) "
@@ -1115,7 +1110,7 @@ function! s:clear_empty_buffers()
   "       an unloaded buffer with an invalid a filepath must be empty.
   let nonexistent = filter(range(1, bufnr('$')),
         \ 'bufexists(v:val) && !bufloaded(v:val) 
-        \  && -1 == getfsize(s:expand("#".v:val.":p")) 
+        \  && -1 == getfsize(expand("#".v:val.":p", 1)) 
         \ ')
 
   " echom "========================================================"
@@ -1138,9 +1133,9 @@ endif "}}}
 " session  ====================================================================
 set sessionoptions-=globals
 set sessionoptions-=blank
-let s:sessiondir  = s:expand("~/.vim/sessions")
-let s:sessionfile = s:expand(s:sessiondir . "/session.vim")
-let s:sessionlock = s:expand(s:sessiondir . "/session.lock")
+let s:sessiondir  = expand("~/.vim/sessions", 1)
+let s:sessionfile = expand(s:sessiondir . "/session.vim", 1)
+let s:sessionlock = expand(s:sessiondir . "/session.lock", 1)
 
 function! LoadSession()
   if !isdirectory(s:sessiondir) && !EnsureDir(s:sessiondir)
@@ -1191,22 +1186,22 @@ endif
 let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
-let s:dir = has('win32') ? '$APPDATA/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : '$XDG_DATA_HOME/vim'
+let s:dir = has('win32') ? $APPDATA.'/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : $XDG_DATA_HOME.'/vim'
 call EnsureDir(s:dir)
 
-if isdirectory(s:expand(s:dir))
+if isdirectory(expand(s:dir, 1))
   call EnsureDir(s:dir . '/swap/')
   call EnsureDir(s:dir . '/backup/')
   call EnsureDir(s:dir . '/undo/')
 
   if &directory =~# '^\.,'
-    let &directory = s:expand(s:dir) . '/swap//,' . &directory
+    let &directory = expand(s:dir, 1) . '/swap//,' . &directory
   endif
   if &backupdir =~# '^\.,'
-    let &backupdir = s:expand(s:dir) . '/backup//,' . &backupdir
+    let &backupdir = expand(s:dir, 1) . '/backup//,' . &backupdir
   endif
   if has("persistent_undo") && &undodir =~# '^\.\%(,\|$\)'
-    let &undodir = s:expand(s:dir) . '/undo//,' . &undodir
+    let &undodir = expand(s:dir, 1) . '/undo//,' . &undodir
     set undofile
   endif
 endif
