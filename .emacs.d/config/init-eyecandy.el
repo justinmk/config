@@ -26,6 +26,9 @@
  ;; init file should contain only one custom-set-faces. If there is more than one, they won't work right.
  '(ac-selection-face ((t (:foreground "white" :background "DodgerBlue"))))
  '(cursor ((t (:background "chartreuse"))))
+ '(hl-line ((t (:inherit highlight :background "#333333"))))
+ '(show-paren-match ((t (:background "#4e4e4e"))))
+ '(sp-show-pair-match-face ((t (:underline "Green"))))
  '(vertical-border ((t (:background "#8a8a8a" :foreground "lemon chiffon")))))
 
 (pcase (window-system)
