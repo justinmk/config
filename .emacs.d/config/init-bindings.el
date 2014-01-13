@@ -189,7 +189,7 @@
     (kbd "g d") 'cider-jump
     (kbd "K") 'cider-doc
     (kbd "g K") 'cider-javadoc
-    (kbd "RET") 'cider-eval-last-sexp
+    (kbd "RET") 'cider-eval-expression-at-point
     (kbd "g X") 'cider-eval-buffer)
   (evil-define-key 'visual clojure-mode-map
     (kbd "RET") 'cider-eval-region)
