@@ -2,7 +2,7 @@
 "                 http://files.kaoriya.net/vim/
 "                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
 " MacVim with homebrew:
-"   brew install macvim --with-cscope --with-lua --with-luajit --HEAD --override-system-vim
+"   brew install macvim --with-cscope --with-luajit --HEAD --override-system-vim
 "   brew linkapps --system
 "
 " If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
