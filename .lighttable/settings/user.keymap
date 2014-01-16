@@ -29,6 +29,12 @@
 
      :editor {"alt-w" [:editor.watch.watch-selection]
               "alt-shift-w" [:editor.watch.unwatch]}
+     :editor.cljs {"alt-m" [(:editor.watch.custom-watch-selection "(let [start (.getTime (js/Date.))
+                                                                  res (do __SELECTION__)]
+                                                                  __|(str (- (.getTime (js/Date.)) start) \" ms\")|__
+                                                                  res) " {:class "timed" :verbatim true})]
+                   "alt-l" [(:editor.watch.custom-watch-selection "(let [result (do __SELECTION__)] (prn __SELECTION*__ result) __|result|__ result)" {})]}
+
      ;;if I highlight an expression and press alt-e it will macroexpand the expression.
      ;;Alt-shift-b will benchmark the expression using criterium.
      ;;Alt-d will display the java bytecode for the resulting value.
@@ -49,4 +55,7 @@
                                                                  __|(str (float (/ (- (java.lang.System/nanoTime) start) 1000000)) \" ms\")|__
                                                                  res)" {:class "timed" :verbatim true})]}
      }
+
+      :editor.keys.hinting.active {"tab" [:auto-complete]
+                                  "enter" [:passthrough]}
  }
