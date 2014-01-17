@@ -91,6 +91,14 @@ if ! type -t __git_ps1 &> /dev/null ; then
     [ -f "$gitprompt_home" ] && source "$gitprompt_home"
 fi
 
+#bash completion; this also provides __git_ps1 on some systems
+if command -v brew > /dev/null 2>&1 && [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+  . /etc/bash_completion
+fi
+
+# set git prompt iff function exists and prompt has not already been set up.
 if type -t __git_ps1 &> /dev/null ; then
     PS1='\[\033[1;32m\]\u@\h \[\033[36m\]\w\[\033[33m$(__git_ps1)\033[0m\]
 $ '
@@ -174,12 +182,6 @@ fi
 # Add an "alert" alias for long running commands. eg:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-if command -v brew > /dev/null 2>&1 && [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-  . /etc/bash_completion
-fi
 
 if [ -f ~/.fzf.bash ]; then
   source ~/.fzf.bash

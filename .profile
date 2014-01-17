@@ -1,4 +1,4 @@
-# .profile: provided for cases where .bash_profile is skipped.
+# .profile: for cases where .bash_profile is skipped
 
 # msysgit bash runs .bashrc _and_ .bash_profile, so avoid redundant run.
 if [[ "$MSYSTEM" != MINGW32 && "$OSTYPE" != msys ]] ; then
