@@ -537,12 +537,21 @@ nnoremap <C-q> :botright copen<cr>
 
 " working with projects/directories
 func! s:focus_netrw_window()
-  " find existing netrw window, if any
-  let w = filter(range(1, winnr('$')), 'getwinvar(v:val, "netrw_winnr")')
+  " if we are already in a netrw window, focus the alternate window
+  if &filetype ==# "netrw"
+    wincmd p
+    return
+  endif
+
+  " find existing _displayed_ netrw window, if any
+  let w = filter(range(1, winnr('$')), 'getwinvar(v:val, "netrw_winnr")
+        \ && "netrw" ==# getbufvar(winbufnr(v:val), "&filetype")
+        \')
   if len(w) > 0 "switch to the existing netrw window
     exe w[0] 'wincmd W'
   else
     Vexplore
+    wincmd H
   endif
   40 wincmd |
   setlocal winfixwidth
