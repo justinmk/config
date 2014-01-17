@@ -70,6 +70,7 @@ nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
 
 " go to anything (types/symbols/files)
 nnoremap <C-p> :vsc ReSharper.ReSharper_GotoType<cr>
+nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
 " go to file
 nnoremap g/f :vsc ReSharper.ReSharper_GotoFile<cr>
 " grep everything
