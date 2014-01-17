@@ -655,9 +655,6 @@ endf
 
 nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
 
-"move to first non-blank character
-nnoremap 0 ^
-xnoremap 0 ^
 "move to last character 
 nnoremap - $
 xnoremap - $
@@ -826,6 +823,7 @@ augroup vimrc_golang
 augroup END
 
 " clojure/lisp ================================================================
+let g:clojure_fold = 1
 
 "transpose words, preserving punctuation
 nnoremap <silent> gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1,<bar>nohl<CR>
