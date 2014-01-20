@@ -286,19 +286,20 @@ set sidescrolloff=2
 
 set nojoinspaces
 
+set nostartofline
 " restore cursor position upon returning to a buffer, _without_ permanently 
 " setting 'nostartofline' (which affects many other behaviors).
-augroup vimrc_stayput
-  autocmd!
-  if &startofline
-    " 1. disable 'startofline' temporarily while switching buffers, 
-    " 2. then re-enable it on CursorMoved, 
-    " 3. then clear the CursorMoved autocommand to avoid spam
-    autocmd BufLeave * set nostartofline |
-          \ autocmd vimrc_stayput CursorMoved,CursorMovedI * set startofline |
-          \ autocmd! vimrc_stayput CursorMoved,CursorMovedI
-  endif
-augroup END
+if &startofline
+  augroup vimrc_stayput
+    autocmd!
+      " 1. disable 'startofline' temporarily while switching buffers, 
+      " 2. then re-enable it on CursorMoved, 
+      " 3. then clear the CursorMoved autocommand to avoid spam
+      autocmd BufLeave * set nostartofline |
+            \ autocmd vimrc_stayput CursorMoved,CursorMovedI * set startofline |
+            \ autocmd! vimrc_stayput CursorMoved,CursorMovedI
+  augroup END
+endif
 
 " platform-specific settings
 if s:is_windows
