@@ -47,10 +47,6 @@
       "w" 'evil-write
       "C" 'customize-group
       "b d" 'kill-this-buffer
-      "v s" 'magit-status
-      "v l" 'magit-log
-      "v d" 'vc-diff
-      "v m" 'git-messenger:popup-message
       "V" (bind (term "vim"))))
 
   (after 'evil-matchit
@@ -94,9 +90,15 @@
 
   (define-key evil-motion-state-map "j" 'evil-next-visual-line)
   (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
-  (define-key evil-normal-state-map (kbd "0") 'evil-first-non-blank)
   (define-key evil-normal-state-map (kbd "-") 'evil-last-non-blank)
   (define-key evil-normal-state-map (kbd "Y") (kbd "y$"))
+
+  ;; version control
+  (define-key evil-normal-state-map (kbd "U s") 'magit-status)
+  (define-key evil-normal-state-map (kbd "U l") 'magit-log)
+  (define-key evil-normal-state-map (kbd "U U") 'vc-diff)
+  (define-key evil-normal-state-map (kbd "U b") 'git-messenger:popup-message)
+
 
   ;; (define-key evil-normal-state-map (kbd "c o") nil)
   ;; (define-key evil-normal-state-map (kbd "c o w")
@@ -170,6 +172,12 @@
                                                  (evil-normal-state)))
   (define-key evil-normal-state-map (kbd "M-k") (bind
                                                  (sp-backward-up-sexp)))
+  ;; (define-key evil-normal-state-map (kbd "< I") (bind
+  ;;                                                (sp-beginning-of-sexp)
+  ;;                                                (evil-insert 1)))
+  ;; (evil-define-key 'normal evil-normal-state-map
+  ;;   (kbd "< I") (bind (sp-beginning-of-sexp)
+  ;;                     (evil-insert 1)))
 
   ;; expression evaluation
 
@@ -274,6 +282,5 @@
 (global-unset-key (kbd "C-x m"))
 (global-set-key (kbd "C-x C-c") (bind (message "Thou shall not quit!")))
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
-
 
 (provide 'init-bindings)

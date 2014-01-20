@@ -610,7 +610,7 @@ nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
 
 " version control
 xnoremap <leader>v  :Linediff<cr>
-nnoremap <leader>vd :Gdiff<cr>
+nnoremap UU :Gdiff<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
@@ -776,9 +776,6 @@ nnoremap cov :set <C-R>=empty(&virtualedit) ? 'virtualedit=all' : 'virtualedit='
 " disable F1 help key
 noremap! <F1> <nop>
 noremap <F1> <nop>
-
-" disable linewise undo
-nnoremap U <nop>
 
 " disable Ex mode key and map it to something awesome
 nnoremap Q @@
