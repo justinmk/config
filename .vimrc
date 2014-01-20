@@ -483,7 +483,7 @@ endf
 func! s:u_undo()
   let b:foo_undoing = 1
   call repeat#wrap('u',v:count)
-  if &modifiable && 0 != b:foo_before_change[0]
+  if &modifiable && exists("b:foo_before_change") && 0 != b:foo_before_change[0]
     call cursor(b:foo_before_change)
   endif
 endf
@@ -493,11 +493,11 @@ func! s:u_oncursormove()
 endf
 func! s:u_onchange()
   if !get(b:, "foo_redoing", 0)  && !get(b:, "foo_undoing", 0) "ignore changes _during_ undo
-    let b:foo_before_change = b:foo_before_last_move
+    let b:foo_before_change = get(b:, "foo_before_last_move", [0,0])
   else "TextChanged fires after u_undo() returns, so we must clean up here rather than in u_undo().
     let b:foo_undoing = 0
     let b:foo_redoing = 0
-    let b:foo_before_change = [0,0] "reset; we only support 1 undo
+    silent! unlet b:foo_before_change "reset; we only support 1 undo
   endif
 endf
 func! s:u_init()
