@@ -68,11 +68,10 @@ nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
 " nnoremap <M-o> go to class member
 " nnoremap <M-t> go to tag/symbol
 
-" go to anything (types/symbols/files)
-nnoremap <C-p> :vsc ReSharper.ReSharper_GotoType<cr>
-nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
 " go to file
-nnoremap g/f :vsc ReSharper.ReSharper_GotoFile<cr>
+nnoremap <C-p> :vsc ReSharper.ReSharper_GotoFile<cr>
+" go to anything (types/symbols/files)
+nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
 " grep everything
 nnoremap g// :vsc Edit.FindinFiles<cr>
 " find/replace in current buffer
