@@ -38,9 +38,7 @@ nnoremap <leader>D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
-xnoremap 0 ^
 xnoremap - $
-nnoremap 0 ^
 nnoremap - $
 
 nnoremap ]e :m+1<cr>
@@ -65,12 +63,13 @@ nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol
 nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
 nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
-" nnoremap <M-o> go to class member
-" nnoremap <M-t> go to tag/symbol
+" go to class member ("outline")
+nnoremap <M-o> :vsc ReSharper.ReSharper_GotoFileMember<cr>
 
 " go to file
 nnoremap <C-p> :vsc ReSharper.ReSharper_GotoFile<cr>
-" go to anything (types/symbols/files)
+" go to anything ("tags"/types/symbols/files)
+nnoremap <M-t> :vsc ReSharper.ReSharper_GotoType<cr>
 nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
 " grep everything
 nnoremap g// :vsc Edit.FindinFiles<cr>

@@ -148,6 +148,7 @@ Bundle 'justinmk/vim-ipmotion'
 Bundle 'justinmk/vim-gtfo'
 Bundle 'justinmk/vim-sneak'
 " https://github.com/vim-scripts/surrparen
+Bundle 'Keithbsmiley/investigate.vim'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/unite-outline'
@@ -607,7 +608,7 @@ nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
 nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
 
 " version control
-xnoremap <leader>v  :Linediff<cr>
+xnoremap ?  :Linediff<cr>
 nnoremap UU :Gdiff<cr>
 
 " execute/evaluate
@@ -617,7 +618,8 @@ xmap <enter> <Plug>(quickrun)
 " filter
 " nnoremap c<cr>jj    :%!python -m json.tool<cr>
 " nnoremap z<cr>jj    :%!python -m json.tool<cr>
-nnoremap c<space>jj :%!python -m json.tool<cr>
+" nnoremap c<space>jj :%!python -m json.tool<cr>
+nnoremap <bar>jj :%!python -m json.tool<cr>
 
 " align
 " nnoremap c<space>       :easyalign...
@@ -990,9 +992,8 @@ nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
 xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
 
-" in visual mode, press * or # to search for the current selection
+" in visual mode, press * to search for the current selection
 xnoremap * /\V<C-R>=<SID>visual_search('/')<cr><cr>
-xnoremap # ?\V<C-R>=<SID>visual_search('?')<cr><cr>
 
 " recursively grep for word under cursor
 nnoremap g/* :<c-u>noau vimgrep /\V<c-r><c-w>/ **<CR>
@@ -1114,7 +1115,7 @@ nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
-nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag tag/include<cr>
+nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
 nmap g/t <m-t>
 nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
 imap     <m-y> <C-o><m-y>

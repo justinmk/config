@@ -24,9 +24,7 @@ nnoremap ,D "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
-vnoremap 0 ^
 vnoremap - $
-nnoremap 0 ^
 nnoremap - $
 nnoremap gl :ls<cr>
 " select last inserted text
