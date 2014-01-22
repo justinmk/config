@@ -812,6 +812,7 @@ func! ReadExCommandOutput(cmd)
   "set nomodified
 endf
 command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
+inoremap <c-r>> <c-o>:<up><home>R <cr>
 
 " python ======================================================================
 augroup vimrc_python
