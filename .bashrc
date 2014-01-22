@@ -163,7 +163,10 @@ if [[ `uname` == 'Darwin' ]]; then
     #BSD-style aliases 
     alias ls='ls -GC'
     alias su='echo "***REMINDER: verify umask" && su -l'
-    
+
+    #MacVim: ensure Core Text renderer (improves performance)
+    defaults write org.vim.MacVim MMRenderer 2
+
     if [[ 0 == `defaults read com.apple.finder DisableAllAnimations` ]] ; then
       # Display ASCII control characters using caret notation in standard text views
       # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`

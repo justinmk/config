@@ -755,6 +755,7 @@ nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <space> :
 nnoremap <leader>w :w<cr>
+nnoremap <leader>e :e<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
