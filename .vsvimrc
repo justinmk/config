@@ -53,6 +53,11 @@ nnoremap <c-i> :vsc View.NavigateForward<cr>
 xnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
 
+"version control
+nnoremap UU :vsc Team.Git.CompareWithUnmodified<cr>
+nnoremap Us :vsc Team.Git.GoToGitChanges<cr>
+nnoremap ]c :vsc Diff.NextDifference<cr>
+nnoremap [c :vsc Diff.PreviousDifference<cr>
 
 " gs => expression manipulation
 " gz => inspect the current symbol
