@@ -115,7 +115,8 @@ Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-vinegar'
 Bundle 'kshenoy/vim-signature'
-Bundle 'jiangmiao/auto-pairs'
+" Bundle 'jiangmiao/auto-pairs'
+Bundle 'Raimondi/delimitMate'
 Bundle 'zhaocai/DirDiff.vim'
 Bundle 'AndrewRadev/linediff.vim'
 " Bundle 'mbbill/undotree'
@@ -509,11 +510,13 @@ func! s:u_init()
   "NOTE: TextChangedI might be broken before Vim 7.4.143
   autocmd sane_undo TextChanged,TextChangedI * call <sid>u_onchange()
 endf
-augroup sane_undo
-  autocmd!
-  "initial setup _after_ plugins (like repeat.vim) have loaded.
-  autocmd CursorMoved * call <sid>u_init() | call <sid>u_oncursormove()
-augroup END
+if (v:version > 703 || (v:version == 703 && has('patch867'))) "TextChangedI
+  augroup sane_undo
+    autocmd!
+    "initial setup _after_ plugins (like repeat.vim) have loaded.
+    autocmd CursorMoved * call <sid>u_init() | call <sid>u_oncursormove()
+  augroup END
+endif
 
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
@@ -526,10 +529,11 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
 " delete the 'head' of a path on the command line
-cno <c-o>/ <C-\>e<sid>deleteTillSlash()<cr>
+cno <c-d> <C-\>e<sid>delete_until()<cr>
 
-func! s:deleteTillSlash()
-  return s:is_windows ? substitute(getcmdline(), '\(.*[/\\]\).*', '\1', '') : substitute(getcmdline(), '\(.*[/]\).*', '\1', '')
+func! s:delete_until()
+  let c = nr2char(getchar())
+  return substitute(getcmdline(), '\(.*['.escape(c, '\').']\).*', '\1', '')
 endfunc
 
 
@@ -600,6 +604,7 @@ endf
 nnoremap <silent> ^ :call <sid>focus_netrw_window()<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
+nnoremap <leader>.. :cd ..<bar>pwd<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
 " insert the current file path
@@ -613,6 +618,7 @@ nnoremap UU :Gdiff<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
+autocmd FileType vim nnoremap <buffer> gX :source %<cr>
 xmap <enter> <Plug>(quickrun)
 
 " filter
@@ -790,8 +796,10 @@ func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without mo
   call cursor(pos)
 endf
 
-inoremap ,o <c-o>:<c-u>call <sid>do_in_place("o", 0, 0)<cr>
-inoremap ,O <c-o>:<c-u>call <sid>do_in_place("O", 1, 0)<cr>
+inoremap ,o <c-o>:<c-u>call <sid>do_in_place("o", 0, 1)<cr>
+inoremap ,O <c-o>:<c-u>call <sid>do_in_place("O", 1, 1)<cr>
+nnoremap ,o :<c-u>call <sid>do_in_place("o", 0, 0)<cr>
+nnoremap ,O :<c-u>call <sid>do_in_place("O", 1, 0)<cr>
 
 
 func! ReadExCommandOutput(cmd)
