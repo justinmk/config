@@ -74,7 +74,6 @@ nnoremap <M-o> :vsc ReSharper.ReSharper_GotoFileMember<cr>
 " go to file
 nnoremap <C-p> :vsc ReSharper.ReSharper_GotoFile<cr>
 " go to anything ("tags"/types/symbols/files)
-nnoremap <M-t> :vsc ReSharper.ReSharper_GotoType<cr>
 nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
 " grep everything
 nnoremap g// :vsc Edit.FindinFiles<cr>
@@ -82,8 +81,9 @@ nnoremap g// :vsc Edit.FindinFiles<cr>
 nnoremap g/r :vsc Edit.Replace<cr>
 
 nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
-nnoremap gzt :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
-nnoremap K   :vsc Edit.PeekDefinition<cr>
+nnoremap <C-t> :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
+nnoremap K     :vsc Edit.QuickInfo<cr>
+nnoremap <C-k> :vsc Edit.PeekDefinition<cr>
 
 "show refactor menu
 nnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
