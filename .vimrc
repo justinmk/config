@@ -90,7 +90,7 @@ call vundle#rc()
 " let Vundle manage Vundle (required!)
 Bundle 'gmarik/vundle'
 
-Bundle 'tomasr/molokai'
+Bundle 'justinmk/molokai'
 if !s:is_windows
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
@@ -788,8 +788,9 @@ noremap <F1> <nop>
 nnoremap Q @@
 xnoremap Q @@
 
-nnoremap ZZ :<c-u>qa<cr>
-nnoremap ZQ :<c-u>qa!<cr>
+nnoremap ZZ :wqa<cr>
+nnoremap ZQ :qa<cr>
+nnoremap Z! :qa!<cr>
 
 func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without moving the cursor
   let pos = [line(".") + a:line_offset, col(".") + a:col_offset]
@@ -812,7 +813,7 @@ func! ReadExCommandOutput(cmd)
   "set nomodified
 endf
 command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
-inoremap <c-r>> <c-o>:<up><home>R <cr>
+inoremap <c-r>R <c-o>:<up><home>R <cr>
 
 " python ======================================================================
 augroup vimrc_python
