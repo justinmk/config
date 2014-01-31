@@ -2,7 +2,7 @@
 (require 'undo-tree)
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-history-directory-alist
-      `(("." . ,(concat user-emacs-directory ".cache/undo"))))
+      `((,(concat user-emacs-directory ".cache/undo") . ".")))
 (global-undo-tree-mode)
 
 (add-hook 'text-mode-hook
