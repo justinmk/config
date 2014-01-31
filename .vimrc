@@ -19,7 +19,7 @@
 
 let s:starting = has('vim_starting')
 if s:starting
-  " ensure that we always start with vim defaults (as opposed to those set by the current system)
+  " ensure that we always start with Vim defaults (as opposed to those set by the current system)
   set all&
   " caution: this resets many settings, eg 'history'
   set nocompatible
@@ -47,7 +47,6 @@ let g:mapleader = ","
 let s:is_cygwin = has('win32unix') || has('win64unix')
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
-let s:is_unix = has('unix')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
@@ -115,8 +114,8 @@ Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-vinegar'
 Bundle 'kshenoy/vim-signature'
-" Bundle 'jiangmiao/auto-pairs'
-Bundle 'Raimondi/delimitMate'
+Bundle 'jiangmiao/auto-pairs'
+" Bundle 'Raimondi/delimitMate'
 Bundle 'zhaocai/DirDiff.vim'
 Bundle 'AndrewRadev/linediff.vim'
 " Bundle 'mbbill/undotree'
@@ -158,6 +157,10 @@ if s:lua_patch885
 Bundle 'Shougo/neocomplete.vim'
 endif
 
+" eager-load these plugins so we can override their settings below
+runtime plugin/sensible.vim
+runtime plugin/rsi.vim
+
 endif "}}}
 
 filetype plugin indent on     " required!
@@ -190,12 +193,18 @@ endf
 "==============================================================================
 let g:sneak#streak = 1
 let g:sneak#use_ic_scs = 1
-nnoremap f :Sneak!         1<cr>
-nnoremap F :SneakBackward! 1<cr>
-xnoremap f :<c-u>SneakV!         1<cr>
-xnoremap F :<c-u>SneakVBackward! 1<cr>
-onoremap f :Sneak!         1<cr>
-onoremap F :SneakBackward! 1<cr>
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+xmap f <Plug>Sneak_f
+xmap F <Plug>Sneak_F
+omap f <Plug>Sneak_f
+omap F <Plug>Sneak_F
+nmap t <Plug>Sneak_t
+nmap T <Plug>Sneak_T
+xmap t <Plug>Sneak_t
+xmap T <Plug>Sneak_T
+omap t <Plug>Sneak_t
+omap T <Plug>Sneak_T
 
 xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
@@ -207,6 +216,8 @@ xmap <silent> + <Plug>(vertical_move_down)
 xmap <silent> _ <Plug>(vertical_move_up)
 omap <silent> + <Plug>(vertical_move_down)
 omap <silent> _ <Plug>(vertical_move_up)
+
+let g:surround_no_insert_mappings = 1
 
 let g:signify_vcs_list = [ 'git' ]
 let g:linediff_buffer_type = 'scratch'
@@ -250,9 +261,9 @@ endif
 try | lang en_US | catch | endtry
 
 if s:is_msysgit
-  set listchars=tab:>\ ,trail:.,extends:>,precedes:<,nbsp:+
+  set listchars+=trail:.
 elseif s:is_windows || s:is_cygwin || s:is_ssh
-  set listchars=tab:▸\ ,trail:▫,extends:>,precedes:<,nbsp:+
+  set listchars=tab:▸\ ,trail:▫
 else
   set showbreak=↪\  " precedes line wrap
 endif
@@ -281,7 +292,7 @@ else
 set showtabline=1
 endif
 set foldmethod=marker
-set sidescroll=2
+set scrolloff=0
 set sidescrolloff=2
 
 set nojoinspaces
@@ -529,7 +540,11 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
 " delete the 'head' of a path on the command line
-cno <c-d> <C-\>e<sid>delete_until()<cr>
+cnoremap <c-d> <C-\>e<sid>delete_until()<cr>
+cnoremap <c-p> <up>
+cnoremap <c-n> <down>
+cnoremap <m-h> <left>
+cnoremap <m-l> <right>
 
 func! s:delete_until()
   let c = nr2char(getchar())
@@ -540,9 +555,6 @@ endfunc
 " abbreviations ===============================================================
 
 iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
-
-" paste current dir to command line
-cabbrev ]c <c-r>=expand("%:p:h", 1)<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -555,6 +567,8 @@ nnoremap gwV :vnew<cr>
 nnoremap <silent> gww :<C-u>call <sid>switch_to_alt_win()<cr>
 " fit the current window height to the text height
 nnoremap <expr> gw<bs> 'ggz'.line('$')."\<cr>"
+" fit the current window height to the selected text
+xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+abs(line('.')-line('v')))."\<cr>"
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -611,10 +625,14 @@ nnoremap <M-g> :<C-u>pwd<cr>
 nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
 " insert the current file directory
 nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
+cnoremap <leader>fd  <c-r>=expand("%:p:h", 1)<cr>
 
 " version control
 xnoremap ?  :Linediff<cr>
-nnoremap UU :Gdiff<cr>
+nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
+nnoremap Ud :Gdiff<cr>
+nnoremap Us :Gstatus<cr>
+nnoremap Ul :Glog<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
@@ -1136,12 +1154,11 @@ nnoremap g/ps :<C-u>Unite process -buffer-name=processes<CR>
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
-  nmap <buffer> <nowait> <esc> <Plug>(unite_exit)
-  silent! unmap! <c-g>
   imap <buffer> <c-a> <Plug>(unite_choose_action)
+  nmap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   " change directories in unite
-  nmap <buffer> <nowait> <leader>cd <Plug>(unite_restart)
+  nmap <buffer> <nowait> g/d <Plug>(unite_restart)
 endfunction
 
 " delete empty, non-visible, non-special buffers having no significant undo stack.
