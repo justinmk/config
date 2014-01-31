@@ -1,6 +1,7 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(unless (display-graphic-p) (menu-bar-mode -1))
+;; disable menu except on Mac OS X
+(when (fboundp 'menu-bar-mode) (unless (and (window-system) (eq system-type 'darwin)) (menu-bar-mode -1)))
 
 (add-to-list 'load-path user-emacs-directory) 
 (add-to-list 'load-path (concat user-emacs-directory "config"))
