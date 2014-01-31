@@ -94,9 +94,9 @@
   (define-key evil-normal-state-map (kbd "Y") (kbd "y$"))
 
   ;; version control
+  (define-key evil-normal-state-map (kbd "U d") 'vc-diff)
   (define-key evil-normal-state-map (kbd "U s") 'magit-status)
   (define-key evil-normal-state-map (kbd "U l") 'magit-log)
-  (define-key evil-normal-state-map (kbd "U U") 'vc-diff)
   (define-key evil-normal-state-map (kbd "U b") 'git-messenger:popup-message)
 
 
@@ -218,18 +218,19 @@
     (define-key evil-insert-state-map (kbd "C-SPC") 'auto-complete))
 
   (after 'multiple-cursors
+    (global-unset-key (kbd "C-<down-mouse-1>"))
+    (global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
     (define-key evil-emacs-state-map (kbd "C->") 'mc/mark-next-like-this)
     (define-key evil-emacs-state-map (kbd "C-<") 'mc/mark-previous-like-this)
     (define-key evil-visual-state-map (kbd "C->") 'mc/mark-all-like-this)
     (define-key evil-normal-state-map (kbd "C->") 'mc/mark-next-like-this)
     (define-key evil-normal-state-map (kbd "C-<") 'mc/mark-previous-like-this))
 
-  (after 'expand-region
-    (define-key evil-visual-state-map "m" 'er/expand-region)
-    (define-key evil-visual-state-map (kbd "M-m") nil)
-    (define-key evil-visual-state-map (kbd "M-m") (lambda ()
-                                                    (interactive)
-                                                    (er/expand-region -1))))
+  (define-key evil-visual-state-map "m" 'er/expand-region)
+  (define-key evil-visual-state-map (kbd "M-m") nil)
+  (define-key evil-visual-state-map (kbd "M-m") (lambda ()
+                                                  (interactive)
+                                                  (er/expand-region -1)))
 
   (after 'magit
     (evil-add-hjkl-bindings magit-status-mode-map 'emacs
