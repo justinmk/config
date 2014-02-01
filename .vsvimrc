@@ -54,13 +54,12 @@ xnoremap gc :vsc Edit.CommentSelection<cr>
 nnoremap gcc V:vsc Edit.CommentSelection<cr>
 
 "version control
-nnoremap UU :vsc Team.Git.CompareWithUnmodified<cr>
+nnoremap Ud :vsc Team.Git.CompareWithUnmodified<cr>
 nnoremap Us :vsc Team.Git.GoToGitChanges<cr>
 nnoremap ]c :vsc Diff.NextDifference<cr>
 nnoremap [c :vsc Diff.PreviousDifference<cr>
 
 " gs => expression manipulation
-" gz => inspect the current symbol
 " cr => refactor the current symbol
 " g/ => search for files and symbols
 
@@ -80,21 +79,23 @@ nnoremap g// :vsc Edit.FindinFiles<cr>
 " find/replace in current buffer
 nnoremap g/r :vsc Edit.Replace<cr>
 
-nnoremap gzz :vsc ReSharper.ReSharper_InspectThis<cr>
 nnoremap <C-t> :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
 nnoremap K     :vsc Edit.QuickInfo<cr>
+nnoremap gK    :vsc ReSharper.ReSharper_InspectThis<cr>
 nnoremap <C-k> :vsc Edit.PeekDefinition<cr>
 
 "show refactor menu
 nnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
-xnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
-" TODO: show code-generation menu
-" nnoremap crR :vsc ???<cr>
-nnoremap cR :vsc Refactor.Rename<cr>
-xnoremap cR :vsc Refactor.Rename<cr>
+xnoremap Rr :vsc ReSharper.ReSharper_RefactorThis<cr>
+"surround
+nnoremap crs :vsc ReSharper.ReSharper_SurroundWith<cr>
+xnoremap Rs  :vsc ReSharper.ReSharper_SurroundWith<cr>
+"rename current symbol
+nnoremap cR  :vsc Refactor.Rename<cr>
 nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
 "show quickfix menu
 nnoremap <bs> :vsc ReSharper_AltEnter<cr>
+xnoremap <bs> :vsc ReSharper_AltEnter<cr>
 
 " expression manipulation
 nnoremap gst :vsc Edit.WordTranspose<cr>
@@ -104,7 +105,7 @@ nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>
 nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
 
 " evaluate selection F#
-xnoremap gX       :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
+xnoremap <enter>  :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
 " evaluate current line F#
 nnoremap <enter>  :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
 

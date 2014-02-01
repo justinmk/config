@@ -359,7 +359,7 @@ endif
     hi CursorLine cterm=underline
   else
     let s:color_override = '
-          \   hi Visual        ctermbg=23 guibg=#007475
+          \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
           \ | hi VisualNOS     term=bold,underline cterm=bold,underline ctermbg=23 gui=bold,underline guibg=#007475
           \'
 
@@ -378,7 +378,7 @@ endif
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
-          \ | hi TODO          guibg=#00acbc guifg=#ffff87 gui=bold,underline
+          \ | hi TODO                        guifg=#ffff87 gui=bold,underline
           \ | endif
           \'
 
@@ -853,7 +853,7 @@ augroup vimrc_java
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
   if s:has_eclim
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
-          \ | nnoremap <buffer> gzt   :<c-u>JavaHierarchy<cr>
+          \ | nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
           \ | nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
           \ | nnoremap <buffer> K     :<c-u>JavaDocPreview<cr>
           \ | nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>

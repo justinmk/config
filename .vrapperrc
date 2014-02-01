@@ -69,7 +69,7 @@ nnoremap gI :eclipsegotoimpl<cr>
 
 " show type hierarchy relative to current type
 eclipseuiaction eclipsetypehier org.eclipse.jdt.ui.edit.text.java.open.hierarchy
-nnoremap gzt :eclipsetypehier<cr>
+nnoremap <C-t> :eclipsetypehier<cr>
 
 " go to type
 eclipseuiaction eclipsegototype org.eclipse.jdt.ui.navigate.open.type
