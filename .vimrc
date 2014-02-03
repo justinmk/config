@@ -294,6 +294,7 @@ endif
 set foldmethod=marker
 set scrolloff=0
 set sidescrolloff=2
+set noequalalways
 
 set nojoinspaces
 
@@ -610,7 +611,7 @@ func! s:focus_netrw_window()
     exe w[0] 'wincmd W'
   else
     Vexplore
-    wincmd H
+    " wincmd H
   endif
   40 wincmd |
   setlocal winfixwidth

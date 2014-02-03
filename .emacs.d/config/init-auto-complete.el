@@ -11,8 +11,6 @@
 (setq ac-quick-help-height 30)
 (setq ac-show-menu-immediately-on-auto-complete t)
 
-(define-key ac-complete-mode-map (kbd "SPC") 'ac-complete)
-
 (eval-after-load "auto-complete"
   (dolist (mode '(vimrc-mode
                   html-mode stylus-mode cider-repl-mode
