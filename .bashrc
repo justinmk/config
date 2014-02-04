@@ -194,5 +194,8 @@ if [ -f ~/.fzf.bash ]; then
   fd() { # fzf / change to directory
     cd $(f "-type d")
   }
+  vimf() { # fzf / open file in Vim
+    vim $(f)
+  }
 fi
 
