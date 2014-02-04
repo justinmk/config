@@ -542,8 +542,16 @@ nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'
 
 " delete the 'head' of a path on the command line
 cnoremap <c-d> <C-\>e<sid>delete_until()<cr>
+
+" cycle history
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
+
+" move without arrow keys
+inoremap <m-h> <left>
+inoremap <m-l> <right>
+inoremap <m-j> <down>
+inoremap <m-k> <up>
 cnoremap <m-h> <left>
 cnoremap <m-l> <right>
 
@@ -631,7 +639,7 @@ cnoremap <leader>fd  <c-r>=expand("%:p:h", 1)<cr>
 " version control
 xnoremap ?  :Linediff<cr>
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
-nnoremap Ud :Gdiff<cr>
+nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 
@@ -816,11 +824,6 @@ func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without mo
   exe "norm ".a:keyseq
   call cursor(pos)
 endf
-
-inoremap ,o <c-o>:<c-u>call <sid>do_in_place("o", 0, 1)<cr>
-inoremap ,O <c-o>:<c-u>call <sid>do_in_place("O", 1, 1)<cr>
-nnoremap ,o :<c-u>call <sid>do_in_place("o", 0, 0)<cr>
-nnoremap ,O :<c-u>call <sid>do_in_place("O", 1, 0)<cr>
 
 
 func! ReadExCommandOutput(cmd)
