@@ -18,9 +18,9 @@ nnoremap gwc :bdelete<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap ,w  :w<cr>
-nnoremap ,d "_d
-vnoremap ,d "_d
-nnoremap ,D "_D
+nnoremap vd "_d
+vnoremap x  "_d
+nnoremap vD "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>

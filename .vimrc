@@ -577,7 +577,7 @@ nnoremap <silent> gww :<C-u>call <sid>switch_to_alt_win()<cr>
 " fit the current window height to the text height
 nnoremap <expr> gw<bs> 'ggz'.line('$')."\<cr>"
 " fit the current window height to the selected text
-xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+abs(line('.')-line('v')))."\<cr>"
+xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."gg"
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -596,7 +596,6 @@ nnoremap gwT :wincmd T<cr>
 " manage buffers
 nnoremap <silent> <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
 nnoremap <silent> <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
-nnoremap <silent> <leader>bn  :<c-u>enew<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
@@ -736,10 +735,10 @@ xnoremap - $
 
 " un-join (split) the current line at the cursor position
 nnoremap <c-j> i<c-j><esc>k$
-" delete without overwriting the default register
-nnoremap <leader>d "_d
-xnoremap <leader>d "_d
-nnoremap <leader>D "_D
+" vaporize delete without overwriting the default register
+nnoremap vd "_d
+xnoremap x  "_d
+nnoremap vD "_D
 
 func! s:replace_without_yank(type)
   let sel_save = &selection
@@ -770,13 +769,6 @@ inoremap jk <esc>
 inoremap kj <esc>
 nnoremap ' `
 xnoremap ' `
-
-nnoremap <left>  4zh
-nnoremap <right> 4zl
-xnoremap <left>  4zh
-xnoremap <right> 4zl
-nnoremap <c-left>  :<c-u>exec 'norm! '.(winwidth(0)/2).'zh'<cr>
-nnoremap <c-right> :<c-u>exec 'norm! '.(winwidth(0)/2).'zl'<cr>
 
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>

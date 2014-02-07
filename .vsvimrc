@@ -32,9 +32,9 @@ nnoremap <leader>bd :vsc Window.CloseDocumentWindow<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <leader>w  :w<cr>
-nnoremap <leader>d "_d
-xnoremap <leader>d "_d
-nnoremap <leader>D "_D
+nnoremap vd "_d
+xnoremap x  "_d
+nnoremap vD "_D
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>
