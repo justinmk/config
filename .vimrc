@@ -136,7 +136,7 @@ Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
-Bundle 'Yggdroot/indentLine'
+Bundle 'tek/indentLine'
 Bundle 'osyo-manga/vim-over'
 Bundle 'terryma/vim-expand-region'
 Bundle 'mhinz/vim-signify'
@@ -293,7 +293,7 @@ set showtabline=1
 endif
 set foldmethod=marker
 set scrolloff=0
-set sidescrolloff=2
+set sidescrolloff=0
 set noequalalways
 
 set nojoinspaces
@@ -541,7 +541,7 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
 " delete the 'head' of a path on the command line
-cnoremap <c-d> <C-\>e<sid>delete_until()<cr>
+cnoremap <silent> <c-d> <C-\>e<sid>delete_until()<cr>
 
 " cycle history
 cnoremap <c-p> <up>
@@ -793,8 +793,9 @@ xnoremap / <esc>/\%V
 " select last inserted text
 nnoremap gV `[v`]
 
-" replay @q macro for each line of a visual selection
+" replay macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
+xnoremap @@ :normal @@<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
 
@@ -1148,8 +1149,7 @@ nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
-nnoremap <m-t> :<C-u>Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
-nmap g/t <m-t>
+nnoremap g/t :<C-u>Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
 nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
 imap     <m-y> <C-o><m-y>
 nnoremap g/d  :<C-u>Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
