@@ -32,6 +32,7 @@
   (define-key evil-normal-state-map "Z!" (lambda () (interactive) (evil-quit-all t)))
   (define-key evil-normal-state-map "ZQ" 'evil-quit-all)
   (define-key evil-normal-state-map "ZZ" 'evil-save-and-quit)
+  (define-key evil-normal-state-map "Zb" 'kill-this-buffer)
 
   (define-key evil-normal-state-map (kbd "g /") nil)
   (define-key evil-normal-state-map (kbd "g w") nil)
@@ -48,7 +49,6 @@
     (evil-leader/set-key
       "w" 'evil-write
       "C" 'customize-group
-      "b d" 'kill-this-buffer
       "V" (bind (term "vim"))))
 
   (after 'evil-matchit

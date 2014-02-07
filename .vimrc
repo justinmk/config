@@ -541,7 +541,7 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 
 " delete the 'head' of a path on the command line
-cnoremap <silent> <c-d> <C-\>e<sid>delete_until()<cr>
+cnoremap <silent> <c-x> <C-\>e<sid>delete_until()<cr>
 
 " cycle history
 cnoremap <c-p> <up>
@@ -594,8 +594,7 @@ nnoremap gwC :tabclose<cr>
 nnoremap gwT :wincmd T<cr>
 
 " manage buffers
-nnoremap <silent> <leader>bd :<c-u>call <SID>buf_kill(1)<cr>
-nnoremap <silent> <leader>b! :<c-u>call <SID>buf_kill(0)<cr>
+nnoremap <silent> Zb :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
@@ -604,7 +603,7 @@ nnoremap <C-q> :botright copen<cr>
 
 " working with projects/directories
 func! s:focus_netrw_window()
-  " if we are already in a netrw window, focus the alternate window
+  " if we are already in a netrw window, focus the previous window
   if &filetype ==# "netrw"
     wincmd p
     return
@@ -614,14 +613,14 @@ func! s:focus_netrw_window()
   let w = filter(range(1, winnr('$')), 'getwinvar(v:val, "netrw_winnr")
         \ && "netrw" ==# getbufvar(winbufnr(v:val), "&filetype")
         \')
-  if len(w) > 0 "switch to the existing netrw window
+  if len(w) > 0 "focus the existing netrw window
     exe w[0] 'wincmd W'
   else
     Vexplore
     " wincmd H
+    40 wincmd |
   endif
-  40 wincmd |
-  setlocal winfixwidth
+  " setlocal winfixwidth
 endf
 nnoremap <silent> ^ :call <sid>focus_netrw_window()<cr>
 " set working directory to the current buffer's directory
@@ -641,6 +640,7 @@ nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
+nnoremap Ub :Gblame<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
@@ -764,6 +764,7 @@ func! s:replace_without_yank(type)
   let &selection = sel_save
 endf
 nnoremap <silent> rr :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
+nnoremap <silent> rrr 0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
 
 inoremap jk <esc>
 inoremap kj <esc>
