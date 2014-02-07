@@ -29,7 +29,9 @@
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
-  (define-key evil-normal-state-map (kbd "ZZ") 'evil-quit-all)
+  (define-key evil-normal-state-map "Z!" (lambda () (interactive) (evil-quit-all t)))
+  (define-key evil-normal-state-map "ZQ" 'evil-quit-all)
+  (define-key evil-normal-state-map "ZZ" 'evil-save-and-quit)
 
   (define-key evil-normal-state-map (kbd "g /") nil)
   (define-key evil-normal-state-map (kbd "g w") nil)
