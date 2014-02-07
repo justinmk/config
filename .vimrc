@@ -522,7 +522,7 @@ func! s:u_init()
   "NOTE: TextChangedI might be broken before Vim 7.4.143
   autocmd sane_undo TextChanged,TextChangedI * call <sid>u_onchange()
 endf
-if (v:version > 703 || (v:version == 703 && has('patch867'))) "TextChangedI
+if 0 && (v:version > 703 || (v:version == 703 && has('patch867'))) "TextChangedI
   augroup sane_undo
     autocmd!
     "initial setup _after_ plugins (like repeat.vim) have loaded.
