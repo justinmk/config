@@ -136,7 +136,7 @@ Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
-Bundle 'tek/indentLine'
+Bundle 'Yggdroot/indentLine'
 Bundle 'osyo-manga/vim-over'
 Bundle 'terryma/vim-expand-region'
 Bundle 'mhinz/vim-signify'
@@ -574,10 +574,9 @@ nnoremap gw<c-w> :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
 nnoremap gw<c-h> :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
 nnoremap <silent> gww :<C-u>call <sid>switch_to_alt_win()<cr>
-" fit the current window height to the text height
-nnoremap <expr> gw<bs> 'ggz'.line('$')."\<cr>"
+nmap <silent> z; gww
 " fit the current window height to the selected text
-xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."gg"
+xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -594,7 +593,8 @@ nnoremap gwC :tabclose<cr>
 nnoremap gwT :wincmd T<cr>
 
 " manage buffers
-nnoremap <silent> Zb :<c-u>call <SID>buf_kill(0)<cr>
+nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
+nnoremap <silent> Zb :<c-u>call <SID>buf_kill(1)<cr>
 nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
@@ -711,7 +711,7 @@ func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
   let l:origbufname = bufname(l:origbuf)
   if a:mercy && &modified
-    echom 'buffer has unsaved changes (use '.g:mapleader.'d! to override)'
+    echom 'buffer has unsaved changes (use "ZB" to override)'
     return
   endif
 
@@ -732,6 +732,7 @@ nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
 "move to last character 
 nnoremap - $
 xnoremap - $
+onoremap - $
 
 " un-join (split) the current line at the cursor position
 nnoremap <c-j> i<c-j><esc>k$
@@ -810,8 +811,8 @@ nnoremap Q @@
 xnoremap Q @@
 
 nnoremap ZZ :wqa<cr>
-nnoremap ZQ :qa<cr>
-nnoremap Z! :qa!<cr>
+nnoremap Zq :qa<cr>
+nnoremap ZQ :qa!<cr>
 
 func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without moving the cursor
   let pos = [line(".") + a:line_offset, col(".") + a:col_offset]
