@@ -114,8 +114,7 @@ Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-vinegar'
 Bundle 'kshenoy/vim-signature'
-Bundle 'jiangmiao/auto-pairs'
-" Bundle 'Raimondi/delimitMate'
+Bundle 'Raimondi/delimitMate'
 Bundle 'zhaocai/DirDiff.vim'
 Bundle 'AndrewRadev/linediff.vim'
 " Bundle 'mbbill/undotree'
@@ -208,6 +207,9 @@ omap T <Plug>Sneak_T
 
 xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
+
+" force delimitmate to leave <c-g> alone
+imap <silent> <F42> <Plug>delimitMateJumpMany
 
 let g:vertical_move_default_mapping = 0
 nmap <silent> + <Plug>(vertical_move_down)
@@ -542,18 +544,6 @@ nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'
 
 " delete the 'head' of a path on the command line
 cnoremap <silent> <c-x> <C-\>e<sid>delete_until()<cr>
-
-" cycle history
-cnoremap <c-p> <up>
-cnoremap <c-n> <down>
-
-" move without arrow keys
-inoremap <m-h> <left>
-inoremap <m-l> <right>
-inoremap <m-j> <down>
-inoremap <m-k> <up>
-cnoremap <m-h> <left>
-cnoremap <m-l> <right>
 
 func! s:delete_until()
   let c = nr2char(getchar())

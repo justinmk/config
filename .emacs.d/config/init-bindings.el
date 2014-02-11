@@ -19,9 +19,7 @@
 (global-set-key (kbd "C-p") 'helm-projectile)
 
 (after 'smex
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "C-x C-m") 'smex)
-  (global-set-key (kbd "C-c C-m") 'smex))
+  (global-set-key (kbd "M-x") 'smex))
 
 (after 'evil
   (require-package 'key-chord)
@@ -36,7 +34,6 @@
 
   (define-key evil-normal-state-map (kbd "g /") nil)
   (define-key evil-normal-state-map (kbd "g w") nil)
-  (define-key evil-motion-state-map (kbd "C-f") nil)
   (define-key evil-normal-state-map (kbd "RET") nil)
   (define-key evil-visual-state-map (kbd "RET") nil)
   (define-key evil-normal-state-map (kbd "C-p") nil)
@@ -68,8 +65,7 @@
     (define-key evil-normal-state-map (kbd "g / F") 'helm-recentf)
     (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
     (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
-    (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring)
-    (global-set-key (kbd "C-f") 'helm-swoop))
+    (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring))
 
   (define-key evil-motion-state-map (kbd "g w") 'evil-window-map)
 
