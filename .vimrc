@@ -294,6 +294,7 @@ else
 set showtabline=1
 endif
 set foldmethod=marker
+set foldlevelstart=99 "open all folds by default
 set scrolloff=0
 set sidescrolloff=0
 set noequalalways
@@ -1126,10 +1127,10 @@ endif
 call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
 " search hidden directories:
-nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_mru file_rec <cr>
+nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_rec <cr>
 nnoremap g/f :<C-u>Unite -no-split -buffer-name=functions function<cr>
 nnoremap g/l :<C-u>Unite -no-split -buffer-name=lines line<cr>
-nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
+nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer file_mru<cr>
 " auto-generates an outline of the current buffer
 nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
