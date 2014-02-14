@@ -9,5 +9,7 @@
 
 (require 'helm-config)
 (require 'helm-swoop)
+; enable partial matches separated by SPC
+(helm-match-plugin-mode)
 
 (provide 'init-helm)
