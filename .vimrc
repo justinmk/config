@@ -133,6 +133,7 @@ endif
 " Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
+Bundle 'OrangeT/vim-csharp'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
 Bundle 'Yggdroot/indentLine'
@@ -309,7 +310,7 @@ if &startofline
     autocmd!
       " 1. disable 'startofline' temporarily while switching buffers, 
       " 2. then re-enable it on CursorMoved, 
-      " 3. then clear the CursorMoved autocommand to avoid spam
+      " 3. then clear the CursorMoved autocmd to avoid spam
       autocmd BufLeave * set nostartofline |
             \ autocmd vimrc_stayput CursorMoved,CursorMovedI * set startofline |
             \ autocmd! vimrc_stayput CursorMoved,CursorMovedI
@@ -941,17 +942,20 @@ let g:sexp_mappings = {
 
 " csharp ======================================================================
 " $COMSPEC /k "C:/Program Files (x86)/Microsoft Visual Studio 11.0/Common7/Tools/vsvars32.bat"
-
+augroup vimrc_dotnet
+  autocmd!
+  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
+augroup END
 
 
 augroup BufferDeath
   autocmd!
   " on BufLeave:
-  "   1. remove existing autocommand, if any
-  "   2. set up CursorHold autocommand
+  "   1. remove pending CursorHold autocmd, if any
+  "   2. set up CursorHold autocmd
   " on CursorHold:
   "   1. call function
-  "   2. remove the autocommand to avoid spam
+  "   2. remove the autocmd to avoid spam
   autocmd BufLeave * exec 'autocmd! BufferDeath CursorHold' |
         \ autocmd BufferDeath CursorHold * silent call <sid>clear_empty_buffers() |
         \ autocmd! BufferDeath CursorHold
