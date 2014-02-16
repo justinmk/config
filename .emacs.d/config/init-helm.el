@@ -1,6 +1,3 @@
-(setq helm-command-prefix-key "C-c h")
-(setq helm-quick-update t)
-
 (require-package 'helm)
 (require-package 'helm-swoop)
 
@@ -11,5 +8,8 @@
 (require 'helm-swoop)
 ; enable partial matches separated by SPC
 (helm-match-plugin-mode)
+
+(setq helm-command-prefix-key "C-c h")
+(setq helm-quick-update t)
 
 (provide 'init-helm)

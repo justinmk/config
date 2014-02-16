@@ -1126,8 +1126,9 @@ elseif s:is_mac
 endif
 call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
-" search hidden directories:
 nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_rec <cr>
+" search direcory of current file
+nnoremap g/.   :exec ":Unite -no-split -buffer-name=current_buffer file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
 nnoremap g/f :<C-u>Unite -no-split -buffer-name=functions function<cr>
 nnoremap g/l :<C-u>Unite -no-split -buffer-name=lines line<cr>
 nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer file_mru<cr>
