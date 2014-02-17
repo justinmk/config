@@ -4,7 +4,6 @@
 (when (fboundp 'menu-bar-mode) (unless (and (window-system) (eq system-type 'darwin)) (menu-bar-mode -1)))
 
 (add-to-list 'load-path user-emacs-directory) 
-(add-to-list 'load-path (concat user-emacs-directory "config"))
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
 
 (require 'package)
