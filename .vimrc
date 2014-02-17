@@ -151,6 +151,7 @@ Bundle 'justinmk/vim-sneak'
 Bundle 'Keithbsmiley/investigate.vim'
 Bundle 'tsukkee/unite-tag'
 Bundle 'Shougo/unite.vim'
+Bundle 'Shougo/unite-mru'
 Bundle 'Shougo/unite-outline'
 Bundle 'junegunn/vader.vim'
 if s:lua_patch885
@@ -1098,14 +1099,14 @@ call unite#custom#profile('files', 'filters', 'sorter_rank')
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
-let g:unite_source_file_mru_time_format = "(%Y/%m/%d %H:%M) "
+let g:neomru#time_format = "(%Y/%m/%d %H:%M) "
 let g:unite_source_buffer_time_format = "(%Y/%m/%d %H:%M) "
 let g:unite_enable_start_insert = 1
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 " TODO: https://github.com/Shougo/unite.vim/issues/347
-let s:unite_sources = 'file_rec/async,file_rec,file_mru,directory_rec/async,directory_rec,directory_mru'
+let s:unite_sources = 'file_rec/async,file_rec,neomru/file,directory_rec/async,directory_rec,neomru/directory'
 let g:unite_source_rec_max_cache_files = 5000
 call unite#custom#source(s:unite_sources, 'max_candidates', 5000)
 call unite#custom#source(s:unite_sources,
@@ -1122,20 +1123,22 @@ elseif s:is_mac
     let s:file_rec_ignore .= '\|Library'
 endif
 call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
+" don't track help files in MRU list
+call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
 nnoremap <silent> <c-p> :Unite -no-split -buffer-name=files file_rec <cr>
 " search direcory of current file
 nnoremap <silent> g/.   :exec ":Unite -no-split -buffer-name=current_buffer file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
 nnoremap <silent> g/f   :Unite -no-split -buffer-name=functions function<cr>
 nnoremap <silent> g/l   :Unite -no-split -buffer-name=lines line<cr>
-nnoremap <silent> gl    :Unite -no-split -buffer-name=buffer buffer file_mru<cr>
+nnoremap <silent> gl    :Unite -no-split -buffer-name=buffer buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
 nnoremap <silent> g/t   :Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
 nnoremap <silent> <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
-nnoremap <silent> g/d   :Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
+nnoremap <silent> g/d   :Unite -no-split neomru/directory directory_rec:. -buffer-name=cd -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process -buffer-name=processes<CR>
 
 " Custom mappings for the unite buffer
