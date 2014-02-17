@@ -95,7 +95,8 @@
   (define-key evil-normal-state-map (kbd "U d") 'vc-diff)
   (define-key evil-normal-state-map (kbd "U s") 'magit-status)
   (define-key evil-normal-state-map (kbd "U l") 'magit-log)
-  (define-key evil-normal-state-map (kbd "U b") 'git-messenger:popup-message)
+  (define-key evil-normal-state-map (kbd "U b") 'magit-blame-mode)
+  (define-key evil-normal-state-map (kbd "U B") 'git-messenger:popup-message)
 
 
   ;; (define-key evil-normal-state-map (kbd "c o") nil)

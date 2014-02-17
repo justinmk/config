@@ -20,4 +20,14 @@
 (require-package 'expand-region)
 (setq expand-region-fast-keys-enabled nil)
 
+(require-package 'highlight-parentheses)
+(require 'highlight-parentheses)
+(define-globalized-minor-mode global-highlight-parentheses-mode
+  highlight-parentheses-mode
+  (lambda ()
+    (highlight-parentheses-mode t)))
+(global-highlight-parentheses-mode t)
+;; (add-hook 'find-file-hook
+;;           'highlight-parentheses-mode)
+
 (provide 'init-editor)
