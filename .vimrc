@@ -241,13 +241,6 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 2
 let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline#extensions#whitespace#enabled = 0
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-if !s:is_gui
-  let g:airline_theme='simple'
-endif
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
@@ -257,7 +250,7 @@ if !s:is_msysgit && !s:is_gui
     "avoid: m-b m-d m-f
     set <m-g>=g <m-h>=h <m-j>=j <m-k>=k <m-l>=l <m-m>=m
           \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
-          \ <m-t>=t <m-x>=x <m-y>=y <m-z>=z
+          \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
           \ <m-]>=]
 endif
 
@@ -289,11 +282,7 @@ set matchtime=3
 set noerrorbells novisualbell t_vb= visualbell
 
 set timeoutlen=3000
-if s:plugins
-set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
-else
-set showtabline=1
-endif
+set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldmethod=marker
 set foldlevelstart=99 "open all folds by default
 set scrolloff=0
@@ -562,11 +551,8 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 " manage windows
 nnoremap gw <c-w>
-nnoremap gw<c-w> :setlocal winfixwidth!<bar>echo 'winfixwidth='.&winfixwidth<cr>
-nnoremap gw<c-h> :setlocal winfixheight!<bar>echo 'winfixheight='.&winfixheight<cr>
 nnoremap gwV :vnew<cr>
-nnoremap <silent> gww :<C-u>call <sid>switch_to_alt_win()<cr>
-nmap <silent> z; gww
+nnoremap <silent> <m-w> :<C-u>call <sid>switch_to_alt_win()<cr>
 " fit the current window height to the selected text
 xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
 
@@ -618,6 +604,12 @@ nnoremap <silent> ^ :call <sid>focus_netrw_window()<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 nnoremap <leader>.. :cd ..<bar>pwd<cr>
+" show git branch with ctrl-g info
+func! s:ctrl_g()
+  redir => msg | silent file | redir END
+  echo fugitive#head(7) msg[1:]
+endf
+nnoremap <C-g> :call <sid>ctrl_g()<cr>
 " show the current working directory
 nnoremap <M-g> :<C-u>pwd<cr>
 " insert the current file path
@@ -1082,6 +1074,8 @@ if s:lua_patch885
   call s:init_neocomplete()
 endif
 
+set wildcharm=<C-z>
+nnoremap <C-b> :buffer <C-z><S-Tab>
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
 set wildignore+=tags,*.o,*.obj,*.dll,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
@@ -1110,8 +1104,7 @@ let g:unite_enable_start_insert = 1
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
-" TODO: https://github.com/bling/dotvim/blob/master/vimrc#L535
-"       https://github.com/Shougo/unite.vim/issues/347
+" TODO: https://github.com/Shougo/unite.vim/issues/347
 let s:unite_sources = 'file_rec/async,file_rec,file_mru,directory_rec/async,directory_rec,directory_mru'
 let g:unite_source_rec_max_cache_files = 5000
 call unite#custom#source(s:unite_sources, 'max_candidates', 5000)
@@ -1130,29 +1123,28 @@ elseif s:is_mac
 endif
 call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 
-nnoremap <c-p> :<C-u>Unite -no-split -buffer-name=files file_rec <cr>
+nnoremap <silent> <c-p> :Unite -no-split -buffer-name=files file_rec <cr>
 " search direcory of current file
-nnoremap g/.   :exec ":Unite -no-split -buffer-name=current_buffer file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
-nnoremap g/f :<C-u>Unite -no-split -buffer-name=functions function<cr>
-nnoremap g/l :<C-u>Unite -no-split -buffer-name=lines line<cr>
-nnoremap gl  :<C-u>Unite -no-split -buffer-name=buffer buffer file_mru<cr>
+nnoremap <silent> g/.   :exec ":Unite -no-split -buffer-name=current_buffer file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
+nnoremap <silent> g/f   :Unite -no-split -buffer-name=functions function<cr>
+nnoremap <silent> g/l   :Unite -no-split -buffer-name=lines line<cr>
+nnoremap <silent> gl    :Unite -no-split -buffer-name=buffer buffer file_mru<cr>
 " auto-generates an outline of the current buffer
-nnoremap <m-o> :<C-u>Unite -no-split -buffer-name=outline outline<cr>
+nnoremap <silent> <m-o> :Unite -no-split -buffer-name=outline outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
-nnoremap g/t :<C-u>Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
-nnoremap <m-y> :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
-imap     <m-y> <C-o><m-y>
-nnoremap g/d  :<C-u>Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
-nnoremap g/ps :<C-u>Unite process -buffer-name=processes<CR>
+nnoremap <silent> g/t   :Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
+nnoremap <silent> <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
+imap     <silent> <m-y> <C-o><m-y>
+nnoremap <silent> g/d   :Unite -no-split directory_mru directory_rec:. -buffer-name=cd -default-action=cd<CR>
+nnoremap <silent> g/ps  :Unite process -buffer-name=processes<CR>
 
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
-  imap <buffer> <c-a> <Plug>(unite_choose_action)
   nmap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
-  " change directories in unite
-  nmap <buffer> <nowait> g/d <Plug>(unite_restart)
+  nnoremap <silent><buffer> <C-n> j
+  nnoremap <silent><buffer> <C-p> k
 endfunction
 
 " delete empty, non-visible, non-special buffers having no significant undo stack.
@@ -1180,22 +1172,15 @@ function! s:clear_empty_buffers()
         \  && -1 == getfsize(expand("#".v:val.":p", 1)) 
         \ ')
 
-  " echom "========================================================"
-  " echom "empty_bufs=" len(empty_bufs)
-  " echom "nonexistent=" len(nonexistent)
-  " for i in empty_bufs
-  "   echom "empty /" i "/" bufname(i)
-  " endfor
-  " for i in nonexistent
-  "   echom "nonexistent /" i "/" bufname(i)
-  " endfor
-
   if !empty(empty_bufs + nonexistent)
     exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
   endif
 endfunction
 
 endif "}}}
+
+" statusline  =================================================================
+set statusline=%{winnr()}\ %<%f\ %h%m%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
 
 " session  ====================================================================
 set sessionoptions-=globals
