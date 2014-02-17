@@ -1,4 +1,3 @@
-(require-package 'rainbow-delimiters)
 (require-package 'elisp-slime-nav)
 (require-package 'clojure-mode)
 (require-package 'cider)
@@ -6,9 +5,6 @@
 
 (require 'cider)
 (require 'ac-nrepl)
-
-;; rainbows everywhere!
-(global-rainbow-delimiters-mode)
 
 (defun my-lisp-hook ()
   (progn
