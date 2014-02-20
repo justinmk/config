@@ -1,5 +1,9 @@
-" set global shortcut in Visual Studio options:
-"   Window.ActivateDocumentWindow => Esc
+" Set global shortcut in Visual Studio options:
+"     Window.ActivateDocumentWindow => Esc
+" External tool to open new Vim at current line:
+"     gvim.exe $(ItemPath) +$(CurLine)
+" External tool to open in Vim server:
+"     gvim.exe --servername vsvim --remote-silent $(ItemPath)
 
 let mapleader = ","
 let g:mapleader = ","
@@ -82,7 +86,7 @@ nnoremap g/r :vsc Edit.Replace<cr>
 nnoremap <C-t> :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
 nnoremap K     :vsc Edit.QuickInfo<cr>
 nnoremap gK    :vsc ReSharper.ReSharper_InspectThis<cr>
-nnoremap <C-k> :vsc Edit.PeekDefinition<cr>
+nnoremap gk    :vsc Edit.PeekDefinition<cr>
 
 "show refactor menu
 nnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>

@@ -111,7 +111,6 @@ Bundle 'tpope/vim-rsi'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-markdown'
-Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-vinegar'
 Bundle 'kshenoy/vim-signature'
 Bundle 'Raimondi/delimitMate'
@@ -130,7 +129,6 @@ endif
 if !s:is_cygwin && (has('python') || has('python3'))
 Bundle 'davidhalter/jedi-vim'
 endif
-" Bundle 'bling/vim-airline'
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'OrangeT/vim-csharp'
@@ -593,7 +591,7 @@ func! s:focus_netrw_window()
         \ && "netrw" ==# getbufvar(winbufnr(v:val), "&filetype")
         \')
   if len(w) > 0 "focus the existing netrw window
-    exe w[0] 'wincmd W'
+    exe w[0] 'wincmd w'
   else
     Vexplore
     " wincmd H
@@ -636,7 +634,9 @@ xmap <enter> <Plug>(quickrun)
 " nnoremap c<cr>jj    :%!python -m json.tool<cr>
 " nnoremap z<cr>jj    :%!python -m json.tool<cr>
 " nnoremap c<space>jj :%!python -m json.tool<cr>
+" nnoremap g<bar>jj   :%!python -m json.tool<cr>
 nnoremap <bar>jj :%!python -m json.tool<cr>
+xnoremap <bar>jj :!python -m json.tool<cr>
 
 " align
 " nnoremap c<space>       :easyalign...
@@ -795,6 +795,9 @@ noremap <F1> <nop>
 nnoremap Q @@
 xnoremap Q @@
 
+" repeat the last edit on the next [count] matches.
+nnoremap <C-n> @='n.'<cr>
+
 nnoremap ZZ :wqa<cr>
 nnoremap Zq :qa<cr>
 nnoremap ZQ :qa!<cr>
@@ -938,6 +941,7 @@ let g:sexp_mappings = {
 augroup vimrc_dotnet
   autocmd!
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
+  autocmd FileType cs setlocal tabstop=4 shiftwidth=4 copyindent
 augroup END
 
 
