@@ -184,18 +184,18 @@
   (after 'elisp-slime-nav-autoloads
     (evil-define-key 'normal emacs-lisp-mode-map
       (kbd "g d") 'elisp-slime-nav-find-elisp-thing-at-point
-      (kbd "K")   'elisp-slime-nav-describe-elisp-thing-at-point))
-  (evil-define-key 'normal emacs-lisp-mode-map
-    (kbd "RET") 'eval-last-sexp
-    (kbd "g X") 'eval-buffer)
-  (evil-define-key 'visual emacs-lisp-mode-map
-    (kbd "RET") 'eval-region)
+      (kbd "K")   'elisp-slime-nav-describe-elisp-thing-at-point
+      (kbd "RET") 'eval-defun
+      (kbd "g X") 'eval-buffer)
+    (evil-define-key 'visual emacs-lisp-mode-map
+      (kbd "RET") 'eval-region))
 
   ;; clojure / cider
   (evil-define-key 'normal clojure-mode-map
     (kbd "g d") 'cider-jump
     (kbd "K") 'cider-doc
     (kbd "g K") 'cider-javadoc
+    ;Evaluate the current toplevel form. PREFIX => print in buffer.
     (kbd "RET") 'cider-eval-defun-at-point
     (kbd "g X") 'cider-eval-buffer)
   (evil-define-key 'visual clojure-mode-map
