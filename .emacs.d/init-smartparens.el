@@ -7,6 +7,7 @@
 
 (smartparens-global-mode t)
 (show-smartparens-global-mode)
+(show-paren-mode -1) ; not needed with smartparens
 
 (defun my-open-block-c-mode (id action context)
   (when (eq action 'insert)

@@ -86,7 +86,8 @@
 
 (setq sentence-end-double-space nil
       mark-ring-max 64
-      global-mark-ring-max 128)
+      global-mark-ring-max 128
+      save-interprogram-paste-before-kill t)
 
 ;; highlight entire sexp instead of just the parens.
 (show-paren-mode t)
