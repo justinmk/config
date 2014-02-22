@@ -406,8 +406,7 @@ set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default 
 set linebreak
 set nowrap
 
-set autoindent " Autoindent when starting new line, or using 'o' or 'O'.
-set smartindent
+set autoindent " NOTE: 'smartindent' is superseded by 'cindent' and 'indentexpr'. 
 
 " =============================================================================
 " util functions
@@ -550,6 +549,19 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 " manage windows
 nnoremap gw <c-w>
+
+" go to nth window
+" this also works for 11gw, 21gw, ...
+nnoremap 1gw 1<c-w>w
+nnoremap 2gw 2<c-w>w
+nnoremap 3gw 3<c-w>w
+nnoremap 4gw 4<c-w>w
+nnoremap 5gw 5<c-w>w
+nnoremap 6gw 6<c-w>w
+nnoremap 7gw 7<c-w>w
+nnoremap 8gw 8<c-w>w
+nnoremap 9gw 9<c-w>w
+
 nnoremap gwV :vnew<cr>
 nnoremap <silent> <m-w> :<C-u>call <sid>switch_to_alt_win()<cr>
 " fit the current window height to the selected text
@@ -593,9 +605,9 @@ func! s:focus_netrw_window()
   if len(w) > 0 "focus the existing netrw window
     exe w[0] 'wincmd w'
   else
-    Vexplore
+    Explore
     " wincmd H
-    40 wincmd |
+    " 40 wincmd |
   endif
   " setlocal winfixwidth
 endf

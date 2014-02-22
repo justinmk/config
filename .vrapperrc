@@ -61,6 +61,10 @@ eclipseaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
 au "Dart Editor" eclipseaction eclipsegotodef com.google.dart.tools.ui.edit.text.dart.open.editor
 nnoremap gd :eclipsegotodef<cr>
 
+"version control
+eclipseaction eclipsecomparehead org.eclipse.egit.ui.team.CompareWithHead
+nnoremap Ud :eclipsecomparehead<cr>
+
 eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
 nnoremap gr :eclipsefindref<cr>
 
