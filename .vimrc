@@ -1111,6 +1111,7 @@ set tags^=./tags;,tags;,~/.vimtags
 
 if s:plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
+call unite#custom#profile('', 'context', {'no_split': 1})
 
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
@@ -1144,18 +1145,18 @@ call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.t
 
 nnoremap <silent> <c-p> :Unite -no-split -buffer-name=files file_rec <cr>
 " search direcory of current file
-nnoremap <silent> g/.   :exec ":Unite -no-split -buffer-name=current_buffer file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
-nnoremap <silent> g/f   :Unite -no-split -buffer-name=functions function<cr>
-nnoremap <silent> g/l   :Unite -no-split -buffer-name=lines line<cr>
-nnoremap <silent> gl    :Unite -no-split -buffer-name=buffer buffer neomru/file<cr>
+nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
+nnoremap <silent> g/f   :Unite function<cr>
+nnoremap <silent> g/l   :Unite line<cr>
+nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
-nnoremap <silent> <m-o> :Unite -no-split -buffer-name=outline outline<cr>
+nnoremap <silent> <m-o> :Unite outline<cr>
 " TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
-nnoremap <silent> g/t   :Unite -no-split -buffer-name=tag tag/file tag tag/include<cr>
-nnoremap <silent> <m-y> :Unite -no-split -buffer-name=yank history/yank<cr>
+nnoremap <silent> g/t   :Unite tag/file tag tag/include<cr>
+nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
-nnoremap <silent> g/d   :Unite -no-split neomru/directory directory_rec:. -buffer-name=cd -default-action=cd<CR>
-nnoremap <silent> g/ps  :Unite process -buffer-name=processes<CR>
+nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
+nnoremap <silent> g/ps  :Unite process <CR>
 
 " Custom mappings for the unite buffer
 function! s:unite_settings()
