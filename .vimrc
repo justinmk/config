@@ -209,7 +209,7 @@ xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
 
 " force delimitmate to leave <c-g> alone
-imap <silent> <F42> <Plug>delimitMateJumpMany
+imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
 
 let g:vertical_move_default_mapping = 0
 nmap <silent> + <Plug>(vertical_move_down)
@@ -796,9 +796,6 @@ nnoremap k gk
 inoremap <Down> <C-o>gj
 inoremap <Up>   <C-o>gk
 
-"allow cursor to move anywhere in all modes
-nnoremap cov :set <C-R>=empty(&virtualedit) ? 'virtualedit=all' : 'virtualedit='<CR><CR>
-
 " disable F1 help key
 noremap! <F1> <nop>
 noremap <F1> <nop>
@@ -1151,7 +1148,6 @@ nnoremap <silent> g/l   :Unite line<cr>
 nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline<cr>
-" TODO: https://github.com/ivalkeen/vim-ctrlp-tjump
 nnoremap <silent> g/t   :Unite tag/file tag tag/include<cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
@@ -1161,6 +1157,7 @@ nnoremap <silent> g/ps  :Unite process <CR>
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
+  let b:delimitMate_autoclose = 0
   nmap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   nnoremap <silent><buffer> <C-n> j
