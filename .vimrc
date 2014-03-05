@@ -132,6 +132,7 @@ endif
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'OrangeT/vim-csharp'
+Bundle 'leafo/moonscript-vim'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
 Bundle 'Yggdroot/indentLine'
@@ -1148,7 +1149,7 @@ nnoremap <silent> g/l   :Unite line<cr>
 nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline<cr>
-nnoremap <silent> g/t   :Unite tag/file tag tag/include<cr>
+nnoremap <silent> g/t   :Unite tag tag/include tag/file <cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
@@ -1199,22 +1200,19 @@ endif "}}}
 " statusline  =================================================================
 set statusline=%{winnr()}\ %<%f\ %h%m%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
 
-" session  ====================================================================
-set sessionoptions-=globals
+" session  ==============================================================  "{{{
 set sessionoptions-=blank
-let s:sessiondir  = expand("~/.vim/sessions", 1)
-let s:sessionfile = expand(s:sessiondir . "/session.vim", 1)
-let s:sessionlock = expand(s:sessiondir . "/session.lock", 1)
+let s:sessionfile = expand("~/.vim/session.vim", 1)
+let s:sessionlock = expand("~/.vim/session.lock", 1)
 
 function! LoadSession()
-  if !isdirectory(s:sessiondir) && !EnsureDir(s:sessiondir)
-    echoerr "failed to create session dir: " . s:sessiondir 
-  endif
-
   if -1 == writefile([''], s:sessionlock)
-    echoerr "failed to create session lock: " . s:sessionlock
+    echoerr "session: failed to create lock: " . s:sessionlock
     return
   endif
+
+  "use a separate viminfo to avoid losing command history by other vim instances
+  set viminfo+=n~/.viminfo_session
 
   if filereadable(s:sessionfile)
     exe 'source ' s:sessionfile
@@ -1225,22 +1223,19 @@ function! LoadSession()
   autocmd VimLeave * call delete(s:sessionlock)
 endfunction
 
-if s:is_gui
-  if !filereadable(s:sessionlock)
-    "use a separate viminfo to avoid losing command history by other vim instances
-    set viminfo+=n~/.viminfo_session
-
-    " set viminfo+=% "remember buffer list
+if s:is_gui && !filereadable(s:sessionlock)
+  augroup vimrc_session
+    autocmd!
+    " cancel VimEnter if session was explicitly loaded via 'vim -S'.
+    autocmd SessionLoadPost * autocmd! vimrc_session
     autocmd VimEnter * nested call LoadSession()
-  endif
-endif
+  augroup END
+endif "}}}
 
 if s:is_cygwin
   " use separate viminfo to avoid weird permissions issues
   set viminfo+=n~/.viminfo_cygwin
-endif
 
-if s:is_cygwin
   " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
   let &t_ti.="\e[1 q"
   let &t_SI.="\e[5 q"
