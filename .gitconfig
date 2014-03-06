@@ -65,4 +65,9 @@
 [guitool "vim"]
   cmd = source ~/.bashrc && gvim $FILENAME
   noconsole = yes
+[tig "color"]
+  date = cyan default bold
+  # commit dot in the revision graph
+  graph-commit = cyan default bold
+  diff-stat = white default bold
 
