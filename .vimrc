@@ -1,6 +1,23 @@
 " windows builds: http://tuxproject.de/projects/vim/
 "                 http://files.kaoriya.net/vim/
 "                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
+" neovim:
+"   msys:
+"       http://sourceforge.net/projects/msys2/files/Alpha-versions/
+"       Synchronize package databases
+"         $ pacman -Sy
+"       Install packages/groups:
+"         $ pacman -S openssh
+"         $ pacman -S base-devel
+"         $ pacman -S msys2-devel
+"   mingw:
+"       http://mingw-w64.sourceforge.net/download.php#mingw-builds
+"       http://nuwen.net/mingw.html
+"   julia build moving to msys2:
+"       https://github.com/JuliaLang/julia/issues/3640
+"   julia msys2 build instructions:
+"       https://github.com/JuliaLang/julia/pull/5982
+"
 " MacVim with homebrew:
 "   brew install macvim --with-cscope --with-luajit --HEAD --override-system-vim
 "   brew linkapps --system
@@ -637,10 +654,10 @@ nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
+nnoremap UG :cd %:p:h<bar>silent exec '!git gui'<bar>cd -<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
-autocmd FileType vim nnoremap <buffer> gX :source %<cr>
 xmap <enter> <Plug>(quickrun)
 
 " filter
@@ -947,7 +964,8 @@ let g:sexp_mappings = {
 "    https://github.com/xolox/vim-lua-inspect
 
 " csharp ======================================================================
-" $COMSPEC /k "C:/Program Files (x86)/Microsoft Visual Studio 11.0/Common7/Tools/vsvars32.bat"
+" %VS120COMNTOOLS% => C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\
+" $COMSPEC /k $VS120COMNTOOLS."vsvars32.bat"
 augroup vimrc_dotnet
   autocmd!
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
@@ -989,9 +1007,11 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
+  autocmd FileType vim nnoremap <buffer> gX :source %<cr>
+
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
 
-  autocmd BufEnter,WinEnter * setlocal cursorline | if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
+  autocmd WinEnter * setlocal cursorline | if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
   autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
 
   if exists("*mkdir") "auto-create directories for new files
