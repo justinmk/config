@@ -83,6 +83,7 @@ nnoremap g/t :vsc ReSharper.ReSharper_GotoType<cr>
 nnoremap g// :vsc Edit.FindinFiles<cr>
 " find/replace in current buffer
 nnoremap g/r :vsc Edit.Replace<cr>
+nnoremap gl  :vsc ReSharper.ReSharper_GotoRecentFiles<cr>
 
 nnoremap <C-t> :vsc ReSharper.ReSharper_TypeHierarchy_Browse<cr>
 nnoremap K     :vsc Edit.QuickInfo<cr>
