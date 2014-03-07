@@ -11,7 +11,6 @@
 (setq evilnc-hotkey-comment-operator "gc")
 
 (require-package 'evil)
-(require-package 'evil-leader)
 (require-package 'evil-visualstar)
 (require-package 'evil-nerd-commenter)
 (require-package 'evil-indent-textobject)
@@ -19,14 +18,12 @@
 (require-package 'surround)
 
 (require 'evil)
-(require 'evil-leader)
 (require 'evil-nerd-commenter)
 (require 'evil-indent-textobject)
 (require 'evil-visualstar)
 (require 'evil-matchit)
 (require 'surround)
 
-(global-evil-leader-mode)
 (evil-mode t)
 (global-surround-mode 1)
 

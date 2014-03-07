@@ -1,3 +1,5 @@
+;; https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
+
 (require 'evil)
 (require 'clojure-mode)
 (require 'key-chord)
@@ -25,28 +27,28 @@
   (require-package 'key-chord)
   (key-chord-mode 1)
   (setq key-chord-two-keys-delay 0.5)
+
+  ; exclusive line selection, like Vim. http://dnquark.com/blog/2012/02/emacs-evil-ecumenicalism/
+  (setq evil-want-visual-char-semi-exclusive t)
+
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
   (define-key evil-normal-state-map "ZQ" (lambda () (interactive) (evil-quit-all t)))
   (define-key evil-normal-state-map "Zq" 'evil-quit-all)
   (define-key evil-normal-state-map "ZZ" 'evil-save-and-quit)
   (define-key evil-normal-state-map "Zb" 'kill-this-buffer)
 
+  ;; obliterate unwanted emacs default key bindings.
   (define-key evil-normal-state-map (kbd "g /") nil)
   (define-key evil-normal-state-map (kbd "g w") nil)
   (define-key evil-normal-state-map (kbd "RET") nil)
   (define-key evil-visual-state-map (kbd "RET") nil)
   (define-key evil-normal-state-map (kbd "C-p") nil)
-
+  (global-unset-key (kbd "M-v"))
   (global-unset-key (kbd "C-l"))
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
 
-  (after 'evil-leader
-    (evil-leader/set-leader ",")
-    (evil-leader/set-key
-      "w" 'evil-write
-      "C" 'customize-group
-      "V" (bind (term "vim"))))
+  (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
+  (define-key evil-normal-state-map (kbd "M-v") (bind (term "vim")))
+  (define-key evil-normal-state-map (kbd ", w") 'evil-write)
 
   (after 'evil-matchit
     (define-key evil-normal-state-map "%" 'evilmi-jump-items))
@@ -98,11 +100,9 @@
   (define-key evil-normal-state-map (kbd "U b") 'magit-blame-mode)
   (define-key evil-normal-state-map (kbd "U B") 'git-messenger:popup-message)
 
-
-  ;; (define-key evil-normal-state-map (kbd "c o") nil)
-  ;; (define-key evil-normal-state-map (kbd "c o w")
-  ;;   (bind
-  ;;    (toggle-truncate-lines)))
+  ;; "The end user almost never has to use defadvice despite what the wiki tells you"
+  ;;    http://stackoverflow.com/questions/14606037/advising-an-emacs-interactive-function-before
+  ;; (define-key evil-normal-state-map (kbd "cow") 'toggle-truncate-lines)
 
   (define-key evil-normal-state-map (kbd "g o t")
     (bind
