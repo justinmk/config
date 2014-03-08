@@ -107,7 +107,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'justinmk/molokai'
-if !s:is_windows
+if executable("tmux")
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
 endif
@@ -1133,7 +1133,6 @@ call unite#custom#profile('', 'context', {'no_split': 1})
 
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
-let g:unite_force_overwrite_statusline = 0
 let g:neomru#time_format = "(%Y/%m/%d %H:%M) "
 let g:unite_source_buffer_time_format = "(%Y/%m/%d %H:%M) "
 let g:unite_enable_start_insert = 1
@@ -1218,7 +1217,7 @@ endfunction
 endif "}}}
 
 " statusline  =================================================================
-set statusline=%{winnr()}\ %<%f\ %h%m%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
+set statusline=%{winnr()}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
 
 " session  ==============================================================  "{{{
 set sessionoptions-=blank
