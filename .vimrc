@@ -654,7 +654,7 @@ nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
-nnoremap UG :cd %:p:h<bar>silent exec '!git gui'<bar>cd -<cr>
+nnoremap UG :cd %:p:h<bar>silent exec '!git gui &'<bar>cd -<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
