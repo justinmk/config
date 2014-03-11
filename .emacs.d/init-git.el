@@ -1,5 +1,4 @@
 (require-package 'magit)
-(require-package 'gist)
 (require-package 'git-messenger)
 
 (setq magit-diff-options '("--histogram"))
