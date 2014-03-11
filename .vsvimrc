@@ -46,6 +46,8 @@ nnoremap <c-l> :nohlsearch<cr>
 xnoremap - $
 nnoremap - $
 
+nnoremap <c-n> n.
+
 nnoremap ]e :m+1<cr>
 nnoremap [e :m-2<cr>j
 xnoremap ]e :m'>+1<cr>gv

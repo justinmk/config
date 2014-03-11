@@ -30,6 +30,8 @@ nnoremap gl :ls<cr>
 " select last inserted text
 nnoremap gV `[v`]
 
+nnoremap <c-n> n.
+
 nnoremap ]e :.,.m<space>.+1<cr>
 nnoremap [e :.,.m<space>.-2<cr>
 vnoremap ]e :m<space>.+1<cr>gv
