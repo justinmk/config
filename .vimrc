@@ -107,6 +107,8 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'justinmk/molokai'
+Bundle 'noahfrederick/vim-hemisu'
+Bundle 'noahfrederick/vim-noctu'
 if executable("tmux")
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
@@ -251,13 +253,6 @@ let g:EclimBuffersTabTracking = 0
 
 let g:SignatureMap = { 'GotoNextLineAlpha': "", 'GotoPrevLineAlpha': "", 'GotoNextSpotAlpha': "", 'GotoPrevSpotAlpha': "",
                      \ 'GotoNextLineByPos': "", 'GotoPrevLineByPos': "", 'GotoNextSpotByPos': "]'", 'GotoPrevSpotByPos': "['", }
-
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#tabline#fnamemod = ':t'
-let g:airline#extensions#tabline#buffer_min_count = 2
-let g:airline#extensions#tabline#tab_nr_type = 1
-let g:airline#extensions#whitespace#enabled = 0
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
@@ -654,7 +649,7 @@ nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
-nnoremap UG :cd %:p:h<bar>silent exec '!git gui &'<bar>cd -<cr>
+nnoremap UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
@@ -801,6 +796,8 @@ xnoremap / <esc>/\%V
 
 " select last inserted text
 nnoremap gV `[v`]
+
+nnoremap cg* *``cgn
 
 " replay macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
@@ -1007,7 +1004,7 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  autocmd FileType vim nnoremap <buffer> gX :source %<cr>
+  autocmd FileType vim nnoremap <buffer> gX :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
 
