@@ -492,48 +492,6 @@ endf
 " =============================================================================
 " normal mode
 
-" vim-stim
-func! s:u_redo()
-  let b:foo_redoing = 1
-  call repeat#wrap("\<C-R>",v:count)
-  let b:foo_before_last_move = b:foo_last_move
-endf
-func! s:u_undo()
-  let b:foo_undoing = 1
-  call repeat#wrap('u',v:count)
-  if &modifiable && exists("b:foo_before_change") && 0 != b:foo_before_change[0]
-    call cursor(b:foo_before_change)
-  endif
-endf
-func! s:u_oncursormove()
-    let b:foo_before_last_move = get(b:, "foo_last_move", [0,0])
-    let b:foo_last_move = [line('.'), col('.')]
-endf
-func! s:u_onchange()
-  if !get(b:, "foo_redoing", 0)  && !get(b:, "foo_undoing", 0) "ignore changes _during_ undo
-    let b:foo_before_change = get(b:, "foo_before_last_move", [0,0])
-  else "TextChanged fires after u_undo() returns, so we must clean up here rather than in u_undo().
-    let b:foo_undoing = 0
-    let b:foo_redoing = 0
-    silent! unlet b:foo_before_change "reset; we only support 1 undo
-  endif
-endf
-func! s:u_init()
-  nnoremap <silent> u     :<c-u>call <sid>u_undo()<cr>
-  nnoremap <silent> <c-r> :<c-u>call <sid>u_redo()<cr>
-  autocmd! sane_undo *
-  autocmd sane_undo CursorMoved * call <sid>u_oncursormove()
-  "NOTE: TextChangedI might be broken before Vim 7.4.143
-  autocmd sane_undo TextChanged,TextChangedI * call <sid>u_onchange()
-endf
-if 0 && (v:version > 703 || (v:version == 703 && has('patch867'))) "TextChangedI
-  augroup sane_undo
-    autocmd!
-    "initial setup _after_ plugins (like repeat.vim) have loaded.
-    autocmd CursorMoved * call <sid>u_init() | call <sid>u_oncursormove()
-  augroup END
-endif
-
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
 
