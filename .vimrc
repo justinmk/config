@@ -946,10 +946,6 @@ augroup vimrc_autocmd
   " Highlight VCS conflict markers
   " autocmd BufEnter fugitive\:* match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-  autocmd FileType unite call s:unite_settings()
-  " obliterate unite buffers (marks especially).
-  autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
-
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
@@ -1127,10 +1123,18 @@ imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process <CR>
 
+augroup vimrc_unite
+  autocmd!
+  " obliterate unite buffers (marks especially).
+  autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
+  autocmd FileType unite autocmd vimrc_unite CursorMoved <buffer> call s:unite_settings() | autocmd! vimrc_unite * <buffer>
+augroup END
+
 " Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
   let b:delimitMate_autoclose = 0
+  unmap! <buffer> <c-d>
   nmap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   nnoremap <silent><buffer> <C-n> j
