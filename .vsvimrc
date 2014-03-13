@@ -47,6 +47,7 @@ xnoremap - $
 nnoremap - $
 
 nnoremap <c-n> n.
+nnoremap Q @@
 
 nnoremap ]e :m+1<cr>
 nnoremap [e :m-2<cr>j

@@ -31,6 +31,7 @@ nnoremap gl :ls<cr>
 nnoremap gV `[v`]
 
 nnoremap <c-n> n.
+nnoremap Q @@
 
 nnoremap ]e :.,.m<space>.+1<cr>
 nnoremap [e :.,.m<space>.-2<cr>

@@ -762,6 +762,11 @@ xnoremap @q :normal @q<CR>
 xnoremap @@ :normal @@<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
+" disable Ex mode key and map it to something awesome
+nnoremap Q @@
+xnoremap Q :normal @@<CR>
+" repeat the last edit on the next [count] matches.
+nnoremap <C-n> @='n.'<cr>
 
 "j,k move by screen line instead of file line
 nnoremap j gj
@@ -772,13 +777,6 @@ inoremap <Up>   <C-o>gk
 " disable F1 help key
 noremap! <F1> <nop>
 noremap <F1> <nop>
-
-" disable Ex mode key and map it to something awesome
-nnoremap Q @@
-xnoremap Q @@
-
-" repeat the last edit on the next [count] matches.
-nnoremap <C-n> @='n.'<cr>
 
 nnoremap ZZ :wqa<cr>
 nnoremap Zq :qa<cr>
