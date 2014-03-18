@@ -34,8 +34,7 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
-let s:starting = has('vim_starting')
-if s:starting
+if has('vim_starting')
   " ensure that we always start with Vim defaults (as opposed to those set by the current system)
   set all&
   " caution: this resets many settings, eg 'history'
@@ -61,7 +60,7 @@ endif
 let mapleader = ","
 let g:mapleader = ","
 
-let s:is_cygwin = has('win32unix') || has('win64unix')
+let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
@@ -71,7 +70,7 @@ let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has(
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
 let s:plugins=isdirectory(expand("~/.vim/bundle/vundle", 1))
 
-if s:starting && s:is_windows && !s:is_cygwin && !s:is_msysgit
+if has('vim_starting') && s:is_windows && !s:is_cygwin && !s:is_msysgit
   set runtimepath+=~/.vim/
 endif
 
@@ -83,11 +82,7 @@ endif
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
 
-"==============================================================================
-" vundle   https://github.com/gmarik/vundle/
-
-"boostrap vundle on new systems
-fun! InstallVundle()
+fun! InstallVundle() "bootstrap vundle on new systems
     echo "Installing Vundle..."
     silent call mkdir(expand("~/.vim/bundle", 1), 'p')
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
@@ -97,7 +92,7 @@ if s:plugins "{{{
 
 filetype off " required!
 
-if s:starting
+if has('vim_starting')
   set runtimepath+=~/.vim/bundle/vundle/
 endif
 
@@ -151,7 +146,7 @@ endif
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'OrangeT/vim-csharp'
-if s:is_windows
+if s:is_windows && has('python')
 Bundle 'nosami/Omnisharp'
 endif
 Bundle 'leafo/moonscript-vim'
@@ -341,11 +336,6 @@ elseif s:is_gui "linux or other
 endif
 
 "colorscheme {{{
-  if s:plugins && &t_Co != 88 && &t_Co < 256 && (s:is_tmux || &term =~? 'xterm')
-    " force colors
-    set t_Co=256
-  endif
-
   let s:color_force_high_contrast = ' 
         \ if &background == "dark"
         \ | hi Normal  guibg=black guifg=white ctermfg=255 ctermbg=0
@@ -355,7 +345,7 @@ endif
 
   if !s:is_mac
     exe s:color_force_high_contrast
-    if s:starting
+    if has('vim_starting')
       exe 'autocmd ColorScheme * '.s:color_force_high_contrast
     endif
   endif
@@ -390,7 +380,7 @@ endif
           \ | endif
           \'
 
-    if s:starting "only on startup
+    if has('vim_starting') "only on startup
       exe 'autocmd ColorScheme * '.s:color_override
       exe 'autocmd ColorScheme * '.s:color_override_dark
       " expects &runtimepath/colors/{name}.vim.
@@ -1219,6 +1209,12 @@ if s:is_cygwin
   let &t_SI.="\e[5 q"
   let &t_EI.="\e[1 q"
   let &t_te.="\e[0 q"
+
+  " set escape key to an unambiguous keycode, to avoid escape timeout delay.
+  let &t_ti.="\e[?7727h"
+  let &t_te.="\e[?7727l"
+  noremap  <Esc>O[ <Esc>
+  noremap! <Esc>O[ <C-c>
 endif
 
 " tree view / only enable for later versions of netrw (which have Lexplore)
