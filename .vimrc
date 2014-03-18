@@ -151,10 +151,12 @@ endif
 Bundle 'PProvost/vim-ps1'
 Bundle 'pangloss/vim-javascript'
 Bundle 'OrangeT/vim-csharp'
+if s:is_windows
+Bundle 'nosami/Omnisharp'
+endif
 Bundle 'leafo/moonscript-vim'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'chrisbra/color_highlight'
-Bundle 'Yggdroot/indentLine'
 Bundle 'osyo-manga/vim-over'
 Bundle 'terryma/vim-expand-region'
 Bundle 'mhinz/vim-signify'
@@ -791,7 +793,7 @@ endf
 
 func! ReadExCommandOutput(cmd)
   redir => l:message
-  silent execute a:cmd
+  silent! execute a:cmd
   redir END
   "tabnew
   silent put=l:message
