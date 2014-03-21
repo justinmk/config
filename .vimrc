@@ -1,4 +1,5 @@
-" windows builds: http://tuxproject.de/projects/vim/
+" windows builds: https://bitbucket.org/Haroogan/vim-for-windows/downloads
+"                 http://tuxproject.de/projects/vim/
 "                 http://files.kaoriya.net/vim/
 "                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
 " neovim:
@@ -107,6 +108,7 @@ Bundle 'noahfrederick/vim-noctu'
 if executable("tmux")
 Bundle 'benmills/vimux'
 Bundle 'tpope/vim-tbone'
+Bundle 'wellle/tmux-complete.vim'
 endif
 Bundle 'sjl/clam.vim'
 Bundle 'dbext.vim'
