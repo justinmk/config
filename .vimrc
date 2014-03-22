@@ -1,3 +1,5 @@
+" r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
+"
 " windows builds: https://bitbucket.org/Haroogan/vim-for-windows/downloads
 "                 http://tuxproject.de/projects/vim/
 "                 http://files.kaoriya.net/vim/
@@ -38,8 +40,6 @@
 if has('vim_starting')
   " ensure that we always start with Vim defaults (as opposed to those set by the current system)
   set all&
-  " caution: this resets many settings, eg 'history'
-  set nocompatible
 endif
 
 " removing this breaks alt/meta mappings (on win32 gvim at least).
@@ -352,11 +352,8 @@ endif
     endif
   endif
 
-  if s:is_msysgit
-    hi CursorLine  term=NONE cterm=NONE ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=NONE
-    hi ColorColumn term=NONE cterm=NONE ctermfg=NONE ctermbg=darkblue guifg=NONE guibg=NONE
-  elseif !s:is_gui && &t_Co <= 88
-    hi CursorLine cterm=underline
+  if !s:is_gui && &t_Co <= 88
+    silent! colorscheme noctu
   else
     let s:color_override = '
           \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
@@ -386,7 +383,7 @@ endif
       exe 'autocmd ColorScheme * '.s:color_override
       exe 'autocmd ColorScheme * '.s:color_override_dark
       " expects &runtimepath/colors/{name}.vim.
-      colorscheme molokai
+      silent! colorscheme molokai
       if !(s:is_gui || s:is_mac || s:is_cygwin)
         exe s:color_override
       endif
@@ -601,7 +598,8 @@ nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
-nnoremap UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<cr>
+nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
+nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
@@ -1247,5 +1245,3 @@ if isdirectory(expand(s:dir, 1))
 endif
 
 silent! source ~/.vimrc.local
-
-" r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
