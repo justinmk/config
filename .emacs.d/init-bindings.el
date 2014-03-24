@@ -17,9 +17,6 @@
 (setq guide-key/recursive-key-sequence-flag t)
 (guide-key-mode 1)
 
-(global-set-key (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
-(global-set-key (kbd "C-p") 'helm-projectile)
-
 (after 'smex
   (global-set-key (kbd "M-x") 'smex))
 
@@ -64,7 +61,13 @@
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
 
   (after 'helm-autoloads
+    (define-key evil-normal-state-map (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
+    (define-key evil-normal-state-map (kbd "C-p") 'helm-projectile)
     (define-key evil-normal-state-map (kbd "g / F") 'helm-recentf)
+    (define-key evil-normal-state-map (kbd "g / .") 'helm-find-files)
+    (define-key evil-normal-state-map (kbd "g / l") 'helm-occur) ;search lines
+    (define-key evil-normal-state-map (kbd "g / *") 'helm-swoop)
+    (define-key evil-normal-state-map (kbd "g l") 'helm-buffers-list) ;'switch-to-buffer
     (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
     (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)
     (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring))
@@ -72,10 +75,8 @@
   (define-key evil-motion-state-map (kbd "g w") 'evil-window-map)
 
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
-  (define-key evil-normal-state-map (kbd "g / l") 'helm-swoop) ;search lines
   (define-key evil-normal-state-map (kbd "s") 'evil-ace-jump-char-mode)
   (define-key evil-normal-state-map (kbd "S") 'evil-ace-jump-char-mode)
-  (define-key evil-normal-state-map (kbd "g l") 'helm-buffers-list) ;'switch-to-buffer
 
   (define-key evil-normal-state-map (kbd "[ SPC") (bind (evil-insert-newline-above) (forward-line)))
   (define-key evil-normal-state-map (kbd "] SPC") (bind (evil-insert-newline-below) (forward-line -1)))
