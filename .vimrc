@@ -579,8 +579,8 @@ nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 nnoremap <leader>.. :cd ..<bar>pwd<cr>
 " show git branch with ctrl-g info
 func! s:ctrl_g()
-  redir => msg | silent file | redir END
-  echo fugitive#head(7) msg[1:]
+  redir => msg | silent exe "norm! 1\<c-g>" | redir END
+  echo fugitive#head(7) msg[2:]
 endf
 nnoremap <C-g> :call <sid>ctrl_g()<cr>
 " show the current working directory
@@ -1166,7 +1166,8 @@ endfunction
 endif "}}}
 
 " statusline  =================================================================
-set statusline=%{winnr()}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
+" show winnr iff there are >2 windows
+set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
 
 " session  ==============================================================  "{{{
 set sessionoptions-=blank
