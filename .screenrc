@@ -1,5 +1,0 @@
-startup_message off # skip splash screen
-
-hardstatus alwayslastline                                                           
-hardstatus string '%{= wk}%-Lw%{= KW}%50>%n%f* %t%{= dK}%+Lw%<'                     
-
