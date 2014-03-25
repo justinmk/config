@@ -276,6 +276,8 @@ else
 endif
 set list
 
+set cursorline
+
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
@@ -354,6 +356,7 @@ endif
 
   if !s:is_gui && &t_Co <= 88
     silent! colorscheme noctu
+    hi CursorLine ctermfg=white
   else
     let s:color_override = '
           \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
@@ -414,9 +417,6 @@ set autoindent " NOTE: 'smartindent' is superseded by 'cindent' and 'indentexpr'
 
 " =============================================================================
 " util functions
-
-" :help :DiffOrig
-command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
 func! TrimTrailingWhitespace()
   let _s=@/
@@ -601,6 +601,11 @@ nnoremap Ub :Gblame<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 
+" :help :DiffOrig
+command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
+
+set diffopt+=iwhite "ignore whitespace
+
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
 xmap <enter> <Plug>(quickrun)
@@ -613,7 +618,9 @@ xmap <enter> <Plug>(quickrun)
 nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
 
-" align
+" available mappings:
+"   visual: c-o c-i c-a c-x
+"   insert: c-g
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
 
@@ -952,8 +959,8 @@ augroup vimrc_autocmd
 
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
 
-  autocmd WinEnter * setlocal cursorline | if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
-  autocmd WinLeave * setlocal nocursorline | silent! setlocal colorcolumn=
+  autocmd WinEnter * if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
+  autocmd WinLeave * silent! setlocal colorcolumn=
 
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
