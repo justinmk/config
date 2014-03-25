@@ -83,13 +83,14 @@ endif
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
 
+if !s:plugins "{{{
+
 fun! InstallVundle() "bootstrap vundle on new systems
-    echo "Installing Vundle..."
     silent call mkdir(expand("~/.vim/bundle", 1), 'p')
     silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endfun
 
-if s:plugins "{{{
+else
 
 filetype off " required!
 
@@ -99,80 +100,79 @@ endif
 
 call vundle#rc() 
 
-" let Vundle manage Vundle (required!)
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle' " let Vundle manage Vundle (required!)
 
-Bundle 'justinmk/molokai'
-Bundle 'noahfrederick/vim-hemisu'
-Bundle 'noahfrederick/vim-noctu'
+Plugin 'justinmk/molokai'
+Plugin 'noahfrederick/vim-hemisu'
+Plugin 'noahfrederick/vim-noctu'
 if executable("tmux")
-Bundle 'benmills/vimux'
-Bundle 'tpope/vim-tbone'
-Bundle 'wellle/tmux-complete.vim'
+Plugin 'benmills/vimux'
+Plugin 'tpope/vim-tbone'
+Plugin 'wellle/tmux-complete.vim'
 endif
-Bundle 'sjl/clam.vim'
-Bundle 'dbext.vim'
+Plugin 'sjl/clam.vim'
+Plugin 'dbext.vim'
 " dbext profile example:
 "   let g:dbext_default_profile = 'default'
 "   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
-Bundle 'thinca/vim-quickrun'
-" Bundle 'xuhdev/SingleCompile'
-Bundle 'tpope/vim-sensible'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-dispatch'
-Bundle 'tpope/vim-repeat'
-Bundle 'tpope/vim-eunuch'
-Bundle 'tpope/vim-rsi'
-Bundle 'tpope/vim-unimpaired'
-Bundle 'tpope/vim-obsession'
-Bundle 'tpope/vim-markdown'
-Bundle 'tpope/vim-vinegar'
-Bundle 'kshenoy/vim-signature'
-Bundle 'Raimondi/delimitMate'
-Bundle 'zhaocai/DirDiff.vim'
-Bundle 'AndrewRadev/linediff.vim'
-" Bundle 'mbbill/undotree'
-Bundle 'kana/vim-textobj-user'
-Bundle 'gaving/vim-textobj-argument'
-Bundle 'guns/vim-sexp'
-Bundle 'guns/vim-clojure-static'
-Bundle 'tpope/vim-fireplace'
+Plugin 'thinca/vim-quickrun'
+" Plugin 'xuhdev/SingleCompile'
+Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-eunuch'
+Plugin 'tpope/vim-rsi'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-obsession'
+Plugin 'tpope/vim-markdown'
+Plugin 'tpope/vim-vinegar'
+Plugin 'kshenoy/vim-signature'
+Plugin 'Raimondi/delimitMate'
+Plugin 'zhaocai/DirDiff.vim'
+Plugin 'AndrewRadev/linediff.vim'
+" Plugin 'mbbill/undotree'
+Plugin 'kana/vim-textobj-user'
+Plugin 'gaving/vim-textobj-argument'
+Plugin 'guns/vim-sexp'
+Plugin 'guns/vim-clojure-static'
+Plugin 'tpope/vim-fireplace'
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
-Bundle 'Valloric/MatchTagAlways'
+Plugin 'Valloric/MatchTagAlways'
 endif
 if !s:is_cygwin && (has('python') || has('python3'))
-Bundle 'davidhalter/jedi-vim'
+Plugin 'davidhalter/jedi-vim'
 endif
-Bundle 'PProvost/vim-ps1'
-Bundle 'pangloss/vim-javascript'
-Bundle 'OrangeT/vim-csharp'
 if s:is_windows && has('python')
 Bundle 'nosami/Omnisharp'
 endif
-Bundle 'leafo/moonscript-vim'
-Bundle 'tomtom/tcomment_vim'
-Bundle 'chrisbra/color_highlight'
-Bundle 'osyo-manga/vim-over'
-Bundle 'terryma/vim-expand-region'
-Bundle 'mhinz/vim-signify'
+Plugin 'PProvost/vim-ps1'
+Plugin 'pangloss/vim-javascript'
+Plugin 'OrangeT/vim-csharp'
+Plugin 'leafo/moonscript-vim'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'chrisbra/color_highlight'
+Plugin 'osyo-manga/vim-over'
+Plugin 'terryma/vim-expand-region'
+Plugin 'mhinz/vim-signify'
 if exists("$GOPATH")
-Bundle 'Blackrush/vim-gocode'
+Plugin 'Blackrush/vim-gocode'
 endif
-Bundle 'bruno-/vim-vertical-move'
-Bundle 'justinmk/vim-ipmotion'
-Bundle 'justinmk/vim-gtfo'
-Bundle 'justinmk/vim-sneak'
+Plugin 'bruno-/vim-vertical-move'
+Plugin 'justinmk/vim-ipmotion'
+Plugin 'justinmk/vim-gtfo'
+Plugin 'justinmk/vim-sneak'
 " https://github.com/vim-scripts/surrparen
-Bundle 'Keithbsmiley/investigate.vim'
-Bundle 'tsukkee/unite-tag'
-Bundle 'Shougo/unite.vim'
-Bundle 'Shougo/unite-mru'
-Bundle 'Shougo/unite-outline'
-Bundle 'junegunn/vader.vim'
+Plugin 'Keithbsmiley/investigate.vim'
+Plugin 'tsukkee/unite-tag'
+Plugin 'Shougo/unite.vim'
+Plugin 'Shougo/unite-mru'
+Plugin 'Shougo/unite-outline'
+Plugin 'junegunn/vader.vim'
 if s:lua_patch885
-Bundle 'Shougo/neocomplete.vim'
+Plugin 'Shougo/neocomplete.vim'
 endif
 
 " eager-load these plugins so we can override their settings below
@@ -181,7 +181,7 @@ runtime plugin/rsi.vim
 
 endif "}}}
 
-filetype plugin indent on     " required!
+filetype plugin indent on
 
 
 func! EnsureDir(path)
