@@ -65,12 +65,12 @@ shopt -s globstar &> /dev/null
 #disable ctrl-s scroll-lock
 command -v stty > /dev/null 2>&1 && stty -ixon
 
-SSHAGENT=/usr/bin/ssh-agent                                                     
-SSHAGENTARGS="-s"                                                               
-if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then                              
-    eval `$SSHAGENT $SSHAGENTARGS`                                              
-    trap "kill $SSH_AGENT_PID" 0                                                
-fi                                 
+SSHAGENT=/usr/bin/ssh-agent
+SSHAGENTARGS="-s"
+if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+  eval `$SSHAGENT $SSHAGENTARGS`
+  trap "kill $SSH_AGENT_PID" 0
+fi
 
 # Set PATH so it includes user's private bin if it exists                       
 [ -d "${HOME}/bin" ] && PATH=${HOME}/bin:${PATH}
@@ -98,14 +98,19 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   . /etc/bash_completion
 fi
 
-# set git prompt iff function exists and prompt has not already been set up.
+PS1='\[\033[1;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]'
+
+# set git prompt iff function exists.
 if type -t __git_ps1 &> /dev/null ; then
-    PS1='\[\033[1;32m\]\u@\h \[\033[36m\]\w\[\033[33m$(__git_ps1)\033[0m\]
-$ '
+    PS1=$PS1'\[\033[1;33m$(__git_ps1)\033[0m\]'
     GIT_PS1_STATESEPARATOR=""
     GIT_PS1_SHOWUPSTREAM="verbose"
     GIT_PS1_SHOWCOLORHINTS=1
 fi
+
+PS1=$PS1'
+$ '
+
 [[ "$SSH_TTY" != "" ]] && PS1='\[\033[0;30m\]\[\033[47m\]SSH\[\033[0m\] '$PS1
 
 if [ -x /usr/bin/dircolors ]; then
