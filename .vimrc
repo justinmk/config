@@ -156,7 +156,7 @@ Plugin 'tomtom/tcomment_vim'
 Plugin 'chrisbra/color_highlight'
 Plugin 'osyo-manga/vim-over'
 Plugin 'terryma/vim-expand-region'
-Plugin 'mhinz/vim-signify'
+Plugin 'airblade/vim-gitgutter'
 if exists("$GOPATH")
 Plugin 'Blackrush/vim-gocode'
 endif
@@ -240,7 +240,7 @@ omap <silent> _ <Plug>(vertical_move_up)
 
 let g:surround_no_insert_mappings = 1
 
-let g:signify_vcs_list = [ 'git' ]
+let g:gitgutter_eager = 0
 let g:linediff_buffer_type = 'scratch'
 
 let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
@@ -592,14 +592,19 @@ nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
 cnoremap <leader>fd  <c-r>=expand("%:p:h", 1)<cr>
 
 " version control
-xnoremap ?  :Linediff<cr>
+xnoremap UU :Linediff<cr>
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
+nnoremap Uh :GitGutterLineHighlightsToggle<cr>
+nnoremap Up :GitGutterPreviewHunk<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
+"linewise partial staging in visual-mode.
+xnoremap Udp :diffput<cr>
+xnoremap Udo :diffget<cr>
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
@@ -619,7 +624,7 @@ nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
 
 " available mappings:
-"   visual: c-o c-i c-a c-x
+"   visual: c-g c-o c-i c-a c-x c-h,<bs> 
 "   insert: c-g
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
