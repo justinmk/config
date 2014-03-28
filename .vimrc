@@ -146,7 +146,7 @@ if !s:is_cygwin && (has('python') || has('python3'))
 Plugin 'davidhalter/jedi-vim'
 endif
 if s:is_windows && has('python')
-Bundle 'nosami/Omnisharp'
+Plugin 'nosami/Omnisharp'
 endif
 Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
@@ -1230,7 +1230,7 @@ if s:is_cygwin
   noremap! <Esc>O[ <C-c>
 endif
 
-" tree view / only enable for later versions of netrw (which have Lexplore)
+" enable tree view only for recent, bug-fixed version of netrw (:Lexplore implies a recent version)
 if exists(":Lexplore")
 let g:netrw_liststyle = 3
 endif
