@@ -298,6 +298,7 @@ set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldmethod=marker
 set foldlevelstart=99 "open all folds by default
+nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
 set scrolloff=0
 set sidescrolloff=0
 set noequalalways
@@ -971,6 +972,9 @@ augroup vimrc_autocmd
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
   endif
 
+  "when Vim is started in diff-mode (vim -d, git mergetool) do/dp should not auto-fold.
+  autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | endif
+
   if s:is_windows
     " always maximize initial GUI window size
     autocmd GUIEnter * simalt ~x
@@ -1131,7 +1135,7 @@ augroup vimrc_unite
   autocmd!
   " obliterate unite buffers (marks especially).
   autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
-  autocmd FileType unite autocmd vimrc_unite CursorMoved <buffer> call s:unite_settings() | autocmd! vimrc_unite * <buffer>
+  autocmd FileType unite call s:unite_settings()
 augroup END
 
 " Custom mappings for the unite buffer
