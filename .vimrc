@@ -104,7 +104,6 @@ Plugin 'gmarik/vundle' " let Vundle manage Vundle (required!)
 
 Plugin 'justinmk/molokai'
 Plugin 'noahfrederick/vim-hemisu'
-Plugin 'noahfrederick/vim-noctu'
 if executable("tmux")
 Plugin 'benmills/vimux'
 Plugin 'tpope/vim-tbone'
@@ -356,7 +355,6 @@ endif
   endif
 
   if !s:is_gui && &t_Co <= 88
-    silent! colorscheme noctu
     hi CursorLine ctermfg=white
   else
     let s:color_override = '
@@ -625,7 +623,7 @@ nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
 
 " available mappings:
-"   visual: c-g c-o c-i c-a c-x c-h,<bs> 
+"   visual: c-n c-p c-g c-o c-i c-a c-x c-h,<bs>
 "   insert: c-g
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
@@ -745,8 +743,6 @@ inoremap kj <esc>
 nnoremap ' `
 xnoremap ' `
 
-nnoremap <c-d> <PageDown>
-nnoremap <c-u> <PageUp>
 nnoremap <space> :
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :e<cr>
