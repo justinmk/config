@@ -1,6 +1,7 @@
 ;; https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
 
 (require 'evil)
+(require 'evil-args)
 (require 'clojure-mode)
 (require 'key-chord)
 (require 'speedbar)
@@ -49,6 +50,11 @@
 
   (after 'evil-matchit
     (define-key evil-normal-state-map "%" 'evilmi-jump-items))
+
+  (after 'evil-args
+    ;; bind evil-args text objects
+    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg))
 
   (after 'git-gutter+-autoloads
     (define-key evil-normal-state-map (kbd "[ c") 'git-gutter+-previous-hunk)
