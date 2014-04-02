@@ -136,6 +136,7 @@ Plugin 'kana/vim-textobj-user'
 Plugin 'gaving/vim-textobj-argument'
 Plugin 'guns/vim-sexp'
 Plugin 'guns/vim-clojure-static'
+Plugin 'guns/vim-clojure-highlight'
 Plugin 'tpope/vim-fireplace'
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
@@ -144,7 +145,7 @@ endif
 if !s:is_cygwin && (has('python') || has('python3'))
 Plugin 'davidhalter/jedi-vim'
 endif
-if s:is_windows && has('python')
+if s:is_windows && has('python') && !s:is_msysgit
 Plugin 'nosami/Omnisharp'
 endif
 Plugin 'PProvost/vim-ps1'
@@ -266,12 +267,16 @@ endif
 
 try | lang en_US | catch | endtry
 
-if s:is_msysgit
-  set listchars+=trail:.
-elseif s:is_windows || s:is_cygwin || s:is_ssh
-  set listchars=tab:▸\ ,trail:▫
+if !s:is_msysgit && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
+  let &listchars = "tab:\u25b8 ,trail:\u25ab"
+
+  if !(s:is_windows || s:is_cygwin || s:is_ssh)
+    " may affect performance: https://github.com/tpope/vim-sensible/issues/57
+    " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
+    " let &showbreak="\u21aa" " precedes line wrap
+  endif
 else
-  set showbreak=↪\  " precedes line wrap
+  set listchars+=trail:.
 endif
 set list
 
@@ -1182,7 +1187,6 @@ endif "}}}
 set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
 
 " session  ==============================================================  "{{{
-set sessionoptions-=blank
 let s:sessionfile = expand("~/.vim/session.vim", 1)
 let s:sessionlock = expand("~/.vim/session.lock", 1)
 
