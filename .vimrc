@@ -171,6 +171,9 @@ Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/unite-mru'
 Plugin 'Shougo/unite-outline'
 Plugin 'junegunn/vader.vim'
+Plugin 'junegunn/vim-github-dashboard'
+let g:github_dashboard = {}
+let g:github_dashboard['position'] = 'right'
 if s:lua_patch885
 Plugin 'Shougo/neocomplete.vim'
 endif

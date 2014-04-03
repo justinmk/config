@@ -62,8 +62,8 @@ shopt -s checkwinsize
 # (bash 4+) enable recursive glob for grep, rsync, ls, ...
 shopt -s globstar &> /dev/null
 
-#disable ctrl-s scroll-lock
-command -v stty > /dev/null 2>&1 && stty -ixon
+#disable ctrl-s (scroll-lock) and ctrl-q
+command -v stty > /dev/null 2>&1 && stty -ixon -ixoff
 
 SSHAGENT=/usr/bin/ssh-agent
 SSHAGENTARGS="-s"
@@ -191,6 +191,7 @@ fi
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# fzf (https://github.com/junegunn/fzf)
 if [ -f ~/.fzf.bash ]; then
   export FZF_DEFAULT_OPTS='--black -x'
   source ~/.fzf.bash
