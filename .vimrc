@@ -126,7 +126,6 @@ Plugin 'tpope/vim-rsi'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-markdown'
-Plugin 'tpope/vim-vinegar'
 Plugin 'kshenoy/vim-signature'
 Plugin 'Raimondi/delimitMate'
 Plugin 'zhaocai/DirDiff.vim'
@@ -170,6 +169,7 @@ Plugin 'tsukkee/unite-tag'
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/unite-mru'
 Plugin 'Shougo/unite-outline'
+Plugin 'Shougo/vimfiler.vim'
 Plugin 'junegunn/vader.vim'
 Plugin 'junegunn/vim-github-dashboard'
 let g:github_dashboard = {}
@@ -559,28 +559,7 @@ nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 " quickfix window
 nnoremap <C-q> :botright copen<cr>
 
-" working with projects/directories
-func! s:focus_netrw_window()
-  " if we are already in a netrw window, focus the previous window
-  if &filetype ==# "netrw"
-    wincmd p
-    return
-  endif
-
-  " find existing _displayed_ netrw window, if any
-  let w = filter(range(1, winnr('$')), 'getwinvar(v:val, "netrw_winnr")
-        \ && "netrw" ==# getbufvar(winbufnr(v:val), "&filetype")
-        \')
-  if len(w) > 0 "focus the existing netrw window
-    exe w[0] 'wincmd w'
-  else
-    Explore
-    " wincmd H
-    " 40 wincmd |
-  endif
-  " setlocal winfixwidth
-endf
-nnoremap <silent> ^ :call <sid>focus_netrw_window()<cr>
+nnoremap <silent> ^ :VimFilerExplorer<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 nnoremap <leader>.. :cd ..<bar>pwd<cr>
@@ -1156,6 +1135,10 @@ endfunction
 " delete empty, non-visible, non-special buffers having no significant undo stack.
 " TODO: exclude buffers that have an undo stack
 function! s:clear_empty_buffers()
+  if '[Command Line]' ==# bufname("%") && 'nofile' ==# &buftype
+    return "avoid E11
+  endif
+
   let displayedbufs = <sid>buf_find_displayed_bufs()
 
   " if the buffer is loaded, just check to see if its content is empty:
@@ -1199,9 +1182,6 @@ function! LoadSession()
     return
   endif
 
-  "use a separate viminfo to avoid losing command history by other vim instances
-  set viminfo+=n~/.viminfo_session
-
   if filereadable(s:sessionfile)
     exe 'source ' s:sessionfile
   endif
@@ -1236,12 +1216,6 @@ if s:is_cygwin
   noremap  <Esc>O[ <Esc>
   noremap! <Esc>O[ <C-c>
 endif
-
-" enable tree view only for recent, bug-fixed version of netrw (:Lexplore implies a recent version)
-if exists(":Lexplore")
-let g:netrw_liststyle = 3
-endif
-let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 "ensure transient dirs
 let s:dir = has('win32') ? $APPDATA.'/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : $XDG_DATA_HOME.'/vim'
