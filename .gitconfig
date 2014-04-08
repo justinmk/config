@@ -20,7 +20,7 @@
   filesEncoding = utf-8
 [alias]
   #l = log --graph --oneline --decorate
-  l = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
+  l = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
   d = diff --stat --color
   s = !git status -sb && git stash list
   co = checkout

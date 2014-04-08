@@ -147,6 +147,7 @@ endif
 if s:is_windows && has('python') && !s:is_msysgit
 Plugin 'nosami/Omnisharp'
 endif
+Plugin 'derekwyatt/vim-fswitch'
 Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
 Plugin 'OrangeT/vim-csharp'
