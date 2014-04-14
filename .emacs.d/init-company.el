@@ -8,6 +8,8 @@
 (setq company-minimum-prefix-length 1)
 (setq company-show-numbers t)
 (setq company-tooltip-limit 30)
+(setq company-dabbrev-downcase nil)
+(setq company-dabbrev-ignore-case nil)
 
 (add-hook 'cider-repl-mode-hook (add-to-list 'company-backends 'company-cider))
 (add-hook 'cider-mode-hook (add-to-list 'company-backends 'company-cider))

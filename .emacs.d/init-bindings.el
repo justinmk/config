@@ -79,6 +79,7 @@
     (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring))
 
   (define-key evil-motion-state-map (kbd "g w") 'evil-window-map)
+  (define-key evil-normal-state-map (kbd "TAB") 'evil-window-mru)
 
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "s") 'evil-ace-jump-char-mode)
@@ -218,10 +219,10 @@
 
   (after 'company
     (define-key evil-insert-state-map (kbd "TAB") 'company-complete-common)
-    (define-key evil-insert-state-map [tab] 'company-complete-common))
-  
-  (after 'auto-complete
-    (define-key evil-insert-state-map (kbd "C-SPC") 'auto-complete))
+    (define-key evil-insert-state-map (kbd "C-SPC") 'company-complete-common)
+    (define-key company-active-map (kbd "TAB") 'company-complete-common)
+    (define-key company-active-map (kbd "C-n") 'company-select-next)
+    (define-key company-active-map (kbd "C-p") 'company-select-previous))
 
   (after 'multiple-cursors
     (global-unset-key (kbd "C-<down-mouse-1>"))
@@ -264,20 +265,6 @@
 (after 'comint
   (define-key comint-mode-map [up] 'comint-previous-input)
   (define-key comint-mode-map [down] 'comint-next-input))
-
-(after 'auto-complete
-  ;; (define-key ac-completing-map "\t" 'ac-expand)
-  ;; (define-key ac-completing-map [tab] 'ac-expand)
-  (define-key ac-completing-map (kbd "C-n") 'ac-next)
-  (define-key ac-completing-map (kbd "C-p") 'ac-previous))
-
-
-(after 'company
-  (define-key company-active-map "\t" 'company-complete-common)
-  (define-key company-active-map [tab] 'company-complete-common)
-  (define-key company-active-map (kbd "C-n") 'company-select-next)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous))
-
 
 ;; mouse scrolling in terminal
 (unless (display-graphic-p)
