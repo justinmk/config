@@ -108,6 +108,7 @@ if executable("tmux")
 Plugin 'benmills/vimux'
 Plugin 'tpope/vim-tbone'
 Plugin 'wellle/tmux-complete.vim'
+let g:tmuxcomplete#trigger = ''
 endif
 Plugin 'sjl/clam.vim'
 Plugin 'dbext.vim'
@@ -1123,6 +1124,7 @@ nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process <CR>
+nnoremap <silent> g/T   :Unite tmuxcomplete<CR>
 
 augroup vimrc_unite
   autocmd!
