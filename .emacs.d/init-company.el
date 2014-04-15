@@ -16,4 +16,13 @@
 
 (add-hook 'after-init-hook 'global-company-mode)
 
+(set-face-attribute 'company-tooltip nil :background "black" :foreground "white")
+(set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "DodgerBlue" :foreground "white")
+(set-face-attribute 'company-preview nil :background "black")
+(set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "white")
+(set-face-attribute 'company-tooltip-common nil :inherit 'company-tooltip :foreground "green")
+(set-face-attribute 'company-tooltip-common-selection nil :inherit 'company-tooltip-selection :foreground "white")
+(set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
+(set-face-attribute 'company-scrollbar-fg nil :background "gray40")
+
 (provide 'init-company)
