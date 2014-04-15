@@ -148,7 +148,20 @@ Plugin 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
 if s:is_windows && has('python') && !s:is_msysgit
 Plugin 'nosami/Omnisharp'
 endif
-Plugin 'derekwyatt/vim-fswitch'
+
+Plugin 'tpope/vim-projectile'
+" look at derekwyatt/vim-fswitch for more C combos.
+let g:projectiles = {
+      \  '/*.c|src/*.c': {
+      \    '*.c': {'alternate': ['../include/{}.h', '{}.h']},
+      \    '*.h': {'alternate': '{}.c'},
+      \  },
+      \  'Makefile': {
+      \    '*Makefile': {'alternate': '{dirname}CMakeLists.txt'},
+      \    '*CMakeLists.txt': {'alternate': '{dirname}Makefile'},
+      \  },
+      \}
+
 Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafo/moonscript-vim'
@@ -1029,6 +1042,10 @@ endif
 func! s:init_neocomplete()
   nnoremap <leader>neo :NeoCompleteEnable<cr>
   let g:neocomplete#enable_smart_case = 1
+  inoremap <expr> <C-g> neocomplete#undo_completion()
+  inoremap <expr> <C-l> neocomplete#complete_common_string()
+  inoremap <expr> <cr>  pumvisible() && exists("*neocomplete#close_popup") ? neocomplete#close_popup() : "\<cr>"
+
   " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
   let omni = get(g:, 'neocomplete#sources#omni#input_patterns', {})
   let g:neocomplete#sources#omni#input_patterns = omni
