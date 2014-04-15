@@ -102,7 +102,7 @@ call vundle#rc()
 
 Plugin 'gmarik/vundle' " let Vundle manage Vundle (required!)
 
-Plugin 'justinmk/molokai'
+Plugin 'tomasr/molokai'
 Plugin 'noahfrederick/vim-hemisu'
 if executable("tmux")
 Plugin 'benmills/vimux'
@@ -144,13 +144,13 @@ endif
 if !s:is_cygwin && (has('python') || has('python3'))
 Plugin 'davidhalter/jedi-vim'
 endif
+Plugin 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
 if s:is_windows && has('python') && !s:is_msysgit
 Plugin 'nosami/Omnisharp'
 endif
 Plugin 'derekwyatt/vim-fswitch'
 Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
-Plugin 'OrangeT/vim-csharp'
 Plugin 'leafo/moonscript-vim'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'chrisbra/color_highlight'
@@ -227,6 +227,7 @@ xmap t <Plug>Sneak_t
 xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
+let g:sneak#target_labels = "sftunq/SFGHLTUNRMQZ?0-"
 
 xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
@@ -371,6 +372,7 @@ endif
           \ | hi VisualNOS     term=bold,underline cterm=bold,underline ctermbg=23 gui=bold,underline guibg=#007475
           \'
 
+    " guibg=LimeGreen ctermbg=154
     let s:color_override_dark = '
           \ if &background == "dark"
           \ | hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
@@ -380,8 +382,6 @@ endif
           \ | hi PmenuSbar     guibg=#857f78
           \ | hi PmenuThumb    guifg=#242321
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
-          \ | hi IncSearch     guifg=white   guibg=LimeGreen         ctermfg=NONE ctermbg=154 gui=bold cterm=NONE
-          \ | hi Search        guifg=white   guibg=#FF870A gui=NONE  ctermfg=255  ctermbg=208  cterm=NONE
           \ | hi DiffAdd       guifg=#ffffff guibg=#006600 gui=NONE  ctermfg=231  ctermbg=22   cterm=NONE 
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
@@ -560,7 +560,7 @@ nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 " quickfix window
 nnoremap <C-q> :botright copen<cr>
 
-nnoremap <silent> ^ :VimFilerExplorer<cr>
+nnoremap <silent> ^ :VimFilerBufferDir<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
 nnoremap <leader>.. :cd ..<bar>pwd<cr>
@@ -902,19 +902,6 @@ let g:sexp_mappings = {
       \ 'sexp_move_to_next_element_tail': '',
       \ }
 
-" lua =========================================================================
-"    https://github.com/xolox/vim-lua-inspect
-
-" csharp ======================================================================
-" %VS120COMNTOOLS% => C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\
-" $COMSPEC /k $VS120COMNTOOLS."vsvars32.bat"
-augroup vimrc_dotnet
-  autocmd!
-  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
-  autocmd FileType cs setlocal tabstop=4 shiftwidth=4 copyindent
-augroup END
-
-
 augroup BufferDeath
   autocmd!
   " on BufLeave:
@@ -959,6 +946,8 @@ augroup vimrc_autocmd
   "when Vim is started in diff-mode (vim -d, git mergetool) do/dp should not auto-fold.
   autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | endif
 
+  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
+
   if s:is_windows
     " always maximize initial GUI window size
     autocmd GUIEnter * simalt ~x
@@ -979,7 +968,9 @@ endfunction
 nnoremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
-" search and replace
+" search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
+nnoremap g/b :<c-u>cex []<bar>exe 'bufdo silent! noau vimgrepadd//gj %'<bar>copen<left><left><left><left><left><left><left><left><left><left><left><left>
+" search-replace
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
 xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
 
@@ -1044,6 +1035,7 @@ func! s:init_neocomplete()
   let omni.go  = '[^.[:digit:] *\t]\.\w*'
   let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
   let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+  let omni.cs = '.*[^=\);]'
 endf
 
 if s:lua_patch885
@@ -1137,7 +1129,7 @@ endfunction
 " TODO: exclude buffers that have an undo stack
 function! s:clear_empty_buffers()
   if '[Command Line]' ==# bufname("%") && 'nofile' ==# &buftype
-    return "avoid E11
+    return 0 "avoid E11
   endif
 
   let displayedbufs = <sid>buf_find_displayed_bufs()
