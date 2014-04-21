@@ -31,6 +31,11 @@
  '(sp-show-pair-match-face ((t (:underline "Green"))))
  '(vertical-border ((t (:background "#8a8a8a" :foreground "lemon chiffon")))))
 
+;; fight the "low contrast" fad.
+(set-face-attribute 'default nil
+                    :background "black"
+                    :foreground "white")
+
 (pcase (window-system)
   (`ns (set-face-attribute 'default nil :height 135))
   (`w32 (set-face-attribute 'default nil
@@ -48,11 +53,6 @@
 (after 'moe-theme-autoloads
   ;; (load-theme 'sanityinc-tomorrow-night)
   (load-theme 'moe-dark t))
-
-;; fight the "low contrast" fad.
-(set-face-attribute 'default nil
-                    :background "#222222"
-                    :foreground "white")
 
 
 (provide 'init-eyecandy)

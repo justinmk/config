@@ -1,3 +1,5 @@
+;; Windows build (includes libxml2, gnutls, etc): http://semantic.supelec.fr/popineau/programming-emacs.html
+
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; disable menu except on Mac OS X

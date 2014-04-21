@@ -4,7 +4,6 @@
 (require 'evil-args)
 (require 'clojure-mode)
 (require 'key-chord)
-(require 'speedbar)
 
 (defmacro bind (&rest commands)
   "Convenience macro which creates a lambda interactive command."
@@ -66,7 +65,7 @@
     (define-key evil-visual-state-map (kbd "SPC") 'smex)
     (define-key evil-normal-state-map (kbd "SPC") 'smex))
 
-  (after 'helm-autoloads
+  (after 'helm
     (define-key evil-normal-state-map (kbd "M-o") 'helm-imenu) ;'ido-goto-symbol
     (define-key evil-normal-state-map (kbd "C-p") 'helm-projectile)
     (define-key evil-normal-state-map (kbd "g / F") 'helm-recentf)
@@ -79,7 +78,11 @@
     (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring))
 
   (define-key evil-motion-state-map (kbd "g w") 'evil-window-map)
-  (define-key evil-normal-state-map (kbd "TAB") 'evil-window-mru)
+  (define-key evil-normal-state-map (kbd "TAB") 
+    (bind
+     (cond 
+      ((eq (count-windows) 1) (other-frame 1))
+      (t (evil-window-mru)))))
 
   (define-key evil-normal-state-map (kbd "g / r") (bind (evil-ex "%s/"))) ;search/replace
   (define-key evil-normal-state-map (kbd "s") 'evil-ace-jump-char-mode)
@@ -107,11 +110,16 @@
   (define-key evil-normal-state-map (kbd "U l") 'magit-log)
   (define-key evil-normal-state-map (kbd "U b") 'magit-blame-mode)
   (define-key evil-normal-state-map (kbd "U B") 'git-messenger:popup-message)
+  (define-key evil-normal-state-map (kbd "U G") (bind (call-process-shell-command "git gui" nil 0)))
+  (define-key evil-normal-state-map (kbd "U L") (bind (call-process-shell-command "gitk --all" nil 0)))
 
   ;; "The end user almost never has to use defadvice despite what the wiki tells you"
   ;;    http://stackoverflow.com/questions/14606037/advising-an-emacs-interactive-function-before
   ;; (define-key evil-normal-state-map (kbd "cow") 'toggle-truncate-lines)
-
+  
+  (define-key evil-normal-state-map (kbd "g o f")
+    (bind (call-process-shell-command (concat "start explorer /select,"
+            (shell-quote-argument (replace-regexp-in-string "/" "\\\\" (buffer-file-name)))))))
   (define-key evil-normal-state-map (kbd "g o t")
     (bind
      (evil-window-split)
@@ -119,15 +127,17 @@
 
   ;; file management
   (define-key evil-normal-state-map "^" nil)
-  (define-key evil-normal-state-map (kbd "^")
-    (bind
-     (sr-speedbar-open)
-     (sr-speedbar-refresh)
-     (sr-speedbar-select-window)))
-  ;; unbind default 'g' binding in speedbar
-  (define-key speedbar-mode-map (kbd "g") nil)
-  (evil-define-key 'normal speedbar-mode-map
-    (kbd "-") 'speedbar-up-directory)
+
+  (after 'speedbar
+    (define-key evil-normal-state-map (kbd "^")
+      (bind
+       (speedbar-get-focus)
+       (speedbar-refresh)))
+    ;; unbind default 'g' binding in speedbar
+    (define-key speedbar-mode-map (kbd "g") nil)
+    (evil-define-key 'normal speedbar-mode-map
+      (kbd "-") 'speedbar-up-directory))
+
   (define-key evil-normal-state-map (kbd "g x") 'browse-url-at-point)
   (define-key evil-visual-state-map (kbd "g x") 'my-google)
 
