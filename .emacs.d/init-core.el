@@ -1,6 +1,7 @@
 (setq inhibit-splash-screen t
       inhibit-startup-echo-area-message t
-      inhibit-startup-message t)
+      inhibit-startup-message t
+      suggest-key-bindings nil)
 
 ;; relax the GC frequency
 (setq gc-cons-threshold 20000000)
