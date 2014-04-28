@@ -24,6 +24,7 @@
   d = diff --stat --color
   s = !git status -sb && git stash list
   co = checkout
+  rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
 [advice]
   statusHints = false
 [color]
