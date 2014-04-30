@@ -72,6 +72,10 @@
     (define-key evil-normal-state-map (kbd "g / .") 'helm-find-files)
     (define-key evil-normal-state-map (kbd "g / l") 'helm-occur) ;search lines
     (define-key evil-normal-state-map (kbd "g / *") 'helm-swoop)
+    (define-key evil-normal-state-map (kbd "g / /")
+      (lambda (regexp)
+        (interactive "sSearch: ")
+        (pt-regexp regexp default-directory)))
     (define-key evil-normal-state-map (kbd "g l") 'helm-buffers-list) ;'switch-to-buffer
     (define-key evil-normal-state-map (kbd "M-t") 'helm-etags-select)
     (define-key evil-normal-state-map (kbd "M-y") 'helm-show-kill-ring)

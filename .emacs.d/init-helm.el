@@ -1,5 +1,6 @@
 (require-package 'helm)
 (require-package 'helm-swoop)
+(require-package 'pt)
 
 (after 'projectile
   (require-package 'helm-projectile))
@@ -11,5 +12,6 @@
 
 (setq helm-command-prefix-key "C-c h")
 (setq helm-quick-update t)
+(setq helm-buffers-fuzzy-matching t)
 
 (provide 'init-helm)
