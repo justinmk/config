@@ -137,6 +137,7 @@ Plugin 'gaving/vim-textobj-argument'
 Plugin 'guns/vim-sexp'
 Plugin 'guns/vim-clojure-static'
 Plugin 'guns/vim-clojure-highlight'
+Plugin 'tpope/vim-leiningen'
 Plugin 'tpope/vim-fireplace'
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
@@ -150,7 +151,7 @@ if s:is_windows && has('python') && !s:is_msysgit
 Plugin 'nosami/Omnisharp'
 endif
 
-Plugin 'tpope/vim-projectile'
+Plugin 'tpope/vim-projectionist'
 " look at derekwyatt/vim-fswitch for more C combos.
 let g:projectiles = {
       \  '/*.c|src/*.c': {
@@ -185,6 +186,7 @@ Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/unite-mru'
 Plugin 'Shougo/unite-outline'
 Plugin 'Shougo/vimfiler.vim'
+let g:vimfiler_as_default_explorer = 1
 Plugin 'junegunn/vader.vim'
 Plugin 'junegunn/vim-github-dashboard'
 let g:github_dashboard = {}
