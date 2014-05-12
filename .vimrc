@@ -535,6 +535,7 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 " manage windows
 nnoremap gw <c-w>
+nnoremap <tab> <c-w>p
 
 " go to nth window
 " this also works for 11gw, 21gw, ...
@@ -574,8 +575,9 @@ nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
 " quickfix window
-nnoremap <C-q> :botright copen<cr>
-
+nnoremap q[ :botright copen<cr>
+" location window
+nnoremap q] :botright lopen<cr>
 nnoremap <silent> ^ :VimFilerBufferDir<cr>
 " set working directory to the current buffer's directory
 nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
@@ -629,6 +631,7 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " available mappings:
 "   visual: c-n c-p c-g c-o c-i c-a c-x c-h,<bs>
 "   insert: c-g
+"   normal: m<tab> q<special> y<special>
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
 
@@ -933,10 +936,7 @@ augroup END
 
 augroup vimrc_autocmd
   autocmd!
-  autocmd BufReadPost quickfix map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
-
-  " Highlight VCS conflict markers
-  " autocmd BufEnter fugitive\:* match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+  autocmd BufReadPost quickfix nnoremap <buffer><nowait> <c-p> <up>|nnoremap <buffer><nowait> <c-n> <down>|nnoremap <buffer><nowait> q :cclose<cr>
 
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
