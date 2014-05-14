@@ -95,9 +95,8 @@ nnoremap gk    :vsc Edit.PeekDefinition<cr>
 
 "show refactor menu
 nnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
-xnoremap Rr :vsc ReSharper.ReSharper_RefactorThis<cr>
-"rename current symbol
-nnoremap cR  :vsc Refactor.Rename<cr>
+xnoremap <c-r> :vsc ReSharper.ReSharper_RefactorThis<cr>
+nnoremap crn :vsc Refactor.Rename<cr>
 nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
 "show quickfix menu
 nnoremap <bs> :vsc ReSharper_AltEnter<cr>

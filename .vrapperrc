@@ -96,12 +96,12 @@ nnoremap crr :eclipserefactormenu<cr>
 
 "show code-generation menu
 eclipseaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
-nnoremap crR :eclipsesrcgenmenu<cr>
+nnoremap crg :eclipsesrcgenmenu<cr>
 
 " rename current symbol
 eclipseaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
 au "Dart Editor" eclipseaction eclipserename com.google.dart.tools.ui.edit.text.dart.rename.element
-nnoremap cR :eclipserename<cr>
+nnoremap crn :eclipserename<cr>
 
 "show quickfix menu
 eclipseuiaction eclipsequickfix org.eclipse.jdt.ui.edit.text.java.correction.assist.proposals

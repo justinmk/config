@@ -629,9 +629,9 @@ nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
 
 " available mappings:
-"   visual: c-n c-p c-g c-o c-i c-a c-x c-h,<bs>
+"   visual: R c-r c-n c-p c-g c-o c-i c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: m<tab> q<special> y<special>
+"   normal: m<tab> q<special> y<special> <del> <pageup/down>
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
 
@@ -816,7 +816,7 @@ augroup vimrc_python
   let g:jedi#auto_vim_configuration = 0
   let g:jedi#goto_assignments_command = 'gd'
   let g:jedi#goto_definitions_command = 'gD'
-  let g:jedi#rename_command = 'cR'
+  let g:jedi#rename_command = 'crn'
   let g:jedi#usages_command = 'gr'
 augroup END
 
