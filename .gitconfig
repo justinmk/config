@@ -20,9 +20,11 @@
   filesEncoding = utf-8
 [alias]
   #l = log --all --graph --oneline --decorate
-  l = log --all --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
-  d = diff --stat --color
-  s = !git status -sb && git stash list
+  l  = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
+  ll = !git l --all
+  d  = diff --stat --color
+  b  = branch --all
+  s  = !git status -sb && git stash list
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
 [advice]
