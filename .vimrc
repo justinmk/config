@@ -580,8 +580,8 @@ nnoremap q[ :botright copen<cr>
 nnoremap q] :botright lopen<cr>
 nnoremap <silent> ^ :VimFilerBufferDir<cr>
 " set working directory to the current buffer's directory
-nnoremap <leader>cd :cd %:p:h<bar>pwd<cr>
-nnoremap <leader>.. :cd ..<bar>pwd<cr>
+nnoremap cd :cd %:p:h<bar>pwd<cr>
+nnoremap cu :cd ..<bar>pwd<cr>
 " show git branch with ctrl-g info
 func! s:ctrl_g()
   redir => msg | silent exe "norm! 1\<c-g>" | redir END
@@ -1140,6 +1140,7 @@ function! s:unite_settings()
   setlocal nopaste
   let b:delimitMate_autoclose = 0
   unmap! <buffer> <c-d>
+  unmap  <buffer> M
   nmap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   nnoremap <silent><buffer> <C-n> j
