@@ -139,6 +139,8 @@ Plugin 'guns/vim-clojure-static'
 Plugin 'guns/vim-clojure-highlight'
 Plugin 'tpope/vim-leiningen'
 Plugin 'tpope/vim-fireplace'
+Plugin 'tpope/vim-commentary'
+
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Plugin 'Valloric/MatchTagAlways'
@@ -167,7 +169,6 @@ let g:projectiles = {
 Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafo/moonscript-vim'
-Plugin 'tomtom/tcomment_vim'
 Plugin 'chrisbra/color_highlight'
 Plugin 'osyo-manga/vim-over'
 Plugin 'terryma/vim-expand-region'
@@ -936,7 +937,7 @@ augroup END
 
 augroup vimrc_autocmd
   autocmd!
-  autocmd BufReadPost quickfix nnoremap <buffer><nowait> <c-p> <up>|nnoremap <buffer><nowait> <c-n> <down>|nnoremap <buffer><nowait> q :cclose<cr>
+  autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>|nnoremap <buffer> <c-n> <down>|nnoremap <silent><buffer> q :cclose<cr>
 
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
