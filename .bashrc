@@ -7,8 +7,6 @@
 # Environment variables (non-bash-specific)
 # =============================================================================
 
-[ -f ~/.bashrc.local ] && source ~/.bashrc.local
-
 if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
     umask 0077
 fi
@@ -209,4 +207,6 @@ if [ -f ~/.fzf.bash ]; then
     vim $(f)
   }
 fi
+
+[ -f ~/.bashrc.local ] && source ~/.bashrc.local
 
