@@ -12,6 +12,8 @@
   autosetuprebase = always
 [pull]
   rebase = true
+[push]
+  default = current
 [merge]
   tool = vimdiff
 [mergetool]
