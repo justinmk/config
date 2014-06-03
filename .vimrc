@@ -185,8 +185,8 @@ Plugin 'tsukkee/unite-tag'
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/unite-mru'
 Plugin 'Shougo/unite-outline'
-Plugin 'Shougo/vimfiler.vim'
-let g:vimfiler_as_default_explorer = 1
+Plugin 'jeetsukumaran/vim-filebeagle'
+let g:filebeagle_suppress_keymaps = 1
 Plugin 'junegunn/vader.vim'
 Plugin 'junegunn/vim-github-dashboard'
 let g:github_dashboard = {}
@@ -243,7 +243,7 @@ xmap t <Plug>Sneak_t
 xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
-let g:sneak#target_labels = "sftunq/SFGHLTUNRMQZ?0-"
+let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0-"
 
 xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
@@ -535,7 +535,6 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 
 " manage windows
 nnoremap gw <c-w>
-nnoremap <tab> <c-w>p
 
 " go to nth window
 " this also works for 11gw, 21gw, ...
@@ -550,7 +549,7 @@ nnoremap 8gw 8<c-w>w
 nnoremap 9gw 9<c-w>w
 
 nnoremap gwV :vnew<cr>
-nnoremap <silent> <m-w> :<C-u>call <sid>switch_to_alt_win()<cr>
+nnoremap <silent> <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
 " fit the current window height to the selected text
 xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
 
@@ -575,10 +574,11 @@ nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
 " quickfix window
-nnoremap q[ :botright copen<cr>
+nnoremap <c-q> :botright copen<cr>
 " location window
-nnoremap q] :botright lopen<cr>
-nnoremap <silent> ^ :VimFilerBufferDir<cr>
+" nnoremap q] :botright lopen<cr>
+
+nnoremap <silent> ^ :FileBeagleBufferDir<cr>
 " set working directory to the current buffer's directory
 nnoremap cd :cd %:p:h<bar>pwd<cr>
 nnoremap cu :cd ..<bar>pwd<cr>
