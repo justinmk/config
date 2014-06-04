@@ -575,7 +575,7 @@ nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
 nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
 
 " quickfix window
-nnoremap <c-q> :botright copen<cr>
+nnoremap <silent><c-q> :silent! botright copen<cr>
 " location window
 " nnoremap q] :botright lopen<cr>
 
@@ -937,7 +937,9 @@ augroup END
 
 augroup vimrc_autocmd
   autocmd!
-  autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>|nnoremap <buffer> <c-n> <down>|nnoremap <silent><buffer> q :cclose<cr>
+  autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
+        \ |nnoremap <buffer> <c-n> <down>
+        \ |nnoremap <silent><buffer> q :cclose<bar>call<sid>switch_to_alt_win()<cr>
 
   " Jump to the last position when reopening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
