@@ -104,13 +104,16 @@ Plugin 'gmarik/vundle' " let Vundle manage Vundle (required!)
 
 Plugin 'tomasr/molokai'
 Plugin 'noahfrederick/vim-hemisu'
+Plugin 'justinmk/vim-ipmotion'
+Plugin 'justinmk/vim-gtfo'
+Plugin 'justinmk/vim-sneak'
+Plugin 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plugin 'benmills/vimux'
 Plugin 'tpope/vim-tbone'
 Plugin 'wellle/tmux-complete.vim'
 let g:tmuxcomplete#trigger = ''
 endif
-Plugin 'sjl/clam.vim'
 Plugin 'dbext.vim'
 " dbext profile example:
 "   let g:dbext_default_profile = 'default'
@@ -131,6 +134,7 @@ Plugin 'kshenoy/vim-signature'
 Plugin 'Raimondi/delimitMate'
 Plugin 'zhaocai/DirDiff.vim'
 Plugin 'AndrewRadev/linediff.vim'
+let g:linediff_buffer_type = 'scratch'
 " Plugin 'mbbill/undotree'
 Plugin 'kana/vim-textobj-user'
 Plugin 'gaving/vim-textobj-argument'
@@ -173,13 +177,12 @@ Plugin 'chrisbra/color_highlight'
 Plugin 'osyo-manga/vim-over'
 Plugin 'terryma/vim-expand-region'
 Plugin 'airblade/vim-gitgutter'
+let g:gitgutter_eager = 0
+
 if exists("$GOPATH")
 Plugin 'Blackrush/vim-gocode'
 endif
-Plugin 'bruno-/vim-vertical-move'
-Plugin 'justinmk/vim-ipmotion'
-Plugin 'justinmk/vim-gtfo'
-Plugin 'justinmk/vim-sneak'
+
 " https://github.com/vim-scripts/surrparen
 Plugin 'Keithbsmiley/investigate.vim'
 Plugin 'tsukkee/unite-tag'
@@ -261,9 +264,6 @@ omap <silent> + <Plug>(vertical_move_down)
 omap <silent> _ <Plug>(vertical_move_up)
 
 let g:surround_no_insert_mappings = 1
-
-let g:gitgutter_eager = 0
-let g:linediff_buffer_type = 'scratch'
 
 let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
 let g:dbext_default_history_size = 1000
@@ -611,6 +611,7 @@ nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar>
 "linewise partial staging in visual-mode.
 xnoremap Udp :diffput<cr>
 xnoremap Udo :diffget<cr>
+nnoremap <silent> dO :if &diff<bar>diffoff<bar>endif<cr>
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
@@ -1189,6 +1190,8 @@ endif "}}}
 " statusline  =================================================================
 " show winnr iff there are >2 windows
 set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
+set title
+set titlestring=%{getcwd()}
 
 " session  ==============================================================  "{{{
 let s:sessionfile = expand("~/.vim/session.vim", 1)
