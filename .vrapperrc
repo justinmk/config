@@ -21,6 +21,7 @@ nnoremap ,w  :w<cr>
 nnoremap vd "_d
 vnoremap x  "_d
 nnoremap vD "_D
+vnoremap P  "0p
 nnoremap =p o<esc>p==
 nnoremap =P O<esc>p==
 nnoremap <c-l> :nohlsearch<cr>

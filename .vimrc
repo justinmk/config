@@ -720,6 +720,7 @@ nnoremap <c-j> i<c-j><esc>k$
 nnoremap vd "_d
 xnoremap x  "_d
 nnoremap vD "_D
+xnoremap P  "0p
 
 func! s:replace_without_yank(type)
   let sel_save = &selection
