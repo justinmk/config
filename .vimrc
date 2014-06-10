@@ -598,7 +598,7 @@ nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
 cnoremap <leader>fd  <c-r>=expand("%:p:h", 1)<cr>
 
 " version control
-xnoremap UU :Linediff<cr>
+xnoremap <tab> :Linediff<cr>
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
@@ -609,8 +609,8 @@ nnoremap Up :GitGutterPreviewHunk<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 "linewise partial staging in visual-mode.
-xnoremap Udp :diffput<cr>
-xnoremap Udo :diffget<cr>
+xnoremap <c-p> :diffput<cr>
+xnoremap <c-o> :diffget<cr>
 nnoremap <silent> dO :if &diff<bar>diffoff<bar>endif<cr>
 
 " :help :DiffOrig
@@ -631,7 +631,7 @@ nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
 
 " available mappings:
-"   visual: R c-r c-n c-p c-g c-o c-i c-a c-x c-h,<bs>
+"   visual: R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
 "   normal: m<tab> q<special> y<special> <del> <pageup/down>
 " nnoremap c<space>       :easyalign...
