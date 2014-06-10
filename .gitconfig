@@ -30,6 +30,8 @@
   s  = !git status -sb && git stash list
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
+  #open modified files in editor
+  em = !vim `git status --porcelain | sed -ne 's/^ M //p'`
 [advice]
   statusHints = false
 [color]
