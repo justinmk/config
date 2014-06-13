@@ -54,6 +54,9 @@
   frag = bold magenta
   old  = bold red
   new  = bold green
+  #NOTE: whitespace is highlighted only on new lines, not removed/old.
+  #Use "git diff -R" to reverse the diff to see removed whitespace.
+  whitespace = bold red white
 [guitool "delete"]
   cmd = rm $FILENAME
   needsfile = yes
