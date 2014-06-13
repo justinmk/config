@@ -42,7 +42,7 @@ if has('vim_starting')
   set all&
 endif
 
-" removing this breaks alt/meta mappings (on win32 gvim at least).
+" required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
 set encoding=utf-8
 
 if exists('&guioptions')
@@ -130,7 +130,6 @@ Plugin 'tpope/vim-rsi'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-markdown'
-Plugin 'kshenoy/vim-signature'
 Plugin 'Raimondi/delimitMate'
 Plugin 'zhaocai/DirDiff.vim'
 Plugin 'AndrewRadev/linediff.vim'
@@ -281,7 +280,7 @@ let g:SignatureMap = { 'GotoNextLineAlpha': "", 'GotoPrevLineAlpha': "", 'GotoNe
 " http://stackoverflow.com/a/10633069/152142
 if !s:is_msysgit && !s:is_gui
     "avoid: m-b m-d m-f
-    set <m-g>=g <m-h>=h <m-j>=j <m-k>=k <m-l>=l <m-m>=m
+    set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
           \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
           \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
           \ <m-]>=]
@@ -534,6 +533,9 @@ iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
 "==============================================================================
 " key mappings/bindings
 
+" mark position before search
+nnoremap / ms/
+
 " manage windows
 nnoremap gw <c-w>
 
@@ -551,6 +553,7 @@ nnoremap 9gw 9<c-w>w
 
 nnoremap gwV :vnew<cr>
 nnoremap <silent> <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
+nnoremap <m-i> <c-i>
 " fit the current window height to the selected text
 xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
 
@@ -943,8 +946,8 @@ augroup vimrc_autocmd
         \ |nnoremap <buffer> <c-n> <down>
         \ |nnoremap <silent><buffer> q :cclose<bar>call<sid>switch_to_alt_win()<cr>
 
-  " Jump to the last position when reopening a file
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+  " Jump to the last position when reopening a file (except Git commit)
+  autocmd BufReadPost * if @% == '.git/COMMIT_EDITMSG' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
   " force windows to be sized equally after viewport resize
   autocmd VimResized * wincmd =
@@ -1140,7 +1143,6 @@ augroup vimrc_unite
   autocmd FileType unite call s:unite_settings()
 augroup END
 
-" Custom mappings for the unite buffer
 function! s:unite_settings()
   setlocal nopaste
   let b:delimitMate_autoclose = 0
@@ -1193,6 +1195,7 @@ endif "}}}
 set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
 set title
 set titlestring=%{getcwd()}
+set titleold=?
 
 " session  ==============================================================  "{{{
 let s:sessionfile = expand("~/.vim/session.vim", 1)
