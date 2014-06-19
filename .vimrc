@@ -464,43 +464,39 @@ func! AppendToFile(file, lines)
   call writefile(readfile(l:file)+a:lines, l:file)
 endf
 
-"TODO:
-" http://vim.wikia.com/wiki/Have_Vim_check_automatically_if_the_file_has_changed_externally
 " http://www.vim.org/scripts/script.php?script_id=1714
-" FileChangedShell & :checktime
-let s:orig_updtime = &updatetime
+" uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
+" only updates if the window is showing.
+" autocmds are torn down after buffer is closed or hidden.
+" vim:
+"   only updates if cursor is in window
+" neovim:
+"   TODO: update even if cursor is not in window
 func! Blah()
   let w = winsaveview()
   e!
   call winrestview(w)
+  if b:tail_follow | exec "norm! G" | endif
 endf
-func! Tail(filepath)
-  exec 'split '.a:filepath
-  "TODO: disable undo for buffer
+func! Tail(...) "TODO: disable undo for buffer?
+  if a:0 > 0
+    exec 'split '.a:1
+  endif
 
-  "initial cursor activity to kick CursorHold
-  let &updatetime=2000
-  call feedkeys("f\e")
+  call feedkeys("f\e") "force cursor activity to kick CursorHold
+
   let b:tail_follow = 0
+  let b:tail_orig_updtime = &updatetime
+  let &updatetime=1000
+  setlocal autoread
 
   let aubuff = '<buffer='.bufnr("%").'>'
-  let updtime = s:orig_updtime
   augroup TailSmurf
     au!
-    exec 'autocmd BufEnter,WinEnter '.aubuff.' let &updatetime=2000'
-    if s:is_windows
-      "force cursor activity to trigger next CursorHold
-      exec 'autocmd CursorHold '.aubuff.' call Blah() | call feedkeys("f\e") | if b:tail_follow | exec "norm! G" | endif'
-    else
-      "force cursor activity to trigger next CursorHold
-      " call AppendToFile("~/foo2.txt", [string(localtime())])
-      exec 'autocmd CursorHold '.aubuff.' checktime | call feedkeys("f\e")'
-      exec 'autocmd FileChangedShellPost '.aubuff.' if b:tail_follow | exec "norm! G" | endif'
-      exec 'autocmd FileChangedShell '.aubuff.' call Blah() '
-    endif
-    "one-time event to kick the updatetime initially
-    " exec 'autocmd CursorMoved '.aubuff.' let &updatetime=2000 | au! CursorMoved TailSmurf '.aubuff
-    exec 'autocmd BufHidden,WinLeave '.aubuff.' let &updatetime='.updtime
+    exec 'autocmd BufEnter,WinEnter '.aubuff.' let &updatetime=1000'
+    exec 'autocmd CursorHold '.aubuff.' checktime | call feedkeys("f\e")'
+    exec 'autocmd FileChangedShell '.aubuff.' call Blah()'
+    exec 'autocmd BufLeave,BufHidden,WinLeave '.aubuff.' let &updatetime='.b:tail_orig_updtime
   augroup END
 endf
 
