@@ -132,6 +132,8 @@ Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-markdown'
 Plugin 'Raimondi/delimitMate'
 Plugin 'zhaocai/DirDiff.vim'
+Plugin 'justinmk/diffchar.vim'
+nmap dc <Plug>(DiffChar_ToggleCurrentLine)
 Plugin 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plugin 'mbbill/undotree'
@@ -246,7 +248,7 @@ xmap t <Plug>Sneak_t
 xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
-let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0-"
+let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
 xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
