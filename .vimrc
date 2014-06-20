@@ -231,6 +231,9 @@ func! EnsureFile(path)
   endif
 endf
 
+command! LoadSession if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
+      \ | else | Obsession ~/.vim/session.vim | endif
+
 "==============================================================================
 " general settings / options
 "==============================================================================
@@ -1195,34 +1198,7 @@ set title
 set titlestring=%{getcwd()}
 set titleold=?
 
-" session  ==============================================================  "{{{
-let s:sessionfile = expand("~/.vim/session.vim", 1)
-let s:sessionlock = expand("~/.vim/session.lock", 1)
-
-function! LoadSession()
-  if -1 == writefile([''], s:sessionlock)
-    echoerr "session: failed to create lock: " . s:sessionlock
-    return
-  endif
-
-  if filereadable(s:sessionfile)
-    exe 'source ' s:sessionfile
-  endif
-
-  exe 'Obsession '.s:sessionfile
-  "unlock the session
-  autocmd VimLeave * call delete(s:sessionlock)
-endfunction
-
-if s:is_gui && !filereadable(s:sessionlock)
-  augroup vimrc_session
-    autocmd!
-    " cancel VimEnter if session was explicitly loaded via 'vim -S'.
-    autocmd SessionLoadPost * autocmd! vimrc_session
-    autocmd VimEnter * nested call LoadSession()
-  augroup END
-endif "}}}
-
+" =============================================================================
 if s:is_cygwin
   " use separate viminfo to avoid weird permissions issues
   set viminfo+=n~/.viminfo_cygwin
