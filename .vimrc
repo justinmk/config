@@ -1217,7 +1217,7 @@ if s:is_cygwin
 endif
 
 "ensure transient dirs
-let s:dir = has('win32') ? $APPDATA.'/Vim' : s:is_mac ? '~/Library/Vim' : empty($XDG_DATA_HOME) ? '~/.local/share/vim' : $XDG_DATA_HOME.'/vim'
+let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/vim' : $XDG_DATA_HOME.'/vim'
 call EnsureDir(s:dir)
 
 if isdirectory(expand(s:dir, 1))
