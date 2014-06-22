@@ -470,40 +470,41 @@ func! AppendToFile(file, lines)
 endf
 
 " http://www.vim.org/scripts/script.php?script_id=1714
-" uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
-" only updates if the window is showing.
-" autocmds are torn down after buffer is closed or hidden.
-" vim:
-"   only updates if cursor is in window
-" neovim:
-"   TODO: update even if cursor is not in window
-func! Blah()
-  let w = winsaveview()
-  e!
-  call winrestview(w)
-  if b:tail_follow | exec "norm! G" | endif
-endf
-func! Tail(...) "TODO: disable undo for buffer?
-  if a:0 > 0
-    exec 'split '.a:1
-  endif
+" - uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
+" - only updates if the buffer is visible.
+" - autocmds are torn down after buffer is closed or hidden.
+" - let b:tail_follow=1 to auto-scroll
+" - Vim:
+"     - depends on CursorHold, so tailed buffers won't update while you are moving the cursor.
+"     - set 'updatetime' lower if you want faster updates
+"     - b:tail_follow only works if the tailed file is the current buffer
+let s:tail_orig_updtime = &updatetime
+func! Tail(filename) "TODO: disable undo for buffer?
+  let filename = escape(dispatch#expand(a:filename), '#%')
+  if strlen(filename) > 0
+    exec 'split '.filename
+  endif "else: tail the current buffer.
 
-  call feedkeys("f\e") "force cursor activity to kick CursorHold
-
-  let b:tail_follow = 0
-  let b:tail_orig_updtime = &updatetime
   let &updatetime=1000
   setlocal autoread
 
   let aubuff = '<buffer='.bufnr("%").'>'
+  "buffer-local
   augroup TailSmurf
-    au!
+    exec 'au! * '.aubuff
     exec 'autocmd BufEnter,WinEnter '.aubuff.' let &updatetime=1000'
-    exec 'autocmd CursorHold '.aubuff.' checktime | call feedkeys("f\e")'
-    exec 'autocmd FileChangedShell '.aubuff.' call Blah()'
-    exec 'autocmd BufLeave,BufHidden,WinLeave '.aubuff.' let &updatetime='.b:tail_orig_updtime
+    exec 'autocmd BufLeave,BufHidden,WinLeave '.aubuff.' let &updatetime='.s:tail_orig_updtime
+    "Follow only the current buffer (anything more sophisticated is a pain in the ass).
+    exec 'autocmd FileChangedShellPost '.aubuff.' if get(b:, "tail_follow", 0) && bufnr("%")=='.bufnr("%").'|exec "norm! G"|endif'
   augroup END
+
+  call feedkeys("f\e", "n") "force cursor activity to kick CursorHold
+
+  "global
+  au! TailSmurf CursorHold
+  autocmd TailSmurf CursorHold * checktime | call feedkeys("f\e", "n")
 endf
+command! -bang -nargs=? -complete=file Tail call Tail(<q-args>)
 
 " =============================================================================
 " normal mode
