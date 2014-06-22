@@ -1178,17 +1178,20 @@ function! s:clear_empty_buffers()
         \  && -1 == bufwinnr(v:val) 
         \ ')
 
-  " if the buffer is _not_ loaded, we do _not_ want to load every buffer just to check if it is empty.
+  " REMOVED: can't do this, some plugins use the buffer list as a queue with
+  "          special buffer names, eg: fugitive:///foo/.git//<hash>:::<filename>
+  "
+  " if the buffer is _not_ loaded, we do _not_ want to load it just to check if it is empty.
   "     - get its file path and check getfsize().
   "     - if getfsize() fails, then the filepath must be non-existent; and 
   "       an unloaded buffer with an invalid a filepath must be empty.
-  let nonexistent = filter(range(1, bufnr('$')),
-        \ 'bufexists(v:val) && !bufloaded(v:val) 
-        \  && -1 == getfsize(expand("#".v:val.":p", 1)) 
-        \ ')
+  " let nonexistent = filter(range(1, bufnr('$')),
+  "       \ 'bufexists(v:val) && !bufloaded(v:val) 
+  "       \  && -1 == getfsize(expand("#".v:val.":p", 1)) 
+  "       \ ')
 
-  if !empty(empty_bufs + nonexistent)
-    exe 'bwipeout! '.join(empty_bufs + nonexistent, ' ')
+  if !empty(empty_bufs)
+    exe 'bwipeout! '.join(empty_bufs, ' ')
   endif
 endfunction
 
