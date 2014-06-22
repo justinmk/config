@@ -1,5 +1,6 @@
 # Vim
 *.swp
+Session.vim
 
 # ignore ctags file, but not 'tags' directory
 tags

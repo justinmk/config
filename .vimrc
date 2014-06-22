@@ -160,7 +160,7 @@ endif
 
 Plugin 'tpope/vim-projectionist'
 " look at derekwyatt/vim-fswitch for more C combos.
-let g:projectiles = {
+let g:projectionist_heuristics = {
       \  '/*.c|src/*.c': {
       \    '*.c': {'alternate': ['../include/{}.h', '{}.h']},
       \    '*.h': {'alternate': '{}.c'},
@@ -594,8 +594,8 @@ func! s:ctrl_g()
   echo fugitive#head(7) msg[2:]
 endf
 nnoremap <C-g> :call <sid>ctrl_g()<cr>
-" show the current working directory
-nnoremap <M-g> :<C-u>pwd<cr>
+" show the working directory and session
+nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~") fnamemodify(v:this_session, ":~")<cr>
 " insert the current file path
 nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
 " insert the current file directory
@@ -611,6 +611,8 @@ nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
 nnoremap Uh :GitGutterLineHighlightsToggle<cr>
 nnoremap Up :GitGutterPreviewHunk<cr>
+nnoremap Uw :GitGutterStageHunk<cr>
+nnoremap UW :Gwrite<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 "linewise partial staging in visual-mode.
@@ -962,7 +964,7 @@ augroup vimrc_autocmd
 
   autocmd BufWritePre *.py :call TrimTrailingWhitespace()
 
-  autocmd WinEnter * if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
+  autocmd VimEnter,WinEnter * if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
   autocmd WinLeave * silent! setlocal colorcolumn=
 
   if exists("*mkdir") "auto-create directories for new files
