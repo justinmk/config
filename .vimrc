@@ -107,6 +107,7 @@ Plugin 'noahfrederick/vim-hemisu'
 Plugin 'justinmk/vim-ipmotion'
 Plugin 'justinmk/vim-gtfo'
 Plugin 'justinmk/vim-sneak'
+Plugin 'justinmk/vim-syntax-extra'
 Plugin 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plugin 'benmills/vimux'
@@ -114,15 +115,21 @@ Plugin 'tpope/vim-tbone'
 Plugin 'wellle/tmux-complete.vim'
 let g:tmuxcomplete#trigger = ''
 endif
+
 Plugin 'dbext.vim'
 " dbext profile example:
 "   let g:dbext_default_profile = 'default'
 "   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
+let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
+let g:dbext_default_history_size = 1000
+let g:dbext_default_history_max_entry = 10*1024
+
 Plugin 'thinca/vim-quickrun'
 " Plugin 'xuhdev/SingleCompile'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
+let g:surround_no_insert_mappings = 1
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-eunuch'
@@ -131,6 +138,8 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-markdown'
 Plugin 'Raimondi/delimitMate'
+" force delimitmate to leave <c-g> alone
+imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
 Plugin 'zhaocai/DirDiff.vim'
 Plugin 'justinmk/diffchar.vim'
 nmap dc <Plug>(DiffChar_ToggleCurrentLine)
@@ -256,9 +265,6 @@ let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 xmap m     <Plug>(expand_region_expand)
 xmap <m-m> <Plug>(expand_region_shrink)
 
-" force delimitmate to leave <c-g> alone
-imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
-
 let g:vertical_move_default_mapping = 0
 nmap <silent> + <Plug>(vertical_move_down)
 nmap <silent> _ <Plug>(vertical_move_up)
@@ -267,17 +273,8 @@ xmap <silent> _ <Plug>(vertical_move_up)
 omap <silent> + <Plug>(vertical_move_down)
 omap <silent> _ <Plug>(vertical_move_up)
 
-let g:surround_no_insert_mappings = 1
-
-let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
-let g:dbext_default_history_size = 1000
-let g:dbext_default_history_max_entry = 10*1024
-
 let g:EclimBufferTabTracking = 0 "legacy version
 let g:EclimBuffersTabTracking = 0
-
-let g:SignatureMap = { 'GotoNextLineAlpha': "", 'GotoPrevLineAlpha': "", 'GotoNextSpotAlpha': "", 'GotoPrevSpotAlpha': "",
-                     \ 'GotoNextLineByPos': "", 'GotoPrevLineByPos': "", 'GotoNextSpotByPos': "]'", 'GotoPrevSpotByPos': "['", }
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
@@ -314,12 +311,12 @@ set lazyredraw  " no redraws in macros
 if !s:is_ssh
 set ttyfast
 endif
-set cmdheight=2 "The commandbar height
+set cmdheight=2
 set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
-set matchtime=3
+set matchtime=3 "improves performance of showmatch
 
 "audible bell persists unless visualbell is enabled.
 set noerrorbells novisualbell t_vb= visualbell
@@ -530,7 +527,7 @@ endfunc
 
 " abbreviations ===============================================================
 
-iab date- <c-r>=strftime("%d/%m/%Y %H:%M:%S")<cr>
+iabbrev date- <c-r>=strftime("%Y/%d/%m %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -600,7 +597,7 @@ nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~") fnamemodify(v:this_session
 nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
 " insert the current file directory
 nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
-cnoremap <leader>fd  <c-r>=expand("%:p:h", 1)<cr>
+cabbrev  fd- <c-r>=expand("%:p:h", 1)<cr>
 
 " version control
 xnoremap <tab> :Linediff<cr>
@@ -615,10 +612,10 @@ nnoremap Uw :GitGutterStageHunk<cr>
 nnoremap UW :Gwrite<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
+nnoremap <silent> dO :if &diff<bar>diffoff<bar>endif<cr>
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
-nnoremap <silent> dO :if &diff<bar>diffoff<bar>endif<cr>
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
@@ -640,7 +637,7 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " available mappings:
 "   visual: R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: m<tab> q<special> y<special> <del> <pageup/down>
+"   normal: m<tab> q<special> y<special> <del> <pageup/down> q<special>
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
 
