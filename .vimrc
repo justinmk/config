@@ -648,13 +648,22 @@ func! BufDeath_Comparebuf(b1, b2)
   return !bufloaded(a:b2) ? 0 : 1
 endf
 
-func! s:buf_find_displayed_bufs()
-  " all buffers displayed in any window, any tab.
-  let s:displayedbufs = []
+func! s:buf_find_displayed_bufs() " find all buffers displayed in any window, any tab.
+  let l:bufs = []
   for i in range(1, tabpagenr('$'))
-    call extend(s:displayedbufs, tabpagebuflist(i))
+    call extend(l:bufs, tabpagebuflist(i))
   endfor
-  return s:displayedbufs
+  return l:bufs
+endf
+
+func! s:buf_find_alternate_bufs() " find all buffers marked 'alternate'.
+  " only searches the current tab, because :tabdo causes too much flicker.
+
+  let bufs = []
+  let w = winnr()
+  noau windo if bufnr("#") != -1 | call add(bufs, bufnr("#")) | endif
+  exec w.'wincmd w'
+  return bufs
 endf
 
 func! s:buf_find_valid_next_bufs()
@@ -936,7 +945,7 @@ augroup BufferDeath
   "   1. call function
   "   2. remove the autocmd to avoid spam
   autocmd BufLeave * exec 'autocmd! BufferDeath CursorHold' |
-        \ autocmd BufferDeath CursorHold * silent call <sid>clear_empty_buffers() |
+        \ autocmd BufferDeath CursorHold * call <sid>clear_empty_buffers() |
         \ autocmd! BufferDeath CursorHold
 augroup END
 
@@ -1152,14 +1161,15 @@ function! s:unite_settings()
   nnoremap <silent><buffer> <C-p> k
 endfunction
 
-" delete empty, non-visible, non-special buffers having no significant undo stack.
-" TODO: exclude buffers that have an undo stack
+" delete empty, non-visible, non-special, non-alternate buffers.
+" TODO: exclude buffers that have an undo stack?
 function! s:clear_empty_buffers()
   if '[Command Line]' ==# bufname("%") && 'nofile' ==# &buftype
     return 0 "avoid E11
   endif
 
-  let displayedbufs = <sid>buf_find_displayed_bufs()
+  let displayedbufs = s:buf_find_displayed_bufs()
+  let alternatebufs = s:buf_find_alternate_bufs()
 
   " if the buffer is loaded, just check to see if its content is empty:
   "     [""] == getbufline(v:val, 1, 2)
@@ -1168,7 +1178,7 @@ function! s:clear_empty_buffers()
         \  && 0 == getbufvar(v:val, "&modified") 
         \  && "" ==# getbufvar(v:val, "&buftype") 
         \  && [""] == getbufline(v:val, 1, 2) 
-        \  && -1 == index(displayedbufs, v:val) 
+        \  && -1 == index(displayedbufs + alternatebufs, v:val) 
         \  && -1 == bufwinnr(v:val) 
         \ ')
 
