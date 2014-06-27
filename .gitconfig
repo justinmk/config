@@ -1,5 +1,3 @@
-[include]
-  path = ~/.gitconfig.local
 [core]
   ignorecase = false
   autocrlf = false
@@ -25,13 +23,17 @@
   l  = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
   ll = !git l --all
   d  = diff --stat --color
+  #compare $REF to its parent.
+  dp = "!f() { REF=$1; echo $REF ; [ \"$REF\" = \"\" ] && REF=HEAD; git diff $REF~..$REF; }; f"
   b  = branch
   ba = branch --all
   s  = !git status -sb && git stash list
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
-  #open modified files in editor
-  em = !vim `git status --porcelain | sed -ne 's/^ M //p'`
+  #script-consumable list of modified files (does NOT include deleted/added/staged)
+  df = diff --name-only
+  #open modified files (does NOT include deleted/added/staged)
+  em = !vim `git df`
 [advice]
   statusHints = false
 [color]
@@ -79,4 +81,15 @@
   # commit dot in the revision graph
   graph-commit = cyan default bold
   diff-stat = white default bold
+
+[include]
+  path = ~/.gitconfig.local
+#[user]
+#  email = foo@bar.com
+#  name = foo
+#[core]
+#  editor = /foo/bar/nvim
+#[alias]
+#  #you can re-define existing aliases.
+#  em = !/c/opt/vim/vim `git status --porcelain | sed -ne 's/^ M //p'`
 
