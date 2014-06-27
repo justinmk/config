@@ -186,8 +186,8 @@ Plugin 'leafo/moonscript-vim'
 Plugin 'chrisbra/color_highlight'
 Plugin 'osyo-manga/vim-over'
 Plugin 'terryma/vim-expand-region'
-Plugin 'airblade/vim-gitgutter'
-let g:gitgutter_eager = 0
+Plugin 'mhinz/vim-signify'
+let g:signify_vcs_list = [ 'git' ]
 
 if exists("$GOPATH")
 Plugin 'Blackrush/vim-gocode'
@@ -242,6 +242,7 @@ endf
 
 command! LoadSession if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
       \ | else | Obsession ~/.vim/session.vim | endif
+set sessionoptions-=blank
 
 "==============================================================================
 " general settings / options
@@ -311,6 +312,7 @@ set lazyredraw  " no redraws in macros
 if !s:is_ssh
 set ttyfast
 endif
+set noshelltemp
 set cmdheight=2
 set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
@@ -372,6 +374,8 @@ endif
         \ if &background == "dark"
         \ | hi Normal  guibg=black guifg=white ctermfg=255 ctermbg=0
         \ | hi NonText guibg=black guifg=white ctermfg=255 ctermbg=0
+        \ | hi Comment ctermfg=7
+        \ | hi PreProc ctermfg=10
         \ | endif
         \'
 
@@ -515,6 +519,7 @@ nnoremap Y y$
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
+inoremap <insert> <C-r>+
 
 " delete the 'head' of a path on the command line
 cnoremap <silent> <c-x> <C-\>e<sid>delete_until()<cr>
@@ -536,22 +541,14 @@ iabbrev date- <c-r>=strftime("%Y/%d/%m %H:%M:%S")<cr>
 nnoremap / ms/
 
 " manage windows
-nnoremap gw <c-w>
-
-" go to nth window
-" this also works for 11gw, 21gw, ...
-nnoremap 1gw 1<c-w>w
-nnoremap 2gw 2<c-w>w
-nnoremap 3gw 3<c-w>w
-nnoremap 4gw 4<c-w>w
-nnoremap 5gw 5<c-w>w
-nnoremap 6gw 6<c-w>w
-nnoremap 7gw 7<c-w>w
-nnoremap 8gw 8<c-w>w
-nnoremap 9gw 9<c-w>w
+"   - gw without a count (or with a count _suffix_) acts like ctrl-w.
+"   - gw with a count _prefix_: go to nth window (analogous to gt/gT for tabs).
+nnoremap <expr> gw (v:count > 0 ? '<c-w>w' : '<c-w>')
+nnoremap <c-w> <c-w>c
 
 nnoremap gwV :vnew<cr>
 nnoremap <silent> <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
+xnoremap <silent> <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
 nnoremap <m-i> <c-i>
 " fit the current window height to the selected text
 xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
@@ -566,15 +563,17 @@ func! s:switch_to_alt_win()
 endf
 
 " manage tabs
+"        gwT breaks out window into new Tab.
 nnoremap gwN :tabnew<cr>
 nnoremap gwC :tabclose<cr>
-nnoremap gwT :wincmd T<cr>
+nnoremap gw) :tabmove +1<cr>
+nnoremap gw( :tabmove -1<cr>
 
 " manage buffers
 nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <silent> Zb :<c-u>call <SID>buf_kill(1)<cr>
-nnoremap gb :<c-u>exec (v:count ? 'b '.v:count : 'bnext')<cr>
-nnoremap gB :<c-u>exec (v:count ? 'b '.v:count : 'bprevious')<cr>
+set wildcharm=<C-z>
+nnoremap gb :buffer <C-z><S-Tab>
 
 " quickfix window
 nnoremap <silent><c-q> :silent! botright copen<cr>
@@ -600,15 +599,15 @@ nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
 cabbrev  fd- <c-r>=expand("%:p:h", 1)<cr>
 
 " version control
-xnoremap <tab> :Linediff<cr>
+xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
-nnoremap Uh :GitGutterLineHighlightsToggle<cr>
-nnoremap Up :GitGutterPreviewHunk<cr>
-nnoremap Uw :GitGutterStageHunk<cr>
+nnoremap Uh :SignifyToggleHighlight<cr>
+" nnoremap Up :GitGutterPreviewHunk<cr>
+" nnoremap Uw :GitGutterStageHunk<cr>
 nnoremap UW :Gwrite<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
@@ -620,7 +619,7 @@ xnoremap <c-o> :diffget<cr>
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
-set diffopt+=iwhite "ignore whitespace
+set diffopt+=iwhite,vertical "ignore whitespace
 
 " execute/evaluate
 nmap gX      <Plug>(quickrun)
@@ -948,7 +947,7 @@ augroup vimrc_autocmd
         \ |nnoremap <silent><buffer> q :cclose<bar>call<sid>switch_to_alt_win()<cr>
 
   " Jump to the last position when reopening a file (except Git commit)
-  autocmd BufReadPost * if @% == '.git/COMMIT_EDITMSG' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+  autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
   " force windows to be sized equally after viewport resize
   autocmd VimResized * wincmd =
@@ -959,7 +958,7 @@ augroup vimrc_autocmd
 
   autocmd FileType vim nnoremap <buffer> gX :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
-  autocmd BufWritePre *.py :call TrimTrailingWhitespace()
+  autocmd BufWritePre *.py call TrimTrailingWhitespace()
 
   autocmd VimEnter,WinEnter * if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
   autocmd WinLeave * silent! setlocal colorcolumn=
@@ -1071,8 +1070,6 @@ if s:lua_patch885
   call s:init_neocomplete()
 endif
 
-set wildcharm=<C-z>
-nnoremap <C-b> :buffer <C-z><S-Tab>
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
 set wildignore+=tags,*.o,*.obj,*.dll,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg

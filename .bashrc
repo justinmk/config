@@ -76,10 +76,11 @@ fi
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# msysgit cygwin
 # if [[ $TERM == 'cygwin' && $OSTYPE == 'msys' ]] ; then
 if [ "$MSYSTEM" == MINGW32 ]; then
-    # msysgit cygwin
     export LS_COLORS='di=01;36'
+    alias pt='pt --nocolor'
 fi
 
 #try to find git-prompt.sh if __git_ps1 was not automatically provided.
