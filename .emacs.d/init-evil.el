@@ -15,16 +15,16 @@
 (require-package 'evil-nerd-commenter)
 (require-package 'evil-args)
 (require-package 'evil-matchit)
-(require-package 'surround)
+(require-package 'evil-surround)
 
 (require 'evil)
 (require 'evil-nerd-commenter)
 (require 'evil-visualstar)
 (require 'evil-matchit)
-(require 'surround)
+(require 'evil-surround)
 
 (evil-mode t)
-(global-surround-mode 1)
+(global-evil-surround-mode 1)
 
 ;; enable evil-mode everywhere!
 ;; TODO: this is probably more reasonable: https://github.com/prooftechnique/.emacs.d/blob/master/config/jhenahan-evil.el
