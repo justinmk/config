@@ -656,16 +656,6 @@ func! s:buf_find_displayed_bufs() " find all buffers displayed in any window, an
   return l:bufs
 endf
 
-func! s:buf_find_alternate_bufs() " find all buffers marked 'alternate'.
-  " only searches the current tab, because :tabdo causes too much flicker.
-
-  let bufs = []
-  let w = winnr()
-  noau windo if bufnr("#") != -1 | call add(bufs, bufnr("#")) | endif
-  exec w.'wincmd w'
-  return bufs
-endf
-
 func! s:buf_find_valid_next_bufs()
   "valid 'next' buffers 
   "   EXCLUDE: 
@@ -1081,7 +1071,7 @@ endif
 
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
-set wildignore+=tags,*.o,*.obj,*.dll,*.class,.git,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
+set wildignore+=tags,*.o,*.obj,*.dll,*.class,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
 
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
@@ -1169,7 +1159,6 @@ function! s:clear_empty_buffers()
   endif
 
   let displayedbufs = s:buf_find_displayed_bufs()
-  let alternatebufs = s:buf_find_alternate_bufs()
 
   " if the buffer is loaded, just check to see if its content is empty:
   "     [""] == getbufline(v:val, 1, 2)
@@ -1178,7 +1167,7 @@ function! s:clear_empty_buffers()
         \  && 0 == getbufvar(v:val, "&modified") 
         \  && "" ==# getbufvar(v:val, "&buftype") 
         \  && [""] == getbufline(v:val, 1, 2) 
-        \  && -1 == index(displayedbufs + alternatebufs, v:val) 
+        \  && -1 == index(displayedbufs, v:val)
         \  && -1 == bufwinnr(v:val) 
         \ ')
 
