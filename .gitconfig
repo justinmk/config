@@ -25,6 +25,8 @@
   d  = diff --stat --color
   #compare $REF to its parent.
   dp = "!f() { REF=$1; echo $REF ; [ \"$REF\" = \"\" ] && REF=HEAD; git diff $REF~..$REF; }; f"
+  #diff-highlight: perl script from git 'contrib'
+  dh = "!f() { git diff --color=always \"$@\" | diff-highlight | less -R; }; f"
   b  = branch
   ba = branch --all
   s  = !git status -sb && git stash list
