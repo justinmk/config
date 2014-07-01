@@ -110,7 +110,6 @@ Plugin 'justinmk/vim-sneak'
 Plugin 'justinmk/vim-syntax-extra'
 Plugin 'bruno-/vim-vertical-move'
 if executable("tmux")
-Plugin 'benmills/vimux'
 Plugin 'tpope/vim-tbone'
 Plugin 'wellle/tmux-complete.vim'
 let g:tmuxcomplete#trigger = ''
@@ -374,8 +373,6 @@ endif
         \ if &background == "dark"
         \ | hi Normal  guibg=black guifg=white ctermfg=255 ctermbg=0
         \ | hi NonText guibg=black guifg=white ctermfg=255 ctermbg=0
-        \ | hi Comment ctermfg=7
-        \ | hi PreProc ctermfg=10
         \ | endif
         \'
 
@@ -388,6 +385,8 @@ endif
 
   if !s:is_gui && &t_Co <= 88
     hi CursorLine ctermfg=white
+    hi Comment ctermfg=7
+    hi PreProc ctermfg=10
   else
     let s:color_override = '
           \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
@@ -532,7 +531,7 @@ endfunc
 
 " abbreviations ===============================================================
 
-iabbrev date- <c-r>=strftime("%Y/%d/%m %H:%M:%S")<cr>
+iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -541,7 +540,7 @@ iabbrev date- <c-r>=strftime("%Y/%d/%m %H:%M:%S")<cr>
 nnoremap / ms/
 
 " manage windows
-"   - gw without a count (or with a count _suffix_) acts like ctrl-w.
+"   - gw with a count _suffix_ (or _no_ count) acts like ctrl-w.
 "   - gw with a count _prefix_: go to nth window (analogous to gt/gT for tabs).
 nnoremap <expr> gw (v:count > 0 ? '<c-w>w' : '<c-w>')
 nnoremap <c-w> <c-w>c
@@ -591,7 +590,8 @@ func! s:ctrl_g()
 endf
 nnoremap <C-g> :call <sid>ctrl_g()<cr>
 " show the working directory and session
-nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~") fnamemodify(v:this_session, ":~")<cr>
+nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
+      \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
 " insert the current file path
 nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
 " insert the current file directory
@@ -1074,7 +1074,7 @@ set wildmode=full
 set wildignore+=tags,*.o,*.obj,*.dll,*.class,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
 
 " Files with these suffixes get a lower priority when matching a wildcard
-set suffixes=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
+set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 
 if s:is_windows
   "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
