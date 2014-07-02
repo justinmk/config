@@ -943,7 +943,7 @@ augroup vimrc_autocmd
   autocmd!
   autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
         \ |nnoremap <buffer> <c-n> <down>
-        \ |nnoremap <silent><buffer> q :cclose<bar>call<sid>switch_to_alt_win()<cr>
+        \ |nnoremap <silent><buffer> q :call<sid>switch_to_alt_win()<bar>cclose<cr>
 
   " Jump to the last position when reopening a file (except Git commit)
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
