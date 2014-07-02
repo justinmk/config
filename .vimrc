@@ -804,15 +804,14 @@ func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without mo
 endf
 
 
-func! ReadExCommandOutput(cmd)
+func! ReadExCommandOutput(newbuf, cmd)
   redir => l:message
   silent! execute a:cmd
   redir END
-  "tabnew
+  if a:newbuf | wincmd n | endif
   silent put=l:message
-  "set nomodified
 endf
-command! -nargs=+ -complete=command R call ReadExCommandOutput(<q-args>)
+command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>1, <q-args>)
 inoremap <c-r>R <c-o>:<up><home>R <cr>
 
 " python ======================================================================
