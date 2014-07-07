@@ -1070,9 +1070,6 @@ if s:is_windows
   let g:neocomplete#ctags_command = '~/bin/ctags.exe'
 endif
 
-" important!: semicolon means 'walk up until found'
-set tags^=./tags;,tags;,~/.vimtags
-
 if s:plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
