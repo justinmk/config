@@ -82,7 +82,7 @@
     (define-key evil-insert-state-map (kbd "M-y") 'helm-show-kill-ring))
 
   (define-key evil-motion-state-map (kbd "g w") 'evil-window-map)
-  (define-key evil-normal-state-map (kbd "TAB") 
+  (define-key evil-normal-state-map (kbd "<tab>")
     (bind
      (cond 
       ((eq (count-windows) 1) (other-frame 1))
@@ -225,16 +225,10 @@
   (evil-define-key 'normal cider-repl-mode-map (kbd "g K") 'cider-javadoc)
   (evil-define-key 'normal cider-mode-map (kbd "g K") 'cider-javadoc)
   
-  ;; proper jump lists
-  ;; (require-package 'jumpc)
-  ;; (jumpc)
-  ;; (define-key evil-normal-state-map (kbd "C-o") 'jumpc-jump-backward)
-  ;; (define-key evil-normal-state-map (kbd "C-i") 'jumpc-jump-forward)
-
   (after 'company
-    (define-key evil-insert-state-map (kbd "TAB") 'company-complete-common)
-    (define-key evil-insert-state-map (kbd "C-SPC") 'company-complete-common)
-    (define-key company-active-map (kbd "TAB") 'company-complete-common)
+    (define-key evil-insert-state-map (kbd "<tab>") 'company-complete-common)
+    (define-key evil-insert-state-map (kbd "<c-spc>") 'company-complete-common)
+    (define-key company-active-map (kbd "<tab>") 'company-complete-common)
     (define-key company-active-map (kbd "C-n") 'company-select-next)
     (define-key company-active-map (kbd "C-p") 'company-select-previous))
 

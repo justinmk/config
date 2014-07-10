@@ -16,12 +16,14 @@
 (require-package 'evil-args)
 (require-package 'evil-matchit)
 (require-package 'evil-surround)
+(require-package 'evil-jumper)
 
 (require 'evil)
 (require 'evil-nerd-commenter)
 (require 'evil-visualstar)
 (require 'evil-matchit)
 (require 'evil-surround)
+(require 'evil-jumper)
 
 (evil-mode t)
 (global-evil-surround-mode 1)
