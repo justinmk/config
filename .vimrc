@@ -1075,7 +1075,7 @@ set tags^=./tags;,tags;,~/.vimtags
 
 if s:plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
-call unite#custom#profile('', 'context', {'no_split': 1})
+call unite#custom#profile('', 'context', {'no_split':1, 'resize':0})
 
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
@@ -1106,7 +1106,7 @@ call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_
 " don't track help files in MRU list
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
-nnoremap <silent> <c-p> :Unite -no-split -buffer-name=files file_rec <cr>
+nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
 " search direcory of current file
 nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
 nnoremap <silent> g/f   :Unite function<cr>
