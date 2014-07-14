@@ -124,6 +124,7 @@ let g:dbext_default_history_size = 1000
 let g:dbext_default_history_max_entry = 10*1024
 
 Plugin 'thinca/vim-quickrun'
+Plugin 'thinca/vim-visualstar'
 " Plugin 'xuhdev/SingleCompile'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-fugitive'
@@ -640,7 +641,7 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
 
-func! BufDeath_Comparebuf(b1, b2)
+func! s:buf_compare(b1, b2)
   "prefer loaded buffers before unloaded buffers
   if bufloaded(a:b1)
     return bufloaded(a:b2) ? 0 : -1
@@ -659,7 +660,7 @@ endf
 func! s:buf_find_valid_next_bufs()
   "valid 'next' buffers 
   "   EXCLUDE: 
-  "     - current, unlisted, Unite
+  "     - current, unlisted
   "     - directory buffers marked as 'readonly' and 'modified' (netrw often leaves a _listed_ buffer in this weird state)
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
@@ -669,7 +670,7 @@ func! s:buf_find_valid_next_bufs()
               \  && -1 == index(tabpagebuflist(), v:val) 
               \  && !(isdirectory(bufname(v:val)) && getbufvar(v:val, "&modified") && getbufvar(v:val, "&readonly"))
               \ ')
-  call sort(l:valid_buffers, 'BufDeath_Comparebuf')
+  call sort(l:valid_buffers, '<sid>buf_compare')
   return l:valid_buffers
 endf
 
@@ -977,16 +978,6 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-" https://github.com/thinca/vim-visualstar/blob/master/plugin/visualstar.vim
-" makes * and # work on visual mode too.
-function! s:visual_search(cmdtype)
-  let l:temp = @s
-  exe "normal! \<esc>gv\"sy"
-  let l:foo = substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
-  let @s = l:temp
-  return l:foo
-endfunction
-
 " :noau speeds up vimgrep
 nnoremap g// :<c-u>noau vimgrep // **<left><left><left><left>
 " search current buffer and open results in quickfix window
@@ -996,9 +987,6 @@ nnoremap g/b :<c-u>cex []<bar>exe 'bufdo silent! noau vimgrepadd//gj %'<bar>cope
 " search-replace
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
 xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
-
-" in visual mode, press * to search for the current selection
-xnoremap * /\V<C-R>=<SID>visual_search('/')<cr><cr>
 
 " recursively grep for word under cursor
 nnoremap g/* :<c-u>noau vimgrep /\V<c-r><c-w>/ **<CR>
