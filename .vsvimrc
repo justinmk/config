@@ -33,7 +33,6 @@ nnoremap gwT :vsc Window.Float<cr>
 nnoremap gwj :vsc Window.NextSplitPane<cr>
 nnoremap gwk :vsc Window.PreviousSplitPane<cr>
 
-nnoremap <leader>bd :vsc Window.CloseDocumentWindow<cr>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap <leader>w  :w<cr>

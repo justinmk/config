@@ -1,6 +1,8 @@
 " vrapper
 " set global shortcut in Eclipse options:
 "   Activate Editor => Esc
+" syntax colors: "MoonRise UI Theme"
+"   http://guari.github.io/eclipse-ui-theme/
 
 set ignorecase
 set smartcase
@@ -13,8 +15,7 @@ inoremap jk <esc>
 inoremap kj <esc>
 nnoremap s /
 nnoremap S ?
-nnoremap ,bd :bdelete<cr>
-nnoremap gwc :bdelete<cr>
+nnoremap gw  <C-w>
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap ,w  :w<cr>
@@ -128,8 +129,8 @@ nnoremap <space> :eclipsecmdsearch<cr>
 " eclipseaction eclipseshowinpkgexplorer org.eclipse.ui.navigate.showIn
 " nnoremap ^ :eclipseshowinpkgexplorer<cr>
 
-" open file manager here
-eclipseaction openfmhere com.tetrade.eclipse.plugins.easyshell.command.shellExplore
+" open file manager here (requires Eclipse 4.4/Luna)
+eclipseaction openfmhere org.eclipse.ui.ide.showInSystemExplorer
 nnoremap gof :openfmhere<cr>
 
 " open terminal here
