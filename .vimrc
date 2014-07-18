@@ -541,14 +541,15 @@ iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 nnoremap / ms/
 
 " manage windows
+nnoremap gw <c-w>
 "   - gw with a count _suffix_ (or _no_ count) acts like ctrl-w.
 "   - gw with a count _prefix_: go to nth window (analogous to gt/gT for tabs).
 nnoremap <expr> gw (v:count > 0 ? '<c-w>w' : '<c-w>')
 nnoremap <c-w> <c-w>c
 
 nnoremap gwV :vnew<cr>
-nnoremap <silent> <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
-xnoremap <silent> <tab> :<C-u>call <sid>switch_to_alt_win()<cr>
+nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
+xnoremap <silent>       <tab> <esc>:<c-u>exec "norm \<tab>"<cr>
 nnoremap <m-i> <c-i>
 " fit the current window height to the selected text
 xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
@@ -623,7 +624,7 @@ command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis |
 set diffopt+=iwhite,vertical "ignore whitespace
 
 " execute/evaluate
-nmap gX      <Plug>(quickrun)
+nmap yxx     <Plug>(quickrun)
 xmap <enter> <Plug>(quickrun)
 
 " filter
@@ -956,7 +957,7 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  autocmd FileType vim nnoremap <buffer> gX :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
+  autocmd FileType vim nnoremap <buffer> yxx :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
   autocmd BufWritePre *.py call TrimTrailingWhitespace()
 
@@ -1075,7 +1076,7 @@ set tags^=./tags;,tags;,~/.vimtags
 
 if s:plugins "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
-call unite#custom#profile('', 'context', {'no_split':1, 'resize':0})
+call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
 
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
@@ -1120,6 +1121,7 @@ imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process <CR>
 nnoremap <silent> g/T   :Unite tmuxcomplete<CR>
+nnoremap <silent> <m-x> :Unite command<CR>
 
 augroup vimrc_unite
   autocmd!
