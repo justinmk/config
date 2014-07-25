@@ -318,7 +318,6 @@ set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 set hlsearch   " highlight search matches
-set matchtime=3 "improves performance of showmatch
 
 "audible bell persists unless visualbell is enabled.
 set noerrorbells novisualbell t_vb= visualbell
@@ -331,6 +330,7 @@ nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenab
 set scrolloff=0
 set sidescrolloff=0
 set noequalalways
+set splitright
 
 set nojoinspaces
 
@@ -545,9 +545,9 @@ nnoremap gw <c-w>
 "   - gw with a count _suffix_ (or _no_ count) acts like ctrl-w.
 "   - gw with a count _prefix_: go to nth window (analogous to gt/gT for tabs).
 nnoremap <expr> gw (v:count > 0 ? '<c-w>w' : '<c-w>')
-nnoremap <c-w> <c-w>c
 
 nnoremap gwV :vnew<cr>
+nnoremap <silent> d<tab> <c-w>c
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xnoremap <silent>       <tab> <esc>:<c-u>exec "norm \<tab>"<cr>
 nnoremap <m-i> <c-i>
@@ -945,6 +945,8 @@ augroup vimrc_autocmd
   autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
         \ |nnoremap <buffer> <c-n> <down>
         \ |nnoremap <silent><buffer> q :call<sid>switch_to_alt_win()<bar>cclose<cr>
+
+  autocmd CmdwinEnter * nnoremap <silent><buffer> q <C-W>c
 
   " Jump to the last position when reopening a file (except Git commit)
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
