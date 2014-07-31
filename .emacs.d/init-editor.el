@@ -11,12 +11,6 @@
              (setq tab-width 4)
              (setq indent-line-function (quote insert-tab))))
 
-(require-package 'multiple-cursors)
-(require 'multiple-cursors)
-(after 'evil
-  (add-hook 'multiple-cursors-mode-enabled-hook 'evil-emacs-state)
-  (add-hook 'multiple-cursors-mode-disabled-hook 'evil-normal-state))
-
 (require-package 'expand-region)
 (setq expand-region-fast-keys-enabled nil)
 

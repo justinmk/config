@@ -43,16 +43,11 @@
 
 (global-hl-line-mode +1)
 
-;; force sRGB on Mac OS X   http://www.reddit.com/r/emacs/comments/1thijn/
-(setq ns-use-srgb-colorspace t)
-
 ;; (require-package 'color-theme-sanityinc-tomorrow)
 ;; (require-package 'zenburn-theme)
 (require-package 'moe-theme)
-
-(after 'moe-theme-autoloads
-  ;; (load-theme 'sanityinc-tomorrow-night)
-  (load-theme 'moe-dark t))
+(require 'moe-theme)
+(moe-dark)
 
 
 (provide 'init-eyecandy)

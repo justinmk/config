@@ -232,15 +232,6 @@
     (define-key company-active-map (kbd "C-n") 'company-select-next)
     (define-key company-active-map (kbd "C-p") 'company-select-previous))
 
-  (after 'multiple-cursors
-    (global-unset-key (kbd "C-<down-mouse-1>"))
-    (global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
-    (define-key evil-emacs-state-map (kbd "C->") 'mc/mark-next-like-this)
-    (define-key evil-emacs-state-map (kbd "C-<") 'mc/mark-previous-like-this)
-    (define-key evil-visual-state-map (kbd "C->") 'mc/mark-all-like-this)
-    (define-key evil-normal-state-map (kbd "C->") 'mc/mark-next-like-this)
-    (define-key evil-normal-state-map (kbd "C-<") 'mc/mark-previous-like-this))
-
   (define-key evil-visual-state-map "m" 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-m") nil)
   (define-key evil-visual-state-map (kbd "M-m") (lambda ()
