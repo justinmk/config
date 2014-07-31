@@ -122,15 +122,24 @@ Plugin 'dbext.vim'
 let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
 let g:dbext_default_history_size = 1000
 let g:dbext_default_history_max_entry = 10*1024
+let g:dbext_default_usermaps = 0
 
 Plugin 'thinca/vim-quickrun'
 Plugin 'thinca/vim-visualstar'
 " Plugin 'xuhdev/SingleCompile'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-fugitive'
+
 Plugin 'tpope/vim-surround'
 let g:surround_no_insert_mappings = 1
+
 Plugin 'tpope/vim-dispatch'
+nnoremap !m :<c-u>Make<cr>
+nnoremap !t :<c-u>Start! ctags -R *<cr>
+nnoremap m<enter> :<c-u>Make<cr>
+nnoremap t<enter> :<c-u>Make unittest<cr>
+nnoremap !T :<c-u>Tmux send-keys -t bottom-left  C-m<left><left><left><left>
+
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-eunuch'
 Plugin 'tpope/vim-rsi'
@@ -207,6 +216,12 @@ let g:github_dashboard = {}
 let g:github_dashboard['position'] = 'right'
 if s:lua_patch885
 Plugin 'Shougo/neocomplete.vim'
+endif
+
+if !s:is_windows && (has("python") || has("python3"))
+  Bundle 'Valloric/YouCompleteMe'
+  let g:ycm_enable_diagnostic_signs = 0
+  let g:ycm_always_populate_location_list = 1
 endif
 
 " eager-load these plugins so we can override their settings below
@@ -812,7 +827,19 @@ func! ReadExCommandOutput(newbuf, cmd)
   silent put=l:message
 endf
 command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>1, <q-args>)
-inoremap <c-r>R <c-o>:<up><home>R <cr>
+inoremap <c-r>R <c-o>:<up><home>R! <cr>
+
+func! s:get_visual_selection()
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
+endfunc
+"read last visual-selection into command line
+cnoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
+inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 
 " python ======================================================================
 augroup vimrc_python
@@ -1118,7 +1145,10 @@ nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process <CR>
-nnoremap <silent> g/T   :Unite tmuxcomplete<CR>
+nnoremap <silent> g/W   :Unite tmuxcomplete<CR>
+imap     <silent> <m-w> <C-o>g/W
+nnoremap <silent> g/L   :Unite tmuxcomplete/lines<CR>
+imap     <silent> <m-l> <C-o>g/L
 nnoremap <silent> <m-x> :Unite command<CR>
 
 augroup vimrc_unite
