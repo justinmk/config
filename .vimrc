@@ -125,7 +125,6 @@ let g:dbext_default_history_max_entry = 10*1024
 let g:dbext_default_usermaps = 0
 
 Plugin 'thinca/vim-quickrun'
-Plugin 'thinca/vim-visualstar'
 " Plugin 'xuhdev/SingleCompile'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-fugitive'
@@ -324,9 +323,7 @@ set cursorline
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
-if !s:is_ssh
 set ttyfast
-endif
 set noshelltemp
 set cmdheight=2
 set backspace=eol,start,indent
@@ -368,18 +365,14 @@ endif
 if s:is_windows
     set winaltkeys=no
     set guifont=Consolas:h11
-elseif s:is_mac
-    " Use option (alt) as meta key.
-    set macmeta
+elseif s:is_mac && s:is_gui
+    set macmeta " Use option (alt) as meta key.
 
     " macvim options  :view $VIM/gvimrc
     let macvim_skip_colorscheme=1
     let macvim_skip_cmd_opt_movement=1
 
-    if s:is_gui
-        "set guifont=Monaco:h16
-        set guifont=Menlo:h14
-    endif
+    set guifont=Menlo:h14 "Monaco:h16
 elseif s:is_gui "linux or other
     set guifont=Monospace\ 10
 endif
@@ -557,14 +550,10 @@ nnoremap / ms/
 
 " manage windows
 nnoremap gw <c-w>
-"   - gw with a count _suffix_ (or _no_ count) acts like ctrl-w.
-"   - gw with a count _prefix_: go to nth window (analogous to gt/gT for tabs).
-nnoremap <expr> gw (v:count > 0 ? '<c-w>w' : '<c-w>')
-
 nnoremap gwV :vnew<cr>
 nnoremap <silent> d<tab> <c-w>c
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
-xnoremap <silent>       <tab> <esc>:<c-u>exec "norm \<tab>"<cr>
+xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
 " fit the current window height to the selected text
 xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
@@ -579,11 +568,13 @@ func! s:switch_to_alt_win()
 endf
 
 " manage tabs
-"        gwT breaks out window into new Tab.
+"        gwT (built-in) breaks out window into new Tab.
 nnoremap gwN :tabnew<cr>
 nnoremap gwC :tabclose<cr>
-nnoremap gw) :tabmove +1<cr>
-nnoremap gw( :tabmove -1<cr>
+nnoremap ]gw :tabmove +1<cr>
+nnoremap [gw :tabmove -1<cr>
+" move tab to Nth position (this is slightly different than :tabmove)
+nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
 
 " manage buffers
 nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
@@ -841,6 +832,8 @@ endfunc
 cnoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 
+xnoremap * <esc>/<c-r>=<sid>get_visual_selection()<cr><cr>
+
 " python ======================================================================
 augroup vimrc_python
   autocmd!
@@ -1007,19 +1000,20 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-" :noau speeds up vimgrep
-nnoremap g// :<c-u>noau vimgrep // **<left><left><left><left>
-" search current buffer and open results in quickfix window
-nnoremap g/% :<c-u>vimgrep  % <bar> cw<left><left><left><left><left><left><left>
+nnoremap g// :<c-u>grep '' *<left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
+" :noau speeds up vimgrep
 nnoremap g/b :<c-u>cex []<bar>exe 'bufdo silent! noau vimgrepadd//gj %'<bar>copen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search-replace
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
 xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
-
-" recursively grep for word under cursor
-nnoremap g/* :<c-u>noau vimgrep /\V<c-r><c-w>/ **<CR>
-xnoremap g/* :<c-u>noau vimgrep /<c-r>=<SID>visual_search('/')<cr>/ **<CR>
+" recursively search for word under cursor
+nnoremap g/* :<c-u>grep '<c-r><c-w>' *<cr>
+xnoremap g/* :<c-u>noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ **<cr>
+nnoremap g/g :<c-u>Ggrep<space>
+if executable("pt")
+set grepprg=pt\ --nocolor\ --nogroup\ $*
+endif
 
 " show :ilist or ]I results in the quickfix window
 function! s:ilist_qf(start_at_cursor)
