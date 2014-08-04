@@ -580,8 +580,8 @@ endf
 "        gwT (built-in) breaks out window into new Tab.
 nnoremap gwN :tabnew<cr>
 nnoremap gwC :tabclose<cr>
-nnoremap ]gw :tabmove +1<cr>
-nnoremap [gw :tabmove -1<cr>
+nnoremap ]gt :tabmove +1<cr>
+nnoremap [gt :tabmove -1<cr>
 " move tab to Nth position (this is slightly different than :tabmove)
 nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
 
@@ -991,9 +991,6 @@ augroup vimrc_autocmd
   autocmd FileType vim nnoremap <buffer> yxx :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
   autocmd BufWritePre *.py call TrimTrailingWhitespace()
-
-  autocmd VimEnter,WinEnter * if empty(&t_Co) || &t_Co > 80 | silent! setlocal colorcolumn=80 | endif
-  autocmd WinLeave * silent! setlocal colorcolumn=
 
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
