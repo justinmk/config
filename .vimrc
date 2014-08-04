@@ -193,6 +193,15 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'leafo/moonscript-vim'
 Plugin 'chrisbra/color_highlight'
 Plugin 'osyo-manga/vim-over'
+
+Plugin 'inside/vim-search-pulse'
+let g:vim_search_pulse_mode = 'pattern'
+let g:vim_search_pulse_disable_auto_mappings = 1
+let g:vim_search_pulse_color_list = [9, 15]
+let g:vim_search_pulse_duration = 400
+nmap n n<Plug>Pulse
+nmap N N<Plug>Pulse
+
 Plugin 'terryma/vim-expand-region'
 Plugin 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
@@ -832,7 +841,8 @@ endfunc
 cnoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 
-xnoremap * <esc>/<c-r>=<sid>get_visual_selection()<cr><cr>
+xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
+nmap * *<Plug>Pulse
 
 " python ======================================================================
 augroup vimrc_python
@@ -964,7 +974,7 @@ augroup vimrc_autocmd
   autocmd!
   autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
         \ |nnoremap <buffer> <c-n> <down>
-        \ |nnoremap <silent><buffer> q :call<sid>switch_to_alt_win()<bar>cclose<cr>
+        \ |nnoremap <silent><buffer> q <c-w>c:call<sid>switch_to_alt_win()<cr>
 
   autocmd CmdwinEnter * nnoremap <silent><buffer> q <C-W>c
 
@@ -1003,6 +1013,8 @@ augroup END
 nnoremap g// :<c-u>grep '' *<left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
 " :noau speeds up vimgrep
+" search current buffer and open results in quickfix window
+nnoremap g/% :<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
 nnoremap g/b :<c-u>cex []<bar>exe 'bufdo silent! noau vimgrepadd//gj %'<bar>copen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search-replace
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
