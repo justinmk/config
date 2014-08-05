@@ -970,6 +970,24 @@ augroup BufferDeath
         \ autocmd! BufferDeath CursorHold
 augroup END
 
+" A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
+func! s:matchparen_cursorcolumn_setup()
+  augroup matchparen_cursorcolumn
+    autocmd!
+    autocmd CursorMoved * if get(w:, "paren_hl_on", 0) | set cursorcolumn | else | set nocursorcolumn | endif
+    autocmd InsertEnter * set nocursorcolumn
+  augroup END
+endf
+if !&cursorcolumn
+  augroup matchparen_cursorcolumn_setup
+    autocmd!
+    " - Add the event _only_ if matchparen is enabled.
+    " - Event must be added _after_ matchparen loaded (so we can react to w:paren_hl_on).
+    autocmd CursorMoved * if exists("#matchparen#CursorMoved") | call <sid>matchparen_cursorcolumn_setup() | endif
+          \ | autocmd! matchparen_cursorcolumn_setup
+  augroup END
+endif
+
 augroup vimrc_autocmd
   autocmd!
   autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
