@@ -191,14 +191,14 @@ let g:projectionist_heuristics = {
 Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafo/moonscript-vim'
-Plugin 'chrisbra/color_highlight'
+Plugin 'chrisbra/Colorizer'
 Plugin 'osyo-manga/vim-over'
 
 Plugin 'inside/vim-search-pulse'
 let g:vim_search_pulse_mode = 'pattern'
 let g:vim_search_pulse_disable_auto_mappings = 1
-let g:vim_search_pulse_color_list = [9, 15]
-let g:vim_search_pulse_duration = 400
+let g:vim_search_pulse_color_list = ["red", "white", "red", "white"]
+let g:vim_search_pulse_duration = 200
 nmap n n<Plug>Pulse
 nmap N N<Plug>Pulse
 
@@ -235,6 +235,30 @@ endif
 " eager-load these plugins so we can override their settings below
 runtime plugin/sensible.vim
 runtime plugin/rsi.vim
+
+" function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
+"   let @- = getcmdline()[:getcmdpos()-2]
+"   return ""
+" endfunction
+
+" function! s:ctrl_w_before()
+"   let @- = getcmdline()
+"   return ""
+" endfunction
+
+" function! s:ctrl_w_after()
+"   let @- = @-[(getcmdpos()-1) : (getcmdpos()-2)+(strlen(@-) - strlen(getcmdline()))]
+"   return ""
+" endfunction
+
+" cnoremap <expr> <SID>(ctrl_u) <SID>ctrl_u()
+" cmap   <script> <C-U> <SID>(ctrl_u)<C-U>
+
+" cnoremap <expr> <SID>(ctrl_w_before) <SID>ctrl_w_before()
+" cnoremap <expr> <SID>(ctrl_w_after) <SID>ctrl_w_after()
+" cmap   <script> <C-W> <SID>(ctrl_w_before)<C-W><SID>(ctrl_w_after)
+" cnoremap <C-Y>  <C-R>-
+" "}}}
 
 endif "}}}
 
@@ -348,6 +372,7 @@ set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldmethod=marker
 set foldlevelstart=99 "open all folds by default
 nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
+nnoremap zy  zt5<c-y>
 set scrolloff=0
 set sidescrolloff=0
 set noequalalways
@@ -426,6 +451,7 @@ endif
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
           \ | hi TODO                        guifg=#ffff87 gui=bold,underline
+          \ | hi Underlined    guifg=NONE
           \ | endif
           \'
 
@@ -465,14 +491,15 @@ set autoindent " NOTE: 'smartindent' is superseded by 'cindent' and 'indentexpr'
 " =============================================================================
 " util functions
 
-func! TrimTrailingWhitespace()
-  let _s=@/
-  let _w=winsaveview()
-  %s/\s\+$//ge
-  call winrestview(_w)
+func! s:trim_whitespace()
+  let s=@/
+  let w=winsaveview()
+  s/\s\+$//ge
   call histdel("/", histnr("/"))
-  let @/=_s
+  call winrestview(w)
+  let @/=s
 endfunc
+command! -range=% Trim <line1>,<line2>call s:trim_whitespace()
 
 "return the syntax highlight group under the cursor
 function! GetSyntaxName()
@@ -653,7 +680,7 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " available mappings:
 "   visual: R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: zi zp zy m<tab> q<special> y<special> <del> <pageup/down> q<special>
 " nnoremap c<space>       :easyalign...
 " xnoremap <space><space> :easyalign...
 
@@ -1008,8 +1035,6 @@ augroup vimrc_autocmd
 
   autocmd FileType vim nnoremap <buffer> yxx :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
-  autocmd BufWritePre *.py call TrimTrailingWhitespace()
-
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
   endif
@@ -1025,7 +1050,7 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap g// :<c-u>grep '' *<left><left><left>
+nnoremap g// mS:<c-u>grep '' *<left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
 " :noau speeds up vimgrep
 " search current buffer and open results in quickfix window
@@ -1088,7 +1113,8 @@ if has("autocmd") && exists("+omnifunc")
 endif
 
 func! s:init_neocomplete()
-  nnoremap <leader>neo :NeoCompleteEnable<cr>
+  let g:neocomplete#enable_at_startup = 1
+  nnoremap <leader>neo :NeoCompleteDisable<cr>
   let g:neocomplete#enable_smart_case = 1
   inoremap <expr> <C-g> neocomplete#undo_completion()
   inoremap <expr> <C-l> neocomplete#complete_common_string()
@@ -1184,8 +1210,6 @@ function! s:unite_settings()
   let b:delimitMate_autoclose = 0
   unmap! <buffer> <c-d>
   unmap  <buffer> M
-  nmap <buffer> <nowait> <C-g> <Plug>(unite_exit)
-  imap <buffer> <nowait> <C-g> <Plug>(unite_exit)
   nnoremap <silent><buffer> <C-n> j
   nnoremap <silent><buffer> <C-p> k
 endfunction
