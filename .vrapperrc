@@ -15,7 +15,9 @@ inoremap jk <esc>
 inoremap kj <esc>
 nnoremap s /
 nnoremap S ?
+nnoremap zy  zt5<c-y>
 nnoremap gw  <C-w>
+nnoremap d<tab> <C-w>c
 nnoremap <c-d> <PageDown>
 nnoremap <c-u> <PageUp>
 nnoremap ,w  :w<cr>

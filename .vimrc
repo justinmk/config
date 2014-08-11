@@ -171,9 +171,9 @@ if !s:is_cygwin && (has('python') || has('python3'))
 Plugin 'davidhalter/jedi-vim'
 endif
 Plugin 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
-if s:is_windows && has('python') && !s:is_msysgit
-Plugin 'nosami/Omnisharp'
-endif
+" if s:is_windows && has('python') && !s:is_msysgit
+" Plugin 'nosami/Omnisharp'
+" endif
 
 Plugin 'tpope/vim-projectionist'
 " look at derekwyatt/vim-fswitch for more C combos.
@@ -197,7 +197,7 @@ Plugin 'osyo-manga/vim-over'
 Plugin 'inside/vim-search-pulse'
 let g:vim_search_pulse_mode = 'pattern'
 let g:vim_search_pulse_disable_auto_mappings = 1
-let g:vim_search_pulse_color_list = ["red", "white", "red", "white"]
+let g:vim_search_pulse_color_list = ["red", "white"]
 let g:vim_search_pulse_duration = 200
 nmap n n<Plug>Pulse
 nmap N N<Plug>Pulse

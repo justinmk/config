@@ -20,10 +20,12 @@ inoremap jk <esc>
 inoremap kj <esc>
 nnoremap s /
 nnoremap S ?
+nnoremap zy  zt5<c-y>
 
 nnoremap gwo :vsc FullScreen<cr>
 nnoremap gws :vsc Window.Split<cr>
 nnoremap gwc :vsc Window.Split<cr>
+nnoremap d<tab> :vsc Window.CloseDocumentWindow<cr>
 nnoremap gwC :vsc Window.CloseDocumentWindow<cr>
 nnoremap gwH :vsc Window.MovetoPreviousTabGroup<cr>
 nnoremap gwL :vsc Window.MovetoNextTabGroup<cr>
@@ -109,9 +111,9 @@ nnoremap gsl :vsc ReSharper.ReSharper_MoveRight<cr>
 nnoremap gsk :vsc ReSharper.ReSharper_MoveUp<cr>
 nnoremap gsj :vsc ReSharper.ReSharper_MoveDown<cr>
 
-" evaluate selection F#
+" evaluate F#
 xnoremap <enter>  :vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
-" evaluate current line F#
+nnoremap yxx      ggVG:vsc EditorContextMenus.CodeWindow.ExecuteInInteractive<cr>
 nnoremap <enter>  :vsc EditorContextMenus.CodeWindow.ExecuteLineInInteractive<cr>
 
 nnoremap ]q :vsc Edit.GoToNextLocation<cr>

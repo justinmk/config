@@ -93,5 +93,5 @@
 #  editor = /foo/bar/nvim
 #[alias]
 #  #you can re-define existing aliases.
-#  em = !/c/opt/vim/vim `git status --porcelain | sed -ne 's/^ M //p'`
+#  em = !/c/opt/vim/vim `git df`
 
