@@ -83,6 +83,8 @@
   # commit dot in the revision graph
   graph-commit = cyan default bold
   diff-stat = white default bold
+[github]
+  user = justinmk
 
 [include]
   path = ~/.gitconfig.local

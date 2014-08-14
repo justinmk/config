@@ -222,43 +222,58 @@ Plugin 'junegunn/vader.vim'
 Plugin 'junegunn/vim-github-dashboard'
 let g:github_dashboard = {}
 let g:github_dashboard['position'] = 'right'
-if s:lua_patch885
-Plugin 'Shougo/neocomplete.vim'
-endif
+Plugin 'mattn/webapi-vim'
+Plugin 'mattn/gist-vim'
 
 if !s:is_windows && (has("python") || has("python3"))
-  Bundle 'Valloric/YouCompleteMe'
+  Plugin 'Valloric/YouCompleteMe'
   let g:ycm_enable_diagnostic_signs = 0
   let g:ycm_always_populate_location_list = 1
+elseif s:lua_patch885
+  Plugin 'Shougo/neocomplete.vim'
+
+  let g:neocomplete#enable_at_startup = 1
+  let g:neocomplete#enable_smart_case = 1
+  inoremap <expr> <C-g> neocomplete#undo_completion()
+  inoremap <expr> <C-l> neocomplete#complete_common_string()
+  inoremap <expr> <cr>  pumvisible() && exists("*neocomplete#close_popup") ? neocomplete#close_popup() : "\<cr>"
+
+  " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
+  let omni = get(g:, 'neocomplete#sources#omni#input_patterns', {})
+  let g:neocomplete#sources#omni#input_patterns = omni
+  let omni.go  = '[^.[:digit:] *\t]\.\w*'
+  let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
+  let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+  let omni.cs = '.*[^=\);]'
 endif
 
 " eager-load these plugins so we can override their settings below
 runtime plugin/sensible.vim
 runtime plugin/rsi.vim
 
-" function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
-"   let @- = getcmdline()[:getcmdpos()-2]
-"   return ""
-" endfunction
+function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
+  let @- = getcmdline()[:getcmdpos()-2]
+  return ""
+endfunction
 
-" function! s:ctrl_w_before()
-"   let @- = getcmdline()
-"   return ""
-" endfunction
+function! s:ctrl_w_before()
+  let @- = getcmdline()
+  return ""
+endfunction
 
-" function! s:ctrl_w_after()
-"   let @- = @-[(getcmdpos()-1) : (getcmdpos()-2)+(strlen(@-) - strlen(getcmdline()))]
-"   return ""
-" endfunction
+function! s:ctrl_w_after()
+  let @- = @-[(getcmdpos()-1) : (getcmdpos()-2)+(strlen(@-) - strlen(getcmdline()))]
+  return ""
+endfunction
 
-" cnoremap <expr> <SID>(ctrl_u) <SID>ctrl_u()
-" cmap   <script> <C-U> <SID>(ctrl_u)<C-U>
+cnoremap <expr> <SID>(ctrl_u) <SID>ctrl_u()
+cmap   <script> <C-U> <SID>(ctrl_u)<C-U>
 
-" cnoremap <expr> <SID>(ctrl_w_before) <SID>ctrl_w_before()
-" cnoremap <expr> <SID>(ctrl_w_after) <SID>ctrl_w_after()
-" cmap   <script> <C-W> <SID>(ctrl_w_before)<C-W><SID>(ctrl_w_after)
-" cnoremap <C-Y>  <C-R>-
-" "}}}
+cnoremap <expr> <SID>(ctrl_w_before) <SID>ctrl_w_before()
+cnoremap <expr> <SID>(ctrl_w_after) <SID>ctrl_w_after()
+cmap   <script> <C-W> <SID>(ctrl_w_before)<C-W><SID>(ctrl_w_after)
+cnoremap <C-Y>  <C-R>-
+"}}}
 
 endif "}}}
 
@@ -577,6 +592,11 @@ endfunc
 " abbreviations ===============================================================
 
 iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
+" current file path
+iabbrev fn- <c-r>=expand('%:p', 1)<cr>
+" current file directory
+iabbrev fd- <c-r>=expand('%:p:h', 1)<cr>
+cabbrev fd- <c-r>=expand("%:p:h", 1)<cr>
 
 "==============================================================================
 " key mappings/bindings
@@ -636,11 +656,6 @@ nnoremap <C-g> :call <sid>ctrl_g()<cr>
 " show the working directory and session
 nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
       \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
-" insert the current file path
-nnoremap <leader>fn i<c-r>=expand('%:p', 1)<cr>
-" insert the current file directory
-nnoremap <leader>fd i<c-r>=expand('%:p:h', 1).'/'<cr>
-cabbrev  fd- <c-r>=expand("%:p:h", 1)<cr>
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
@@ -650,8 +665,6 @@ nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
-" nnoremap Up :GitGutterPreviewHunk<cr>
-" nnoremap Uw :GitGutterStageHunk<cr>
 nnoremap UW :Gwrite<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
@@ -905,9 +918,7 @@ augroup END
 " code navigation/inspection(!!!):
 "   https://github.com/AndrewRadev/go-oracle.vim
 " possible godoc solution    https://gist.github.com/mattn/569652
-"    Bundle 'thinca/vim-ref'
-"    let g:ref_use_vimproc = 1
-"    let g:ref_open = 'vsplit'
+"    Plugin 'thinca/vim-ref'
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/', 1)
 "    nnoremap g/k :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
@@ -1112,27 +1123,6 @@ if has("autocmd") && exists("+omnifunc")
         \ endif
 endif
 
-func! s:init_neocomplete()
-  let g:neocomplete#enable_at_startup = 1
-  nnoremap <leader>neo :NeoCompleteDisable<cr>
-  let g:neocomplete#enable_smart_case = 1
-  inoremap <expr> <C-g> neocomplete#undo_completion()
-  inoremap <expr> <C-l> neocomplete#complete_common_string()
-  inoremap <expr> <cr>  pumvisible() && exists("*neocomplete#close_popup") ? neocomplete#close_popup() : "\<cr>"
-
-  " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
-  let omni = get(g:, 'neocomplete#sources#omni#input_patterns', {})
-  let g:neocomplete#sources#omni#input_patterns = omni
-  let omni.go  = '[^.[:digit:] *\t]\.\w*'
-  let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
-  let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-  let omni.cs = '.*[^=\);]'
-endf
-
-if s:lua_patch885
-  call s:init_neocomplete()
-endif
-
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
 set wildignore+=tags,*.o,*.obj,*.dll,*.class,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
@@ -1184,6 +1174,7 @@ nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
 nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line<cr>
+nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline<cr>
