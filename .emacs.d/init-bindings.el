@@ -37,8 +37,8 @@
   ;; obliterate unwanted emacs default key bindings.
   (define-key evil-normal-state-map (kbd "g /") nil)
   (define-key evil-normal-state-map (kbd "g w") nil)
-  (define-key evil-normal-state-map (kbd "RET") nil)
-  (define-key evil-visual-state-map (kbd "RET") nil)
+  (define-key evil-normal-state-map (kbd "<return>") nil)
+  (define-key evil-visual-state-map (kbd "<return>") nil)
   (define-key evil-normal-state-map (kbd "C-p") nil)
   (global-unset-key (kbd "M-v"))
   (global-unset-key (kbd "C-l"))
@@ -146,7 +146,7 @@
   (define-key evil-visual-state-map (kbd "g x") 'my-google)
 
   ;; sexp manipulation
-  (define-key evil-normal-state-map (kbd "g RET") nil)
+  (define-key evil-normal-state-map (kbd "g <return>") nil)
   (define-key evil-normal-state-map "gs" nil)
   (dolist (pair '("(" "[" "{"))
     (define-key evil-normal-state-map (kbd (concat "g s " pair))
@@ -207,10 +207,10 @@
     (evil-define-key 'normal emacs-lisp-mode-map
       (kbd "g d") 'elisp-slime-nav-find-elisp-thing-at-point
       (kbd "K")   'elisp-slime-nav-describe-elisp-thing-at-point
-      (kbd "RET") 'eval-defun
+      (kbd "<return>") 'eval-defun
       (kbd "g X") 'eval-buffer)
     (evil-define-key 'visual emacs-lisp-mode-map
-      (kbd "RET") 'eval-region))
+      (kbd "<return>") 'eval-region))
 
   ;; clojure / cider
   (evil-define-key 'normal clojure-mode-map
@@ -218,10 +218,10 @@
     (kbd "K") 'cider-doc
     (kbd "g K") 'cider-javadoc
     ;Evaluate the current toplevel form. PREFIX => print in buffer.
-    (kbd "RET") 'cider-eval-defun-at-point
+    (kbd "<return>") 'cider-eval-defun-at-point
     (kbd "g X") 'cider-eval-buffer)
   (evil-define-key 'visual clojure-mode-map
-    (kbd "RET") 'cider-eval-region)
+    (kbd "<return>") 'cider-eval-region)
   (evil-define-key 'normal cider-repl-mode-map (kbd "g K") 'cider-javadoc)
   (evil-define-key 'normal cider-mode-map (kbd "g K") 'cider-javadoc)
   
