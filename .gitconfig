@@ -4,6 +4,8 @@
   excludesfile = ~/.gitexcludes
   # Enable parallel index preload for some operations (diff, status).
   preloadindex = true
+  # set tab width for pager (affects 'git diff')
+  pager = less -x1,5
 [gui]
   gcwarning = false
 [branch]

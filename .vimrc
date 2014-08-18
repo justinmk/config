@@ -191,6 +191,7 @@ Plugin 'PProvost/vim-ps1'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafo/moonscript-vim'
 Plugin 'chrisbra/Colorizer'
+Plugin 'chrisbra/Recover.vim'
 Plugin 'osyo-manga/vim-over'
 
 Plugin 'inside/vim-search-pulse'
@@ -251,27 +252,30 @@ runtime plugin/sensible.vim
 runtime plugin/rsi.vim
 
 function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
-  let @- = getcmdline()[:getcmdpos()-2]
-  return ""
+  if getcmdpos() > 1
+    let @- = getcmdline()[:getcmdpos()-2]
+  endif
+  return "\<C-U>"
 endfunction
 
 function! s:ctrl_w_before()
-  let @- = getcmdline()
-  return ""
+  let s:cmdline = getcmdpos() > 1 ? getcmdline() : ""
+  return "\<C-W>"
 endfunction
 
 function! s:ctrl_w_after()
-  let @- = @-[(getcmdpos()-1) : (getcmdpos()-2)+(strlen(@-) - strlen(getcmdline()))]
+  if strlen(s:cmdline) > 0
+    let @- = s:cmdline[(getcmdpos()-1) : (getcmdpos()-2)+(strlen(s:cmdline)-strlen(getcmdline()))]
+  endif
   return ""
 endfunction
 
-cnoremap <expr> <SID>(ctrl_u) <SID>ctrl_u()
-cmap   <script> <C-U> <SID>(ctrl_u)<C-U>
-
+cnoremap <expr> <C-U> <SID>ctrl_u()
 cnoremap <expr> <SID>(ctrl_w_before) <SID>ctrl_w_before()
 cnoremap <expr> <SID>(ctrl_w_after) <SID>ctrl_w_after()
-cmap   <script> <C-W> <SID>(ctrl_w_before)<C-W><SID>(ctrl_w_after)
-cnoremap <C-Y>  <C-R>-
+cmap   <script> <C-W> <SID>(ctrl_w_before)<SID>(ctrl_w_after)
+cnoremap        <C-Y> <C-R>-
+
 "}}}
 
 endif "}}}
@@ -371,7 +375,6 @@ set hidden      " Allow buffer switching even if unsaved
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
 set ttyfast
-set noshelltemp
 set cmdheight=2
 set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
@@ -667,7 +670,6 @@ nnoremap Uh :SignifyToggleHighlight<cr>
 nnoremap UW :Gwrite<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
-nnoremap <silent> dO :if &diff<bar>diffoff<bar>endif<cr>
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
@@ -675,7 +677,8 @@ xnoremap <c-o> :diffget<cr>
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
-set diffopt+=iwhite,vertical "ignore whitespace
+set diffopt+=vertical
+nnoremap <silent> co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
 " execute/evaluate
 nmap yxx     <Plug>(quickrun)
