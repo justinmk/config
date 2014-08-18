@@ -135,9 +135,8 @@ let g:surround_no_insert_mappings = 1
 Plugin 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
 nnoremap !t :<c-u>Start! ctags -R *<cr>
-nnoremap m<enter> :<c-u>Make<cr>
-nnoremap t<enter> :<c-u>Make unittest<cr>
 nnoremap !T :<c-u>Tmux send-keys -t bottom-left  C-m<left><left><left><left>
+nnoremap zut :<c-u>Make unittest<cr>
 
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-eunuch'
@@ -691,11 +690,10 @@ nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
 
 " available mappings:
-"   visual: R c-r c-n c-g c-a c-x c-h,<bs>
+"   visual: <space> R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: zi zp zy m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: m<enter> zi zp zy m<tab> q<special> y<special> <del> <pageup/down> q<special>
 " nnoremap c<space>       :easyalign...
-" xnoremap <space><space> :easyalign...
 
 func! s:buf_compare(b1, b2)
   "prefer loaded buffers before unloaded buffers
