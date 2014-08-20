@@ -877,6 +877,10 @@ inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
 nmap * *<Plug>Pulse
 
+nnoremap ,uv   :exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") <bar> Unite file_rec<cr>
+nnoremap ,deps :exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") <bar> Unite file_rec<cr>
+nnoremap ,vim :exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") <bar> Unite file_rec<cr>
+
 " python ======================================================================
 augroup vimrc_python
   autocmd!
