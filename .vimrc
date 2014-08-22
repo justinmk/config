@@ -125,7 +125,6 @@ let g:dbext_default_history_max_entry = 10*1024
 let g:dbext_default_usermaps = 0
 
 Plugin 'thinca/vim-quickrun'
-" Plugin 'xuhdev/SingleCompile'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-fugitive'
 
@@ -853,13 +852,6 @@ nnoremap ZZ :wqa<cr>
 nnoremap Zq :qa<cr>
 nnoremap ZQ :qa!<cr>
 
-func! s:do_in_place(keyseq, line_offset, col_offset) "perform an edit without moving the cursor
-  let pos = [line(".") + a:line_offset, col(".") + a:col_offset]
-  exe "norm ".a:keyseq
-  call cursor(pos)
-endf
-
-
 func! ReadExCommandOutput(newbuf, cmd)
   redir => l:message
   silent! execute a:cmd
@@ -995,19 +987,6 @@ let g:sexp_mappings = {
       \ 'sexp_move_to_prev_element_tail': '',
       \ 'sexp_move_to_next_element_tail': '',
       \ }
-
-augroup BufferDeath
-  autocmd!
-  " on BufLeave:
-  "   1. remove pending CursorHold autocmd, if any
-  "   2. set up CursorHold autocmd
-  " on CursorHold:
-  "   1. call function
-  "   2. remove the autocmd to avoid spam
-  autocmd BufLeave * exec 'autocmd! BufferDeath CursorHold' |
-        \ autocmd BufferDeath CursorHold * call <sid>clear_empty_buffers() |
-        \ autocmd! BufferDeath CursorHold
-augroup END
 
 " A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
 func! s:matchparen_cursorcolumn_setup()
@@ -1204,43 +1183,6 @@ function! s:unite_settings()
   unmap  <buffer> M
   nnoremap <silent><buffer> <C-n> j
   nnoremap <silent><buffer> <C-p> k
-endfunction
-
-" delete empty, non-visible, non-special, non-alternate buffers.
-" TODO: exclude buffers that have an undo stack?
-function! s:clear_empty_buffers()
-  if '[Command Line]' ==# bufname("%") && 'nofile' ==# &buftype
-    return 0 "avoid E11
-  endif
-
-  let displayedbufs = s:buf_find_displayed_bufs()
-
-  " if the buffer is loaded, just check to see if its content is empty:
-  "     [""] == getbufline(v:val, 1, 2)
-  let empty_bufs = filter(range(1, bufnr('$')),
-        \ 'bufloaded(v:val) 
-        \  && 0 == getbufvar(v:val, "&modified") 
-        \  && "" ==# getbufvar(v:val, "&buftype") 
-        \  && [""] == getbufline(v:val, 1, 2) 
-        \  && -1 == index(displayedbufs, v:val)
-        \  && -1 == bufwinnr(v:val) 
-        \ ')
-
-  " REMOVED: can't do this, some plugins use the buffer list as a queue with
-  "          special buffer names, eg: fugitive:///foo/.git//<hash>:::<filename>
-  "
-  " if the buffer is _not_ loaded, we do _not_ want to load it just to check if it is empty.
-  "     - get its file path and check getfsize().
-  "     - if getfsize() fails, then the filepath must be non-existent; and 
-  "       an unloaded buffer with an invalid a filepath must be empty.
-  " let nonexistent = filter(range(1, bufnr('$')),
-  "       \ 'bufexists(v:val) && !bufloaded(v:val) 
-  "       \  && -1 == getfsize(expand("#".v:val.":p", 1)) 
-  "       \ ')
-
-  if !empty(empty_bufs)
-    exe 'bwipeout! '.join(empty_bufs, ' ')
-  endif
 endfunction
 
 endif "}}}
