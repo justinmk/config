@@ -665,7 +665,9 @@ nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ub :Gblame<cr>
+nnoremap Ue :Gedit<cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
+nnoremap UR :Gread<cr>
 nnoremap UW :Gwrite<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
