@@ -132,7 +132,7 @@ let g:surround_no_insert_mappings = 1
 Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
 nnoremap !t :<c-u>Start! ctags -R *<cr>
-nnoremap !T :<c-u>Tmux send-keys -t bottom-left  C-m<left><left><left><left>
+nnoremap !T :<c-u>Tmux send-keys -t bottom-left '' C-m<left><left><left><left><left>
 nnoremap zut :<c-u>Make unittest<cr>
 
 Plug 'tpope/vim-repeat'
@@ -662,7 +662,9 @@ nnoremap Ub :Gblame<cr>
 nnoremap Ue :Gedit<cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
 nnoremap UR :Gread<cr>
-nnoremap UW :Gwrite<cr>
+nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))
+      \ <bar>endif<bar>Gwrite<bar>e<cr>
+"                                ^reload buffer to kick signify.vim
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 "linewise partial staging in visual-mode.
