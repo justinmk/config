@@ -69,7 +69,7 @@ let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
 let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
-let s:plugins=isdirectory(expand("~/.vim/bundle/vundle", 1))
+let s:plugins=isdirectory(expand("~/.vim/bundle/vim-plug", 1))
 
 if has('vim_starting') && s:is_windows && !s:is_cygwin && !s:is_msysgit
   set runtimepath+=~/.vim/
@@ -85,95 +85,92 @@ let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gu
 
 if !s:plugins "{{{
 
-fun! InstallVundle() "bootstrap vundle on new systems
+fun! InstallPlug() "bootstrap plug.vim on new systems
     silent call mkdir(expand("~/.vim/bundle", 1), 'p')
-    silent !git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+    exe '!git clone --depth=1 https://github.com/junegunn/vim-plug.git '.expand("~/.vim/bundle/vim-plug/autoload", 1)
 endfun
 
 else
 
-filetype off " required!
-
 if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/vundle/
+  set runtimepath+=~/.vim/bundle/vim-plug/
 endif
 
-call vundle#rc() 
+call plug#begin('~/.vim/bundle')
 
-Plugin 'gmarik/vundle' " let Vundle manage Vundle (required!)
-
-Plugin 'tomasr/molokai'
-Plugin 'noahfrederick/vim-hemisu'
-Plugin 'justinmk/vim-ipmotion'
-Plugin 'justinmk/vim-gtfo'
-Plugin 'justinmk/vim-sneak'
-Plugin 'justinmk/vim-syntax-extra'
-Plugin 'bruno-/vim-vertical-move'
+Plug 'tomasr/molokai'
+Plug 'noahfrederick/vim-hemisu'
+Plug 'justinmk/vim-ipmotion'
+Plug 'justinmk/vim-gtfo'
+Plug 'justinmk/vim-sneak'
+Plug 'justinmk/vim-syntax-extra'
+Plug 'bruno-/vim-vertical-move'
 if executable("tmux")
-Plugin 'tpope/vim-tbone'
-Plugin 'wellle/tmux-complete.vim'
+Plug 'tpope/vim-tbone'
+Plug 'wellle/tmux-complete.vim'
 let g:tmuxcomplete#trigger = ''
 endif
 
-Plugin 'dbext.vim'
+Plug 'dbext.vim'
 " dbext profile example:
 "   let g:dbext_default_profile = 'default'
-"   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
+"   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\120\Tools\Binn'
 let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
 let g:dbext_default_history_size = 1000
 let g:dbext_default_history_max_entry = 10*1024
 let g:dbext_default_usermaps = 0
 
-Plugin 'thinca/vim-quickrun'
-Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-fugitive'
+Plug 'thinca/vim-quickrun'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-scriptease'
+Plug 'tpope/vim-fugitive'
 
-Plugin 'tpope/vim-surround'
+Plug 'tpope/vim-surround'
 let g:surround_no_insert_mappings = 1
 
-Plugin 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
 nnoremap !t :<c-u>Start! ctags -R *<cr>
 nnoremap !T :<c-u>Tmux send-keys -t bottom-left  C-m<left><left><left><left>
 nnoremap zut :<c-u>Make unittest<cr>
 
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-eunuch'
-Plugin 'tpope/vim-rsi'
-Plugin 'tpope/vim-unimpaired'
-Plugin 'tpope/vim-obsession'
-Plugin 'tpope/vim-markdown'
-Plugin 'Raimondi/delimitMate'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-rsi'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-markdown'
+Plug 'Raimondi/delimitMate'
 " force delimitmate to leave <c-g> alone
 imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
-Plugin 'zhaocai/DirDiff.vim'
-Plugin 'justinmk/diffchar.vim'
+Plug 'zhaocai/DirDiff.vim'
+Plug 'justinmk/diffchar.vim'
 nmap dc <Plug>(DiffChar_ToggleCurrentLine)
-Plugin 'AndrewRadev/linediff.vim'
+Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
-" Plugin 'mbbill/undotree'
-Plugin 'kana/vim-textobj-user'
-Plugin 'gaving/vim-textobj-argument'
-Plugin 'guns/vim-sexp'
-Plugin 'guns/vim-clojure-static'
-Plugin 'guns/vim-clojure-highlight'
-Plugin 'tpope/vim-leiningen'
-Plugin 'tpope/vim-fireplace'
-Plugin 'tpope/vim-commentary'
+" Plug 'mbbill/undotree'
+Plug 'kana/vim-textobj-user'
+Plug 'gaving/vim-textobj-argument'
+Plug 'guns/vim-sexp'
+Plug 'guns/vim-clojure-static'
+Plug 'guns/vim-clojure-highlight'
+Plug 'tpope/vim-leiningen'
+Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-commentary'
 
 if !s:is_cygwin && has('python')
 " delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
-Plugin 'Valloric/MatchTagAlways'
+Plug 'Valloric/MatchTagAlways'
 endif
 if !s:is_cygwin && (has('python') || has('python3'))
-Plugin 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim'
 endif
-Plugin 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
+Plug 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
 " if s:is_windows && has('python') && !s:is_msysgit
-" Plugin 'nosami/Omnisharp'
+" Plug 'nosami/Omnisharp'
 " endif
 
-Plugin 'tpope/vim-projectionist'
+Plug 'tpope/vim-projectionist'
 " look at derekwyatt/vim-fswitch for more C combos.
 let g:projectionist_heuristics = {
       \  '/*.c|src/*.c': {
@@ -186,14 +183,14 @@ let g:projectionist_heuristics = {
       \  },
       \}
 
-Plugin 'PProvost/vim-ps1'
-Plugin 'pangloss/vim-javascript'
-Plugin 'leafo/moonscript-vim'
-Plugin 'chrisbra/Colorizer'
-Plugin 'chrisbra/Recover.vim'
-Plugin 'osyo-manga/vim-over'
+Plug 'PProvost/vim-ps1'
+Plug 'pangloss/vim-javascript'
+Plug 'leafo/moonscript-vim'
+Plug 'chrisbra/Colorizer'
+Plug 'chrisbra/Recover.vim'
+Plug 'osyo-manga/vim-over'
 
-Plugin 'inside/vim-search-pulse'
+Plug 'inside/vim-search-pulse'
 let g:vim_search_pulse_mode = 'pattern'
 let g:vim_search_pulse_disable_auto_mappings = 1
 let g:vim_search_pulse_color_list = ["red", "white"]
@@ -201,35 +198,35 @@ let g:vim_search_pulse_duration = 200
 nmap n n<Plug>Pulse
 nmap N N<Plug>Pulse
 
-Plugin 'terryma/vim-expand-region'
-Plugin 'mhinz/vim-signify'
+Plug 'terryma/vim-expand-region'
+Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
 
 if exists("$GOPATH")
-Plugin 'Blackrush/vim-gocode'
+Plug 'Blackrush/vim-gocode'
 endif
 
 " https://github.com/vim-scripts/surrparen
-Plugin 'Keithbsmiley/investigate.vim'
-Plugin 'tsukkee/unite-tag'
-Plugin 'Shougo/unite.vim'
-Plugin 'Shougo/unite-mru'
-Plugin 'Shougo/unite-outline'
-Plugin 'jeetsukumaran/vim-filebeagle'
+Plug 'Keithbsmiley/investigate.vim'
+Plug 'tsukkee/unite-tag'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/unite-mru'
+Plug 'Shougo/unite-outline'
+Plug 'jeetsukumaran/vim-filebeagle'
 let g:filebeagle_suppress_keymaps = 1
-Plugin 'junegunn/vader.vim'
-Plugin 'junegunn/vim-github-dashboard'
+Plug 'junegunn/vader.vim'
+Plug 'junegunn/vim-github-dashboard'
 let g:github_dashboard = {}
 let g:github_dashboard['position'] = 'right'
-Plugin 'mattn/webapi-vim'
-Plugin 'mattn/gist-vim'
+Plug 'mattn/webapi-vim'
+Plug 'mattn/gist-vim'
 
 if !s:is_windows && (has("python") || has("python3"))
-  Plugin 'Valloric/YouCompleteMe'
+  Plug 'Valloric/YouCompleteMe'
   let g:ycm_enable_diagnostic_signs = 0
   let g:ycm_always_populate_location_list = 1
 elseif s:lua_patch885
-  Plugin 'Shougo/neocomplete.vim'
+  Plug 'Shougo/neocomplete.vim'
 
   let g:neocomplete#enable_at_startup = 1
   let g:neocomplete#enable_smart_case = 1
@@ -245,6 +242,8 @@ elseif s:lua_patch885
   let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
   let omni.cs = '.*[^=\);]'
 endif
+
+call plug#end()
 
 " eager-load these plugins so we can override their settings below
 runtime plugin/sensible.vim
@@ -917,7 +916,7 @@ augroup END
 " code navigation/inspection(!!!):
 "   https://github.com/AndrewRadev/go-oracle.vim
 " possible godoc solution    https://gist.github.com/mattn/569652
-"    Plugin 'thinca/vim-ref'
+"    Plug 'thinca/vim-ref'
 "    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/', 1)
 "    nnoremap g/k :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
