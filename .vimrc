@@ -37,6 +37,10 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
+if has("neovim") && (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
+  echoerr "Missing .nvim/ or .nvimrc"
+endif
+
 if has('vim_starting')
   " ensure that we always start with Vim defaults (as opposed to those set by the current system)
   set all&
@@ -69,10 +73,10 @@ let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
 let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
-let s:plugins=isdirectory(expand("~/.vim/bundle/vim-plug", 1))
+let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
 
-if has('vim_starting') && s:is_windows && !s:is_cygwin && !s:is_msysgit
-  set runtimepath+=~/.vim/
+if has('vim_starting') && s:is_windows
+    set runtimepath+=~/.vim/
 endif
 
 " 'is GUI' means vim is _not_ running within the terminal.
@@ -86,15 +90,11 @@ let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gu
 if !s:plugins "{{{
 
 fun! InstallPlug() "bootstrap plug.vim on new systems
-    silent call mkdir(expand("~/.vim/bundle", 1), 'p')
-    exe '!git clone --depth=1 https://github.com/junegunn/vim-plug.git '.expand("~/.vim/bundle/vim-plug/autoload", 1)
+    silent call mkdir(expand("~/.vim/autoload", 1), 'p')
+    exe '!curl -fLo '.expand("~/.vim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endfun
 
 else
-
-if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/vim-plug/
-endif
 
 call plug#begin('~/.vim/bundle')
 
