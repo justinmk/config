@@ -100,6 +100,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'tomasr/molokai'
 Plug 'noahfrederick/vim-hemisu'
+Plug 'tommcdo/vim-exchange'
 Plug 'justinmk/vim-ipmotion'
 Plug 'justinmk/vim-gtfo'
 Plug 'justinmk/vim-sneak'
@@ -516,12 +517,6 @@ func! s:trim_whitespace()
 endfunc
 command! -range=% Trim <line1>,<line2>call s:trim_whitespace()
 
-"return the syntax highlight group under the cursor
-function! GetSyntaxName()
-    let l:name = synIDattr(synID(line('.'),col('.'),1),'name')
-    return l:name == '' ? '' : '[' . l:name . ']'
-endfunction
-
 func! AppendToFile(file, lines)
   let l:file = expand(a:file, 1)
   call EnsureFile(l:file)
@@ -627,8 +622,8 @@ endf
 "        gwT (built-in) breaks out window into new Tab.
 nnoremap gwN :tabnew<cr>
 nnoremap gwC :tabclose<cr>
-nnoremap ]gt :tabmove +1<cr>
-nnoremap [gt :tabmove -1<cr>
+nnoremap >gt :tabmove +1<cr>
+nnoremap <gt :tabmove -1<cr>
 " move tab to Nth position (this is slightly different than :tabmove)
 nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
 
@@ -757,7 +752,7 @@ func! s:buf_kill(mercy)
 
   silent call <sid>buf_switch_to_altbuff()
 
-  " remove the buffer filename (if any) from the args list.
+  " remove the buffer filename (if any) from the args list, else it might come back in the next session.
   if !empty(l:origbufname)
     silent! exe 'argdelete '.l:origbufname
   endif
@@ -813,7 +808,7 @@ inoremap kj <esc>
 nnoremap ' `
 xnoremap ' `
 
-nnoremap <space> :
+" nnoremap <space> :
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :e<cr>
 
@@ -838,6 +833,13 @@ nnoremap Q @@
 xnoremap Q :normal @@<CR>
 " repeat the last edit on the next [count] matches.
 nnoremap <C-n> @='n.'<cr>
+augroup vimrc_qompose
+  autocmd!
+augroup END
+nnoremap <space>
+      \ :<c-u>let g:qompose_orig_z=@z<cr>
+      \ qz
+      \ :<c-u>autocmd vimrc_qompose TextChanged,InsertLeave * exe 'normal! q'<bar>call repeat#set(@z)<bar>let @z=g:qompose_orig_z<bar>autocmd! vimrc_qompose *<cr>
 
 "j,k move by screen line instead of file line
 nnoremap j gj
@@ -849,7 +851,7 @@ inoremap <Up>   <C-o>gk
 noremap! <F1> <nop>
 noremap <F1> <nop>
 
-nnoremap ZZ :wqa<cr>
+nnoremap ZZ :xa<cr>
 nnoremap Zq :qa<cr>
 nnoremap ZQ :qa!<cr>
 
