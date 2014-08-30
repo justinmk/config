@@ -131,9 +131,10 @@ let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
-nnoremap !t :<c-u>Start! ctags -R *<cr>
+nnoremap !] :<c-u>Start! ctags -R *<cr>
 nnoremap !T :<c-u>Tmux send-keys -t bottom-left '' C-m<left><left><left><left><left>
-nnoremap zut :<c-u>Make unittest<cr>
+nnoremap !t :<c-u>Make unittest<cr>
+" nnoremap zut :<c-u>Make unittest<cr>
 
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch'
@@ -188,7 +189,7 @@ Plug 'PProvost/vim-ps1'
 Plug 'pangloss/vim-javascript'
 Plug 'leafo/moonscript-vim'
 Plug 'chrisbra/Colorizer'
-Plug 'chrisbra/Recover.vim'
+" Plug 'chrisbra/Recover.vim'
 Plug 'osyo-manga/vim-over'
 
 Plug 'inside/vim-search-pulse'
@@ -658,6 +659,7 @@ nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
+nnoremap Ug :Ggrep<space>
 nnoremap Ub :Gblame<cr>
 nnoremap Ue :Gedit<cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
@@ -696,9 +698,14 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " nnoremap c<space>       :easyalign...
 
 func! s:buf_compare(b1, b2)
-  "prefer loaded buffers before unloaded buffers
+  let b1_visible = -1 == index(tabpagebuflist(), a:b1)
+  let b2_visible = -1 == index(tabpagebuflist(), a:b2)
+  "prefer loaded and NON-visible buffers
   if bufloaded(a:b1)
-    return bufloaded(a:b2) ? 0 : -1
+    if bufloaded(a:b2)
+      return b2_visible ? !b1_visible : -1
+    endif
+    return 0
   endif
   return !bufloaded(a:b2) ? 0 : 1
 endf
@@ -712,10 +719,11 @@ func! s:buf_find_displayed_bufs() " find all buffers displayed in any window, an
 endf
 
 func! s:buf_find_valid_next_bufs()
-  "valid 'next' buffers 
-  "   EXCLUDE: 
-  "     - current, unlisted
-  "     - directory buffers marked as 'readonly' and 'modified' (netrw often leaves a _listed_ buffer in this weird state)
+  "valid 'next' buffers
+  "   EXCLUDE:
+  "     - current
+  "     - unlisted
+  "     - directory buffers marked as 'readonly' and 'modified' (netrw sometimes leaves a _listed_ buffer in this weird state)
   "   INCLUDE: normal buffers; 'help' buffers
   let l:valid_buffers = filter(range(1, bufnr('$')), 
               \ 'buflisted(v:val) 
@@ -740,6 +748,7 @@ func! s:buf_switch_to_altbuff()
       exe 'buffer '.l:valid_buffers[0]
     endif
   endif
+  echohl WarningMsg | echo "No other buffers" | echohl None
 endf
 
 " close the current buffer with a vengeance
@@ -764,7 +773,7 @@ func! s:buf_kill(mercy)
   endif
 endf
 
-nnoremap <c-^> :call <sid>buf_switch_to_altbuff()<cr>
+nnoremap <silent> <c-^> :call <sid>buf_switch_to_altbuff()<cr>
 
 "move to last character 
 nnoremap - $
@@ -878,6 +887,9 @@ endfunc
 "read last visual-selection into command line
 cnoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
+
+"read the current line into command line
+cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 
 xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
 nmap * *<Plug>Pulse
@@ -1033,7 +1045,7 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  autocmd FileType vim nnoremap <buffer> yxx :source %<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
+  autocmd FileType vim nnoremap <buffer> yxx :Runtime<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
@@ -1050,21 +1062,21 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap g// mS:<c-u>grep '' *<left><left><left>
+nnoremap g// mS:<c-u>noau vimgrep // **<left><left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
 " :noau speeds up vimgrep
 " search current buffer and open results in quickfix window
 nnoremap g/% :<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
-nnoremap g/b :<c-u>cex []<bar>exe 'bufdo silent! noau vimgrepadd//gj %'<bar>copen<left><left><left><left><left><left><left><left><left><left><left><left>
+nnoremap g/b :<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search-replace
 nnoremap g/r :<c-u>OverCommandLine<cr>%s/
 xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor
-nnoremap g/* :<c-u>grep '<c-r><c-w>' *<cr>
-xnoremap g/* :<c-u>noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ **<cr>
-nnoremap g/g :<c-u>Ggrep<space>
+nnoremap g/* mS:<c-u>noau vimgrep /\V<c-r><c-w>/ **<cr>
+xnoremap g/* mS:<c-u>noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ **<cr>
+nnoremap g/g mS:<c-u>grep ''<left>
 if executable("pt")
-set grepprg=pt\ --nocolor\ --nogroup\ $*
+set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
 endif
 
 " show :ilist or ]I results in the quickfix window
