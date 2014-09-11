@@ -19,6 +19,7 @@
 (require 'init-core)
 (require 'init-eyecandy)
 
+(require 'init-shell)
 (require 'init-editor)
 (require 'init-smartparens)
 

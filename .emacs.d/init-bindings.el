@@ -127,7 +127,7 @@
   (define-key evil-normal-state-map (kbd "g o t")
     (bind
      (evil-window-split)
-     (eshell)))
+     (shell)))
 
   ;; file management
   (define-key evil-normal-state-map "^" nil)
