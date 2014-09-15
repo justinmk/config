@@ -112,6 +112,8 @@
   (define-key evil-normal-state-map (kbd "U l") 'magit-log)
   (define-key evil-normal-state-map (kbd "U b") 'magit-blame-mode)
   (define-key evil-normal-state-map (kbd "U B") 'git-messenger:popup-message)
+  (define-key evil-normal-state-map (kbd "U r") 'my-vc-git-reset)
+  (define-key evil-normal-state-map (kbd "U W") 'my-vc-git-add)
   (define-key evil-normal-state-map (kbd "U G") (bind (call-process-shell-command "git gui" nil 0)))
   (define-key evil-normal-state-map (kbd "U L") (bind (call-process-shell-command "gitk --all" nil 0)))
 

@@ -206,7 +206,7 @@
   (ido-ubiquitous-mode t))
 (with-package flx-ido
   (flx-ido-mode t))
-(with-package ido-vertical-mode
+(with-package* ido-vertical-mode
   (ido-vertical-mode))
 (with-package* smex
   (setq smex-save-file (concat user-emacs-directory ".cache/smex-items"))

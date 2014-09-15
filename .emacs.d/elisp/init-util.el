@@ -92,5 +92,22 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
+;; https://snarfed.org/emacs-vc-git-tweaks
+(defun my-vc-git-command (verb fn)
+  (let* ((fileset-arg (or vc-fileset (vc-deduce-fileset nil t)))
+         (backend (car fileset-arg))
+         (files (nth 1 fileset-arg)))
+    (if (eq backend 'Git)
+        (progn (funcall fn files)
+               (message (concat verb " " (number-to-string (length files))
+                                " file(s).")))
+      (message "Not in a vc git buffer."))))
+(defun my-vc-git-add (&optional revision vc-fileset comment)
+  (interactive "P")
+  (my-vc-git-command "Staged" 'vc-git-register))
+(defun my-vc-git-reset (&optional revision vc-fileset comment)
+  (interactive "P")
+  (my-vc-git-command "Unstaged"
+    (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
 
 (provide 'init-util)
