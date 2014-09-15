@@ -5,13 +5,6 @@
      '(progn ,@body)))
 
 
-(defun require-package (package)
-  "Install given PACKAGE."
-  (unless (package-installed-p package)
-    (unless (assoc package package-archive-contents)
-      (package-refresh-contents))
-    (package-install package)))
-
 (defun describe-thing-in-popup ()
   (interactive)
   (let* ((thing (symbol-at-point))
@@ -98,11 +91,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (delete-file filename)
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
-
-;; make sure $PATH is set correctly
-(require-package 'exec-path-from-shell)
-(ignore-errors ;; windows
-  (exec-path-from-shell-initialize))
 
 
 (provide 'init-util)

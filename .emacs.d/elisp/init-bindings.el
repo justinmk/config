@@ -3,7 +3,6 @@
 (require 'evil)
 (require 'evil-args)
 (require 'clojure-mode)
-(require 'key-chord)
 
 (defmacro bind (&rest commands)
   "Convenience macro which creates a lambda interactive command."
@@ -11,24 +10,23 @@
      (interactive)
      ,@commands))
 
-(require-package 'guide-key)
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x" "C-c"))
-(setq guide-key/recursive-key-sequence-flag t)
-(guide-key-mode 1)
+(with-package* guide-key
+  (setq guide-key/guide-key-sequence '("C-x" "C-c"))
+  (setq guide-key/recursive-key-sequence-flag t)
+  (guide-key-mode 1))
 
 (after 'smex
   (global-set-key (kbd "M-x") 'smex))
 
 (after 'evil
-  (require-package 'key-chord)
-  (key-chord-mode 1)
-  (setq key-chord-two-keys-delay 0.5)
+  (with-package* key-chord
+    (key-chord-mode 1)
+    (setq key-chord-two-keys-delay 0.5)
+    (key-chord-define evil-insert-state-map "jk" 'evil-normal-state))
 
   ; exclusive line selection, like Vim. http://dnquark.com/blog/2012/02/emacs-evil-ecumenicalism/
   (setq evil-want-visual-char-semi-exclusive t)
 
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   (define-key evil-normal-state-map "ZQ" (lambda () (interactive) (evil-quit-all t)))
   (define-key evil-normal-state-map "Zq" 'evil-quit-all)
   (define-key evil-normal-state-map "ZZ" 'evil-save-and-quit)
