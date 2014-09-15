@@ -230,6 +230,7 @@ if !s:is_windows && (has("python") || has("python3"))
 elseif s:lua_patch885
   Plug 'Shougo/neocomplete.vim'
 
+  let g:neocomplete#enable_omni_fallback = 1
   let g:neocomplete#enable_at_startup = 1
   let g:neocomplete#enable_smart_case = 1
   inoremap <expr> <C-g> neocomplete#undo_completion()
@@ -843,7 +844,7 @@ xnoremap . :normal .<CR>
 nnoremap Q @@
 xnoremap Q :normal @@<CR>
 " repeat the last edit on the next [count] matches.
-nnoremap <C-n> @='n.'<cr>
+nnoremap <C-n> :normal n.<cr>
 augroup vimrc_qompose
   autocmd!
 augroup END
@@ -1134,7 +1135,6 @@ set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 if s:is_windows
   "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
   set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*\\AppData\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo,*.ntuser,*.blf,*.dat,*.regtrans-ms
-  let g:neocomplete#ctags_command = '~/bin/ctags.exe'
 endif
 
 if s:plugins "unite.vim =============================================== {{{
