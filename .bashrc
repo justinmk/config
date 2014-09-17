@@ -8,7 +8,14 @@
 # =============================================================================
 
 if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
-    umask 0077
+  umask 0077
+
+  sudo() {
+    local old=$(umask)
+    umask 0022
+    command sudo $@
+    umask $old
+  }
 fi
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 
