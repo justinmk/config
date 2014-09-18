@@ -42,19 +42,6 @@ if has('vim_starting')
   set all&
 endif
 
-if has("nvim")
-  if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
-    echoerr "Missing .nvim/ or .nvimrc"
-  endif
-  runtime! plugin/python_setup.vim
-else
-  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
-  set encoding=utf-8
-  if has('vim_starting') && s:is_windows
-    set runtimepath+=~/.vim/
-  endif
-endif
-
 if exists('&guioptions')
     "no toolbar, no menu bar, no left scroll bar, no gui tabs
     set guioptions-=T guioptions-=m guioptions-=L guioptions-=l guioptions-=e
@@ -88,6 +75,19 @@ let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
 "   &term  = builtin_gui //*after* vimrc but *before* gvimrc
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
+
+if has("nvim")
+  if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
+    echoerr "Missing .nvim/ or .nvimrc"
+  endif
+  runtime! plugin/python_setup.vim
+else
+  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
+  set encoding=utf-8
+  if has('vim_starting') && s:is_windows
+    set runtimepath+=~/.vim/
+  endif
+endif
 
 if !s:plugins "{{{
 
