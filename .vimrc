@@ -1149,7 +1149,6 @@ let g:unite_enable_start_insert = 1
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
-" TODO: https://github.com/Shougo/unite.vim/issues/347
 let s:unite_sources = 'file_rec/async,file_rec,neomru/file,directory_rec/async,directory_rec,neomru/directory'
 let g:unite_source_rec_max_cache_files = 5000
 call unite#custom#source(s:unite_sources, 'max_candidates', 5000)
@@ -1158,15 +1157,14 @@ call unite#custom#source(s:unite_sources,
             \ ['converter_relative_abbr', 'converter_file_directory'])
 
 " extend default ignore pattern for file_rec source (same as directory_rec)
-let s:file_rec_ignore = unite#get_all_sources('file_rec')['ignore_pattern'] .
-    \ '\|\.\%(jar\|jpg\|gif\|png\)$' .
-    \ '\|opt\|Downloads\|eclipse_workspace\|gwt-unitCache\|grimoire-remote'
+
+call extend(unite#get_all_sources('file_rec')['ignore_globs'], split(&wildignore, ',', 0))
+call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['*.jar', '*.jpg', '*.gif', '*.png'])
 if s:is_windows
-    let s:file_rec_ignore .= '\|AppData'
+  call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['AppData/*'])
 elseif s:is_mac
-    let s:file_rec_ignore .= '\|Library'
+  call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['Library/*'])
 endif
-call unite#custom#source('file_rec,directory_rec', 'ignore_pattern', s:file_rec_ignore)
 " don't track help files in MRU list
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
