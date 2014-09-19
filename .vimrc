@@ -37,17 +37,23 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
-if has("neovim") && (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
-  echoerr "Missing .nvim/ or .nvimrc"
-endif
-
 if has('vim_starting')
   " ensure that we always start with Vim defaults (as opposed to those set by the current system)
   set all&
 endif
 
-" required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
-set encoding=utf-8
+if has("nvim")
+  if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
+    echoerr "Missing .nvim/ or .nvimrc"
+  endif
+  runtime! plugin/python_setup.vim
+else
+  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
+  set encoding=utf-8
+  if has('vim_starting') && s:is_windows
+    set runtimepath+=~/.vim/
+  endif
+endif
 
 if exists('&guioptions')
     "no toolbar, no menu bar, no left scroll bar, no gui tabs
@@ -74,10 +80,6 @@ let s:is_ssh = !empty($SSH_TTY)
 let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
 let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
-
-if has('vim_starting') && s:is_windows
-    set runtimepath+=~/.vim/
-endif
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -224,7 +226,7 @@ Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
 
 if !s:is_windows && (has("python") || has("python3"))
-  Plug 'Valloric/YouCompleteMe'
+  Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
   let g:ycm_enable_diagnostic_signs = 0
   let g:ycm_always_populate_location_list = 1
 elseif s:lua_patch885
@@ -845,13 +847,14 @@ nnoremap Q @@
 xnoremap Q :normal @@<CR>
 " repeat the last edit on the next [count] matches.
 nnoremap <C-n> :normal n.<cr>
-augroup vimrc_qompose
-  autocmd!
-augroup END
-nnoremap <space>
-      \ :<c-u>let g:qompose_orig_z=@z<cr>
-      \ qz
-      \ :<c-u>autocmd vimrc_qompose TextChanged,InsertLeave * exe 'normal! q'<bar>call repeat#set(@z)<bar>let @z=g:qompose_orig_z<bar>autocmd! vimrc_qompose *<cr>
+
+" augroup vimrc_qompose
+"   autocmd!
+" augroup END
+" nnoremap <space>
+"       \ :<c-u>let g:qompose_orig_z=@z<cr>
+"       \ qz
+"       \ :<c-u>autocmd vimrc_qompose TextChanged,InsertLeave * exe 'normal! q'<bar>call repeat#set(@z)<bar>let @z=g:qompose_orig_z<bar>autocmd! vimrc_qompose *<cr>
 
 "j,k move by screen line instead of file line
 nnoremap j gj
@@ -895,9 +898,10 @@ cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
 nmap * *<Plug>Pulse
 
-nnoremap ,uv   :exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") <bar> Unite file_rec<cr>
-nnoremap ,deps :exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") <bar> Unite file_rec<cr>
-nnoremap ,vim :exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") <bar> Unite file_rec<cr>
+" commands ====================================================================
+command FindLibUV     :exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command FindNvimDeps  :exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command FindVim :exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
 
 " python ======================================================================
 augroup vimrc_python
@@ -1186,7 +1190,7 @@ nnoremap <silent> g/W   :Unite tmuxcomplete<CR>
 imap     <silent> <m-w> <C-o>g/W
 nnoremap <silent> g/L   :Unite tmuxcomplete/lines<CR>
 imap     <silent> <m-l> <C-o>g/L
-nnoremap <silent> <m-x> :Unite command<CR>
+nnoremap <silent> <space> :Unite command<CR>
 
 augroup vimrc_unite
   autocmd!
