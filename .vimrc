@@ -499,7 +499,7 @@ endif
 set synmaxcol=1000
 
 set expandtab
-set tabstop=2
+set softtabstop=-1 "use value of 'shiftwidth'
 set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
@@ -1071,11 +1071,11 @@ nnoremap g// mS:<c-u>noau vimgrep // **<left><left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
 " :noau speeds up vimgrep
 " search current buffer and open results in quickfix window
-nnoremap g/% :<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
-nnoremap g/b :<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
+nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
+nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search-replace
-nnoremap g/r :<c-u>OverCommandLine<cr>%s/
-xnoremap g/r :<c-u>OverCommandLine<cr>%s/\%V
+nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
+xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor
 nnoremap g/* mS:<c-u>noau vimgrep /\V<c-r><c-w>/ **<cr>
 xnoremap g/* mS:<c-u>noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ **<cr>

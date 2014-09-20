@@ -23,7 +23,7 @@
 [alias]
   #l = log --all --graph --oneline --decorate
   l  = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
-  ll = !git l --all
+  ll = "!f() { git l --all \"$@\"; }; f"
   d  = diff --stat --color
   #compare $REF to its parent.
   dp = "!f() { REF=$@; [ \"$REF\" = \"\" ] && REF=HEAD; git diff $REF~..$REF; }; f"
