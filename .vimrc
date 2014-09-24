@@ -55,8 +55,8 @@ if exists('&guioptions')
     set guicursor+=n-v-c:blinkon0,sm:hor30-Cursor,i-ci:ver25-Cursor/lCursor-blinkwait30-blinkoff100-blinkon100
 endif
 
-let mapleader = ","
-let g:mapleader = ","
+let mapleader = "\<space>\<space>"
+let g:mapleader = "\<space>\<space>"
 
 let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
@@ -87,6 +87,9 @@ else
   if has('vim_starting') && s:is_windows
     set runtimepath+=~/.vim/
   endif
+
+  " avoid sourcing stupid menu.vim (saves ~100ms)
+  let g:did_install_default_menus = 1
 endif
 
 if !s:plugins "{{{
@@ -317,6 +320,9 @@ set sessionoptions-=blank
 "==============================================================================
 let g:sneak#streak = 1
 let g:sneak#use_ic_scs = 1
+nmap \ <Plug>SneakPrevious
+xmap \ <Plug>SneakPrevious
+omap \ <Plug>SneakPrevious
 nmap f <Plug>Sneak_f
 nmap F <Plug>Sneak_F
 xmap f <Plug>Sneak_f
@@ -697,7 +703,7 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " available mappings:
 "   visual: <space> R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: m<enter> zi zp zy m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 " nnoremap c<space>       :easyalign...
 
 func! s:buf_compare(b1, b2)
@@ -823,8 +829,8 @@ nnoremap ' `
 xnoremap ' `
 
 " nnoremap <space> :
-nnoremap <leader>w :w<cr>
-nnoremap <leader>e :e<cr>
+nnoremap z. :w<cr>
+nnoremap r<tab> :e<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
@@ -859,6 +865,8 @@ nnoremap <C-n> :normal n.<cr>
 "j,k move by screen line instead of file line
 nnoremap j gj
 nnoremap k gk
+xnoremap j gj
+xnoremap k gk
 inoremap <Down> <C-o>gj
 inoremap <Up>   <C-o>gk
 
@@ -899,9 +907,10 @@ xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Puls
 nmap * *<Plug>Pulse
 
 " commands ====================================================================
-command FindLibUV     :exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command FindNvimDeps  :exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command FindVim :exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
+command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
+command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 
 " python ======================================================================
 augroup vimrc_python
