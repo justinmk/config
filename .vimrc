@@ -148,12 +148,14 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
 Plug 'Raimondi/delimitMate'
+Plug 'mhinz/vim-blockify'
 " force delimitmate to leave <c-g> alone
 imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
 Plug 'zhaocai/DirDiff.vim'
 Plug 'justinmk/diffchar.vim'
 nmap dc <Plug>(DiffChar_ToggleCurrentLine)
 Plug 'AndrewRadev/linediff.vim'
+Plug 'chrisbra/NrrwRgn'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-textobj-user'
@@ -797,30 +799,51 @@ xnoremap x  "_d
 nnoremap vD "_D
 xnoremap P  "0p
 
+func! s:paste(regname, pasteType, pastecmd)
+  let reg_type = getregtype(a:regname)
+  call setreg(a:regname, getreg(a:regname), a:pasteType)
+  exe 'normal! "'.a:regname . a:pastecmd
+  call setreg(a:regname, getreg(a:regname), reg_type)
+endf
+
 func! s:replace_without_yank(type)
   let sel_save = &selection
-  let l:col = col('.')
+  let [col, lin] = [col('.'), line('.')]
   let &selection = "inclusive"
+  let r = v:register
+  let rtype = getregtype(v:register)
+  " `rrr`: replace the current line _exactly_.
+  let rrr = line("'[")==lin && line("']")==lin && col("'[")==1 && col("']")==len(getline('.'))
+  " operating on an empty line
+  let empty_motion = line("'[")==line("']") && col("'[")==col("']") && len(getline('.')) == 0
+  " echom 'a:type='.a:type.' r='.r.' regtype='.rtype.' rrr='.rrr.' '.line("'[").' '.line("']").' '.col("'[").' '.col("']").' len='.len(getline('.'))
 
   if a:type == 'line'
-    silent normal! '[V']"_d
+    normal! '[V']"_d
+  elseif rtype ==# 'V' && rrr "&& lin != line('$')
+    normal! "_dd
   elseif a:type == 'block'
-    silent normal! `[`]"_d
-  else
-    silent normal! `[v`]"_d
+    normal! `[`]"_d
+  elseif !empty_motion || rtype ==# 'V' "don't delete anything if the line is empty, unless we're pasting linewise.
+    normal! `[v`]"_d
   endif
 
-  if col('.') == l:col "paste to the left.
-    silent normal! P
-  else "if the operation deleted the last column, then the cursor
-       "gets bumped left (because its original position no longer exists),
-       "so we need to paste to the right instead of the left.
-    silent normal! p
+  "cursor didn't move? paste to the left.
+  "cursor was bumped left (because the operation deleted the last column)? paste to the right.
+  let pastecmd = col('.')==col && line('.')!=line('$')
+        \ ? 'P'
+        \ : 'p'
+
+  if a:type != 'line' && rtype ==# 'V' && !rrr
+    call s:paste(r, 'c', pastecmd)
+  else
+    exe 'normal! '.pastecmd
   endif
 
   let &selection = sel_save
 endf
-nnoremap <silent> rr :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
+
+nnoremap <silent> rr  :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
 nnoremap <silent> rrr 0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
 
 inoremap jk <esc>
@@ -911,6 +934,11 @@ command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~").
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
+
+hi MarkLine guibg=darkred guifg=gray
+hi UnmarkLine guibg=black guifg=NONE
+nnoremap m. :call matchaddpos("MarkLine", [line('.')])<cr>
+nnoremap m<space> :call matchaddpos("Unmarkline", [line('.')])<cr>
 
 " python ======================================================================
 augroup vimrc_python
