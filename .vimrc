@@ -147,10 +147,9 @@ Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
-Plug 'Raimondi/delimitMate'
-Plug 'mhinz/vim-blockify'
+" Plug 'Raimondi/delimitMate'
 " force delimitmate to leave <c-g> alone
-imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
+" imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
 Plug 'zhaocai/DirDiff.vim'
 Plug 'justinmk/diffchar.vim'
 nmap dc <Plug>(DiffChar_ToggleCurrentLine)
@@ -167,8 +166,8 @@ Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-commentary'
 
+Plug 'justinmk/vim-blockify'
 if !s:is_cygwin && has('python')
-" delimiter highlighting? https://github.com/mhinz/vim-blockify/blob/master/plugin/blockify.vim
 Plug 'Valloric/MatchTagAlways'
 endif
 if !s:is_cygwin && (has('python') || has('python3'))
