@@ -806,40 +806,23 @@ func! s:paste(regname, pasteType, pastecmd)
 endf
 
 func! s:replace_without_yank(type)
+  let r     = v:register "TODO: this is always the unamed register...
+  let ur_orig = getreg('"', 1) "save unamed register to restore later.
+  let ur_type = getregtype('"')
   let sel_save = &selection
-  let [col, lin] = [col('.'), line('.')]
   let &selection = "inclusive"
-  let r = v:register
-  let rtype = getregtype(v:register)
-  " `rrr`: replace the current line _exactly_.
-  let rrr = line("'[")==lin && line("']")==lin && col("'[")==1 && col("']")==len(getline('.'))
-  " operating on an empty line
-  let empty_motion = line("'[")==line("']") && col("'[")==col("']") && len(getline('.')) == 0
-  " echom 'a:type='.a:type.' r='.r.' regtype='.rtype.' rrr='.rrr.' '.line("'[").' '.line("']").' '.col("'[").' '.col("']").' len='.len(getline('.'))
+  let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
 
-  if a:type == 'line'
-    normal! '[V']"_d
-  elseif rtype ==# 'V' && rrr "&& lin != line('$')
-    normal! "_dd
+  if a:type == 'line' || replace_curlin "(rtype ==# 'V' && )
+    exe "normal! '[V']\"".r."p"
   elseif a:type == 'block'
-    normal! `[`]"_d
-  elseif !empty_motion || rtype ==# 'V' "don't delete anything if the line is empty, unless we're pasting linewise.
-    normal! `[v`]"_d
-  endif
-
-  "cursor didn't move? paste to the left.
-  "cursor was bumped left (because the operation deleted the last column)? paste to the right.
-  let pastecmd = col('.')==col && line('.')!=line('$')
-        \ ? 'P'
-        \ : 'p'
-
-  if a:type != 'line' && rtype ==# 'V' && !rrr
-    call s:paste(r, 'c', pastecmd)
+    exe "normal! `[\<C-V>`]\"".r."p"
   else
-    exe 'normal! '.pastecmd
+    exe "normal! `[v`]\"".r."p"
   endif
 
   let &selection = sel_save
+  call setreg(r, ur_orig, ur_type)
 endf
 
 nnoremap <silent> rr  :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
