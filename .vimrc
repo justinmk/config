@@ -798,22 +798,22 @@ xnoremap x  "_d
 nnoremap vD "_D
 xnoremap P  "0p
 
-func! s:paste(regname, pasteType, pastecmd)
-  let reg_type = getregtype(a:regname)
-  call setreg(a:regname, getreg(a:regname), a:pasteType)
-  exe 'normal! "'.a:regname . a:pastecmd
-  call setreg(a:regname, getreg(a:regname), reg_type)
+"why?
+" - repeatable
+" - faster/more convenient than visual-replace
+let s:rr_reg = '"'
+func! s:set_reg(reg_name)
+  let s:rr_reg = a:reg_name
 endf
-
 func! s:replace_without_yank(type)
-  let r     = v:register "TODO: this is always the unamed register...
+  let r = s:rr_reg
   let ur_orig = getreg('"', 1) "save unamed register to restore later.
   let ur_type = getregtype('"')
   let sel_save = &selection
   let &selection = "inclusive"
   let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
 
-  if a:type == 'line' || replace_curlin "(rtype ==# 'V' && )
+  if a:type == 'line' || replace_curlin
     exe "normal! '[V']\"".r."p"
   elseif a:type == 'block'
     exe "normal! `[\<C-V>`]\"".r."p"
@@ -825,8 +825,8 @@ func! s:replace_without_yank(type)
   call setreg(r, ur_orig, ur_type)
 endf
 
-nnoremap <silent> rr  :<C-u>set opfunc=<sid>replace_without_yank<CR>g@
-nnoremap <silent> rrr 0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
+nnoremap <silent> rr  :<C-u>call <sid>set_reg(v:register)<bar>set opfunc=<sid>replace_without_yank<CR>g@
+nnoremap <silent> rrr :<C-u>call <sid>set_reg(v:register)<cr>0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
 
 inoremap jk <esc>
 inoremap kj <esc>
@@ -1195,11 +1195,11 @@ nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
 " search direcory of current file
 nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
 nnoremap <silent> g/f   :Unite function<cr>
-nnoremap <silent> g/l   :Unite line<cr>
+nnoremap <silent> g/l   :Unite line -auto-preview<cr>
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
-nnoremap <silent> <m-o> :Unite outline<cr>
+nnoremap <silent> <m-o> :Unite outline -auto-preview<cr>
 nnoremap <silent> g/t   :Unite tag tag/include tag/file <cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
