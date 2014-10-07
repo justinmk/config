@@ -55,9 +55,6 @@ if exists('&guioptions')
     set guicursor+=n-v-c:blinkon0,sm:hor30-Cursor,i-ci:ver25-Cursor/lCursor-blinkwait30-blinkoff100-blinkon100
 endif
 
-let mapleader = "\<space>\<space>"
-let g:mapleader = "\<space>\<space>"
-
 let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
@@ -364,6 +361,9 @@ if !s:is_msysgit && !s:is_gui
           \ <m-]>=]
 endif
 
+let mapleader = "';"
+let g:mapleader = "';"
+
 try | lang en_US | catch | endtry
 
 if !s:is_msysgit && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
@@ -396,9 +396,8 @@ set noerrorbells novisualbell t_vb= visualbell
 
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
-set foldmethod=marker
 set foldlevelstart=99 "open all folds by default
-nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
+nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable foldmethod=manual <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
 nnoremap zy  zt5<c-y>
 set scrolloff=0
 set sidescrolloff=0
@@ -604,8 +603,13 @@ iabbrev fn- <c-r>=expand('%:p', 1)<cr>
 iabbrev fd- <c-r>=expand('%:p:h', 1)<cr>
 cabbrev fd- <c-r>=expand("%:p:h", 1)<cr>
 
+inoremap ,.r <c-r>"
+cnoremap ,.r <c-r>"
+
 "==============================================================================
 " key mappings/bindings
+
+noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
 " mark position before search
 nnoremap / ms/
@@ -1134,11 +1138,6 @@ set complete-=i
 set completeopt-=preview
 set completeopt+=longest
 
-inoremap <C-Space> <C-x><C-o>
-if !s:is_gui
-  inoremap <C-@> <C-x><C-o>
-endif
-
 " syntaxcomplete provides basic completion for filetypes that lack a custom one.
 "   :h ft-syntax-omni
 if has("autocmd") && exists("+omnifunc")
@@ -1161,6 +1160,7 @@ if s:is_windows
 endif
 
 if s:plugins "unite.vim =============================================== {{{
+" gvim -u NONE -N -c ":set runtimepath+=~/.vim/bundle/unite.vim/,~/.vim/bundle/unite-mru" -c ":runtime plugin/unite.vim" -c ":runtime plugin/neomru.vim"
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
 
@@ -1191,6 +1191,7 @@ endif
 " don't track help files in MRU list
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
+" search current directory
 nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
 " search direcory of current file
 nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
@@ -1205,9 +1206,9 @@ nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process <CR>
-nnoremap <silent> g/W   :Unite tmuxcomplete<CR>
+nnoremap <silent> <m-w> :Unite tmuxcomplete<CR>
 imap     <silent> <m-w> <C-o>g/W
-nnoremap <silent> g/L   :Unite tmuxcomplete/lines<CR>
+nnoremap <silent> <m-l> :Unite tmuxcomplete/lines<CR>
 imap     <silent> <m-l> <C-o>g/L
 nnoremap <silent> <space> :Unite command<CR>
 
