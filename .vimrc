@@ -818,11 +818,11 @@ func! s:replace_without_yank(type)
   let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
 
   if a:type == 'line' || replace_curlin
-    exe "normal! '[V']\"".r."p"
+    exe "keepjumps normal! '[V']\"".r."p"
   elseif a:type == 'block'
-    exe "normal! `[\<C-V>`]\"".r."p"
+    exe "keepjumps normal! `[\<C-V>`]\"".r."p"
   else
-    exe "normal! `[v`]\"".r."p"
+    exe "keepjumps normal! `[v`]\"".r."p"
   endif
 
   let &selection = sel_save
@@ -845,7 +845,7 @@ nnoremap r<tab> :e<cr>
 nnoremap <m-]> <c-t>
 
 " search within visual block
-xnoremap / <esc>/\%V
+xnoremap g/ <esc>/\%V
 
 " select last inserted text
 nnoremap gV `[v`]
@@ -1090,7 +1090,7 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap g// mS:<c-u>noau vimgrep // **<left><left><left><left>
+nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep // **<bar>RstWI<left><left><left><left><left><left><left><left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
 " :noau speeds up vimgrep
 " search current buffer and open results in quickfix window
@@ -1100,12 +1100,15 @@ nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar
 nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
 xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor
-nnoremap g/* mS:<c-u>noau vimgrep /\V<c-r><c-w>/ **<cr>
-xnoremap g/* mS:<c-u>noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ **<cr>
+nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\V<c-r><c-w>/ ** <bar>RstWI<cr>
+xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ ** <bar>RstWI<cr>
 nnoremap g/g mS:<c-u>grep ''<left>
 if executable("pt")
 set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
 endif
+
+command! -bar SetWI set wildignore+=*/bin/*,*/build/*
+command! -bar RstWI set wildignore-=*/bin/*,*/build/*
 
 " show :ilist or ]I results in the quickfix window
 function! s:ilist_qf(start_at_cursor)
