@@ -51,7 +51,7 @@ fi
 
 # HIST* are bash-only variables, not environmental variables, so do not 'export'
 # ignoredups only ignores _consecutive_ duplicates.
-HISTCONTROL=erasedups:ignoredups
+HISTCONTROL=erasedups:ignoreboth
 HISTSIZE=20000
 HISTFILESIZE=20000
 HISTIGNORE='cd:ls:bg:fg:history:f:fd'
