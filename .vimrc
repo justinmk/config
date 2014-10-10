@@ -676,6 +676,8 @@ nnoremap Ul :Glog<cr>
 nnoremap Ug :Ggrep<space>
 nnoremap Ub :Gblame<cr>
 nnoremap Ue :Gedit<cr>
+nnoremap Uo :Gsplit <c-r><c-w><cr>
+nnoremap Uv :Gvsplit <c-r><c-w><cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
 nnoremap UR :Gread<cr>
 nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))
