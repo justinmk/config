@@ -5,8 +5,6 @@
 " External tool to open in Vim server:
 "     gvim.exe --servername vsvim --remote-silent $(ItemPath)
 
-let mapleader = "\<space>\<space>"
-let g:mapleader = "\<space>\<space>"
 nnoremap \ ,
 
 set ignorecase

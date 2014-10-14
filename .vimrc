@@ -163,7 +163,7 @@ Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-commentary'
 
-Plug 'justinmk/vim-blockify'
+Plug 'justinmk/vim-matchparenalways'
 if !s:is_cygwin && has('python')
 Plug 'Valloric/MatchTagAlways'
 endif

@@ -260,7 +260,9 @@
   (setq cider-repl-history-size 2000)
   (setq cider-repl-popup-stacktraces t))
 
-(with-package* (evil evil-visualstar evil-nerd-commenter evil-args evil-matchit evil-surround evil-jumper)
+; this is broken for some reason
+; evil-nerd-commenter 
+(with-package* (evil evil-visualstar evil-args evil-matchit evil-surround evil-jumper)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-w-in-emacs-state t)
 
@@ -271,7 +273,10 @@
   ;; (setq evil-normal-state-cursor '("green" box))
   ;; (setq evil-insert-state-cursor '("orange" bar))
 
-  (setq evilnc-hotkey-comment-operator "gc")
+; this is broken for some reason
+; (with-package* evil-nerd-commenter
+  ;;(setq evilnc-comment-operator "gc")
+; )
 
 
   (evil-mode t)
