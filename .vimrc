@@ -103,10 +103,12 @@ call plug#begin('~/.vim/bundle')
 Plug 'tomasr/molokai'
 Plug 'noahfrederick/vim-hemisu'
 Plug 'tommcdo/vim-exchange'
-Plug 'justinmk/vim-ipmotion'
-Plug 'justinmk/vim-gtfo'
-Plug 'justinmk/vim-sneak'
-Plug 'justinmk/vim-syntax-extra'
+Plug 'https://github.com/justinmk/vim-ipmotion'
+Plug 'https://github.com/justinmk/vim-gtfo'
+Plug 'https://github.com/justinmk/vim-sneak'
+Plug 'https://github.com/justinmk/vim-syntax-extra'
+Plug 'https://github.com/justinmk/vim-matchparenalways'
+Plug 'https://github.com/justinmk/diffchar.vim'
 Plug 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plug 'tpope/vim-tbone'
@@ -148,7 +150,6 @@ Plug 'tpope/vim-markdown'
 " force delimitmate to leave <c-g> alone
 " imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
 Plug 'zhaocai/DirDiff.vim'
-Plug 'justinmk/diffchar.vim'
 nmap dc <Plug>(DiffChar_ToggleCurrentLine)
 Plug 'AndrewRadev/linediff.vim'
 Plug 'chrisbra/NrrwRgn'
@@ -163,7 +164,6 @@ Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-commentary'
 
-Plug 'justinmk/vim-matchparenalways'
 if !s:is_cygwin && has('python')
 Plug 'Valloric/MatchTagAlways'
 endif
@@ -381,6 +381,7 @@ set list
 
 set cursorline
 
+set path+=**    " Also search CWD with :find
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
@@ -646,7 +647,7 @@ nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
 nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <silent> Zb :<c-u>call <SID>buf_kill(1)<cr>
 set wildcharm=<C-z>
-nnoremap gb :buffer <C-z><S-Tab>
+nnoremap <c-b> :buffer <C-z><S-Tab>
 
 " quickfix window
 nnoremap <silent><c-q> :silent! botright copen<cr>
@@ -1092,6 +1093,7 @@ augroup vimrc_autocmd
   endif
 augroup END
 
+nnoremap <c-f> :find 
 nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep // **<bar>RstWI<left><left><left><left><left><left><left><left><left><left>
 " search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
 " :noau speeds up vimgrep
