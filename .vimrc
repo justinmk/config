@@ -187,6 +187,12 @@ let g:projectionist_heuristics = {
       \  },
       \}
 
+Plug 'embear/vim-localvimrc'
+let g:localvimrc_sandbox = 0
+let g:localvimrc_name = [".vimrc.local", "contrib/localvimrc/vimrc.local"]
+let g:localvimrc_persistence_file = 2
+
+
 Plug 'PProvost/vim-ps1'
 Plug 'pangloss/vim-javascript'
 Plug 'leafo/moonscript-vim'
