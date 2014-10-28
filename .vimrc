@@ -108,7 +108,6 @@ Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
-Plug 'https://github.com/justinmk/diffchar.vim.git'
 Plug 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plug 'tpope/vim-tbone'
@@ -1214,9 +1213,9 @@ imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
 nnoremap <silent> g/ps  :Unite process <CR>
 nnoremap <silent> <m-w> :Unite tmuxcomplete<CR>
-imap     <silent> <m-w> <C-o>g/W
+imap     <silent> <m-w> <C-o><m-w>
 nnoremap <silent> <m-l> :Unite tmuxcomplete/lines<CR>
-imap     <silent> <m-l> <C-o>g/L
+imap     <silent> <m-l> <C-o><m-l>
 nnoremap <silent> <space> :Unite command<CR>
 
 augroup vimrc_unite

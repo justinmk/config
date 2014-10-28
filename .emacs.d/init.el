@@ -12,7 +12,7 @@
 (require 'package)
 (require 'package-helper)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.org/packages/") t)
 (setq package-enable-at-startup nil)
 (package-initialize)
 
@@ -260,8 +260,6 @@
   (setq cider-repl-history-size 2000)
   (setq cider-repl-popup-stacktraces t))
 
-; this is broken for some reason
-; evil-nerd-commenter 
 (with-package* (evil evil-visualstar evil-args evil-matchit evil-surround evil-jumper)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-w-in-emacs-state t)
@@ -275,8 +273,7 @@
 
 ; this is broken for some reason
 ; (with-package* evil-nerd-commenter
-  ;;(setq evilnc-comment-operator "gc")
-; )
+  ;;(setq evilnc-comment-operator "gc"))
 
 
   (evil-mode t)

@@ -8,6 +8,7 @@ set ignorecase
 set smartcase
 set incsearch
 set tabstop=4
+set nostartofline
 
 nnoremap \ ,
 nnoremap <c-j> i<cr><esc>k$

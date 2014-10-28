@@ -6,6 +6,8 @@
 ;; relax the GC frequency
 (setq gc-cons-threshold 20000000)
 
+(setq load-prefer-newer t)
+
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))

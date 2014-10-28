@@ -4,6 +4,11 @@
 "     gvim.exe $(ItemPath) +$(CurLine)
 " External tool to open in Vim server:
 "     gvim.exe --servername vsvim --remote-silent $(ItemPath)
+"
+" TODO: F# interactive
+"   nnoremap q;  :vsc View.F#Interactive<cr>
+"   nnoremap yx<bs>  :vsc OtherContextMenus.FSIConsoleContext.ResetInteractiveSession<cr>
+"   nnoremap !m  :vsc OtherContextMenus.FSIConsoleContext.ResetInteractiveSession<bar>vsc Build.BuildSelection<cr>
 
 nnoremap \ ,
 
@@ -12,6 +17,7 @@ set smartcase
 set incsearch
 set tabstop=4
 set backspace=eol,start,indent
+set nostartofline
 
 nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
@@ -124,6 +130,7 @@ nnoremap <space> :vsc Window.QuickLaunch<cr>
 
 nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
 nnoremap gof :vsc File.OpenContainingFolder<cr>
+nnoremap got :vsc Tools.ExternalCommand8<cr>
 " toggle 'Track Active Item in Solution Explorer' option
 nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
 " highlight active file in Solution Explorer (VS 2012+)
