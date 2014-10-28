@@ -674,7 +674,7 @@ nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Glog<cr>
 nnoremap Ug :Ggrep<space>
-nnoremap Ub :Gblame<cr>
+nnoremap UB :Gblame<cr>
 nnoremap Ue :Gedit<cr>
 nnoremap Uo :Gsplit <c-r><c-w><cr>
 nnoremap Uv :Gvsplit <c-r><c-w><cr>
@@ -688,6 +688,52 @@ nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar>
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
+nnoremap <expr> dp &diff ? 'dp' : ':pclose<cr>'
+
+function! s:log_message(commit) "{{{
+  if a:commit =~ '^0\+$'
+    return '(Not Committed Yet)'
+  endif
+  if !has_key(s:log_messages, a:commit)
+    let cmd_output = system('git --git-dir='.b:git_dir.' show --oneline '.a:commit)
+    let first_line = split(cmd_output, '\n')[0]
+    let s:log_messages[a:commit] = substitute(first_line, '[a-z0-9]\+ ', '', '')
+  endif
+  return s:log_messages[a:commit]
+endfunction
+
+" Gets the SHA of the given line.
+function! s:git_get_sha(filepath, line1)
+  if !exists("b:git_dir")
+    echoerr "Missing b:git_dir"
+  endif
+  if a:line1 <= 0
+    echoerr "Invalid a:line: ".a:line
+  endif
+
+  let cmd = 'git blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath
+  let cmd_out = system(cmd)
+  if cmd_out =~ '^0\+$'
+    return '(Not Committed Yet)'
+  endif
+
+  return matchstr(cmd_out, '\w\+\ze\W', 0, 1)
+endfunction
+
+function! s:truncate_message(message)
+  return strlen(a:message) > &columns
+        \ ? a:message[0:(&columns - 5)] . '...'
+        \ : a:message
+endfunction
+
+function! s:show_log_message()
+  redraw
+  echo s:truncate_message(s:blame_range())
+endfunction
+"}}}
+
+nnoremap Ub :<c-u>exe 'Gpedit '.<sid>git_get_sha('<c-r>%', line('.'))<cr>
+
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
