@@ -380,6 +380,7 @@ set list
 
 set cursorline
 
+set path+=/usr/lib/gcc/**/include
 set path+=**    " Also search CWD with :find
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
