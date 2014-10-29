@@ -711,7 +711,9 @@ function! s:git_get_sha(filepath, line1)
     echoerr "Invalid a:line: ".a:line
   endif
 
-  let cmd = 'git blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath
+  " git 1.8.5: -C is an alternative to --git-dir,--work-tree
+  let cmd = 'git --work-tree='.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
+        \ .' --git-dir='.shellescape(b:git_dir).' blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath
   let cmd_out = system(cmd)
   if cmd_out =~ '^0\+$'
     return '(Not Committed Yet)'
@@ -732,7 +734,9 @@ function! s:show_log_message()
 endfunction
 "}}}
 
-nnoremap Ub :<c-u>exe 'Gpedit '.<sid>git_get_sha('<c-r>%', line('.'))<cr>
+nmap     Ub :<c-u>exe 'Gpedit '.<sid>git_get_sha('<c-r><c-g>', line('.'))<cr>
+"                                                 ^
+" Get the repo-relative path with fugitive's CTRL-R_CTRL-G
 
 
 " :help :DiffOrig
