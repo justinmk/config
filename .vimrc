@@ -108,6 +108,7 @@ Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
+Plug 'https://github.com/justinmk/diffchar.vim.git'
 Plug 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plug 'tpope/vim-tbone'
@@ -190,7 +191,7 @@ let g:projectionist_heuristics = {
 Plug 'embear/vim-localvimrc'
 let g:localvimrc_sandbox = 0
 let g:localvimrc_name = [".vimrc.local", "contrib/localvimrc/vimrc.local"]
-let g:localvimrc_persistence_file = 2
+let g:localvimrc_persistent = 1
 
 
 Plug 'PProvost/vim-ps1'
@@ -980,8 +981,8 @@ command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".ex
 command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 
-hi MarkLine guibg=darkred guifg=gray
-hi UnmarkLine guibg=black guifg=NONE
+hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
+hi UnmarkLine guibg=black guifg=NONE ctermbg=NONE ctermfg=NONE
 nnoremap m. :call matchaddpos("MarkLine", [line('.')])<cr>
 nnoremap m<space> :call matchaddpos("Unmarkline", [line('.')])<cr>
 
