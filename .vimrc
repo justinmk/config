@@ -367,8 +367,8 @@ if !s:is_msysgit && !s:is_gui
           \ <m-]>=]
 endif
 
-let mapleader = "';"
-let g:mapleader = "';"
+let mapleader = "z,"
+let g:mapleader = "z,"
 
 try | lang en_US | catch | endtry
 
@@ -388,7 +388,8 @@ set list
 set cursorline
 
 set path+=/usr/lib/gcc/**/include
-set path+=**    " Also search CWD with :find
+set path+=**    " Also search CWD
+
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
@@ -611,8 +612,8 @@ iabbrev fn- <c-r>=expand('%:p', 1)<cr>
 iabbrev fd- <c-r>=expand('%:p:h', 1)<cr>
 cabbrev fd- <c-r>=expand("%:p:h", 1)<cr>
 
-inoremap ,.r <c-r>"
-cnoremap ,.r <c-r>"
+inoremap <leader>r <c-r>"
+cnoremap <leader>r <c-r>"
 
 "==============================================================================
 " key mappings/bindings
@@ -643,6 +644,10 @@ endf
 
 " manage tabs
 "        gwT (built-in) breaks out window into new Tab.
+" TODO:
+"        {visual}gws => split with height of visual selection
+"        {visual}gwv => vsplit with width of visual selection
+"        gw<space>{motion} => size window height to {motion}
 nnoremap gwN :tabnew<cr>
 nnoremap gwC :tabclose<cr>
 nnoremap >gt :tabmove +1<cr>
@@ -768,7 +773,7 @@ xnoremap <bar>jj :!python -m json.tool<cr>
 " available mappings:
 "   visual: <space> R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: g= z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 " nnoremap c<space>       :easyalign...
 
 func! s:buf_compare(b1, b2)

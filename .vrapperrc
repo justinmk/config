@@ -10,6 +10,9 @@ set incsearch
 set tabstop=4
 set nostartofline
 
+inoremap z,r <c-r>"
+cnoremap z,r <c-r>"
+
 nnoremap \ ,
 nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
