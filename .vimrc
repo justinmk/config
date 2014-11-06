@@ -725,9 +725,9 @@ function! s:git_get_sha(filepath, line1)
     echoerr "Invalid a:line: ".a:line
   endif
 
-  " git 1.8.5: -C is an alternative to --git-dir,--work-tree
-  let cmd = 'git --work-tree='.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
-        \ .' --git-dir='.shellescape(b:git_dir).' blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath
+  " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
+  let cmd = 'git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
+        \ .' blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath
   let cmd_out = system(cmd)
   if cmd_out =~ '^0\+$'
     return '(Not Committed Yet)'
