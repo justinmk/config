@@ -155,6 +155,7 @@ Plug 'AndrewRadev/linediff.vim'
 Plug 'chrisbra/NrrwRgn'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
+Plug 'kana/vim-niceblock'
 Plug 'kana/vim-textobj-user'
 Plug 'gaving/vim-textobj-argument'
 Plug 'guns/vim-sexp'
@@ -904,7 +905,13 @@ xnoremap ' `
 
 " nnoremap <space> :
 nnoremap z. :w<cr>
-nnoremap r<tab> :e<cr>
+
+func! s:reload_without_jank()
+  let w=winsaveview()
+  e
+  call winrestview(w)
+endf
+nnoremap r<bs> :call <sid>reload_without_jank()<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
