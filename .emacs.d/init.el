@@ -11,8 +11,10 @@
 
 (require 'package)
 (require 'package-helper)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
+(setq package-archives
+      '(("melpa" . "http://melpa.org/packages/")
+        ("org" . "http://orgmode.org/elpa/")
+        ("gnu" . "http://elpa.gnu.org/packages/")))
 (setq package-enable-at-startup nil)
 (package-initialize)
 
@@ -260,7 +262,8 @@
   (setq cider-repl-history-size 2000)
   (setq cider-repl-popup-stacktraces t))
 
-(with-package* (evil evil-visualstar evil-args evil-matchit evil-surround evil-jumper)
+(setq evilnc-hotkey-comment-operator "gc") ;must happen before (require 'evil-nerd-commenter)
+(with-package* (evil evil-visualstar evil-nerd-commenter evil-args evil-matchit evil-surround evil-jumper)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-w-in-emacs-state t)
 
@@ -270,11 +273,6 @@
   (setq evil-emacs-state-cursor '("red" box))
   ;; (setq evil-normal-state-cursor '("green" box))
   ;; (setq evil-insert-state-cursor '("orange" bar))
-
-; this is broken for some reason
-; (with-package* evil-nerd-commenter
-  ;;(setq evilnc-comment-operator "gc"))
-
 
   (evil-mode t)
   (global-evil-surround-mode 1)
