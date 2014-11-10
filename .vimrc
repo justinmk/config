@@ -77,7 +77,7 @@ if has("nvim")
   if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
     echoerr "Missing .nvim/ or .nvimrc"
   endif
-  runtime! plugin/python_setup.vim
+  runtime! python_setup.vim
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
@@ -191,7 +191,7 @@ let g:projectionist_heuristics = {
 
 Plug 'embear/vim-localvimrc'
 let g:localvimrc_sandbox = 0
-let g:localvimrc_name = [".vimrc.local", "contrib/localvimrc/vimrc.local"]
+let g:localvimrc_name = [".lvimrc", "contrib/localvimrc/lvimrc"]
 let g:localvimrc_persistent = 1
 
 
@@ -227,6 +227,9 @@ Plug 'Shougo/unite-outline'
 Plug 'jeetsukumaran/vim-filebeagle'
 let g:filebeagle_suppress_keymaps = 1
 Plug 'junegunn/vader.vim'
+Plug 'junegunn/vim-easy-align'
+vmap z; <Plug>(EasyAlign)
+nmap z; <Plug>(EasyAlign)
 Plug 'junegunn/vim-github-dashboard'
 let g:github_dashboard = {}
 let g:github_dashboard['position'] = 'right'
@@ -1277,7 +1280,7 @@ nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline -auto-preview<cr>
-nnoremap <silent> g/t   :Unite tag tag/include tag/file <cr>
+nnoremap <silent> g/t   :Unite tag <cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
 nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
