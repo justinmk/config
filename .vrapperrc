@@ -101,10 +101,12 @@ nnoremap gzi :eclipsegotosuper<cr>
 "show refactor menu
 eclipseaction eclipserefactormenu org.eclipse.jdt.ui.edit.text.java.refactor.quickMenu
 nnoremap crr :eclipserefactormenu<cr>
+vnoremap R   :eclipserefactormenu<cr>gv
 
 "show code-generation menu
 eclipseaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
-nnoremap crg :eclipsesrcgenmenu<cr>
+nnoremap crs   :eclipsesrcgenmenu<cr>
+vnoremap <c-r> :eclipsesrcgenmenu<cr>gv
 
 " rename current symbol
 eclipseaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
