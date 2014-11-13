@@ -611,17 +611,16 @@ endfunc
 " abbreviations ===============================================================
 
 iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
-" current file path
-iabbrev fn- <c-r>=expand('%:p', 1)<cr>
-" current file directory
-iabbrev fd- <c-r>=expand('%:p:h', 1)<cr>
-cabbrev fd- <c-r>=expand("%:p:h", 1)<cr>
-
-inoremap <leader>r <c-r>"
-cnoremap <leader>r <c-r>"
 
 "==============================================================================
 " key mappings/bindings
+
+" current file directory
+inoremap <leader>fd <c-r>=expand('%:p:h', 1)<cr>
+cnoremap <leader>fd <c-r>=expand("%:p:h", 1)<cr>
+
+inoremap <leader>r <c-r>"
+cnoremap <leader>r <c-r>"
 
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
@@ -645,6 +644,13 @@ func! s:switch_to_alt_win()
   if winnr() == currwin "window didn't change, so there was no 'previous' window.
     wincmd W
   endif
+endf
+
+func! s:get_alt_winnr()
+  call s:switch_to_alt_win()
+  let n = winnr()
+  call s:switch_to_alt_win()
+  return n
 endf
 
 " manage tabs
@@ -690,7 +696,7 @@ xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap Us :Gstatus<cr>
-nnoremap Ul :Glog<cr>
+nnoremap Ul :Gllog<cr>
 nnoremap Ug :Ggrep<space>
 nnoremap UB :Gblame<cr>
 nnoremap Ue :Gedit<cr>
@@ -991,12 +997,6 @@ cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
 nmap * *<Plug>Pulse
 
-" commands ====================================================================
-command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
-command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
-
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
 hi UnmarkLine guibg=black guifg=NONE ctermbg=NONE ctermfg=NONE
 nnoremap m. :call matchaddpos("MarkLine", [line('.')])<cr>
@@ -1133,9 +1133,25 @@ endif
 
 augroup vimrc_autocmd
   autocmd!
+
+  " Closes the current quickfix list and returns to the alternate window.
+  func! s:close_qflist()
+    let altwin = s:get_alt_winnr()
+    wincmd c
+    exe altwin.'wincmd w'
+    " let [win_cnt, last_win] = [winnr('$'), winnr() == winnr('$')]
+    " if last_win "If quickfix window is open, it is _always_ the last window.
+    "   cclose
+    "   if win_cnt == winnr('$')
+    "     lclose " :cclose didn't change win count; that means we were in loclist.
+    "   end
+    " else
+    "   lclose
+    " endif
+  endf
   autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
         \ |nnoremap <buffer> <c-n> <down>
-        \ |nnoremap <silent><buffer> q <c-w>c:call<sid>switch_to_alt_win()<cr>
+        \ |nnoremap <silent><buffer> q :call <sid>close_qflist()<cr>
 
   autocmd CmdwinEnter * nnoremap <silent><buffer> q <C-W>c
 
@@ -1356,4 +1372,13 @@ if isdirectory(expand(s:dir, 1))
   endif
 endif
 
+" special-purpose mappings/commands ===========================================
+nnoremap <leader>v  :e ~/.vimrc<cr>
+nnoremap <leader>V  :e ~/.vimrc.local<cr>
+command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
+command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
+
+" " special-purpose mappings/commands ===========================================
 silent! source ~/.vimrc.local
