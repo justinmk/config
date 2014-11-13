@@ -213,7 +213,6 @@ nmap N N<Plug>Pulse
 Plug 'terryma/vim-expand-region'
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
-let g:signify_update_on_focus = 1
 
 if exists("$GOPATH")
 Plug 'Blackrush/vim-gocode'
