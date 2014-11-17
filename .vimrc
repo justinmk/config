@@ -192,6 +192,7 @@ let g:projectionist_heuristics = {
 Plug 'embear/vim-localvimrc'
 let g:localvimrc_sandbox = 0
 let g:localvimrc_name = [".lvimrc", "contrib/localvimrc/lvimrc"]
+" let g:localvimrc_whitelist = escape(expand('~'), '\').'\.lvimrc'
 let g:localvimrc_persistent = 1
 
 
@@ -1129,6 +1130,22 @@ if !&cursorcolumn
           \ | autocmd! matchparen_cursorcolumn_setup
   augroup END
 endif
+
+augroup vimrc_savecommitmsg
+  autocmd!
+  " Remember last commit message for fugitive commit editor
+  func! s:store_commit_msg()
+    let w=winsaveview()
+    let @c='' 
+    silent! 1;/^#/-1 g/.*/y C
+    "If search fails, we won't reach this line, which is a nice side effect
+    "because it preserves the last non-empty message.
+    let LAST_COMMIT_MSG=@c
+    call winrestview(w)
+  endf
+  autocmd BufEnter COMMIT_EDITMSG
+        \ exe 'au! vimrc_savecommitmsg * <buffer>' | autocmd vimrc_savecommitmsg TextChanged,TextChangedI <buffer> silent call <sid>store_commit_msg()
+augroup END
 
 augroup vimrc_autocmd
   autocmd!
