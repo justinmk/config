@@ -511,10 +511,6 @@ endif
 " text, tab and indent 
 
 set formatoptions+=rno1l
-if v:version > 703 || v:version == 703 && has("patch541")
-  " Delete comment character when joining commented lines
-  set formatoptions+=j
-endif
 " don't syntax-highlight long lines
 set synmaxcol=1000
 
