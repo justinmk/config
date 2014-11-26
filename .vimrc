@@ -146,6 +146,7 @@ Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
+Plug 'tpope/vim-jdaddy'
 " Plug 'Raimondi/delimitMate'
 " force delimitmate to leave <c-g> alone
 " imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
