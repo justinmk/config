@@ -1390,7 +1390,7 @@ nnoremap <leader>v  :e ~/.vimrc<cr>
 nnoremap <leader>V  :e ~/.vimrc.local<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/dev/vim/**") | Unite file_rec
+command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/vim.git/**,".expand("~")."/dev/vim/**") | Unite file_rec
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 
 " " special-purpose mappings/commands ===========================================
