@@ -43,12 +43,8 @@ if has('vim_starting')
 endif
 
 if exists('&guioptions')
-    "no toolbar, no menu bar, no left scroll bar, no gui tabs
-    set guioptions-=T guioptions-=m guioptions-=L guioptions-=l guioptions-=e
-    "don't source &runtimepath/menu.vim. (must be done before 'filetype on' / 'syntax on')
-    set guioptions-=M
-    "use console dialogs instead of popup dialogs for simple choices.
-    set guioptions+=rc
+    "use console dialogs instead of popup dialogs; disable all other GUI options.
+    set guioptions=c
     " cursor behavior:
     "   - no blinking in normal/visual mode
     "   - manic blinking in insert-mode
@@ -108,7 +104,7 @@ Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
-Plug 'https://github.com/justinmk/diffchar.vim.git'
+" Plug 'https://github.com/justinmk/diffchar.vim.git'
 Plug 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plug 'tpope/vim-tbone'
@@ -237,6 +233,8 @@ let g:github_dashboard = {}
 let g:github_dashboard['position'] = 'right'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
+
+Plug 'gcavallanti/vim-noscrollbar'
 
 if !s:is_windows && (has("python") || has("python3"))
   Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
@@ -480,6 +478,7 @@ endif
     " guibg=LimeGreen ctermbg=154
     let s:color_override_dark = '
           \ if &background == "dark"
+          \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
           \ | hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE
           \ | hi CursorLine    guibg=#293739 ctermbg=236
@@ -1250,10 +1249,7 @@ set completeopt+=longest
 " syntaxcomplete provides basic completion for filetypes that lack a custom one.
 "   :h ft-syntax-omni
 if has("autocmd") && exists("+omnifunc")
-  autocmd Filetype *
-        \ if &omnifunc == "" |
-        \   setlocal omnifunc=syntaxcomplete#Complete |
-        \ endif
+  autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
 
 set wildmode=full
@@ -1341,7 +1337,7 @@ endif "}}}
 
 " statusline  =================================================================
 " show winnr iff there are >2 windows
-set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)\ %p%%
+set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{noscrollbar#statusline(20,'█','\|')}\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
 set title
 set titlestring=%{getcwd()}
 set titleold=?
