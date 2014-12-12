@@ -73,7 +73,6 @@ if has("nvim")
   if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
     echoerr "Missing .nvim/ or .nvimrc"
   endif
-  runtime! python_setup.vim
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
