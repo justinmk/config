@@ -1337,7 +1337,7 @@ endif "}}}
 
 " statusline  =================================================================
 " show winnr iff there are >2 windows
-set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%{noscrollbar#statusline(20,'█','\|')}\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
+set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%3*%{noscrollbar#statusline(20,'\ ','▓',['▐'],['▌'])}%0*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
 set title
 set titlestring=%{getcwd()}
 set titleold=?
