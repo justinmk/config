@@ -37,8 +37,8 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
-if has('vim_starting')
-  " ensure that we always start with Vim defaults (as opposed to those set by the current system)
+if has('vim_starting') && !has('nvim')
+  " ensure that we always start with Vim defaults (as opposed to the arbitrary system vimrc)
   set all&
 endif
 
