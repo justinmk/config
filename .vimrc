@@ -218,6 +218,7 @@ endif
 " https://github.com/vim-scripts/surrparen
 Plug 'Keithbsmiley/investigate.vim'
 Plug 'tsukkee/unite-tag'
+Plug 'kmnk/vim-unite-giti'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
@@ -1334,9 +1335,10 @@ endfunction
 
 endif "}}}
 
-" statusline  =================================================================
+" statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
-set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%3*%{noscrollbar#statusline(20,'\ ','▓',['▐'],['▌'])}%0*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
+hi NoScrollBar guibg=black guifg=darkgrey ctermbg=0 ctermfg=7 gui=NONE cterm=NONE
+set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','█',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
 set title
 set titlestring=%{getcwd()}
 set titleold=?
