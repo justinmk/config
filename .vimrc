@@ -612,8 +612,8 @@ iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 " key mappings/bindings
 
 " current file directory
-inoremap <leader>fd <c-r>=expand('%:p:h', 1)<cr>
-cnoremap <leader>fd <c-r>=expand("%:p:h", 1)<cr>
+noremap! <leader>fd <c-r>=expand('%:p:h', 1)<cr>
+noremap! <leader>fn <c-r>=expand('%:p:t', 1)<cr>
 
 inoremap <leader>r <c-r>"
 cnoremap <leader>r <c-r>"
@@ -1196,15 +1196,14 @@ augroup END
 
 nnoremap <c-f> :find 
 nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep // **<bar>RstWI<left><left><left><left><left><left><left><left><left><left>
-" search all file buffers (clear quickfix first). g: get all matches. j: no jumping.
-" :noau speeds up vimgrep
+" search all file buffers (clear loclist first). g: get all matches. j: no jumping.
+nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
-nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search-replace
 nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
 xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
-" recursively search for word under cursor
+" recursively search for word under cursor (:noau speeds up vimgrep)
 nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\V<c-r><c-w>/ ** <bar>RstWI<cr>
 xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ ** <bar>RstWI<cr>
 nnoremap g/g mS:<c-u>grep ''<left>
@@ -1302,6 +1301,7 @@ nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
 nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
+nnoremap <silent> g/L mS:Unite line:buffers<cr>
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite buffer neomru/file<cr>
 " auto-generates an outline of the current buffer
@@ -1337,8 +1337,9 @@ endif "}}}
 
 " statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
-hi NoScrollBar guibg=black guifg=darkgrey ctermbg=0 ctermfg=7 gui=NONE cterm=NONE
-set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','█',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
+hi NoScrollBar  guibg=black guifg=cyan ctermbg=0 ctermfg=cyan gui=NONE cterm=NONE
+hi NoScrollBar2 guibg=black guifg=cyan ctermbg=cyan ctermfg=0 gui=NONE cterm=NONE
+set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','█',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
 set title
 set titlestring=%{getcwd()}
 set titleold=?
@@ -1383,8 +1384,9 @@ if isdirectory(expand(s:dir, 1))
 endif
 
 " special-purpose mappings/commands ===========================================
-nnoremap <leader>v  :e ~/.vimrc<cr>
-nnoremap <leader>V  :e ~/.vimrc.local<cr>
+nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
+nnoremap <leader>vrc  :e ~/.vimrc<cr>
+nnoremap <leader>vrC  :e ~/.vimrc.local<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/vim.git/**,".expand("~")."/dev/vim/**") | Unite file_rec
