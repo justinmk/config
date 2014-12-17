@@ -191,7 +191,7 @@ if [[ `uname` == 'Darwin' ]]; then
       # Avoid creating .DS_Store files on network volumes
       defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
-      # Crank key-repeat up to 11. Affects Vim responsiveness...
+      # Crank key-repeat up to 11. Improves perceived Vim responsiveness...
       defaults write -g KeyRepeat -int 0
       defaults write -g InitialKeyRepeat -int 15
     fi
@@ -211,8 +211,8 @@ if [ -f ~/.fzf.bash ]; then
   fd() { # fzf / change to directory
     cd $(f "-type d")
   }
-  vimf() { # fzf / open file in Vim
-    vim $(f)
+  fv() { # fzf / open file in Vim
+    command -v nvim 2>&1 > /dev/null && nvim $(f) || vim $(f)
   }
 fi
 
