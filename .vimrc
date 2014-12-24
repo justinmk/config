@@ -1020,10 +1020,10 @@ augroup vimrc_java
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
   if s:has_eclim
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
-          \ | nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
-          \ | nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
-          \ | nnoremap <buffer> K     :<c-u>JavaDocPreview<cr>
-          \ | nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>
+          \| nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
+          \| nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
+          \| nnoremap <buffer> K     :<c-u>JavaDocPreview<cr>
+          \| nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>
   endif
 augroup END
 
@@ -1165,8 +1165,8 @@ augroup vimrc_autocmd
     " endif
   endf
   autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
-        \ |nnoremap <buffer> <c-n> <down>
-        \ |nnoremap <silent><buffer> q :call <sid>close_qflist()<cr>
+        \|nnoremap <buffer> <c-n> <down>
+        \|nnoremap <silent><buffer> q :call <sid>close_qflist()<cr>
 
   autocmd CmdwinEnter * nnoremap <silent><buffer> q <C-W>c
 
@@ -1388,8 +1388,8 @@ endif
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
-nnoremap <leader>vrc  :e ~/.vimrc<cr>
-nnoremap <leader>vrC  :e ~/.vimrc.local<cr>
+nnoremap <leader>vv   :e ~/.vimrc<cr>
+nnoremap <leader>vl   :e ~/.vimrc.local<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/vim.git/**,".expand("~")."/dev/vim/**") | Unite file_rec
