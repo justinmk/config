@@ -675,8 +675,10 @@ nnoremap <silent><c-q> :silent! botright copen<cr>
 
 nnoremap <silent> ^ :FileBeagleBufferDir<cr>
 " set working directory to the current buffer's directory
-nnoremap cd :cd %:p:h<bar>pwd<cr>
-nnoremap cu :cd ..<bar>pwd<cr>
+nnoremap cd :lcd %:p:h<bar>pwd<cr>
+nnoremap cu :lcd ..<bar>pwd<cr>
+nnoremap cD :cd %:p:h<bar>pwd<cr>
+nnoremap cU :cd ..<bar>pwd<cr>
 " show git branch with ctrl-g info
 func! s:ctrl_g()
   redir => msg | silent exe "norm! 1\<c-g>" | redir END
