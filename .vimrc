@@ -996,9 +996,17 @@ xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Puls
 nmap * *<Plug>Pulse
 
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
-hi UnmarkLine guibg=black guifg=NONE ctermbg=NONE ctermfg=NONE
-nnoremap m. :call matchaddpos("MarkLine", [line('.')])<cr>
-nnoremap m<space> :call matchaddpos("Unmarkline", [line('.')])<cr>
+func! s:markline()
+  let b:vimrc_markedlines = get(b:, "vimrc_markedlines", {})
+  "TODO: This will get stale if the line moves.
+  "      :sign is a solution, but need to create a way to get un-used sign {id}s.
+  let b:vimrc_markedlines[line('.')] = matchaddpos("MarkLine", [line('.')])
+endf
+nnoremap <silent> m.  :call <sid>markline()<cr>
+nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
+nnoremap <silent> m<enter> :UniteBookmarkAdd<cr><cr>
+"                                          ^- always choose 'default'
+nnoremap <silent> g/m :Unite bookmark<cr>
 
 " python ======================================================================
 augroup vimrc_python
@@ -1164,7 +1172,7 @@ augroup vimrc_autocmd
     "   lclose
     " endif
   endf
-  autocmd BufReadPost quickfix nnoremap <buffer> <c-p> <up>
+  autocmd BufWinEnter quickfix nnoremap <buffer> <c-p> <up>
         \|nnoremap <buffer> <c-n> <down>
         \|nnoremap <silent><buffer> q :call <sid>close_qflist()<cr>
 
@@ -1180,7 +1188,7 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  autocmd FileType vim nnoremap <buffer> yxx :Runtime<cr> | xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
+  autocmd FileType vim nnoremap <buffer> yxx :Runtime<cr>| xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
