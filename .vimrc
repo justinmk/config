@@ -1142,13 +1142,13 @@ endif
 augroup vimrc_savecommitmsg
   autocmd!
   " Remember last commit message for fugitive commit editor
-  func! s:store_commit_msg() abort
+  func! s:store_commit_msg()
     let [w,r]=[winsaveview(),getreg('"', 1)]
     let @c=''
     silent! 1;/^#/-1 g/.*/y C
-    "If search fails, we won't reach this line, which is a nice side effect
-    "because it preserves the last non-empty message.
-    let g:LAST_COMMIT_MSG=@c
+    if 0 <= match(@c, '[^ \t\n\r]')
+      let g:LAST_COMMIT_MSG=@c
+    endif
     call winrestview(w)
     call setreg('"', r)
   endf
