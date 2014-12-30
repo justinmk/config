@@ -438,6 +438,7 @@ endif
 if s:is_windows
     set winaltkeys=no
     set guifont=Consolas:h11
+    set renderoptions=type:directx
 elseif s:is_mac && s:is_gui
     set macmeta " Use option (alt) as meta key.
 
@@ -984,7 +985,7 @@ func! s:get_visual_selection()
   let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
   return join(lines, "\n")
-endfunc
+endf
 "read last visual-selection into command line
 cnoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
@@ -993,7 +994,8 @@ inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 
 xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
-nmap * *<Plug>Pulse
+nmap *  :<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr><Plug>Pulse
+nmap g* :<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr><Plug>Pulse
 
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
 func! s:markline()
@@ -1400,7 +1402,7 @@ nnoremap <leader>vv   :e ~/.vimrc<cr>
 nnoremap <leader>vl   :e ~/.vimrc.local<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command! FindVim        exe 'lcd '.finddir("src", expand("~")."/vim/**,".expand("~")."/vim.git/**,".expand("~")."/dev/vim/**") | Unite file_rec
+command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 
 " " special-purpose mappings/commands ===========================================
