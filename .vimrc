@@ -994,8 +994,8 @@ inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
 cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 
 xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
-nmap *  :<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr><Plug>Pulse
-nmap g* :<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr><Plug>Pulse
+nmap <silent> *  :<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr><Plug>Pulse
+nmap <silent> g* :<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr><Plug>Pulse
 
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
 func! s:markline()
