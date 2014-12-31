@@ -132,7 +132,7 @@ Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
 nnoremap !] :<c-u>Start! ctags -R *<cr>
 nnoremap !T :<c-u>Tmux send-keys -t bottom-left '' C-m<left><left><left><left><left>
-nnoremap !t :<c-u>Make unittest<cr>
+nnoremap !t :<c-u>execute tbone#mux_command("send-keys -t bottom-left ".shellescape(@")." C-m")<cr>
 " nnoremap zut :<c-u>Make unittest<cr>
 
 Plug 'tpope/vim-repeat'
