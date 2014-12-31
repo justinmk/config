@@ -217,9 +217,10 @@ endif
 
 " https://github.com/vim-scripts/surrparen
 Plug 'Keithbsmiley/investigate.vim'
+Plug 'Shougo/unite.vim'
+Plug 'thinca/vim-unite-history'
 Plug 'tsukkee/unite-tag'
 Plug 'kmnk/vim-unite-giti'
-Plug 'Shougo/unite.vim'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
 Plug 'jeetsukumaran/vim-filebeagle'
@@ -610,7 +611,6 @@ iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
-nnoremap <silent> : q::inoremap <lt>buffer> <lt>c-g> <lt>c-o><lt>c-c><lt>c-c><cr>i
 
 " current file directory
 noremap! <leader>fd <c-r>=expand('%:p:h', 1)<cr>
@@ -912,7 +912,6 @@ inoremap kj <esc>
 nnoremap ' `
 xnoremap ' `
 
-" nnoremap <space> :
 nnoremap z. :w<cr>
 
 func! s:reload_without_jank()
@@ -947,7 +946,7 @@ nnoremap <C-n> :normal n.<cr>
 " augroup vimrc_qompose
 "   autocmd!
 " augroup END
-" nnoremap <space>
+" nnoremap ,
 "       \ :<c-u>let g:qompose_orig_z=@z<cr>
 "       \ qz
 "       \ :<c-u>autocmd vimrc_qompose TextChanged,InsertLeave * exe 'normal! q'<bar>call repeat#set(@z)<bar>let @z=g:qompose_orig_z<bar>autocmd! vimrc_qompose *<cr>
@@ -1328,7 +1327,7 @@ nnoremap <silent> <m-w> :Unite tmuxcomplete<CR>
 imap     <silent> <m-w> <C-o><m-w>
 nnoremap <silent> <m-l> :Unite tmuxcomplete/lines<CR>
 imap     <silent> <m-l> <C-o><m-l>
-nnoremap <silent> <space> :Unite command<CR>
+nnoremap <silent> <space> :Unite history/command command<CR>
 
 augroup vimrc_unite
   autocmd!
