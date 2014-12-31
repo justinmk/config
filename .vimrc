@@ -246,7 +246,6 @@ elseif s:lua_patch885
   let g:neocomplete#enable_omni_fallback = 1
   let g:neocomplete#enable_at_startup = 1
   let g:neocomplete#enable_smart_case = 1
-  inoremap <expr> <C-g> neocomplete#undo_completion()
   inoremap <expr> <C-l> neocomplete#complete_common_string()
   inoremap <expr> <cr>  pumvisible() && exists("*neocomplete#close_popup") ? neocomplete#close_popup() : "\<cr>"
 
@@ -611,6 +610,7 @@ iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 
 "==============================================================================
 " key mappings/bindings
+nnoremap <silent> : q::inoremap <lt>buffer> <lt>c-g> <lt>c-o><lt>c-c><lt>c-c><cr>i
 
 " current file directory
 noremap! <leader>fd <c-r>=expand('%:p:h', 1)<cr>
