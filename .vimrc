@@ -713,20 +713,15 @@ xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
 nnoremap <expr> dp &diff ? 'dp' : ':pclose<cr>'
 
-function! s:log_message(commit) "{{{
-  if a:commit =~ '^0\+$'
-    return '(Not Committed Yet)'
-  endif
-  if !has_key(s:log_messages, a:commit)
-    let cmd_output = system('git --git-dir='.b:git_dir.' show --oneline '.a:commit)
-    let first_line = split(cmd_output, '\n')[0]
-    let s:log_messages[a:commit] = substitute(first_line, '[a-z0-9]\+ ', '', '')
-  endif
-  return s:log_messages[a:commit]
+" Executes git cmd in the context of b:git_dir.
+function! s:git_do(cmd) abort
+  " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
+  return system('git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
+        \ . ' ' . a:cmd)
 endfunction
 
 " Gets the SHA of the given line.
-function! s:git_get_sha(filepath, line1)
+function! s:git_get_sha(filepath, line1) abort
   if !exists("b:git_dir")
     echoerr "Missing b:git_dir"
   endif
@@ -734,30 +729,32 @@ function! s:git_get_sha(filepath, line1)
     echoerr "Invalid a:line: ".a:line
   endif
 
-  " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
-  let cmd = 'git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
-        \ .' blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath
-  let cmd_out = system(cmd)
-  if cmd_out =~ '^0\+$'
-    return '(Not Committed Yet)'
+  let cmd_out = s:git_do('blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath)
+  if cmd_out =~# '\v^0{40,}'
+    return ""
   endif
 
-  return matchstr(cmd_out, '\w\+\ze\W', 0, 1)
+  return matchstr(cmd_out, '\w\+\ze\W\?', 0, 1)
 endfunction
 
-function! s:truncate_message(message)
-  return strlen(a:message) > &columns
-        \ ? a:message[0:(&columns - 5)] . '...'
-        \ : a:message
+function! s:git_blame_line(filepath, line1) abort
+  let commit_id = s:git_get_sha(a:filepath, a:line1)
+  let b:git_initial_commit = get(b:, 'git_initial_commit',
+        \ substitute(s:git_do('rev-list --max-parents=0 HEAD'), "\n$", '', '')) "trim trailing newline
+  if commit_id ==# ""
+    echo 'not committed'
+    return
+  elseif commit_id[ : strchars(b:git_initial_commit)-2] ==# b:git_initial_commit[:-2]
+    " On the initial commit only, 'git blame' weirdly prepends a ^ and trims the
+    " last char. So, only compare the first (N-1) chars.
+    echo 'initial commit'
+    return
+  endif
+
+  exe 'Gpedit '.commit_id
 endfunction
 
-function! s:show_log_message()
-  redraw
-  echo s:truncate_message(s:blame_range())
-endfunction
-"}}}
-
-nmap     Ub :<c-u>exe 'Gpedit '.<sid>git_get_sha('<c-r><c-g>', line('.'))<cr>
+nmap     Ub :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
 "                                                 ^
 " Get the repo-relative path with fugitive's CTRL-R_CTRL-G
 
