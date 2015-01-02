@@ -716,7 +716,7 @@ nnoremap <expr> dp &diff ? 'dp' : ':pclose<cr>'
 " Executes git cmd in the context of b:git_dir.
 function! s:git_do(cmd) abort
   " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
-  return system('git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
+  return systemlist('git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
         \ . ' ' . a:cmd)
 endfunction
 
@@ -729,7 +729,7 @@ function! s:git_get_sha(filepath, line1) abort
     echoerr "Invalid a:line: ".a:line
   endif
 
-  let cmd_out = s:git_do('blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath)
+  let cmd_out = join(s:git_do('blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath))
   if cmd_out =~# '\v^0{40,}'
     return ""
   endif
@@ -739,14 +739,20 @@ endfunction
 
 function! s:git_blame_line(filepath, line1) abort
   let commit_id = s:git_get_sha(a:filepath, a:line1)
-  let b:git_initial_commit = get(b:, 'git_initial_commit',
-        \ substitute(s:git_do('rev-list --max-parents=0 HEAD'), "\n$", '', '')) "trim trailing newline
   if commit_id ==# ""
     echo 'not committed'
     return
-  elseif commit_id[ : strchars(b:git_initial_commit)-2] ==# b:git_initial_commit[:-2]
-    " On the initial commit only, 'git blame' weirdly prepends a ^ and trims the
-    " last char. So, only compare the first (N-1) chars.
+  endif
+
+  " Find commit(s) with 0 parents.
+  let b:git_initial_commits = get(b:, 'git_initial_commits', s:git_do('rev-list --max-parents=0 HEAD'))
+
+  " On the initial commit, 'git blame' weirdly prepends a ^ and trims the
+  " last char. So, only compare the first (N-1) chars.
+  let is_initial_commit = 0 < len(filter(copy(b:git_initial_commits),
+        \ 'commit_id[ : strchars(v:val)-2] ==# v:val[:-2]'))
+
+  if is_initial_commit
     echo 'initial commit'
     return
   endif
