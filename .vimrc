@@ -1352,7 +1352,7 @@ endif "}}}
 
 " statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
-hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=8 gui=NONE cterm=NONE
+hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
 set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
 set title
 set titlestring=%{getcwd()}
