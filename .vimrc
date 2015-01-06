@@ -438,7 +438,9 @@ endif
 if s:is_windows
     set winaltkeys=no
     set guifont=Consolas:h11
-    set renderoptions=type:directx
+    if has("directx")
+      set renderoptions=type:directx
+    endif
 elseif s:is_mac && s:is_gui
     set macmeta " Use option (alt) as meta key.
 
