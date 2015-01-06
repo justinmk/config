@@ -416,6 +416,7 @@ set scrolloff=0
 set sidescrolloff=0
 set noequalalways
 set splitright
+if has('patch-7.4.314') | set shortmess+=c | endif
 
 set nojoinspaces
 
