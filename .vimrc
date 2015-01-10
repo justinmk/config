@@ -837,13 +837,16 @@ func! s:buf_switch_to_altbuff()
   "   - it is not the current buffer (yes, this really happens, eg with netrw)
   if -1 != bufnr("#") && bufnr("#") != bufnr("%")
     buffer #
+    return 1
   else " change to first 'valid' buffer
     let l:valid_buffers = s:buf_find_valid_next_bufs()
     if len(l:valid_buffers) > 0
       exe 'buffer '.l:valid_buffers[0]
+      return 1
     endif
   endif
-  echohl WarningMsg | echo "No other buffers" | echohl None
+
+  return 0
 endf
 
 " close the current buffer with a vengeance
@@ -856,7 +859,13 @@ func! s:buf_kill(mercy)
     return
   endif
 
-  silent call <sid>buf_switch_to_altbuff()
+  if !s:buf_switch_to_altbuff()
+    "No alternate buffer found; create a new, blank buffer.
+    "Note: :bwipe will still close any window that displays the buffer being
+    "      wiped. To preven this, those windows would each need to be switched
+    "      to a new or alt buffer.
+    enew
+  endif
 
   " remove the buffer filename (if any) from the args list, else it might come back in the next session.
   if !empty(l:origbufname)
@@ -868,7 +877,8 @@ func! s:buf_kill(mercy)
   endif
 endf
 
-nnoremap <silent> <c-^> :call <sid>buf_switch_to_altbuff()<cr>
+nnoremap <silent> <c-^> :<c-u>if !<sid>buf_switch_to_altbuff()
+      \<bar>echohl WarningMsg<bar>echo "No other buffers"<bar>echohl None<bar>endif<cr>
 
 "move to last character 
 nnoremap - $
