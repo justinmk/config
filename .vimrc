@@ -1236,6 +1236,12 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
+  " syntaxcomplete provides basic completion for filetypes that lack a custom one.
+  "   :h ft-syntax-omni
+  if has("autocmd") && exists("+omnifunc")
+    autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+  endif
+
   autocmd FileType vim nnoremap <buffer> yxx :Runtime<cr>| xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
 
   if exists("*mkdir") "auto-create directories for new files
@@ -1254,17 +1260,17 @@ augroup vimrc_autocmd
 augroup END
 
 nnoremap <c-f> :find 
-nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep // **<bar>RstWI<left><left><left><left><left><left><left><left><left><left>
+nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep /\C/ **<bar>RstWI<left><left><left><left><left><left><left><left><left><left>
 " search all file buffers (clear loclist first). g: get all matches. j: no jumping.
-nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd//gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
+nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
 " search-replace
 nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
 xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
-nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\V<c-r><c-w>/ ** <bar>RstWI<cr>
-xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /<c-r>=<SID>get_visual_selection()<cr>/ ** <bar>RstWI<cr>
+nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C\V<c-r><c-w>/ ** <bar>RstWI<cr>
+xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C<c-r>=<SID>get_visual_selection()<cr>/ ** <bar>RstWI<cr>
 nnoremap g/g mS:<c-u>grep ''<left>
 if executable("pt")
 set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
@@ -1303,12 +1309,6 @@ nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 set complete-=i
 set completeopt-=preview
 set completeopt+=longest
-
-" syntaxcomplete provides basic completion for filetypes that lack a custom one.
-"   :h ft-syntax-omni
-if has("autocmd") && exists("+omnifunc")
-  autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-endif
 
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
