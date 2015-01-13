@@ -96,7 +96,6 @@ else
 call plug#begin('~/.vim/bundle')
 
 Plug 'tomasr/molokai'
-Plug 'noahfrederick/vim-hemisu'
 Plug 'tommcdo/vim-exchange'
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
@@ -123,7 +122,10 @@ let g:dbext_default_usermaps = 0
 Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-scriptease'
+
 Plug 'tpope/vim-fugitive'
+Plug 'int3/vim-extradite'
+Plug 'kmnk/vim-unite-giti'
 
 Plug 'tpope/vim-surround'
 let g:surround_no_insert_mappings = 1
@@ -195,7 +197,7 @@ let g:localvimrc_persistent = 1
 Plug 'PProvost/vim-ps1'
 Plug 'pangloss/vim-javascript'
 Plug 'leafo/moonscript-vim'
-Plug 'chrisbra/Colorizer'
+Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
 " Plug 'chrisbra/Recover.vim'
 Plug 'osyo-manga/vim-over'
 
@@ -207,7 +209,6 @@ let g:vim_search_pulse_duration = 200
 nmap n n<Plug>Pulse
 nmap N N<Plug>Pulse
 
-Plug 'terryma/vim-expand-region'
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
 
@@ -220,7 +221,6 @@ Plug 'Keithbsmiley/investigate.vim'
 Plug 'Shougo/unite.vim'
 Plug 'thinca/vim-unite-history'
 Plug 'tsukkee/unite-tag'
-Plug 'kmnk/vim-unite-giti'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
 Plug 'jeetsukumaran/vim-filebeagle'
@@ -1416,7 +1416,6 @@ endif
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
 nnoremap <leader>vv   :e ~/.vimrc<cr>
-nnoremap <leader>vl   :e ~/.vimrc.local<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
