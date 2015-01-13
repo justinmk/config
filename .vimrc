@@ -345,9 +345,6 @@ omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
 let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
-xmap m     <Plug>(expand_region_expand)
-xmap <m-m> <Plug>(expand_region_shrink)
-
 let g:vertical_move_default_mapping = 0
 nmap <silent> + <Plug>(vertical_move_down)
 nmap <silent> _ <Plug>(vertical_move_up)
@@ -790,7 +787,7 @@ nnoremap gqax    :%!tidy -i -xml -utf8 2> /dev/null<cr>
 nnoremap gqah    :%!tidy -i -ashtml -utf8 2> /dev/null<cr>
 
 " available mappings:
-"   visual: <space> R c-r c-n c-g c-a c-x c-h,<bs>
+"   visual: <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
 "   normal: g= z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 " nnoremap c<space>       :easyalign...
