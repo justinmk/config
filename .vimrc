@@ -779,12 +779,15 @@ nmap yxx     <Plug>(quickrun)
 xmap <enter> <Plug>(quickrun)
 
 " filter
+" TODO: https://github.com/Chiel92/vim-autoformat
 " nnoremap c<cr>jj    :%!python -m json.tool<cr>
 " nnoremap z<cr>jj    :%!python -m json.tool<cr>
 " nnoremap c<space>jj :%!python -m json.tool<cr>
 " nnoremap g<bar>jj   :%!python -m json.tool<cr>
 nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
+nnoremap gqax    :%!tidy -i -xml -utf8 2> /dev/null<cr>
+nnoremap gqah    :%!tidy -i -ashtml -utf8 2> /dev/null<cr>
 
 " available mappings:
 "   visual: <space> R c-r c-n c-g c-a c-x c-h,<bs>
