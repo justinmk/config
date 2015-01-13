@@ -896,31 +896,42 @@ xnoremap x  "_d
 nnoremap vD "_D
 xnoremap P  "0p
 
+func! s:trimws_ml(s) "trim whitespace across multiple lines
+  return substitute(a:s, '^\_s*\(.\{-}\)\_s*$', '\1', '')
+endf
 "why?
 " - repeatable
 " - faster/more convenient than visual-replace
+" - does not modify ' mark
+" - DWIM behavior for linewise => characterwise
 let s:rr_reg = '"'
 func! s:set_reg(reg_name)
   let s:rr_reg = a:reg_name
 endf
 func! s:replace_without_yank(type)
-  let r = s:rr_reg
-  let ur_orig = getreg('"', 1) "save unamed register to restore later.
+  let rr_orig = getreg(s:rr_reg, 1) "save registers and types to restore later.
+  let rr_type = getregtype(s:rr_reg)
+  let ur_orig = getreg('"', 1)
   let ur_type = getregtype('"')
   let sel_save = &selection
   let &selection = "inclusive"
   let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
 
   if a:type == 'line' || replace_curlin
-    exe "keepjumps normal! '[V']\"".r."p"
+    exe "keepjumps normal! '[V']\"".s:rr_reg."p"
   elseif a:type == 'block'
-    exe "keepjumps normal! `[\<C-V>`]\"".r."p"
+    exe "keepjumps normal! `[\<C-V>`]\"".s:rr_reg."p"
   else
-    exe "keepjumps normal! `[v`]\"".r."p"
+    "DWIM: if pasting linewise contents in a _characterwise_ motion, trim
+    "      surrounding whitespace from the content to be pasted.
+    call setreg(s:rr_reg, s:trimws_ml(rr_orig), "v")
+    redraw|echom getregtype(s:rr_reg)
+    exe "keepjumps normal! `[v`]\"".s:rr_reg."p"
   endif
 
   let &selection = sel_save
-  call setreg(r, ur_orig, ur_type)
+  call setreg('"',      ur_orig, ur_type)
+  call setreg(s:rr_reg, rr_orig, rr_type)
 endf
 
 nnoremap <silent> rr  :<C-u>call <sid>set_reg(v:register)<bar>set opfunc=<sid>replace_without_yank<CR>g@
