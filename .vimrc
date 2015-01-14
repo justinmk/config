@@ -121,6 +121,7 @@ let g:dbext_default_usermaps = 0
 
 Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
@@ -155,6 +156,8 @@ let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
 Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-line'
+Plug 'kana/vim-textobj-entire'
 Plug 'gaving/vim-textobj-argument'
 Plug 'guns/vim-sexp'
 Plug 'guns/vim-clojure-static'
