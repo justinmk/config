@@ -232,7 +232,7 @@
   (setq js2-highlight-level 3)
   (setq-default js2-basic-offset 2)
   (after 'js2-mode-autoloads
-    (setq auto-mode-alist (cons '("\\.js\\'" . js2-mode) auto-mode-alist)))
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))))
   (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
   (after 'tern
     (after 'auto-complete
@@ -242,6 +242,8 @@
   (skewer-setup)
 
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+
+(with-package (lua-mode flymake-lua))
 
 (with-package* (elisp-slime-nav clojure-mode cider ac-cider)
 
