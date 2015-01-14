@@ -801,8 +801,9 @@ xmap <enter> <Plug>(quickrun)
 " nnoremap g<bar>jj   :%!python -m json.tool<cr>
 nnoremap <bar>jj :%!python -m json.tool<cr>
 xnoremap <bar>jj :!python -m json.tool<cr>
-nnoremap gqax    :%!tidy -i -xml -utf8 2> /dev/null<cr>
-nnoremap gqah    :%!tidy -i -ashtml -utf8 2> /dev/null<cr>
+" windows binary: http://tidybatchfiles.info
+nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
+nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 
 " available mappings:
 "   visual: <space> m R c-r c-n c-g c-a c-x c-h,<bs>
