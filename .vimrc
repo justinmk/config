@@ -921,8 +921,9 @@ func! s:replace_without_yank(type)
   else
     "DWIM: if pasting linewise contents in a _characterwise_ motion, trim
     "      surrounding whitespace from the content to be pasted.
-    call setreg(s:rr_reg, s:trimws_ml(rr_orig), "v")
-    redraw|echom getregtype(s:rr_reg)
+    if rr_type ==# "V"
+      call setreg(s:rr_reg, s:trimws_ml(rr_orig), "v")
+    endif
     exe "keepjumps normal! `[v`]\"".s:rr_reg."p"
   endif
 
