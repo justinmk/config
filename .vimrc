@@ -631,8 +631,26 @@ nnoremap <silent> d<tab> <c-w>c
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
+
+func! s:win_motion_resize(type)
+  let sel_save = &selection
+  let &selection = "inclusive"
+  let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
+
+  if a:type ==# 'line' || line("']") > line("'[")
+    exe (line("']") - line("'[") + 1) 'wincmd _'
+  endif
+  if a:type !=# 'line'
+    "TODO: this assumes sign column is visible.
+    exe ( col("']") -  col("'[") + 3) 'wincmd |'
+  endif
+
+  let &selection = sel_save
+endf
+
+nnoremap <silent> gwe :<C-u>set opfunc=<sid>win_motion_resize<CR>g@
 " fit the current window height to the selected text
-xnoremap <expr> gw<bs> 'z'.(2*(&scrolloff)+1+abs(line('.')-line('v')))."\<cr>\<esc>".(min([line('.'),line('v')]))."ggzt"
+xnoremap <silent> gwe :<C-u>set opfunc=<sid>win_motion_resize<CR>gvg@
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -656,10 +674,10 @@ endf
 "        {visual}gws => split with height of visual selection
 "        {visual}gwv => vsplit with width of visual selection
 "        gw<space>{motion} => size window height to {motion}
-nnoremap gwN :tabnew<cr>
-nnoremap gwC :tabclose<cr>
-nnoremap >gt :tabmove +1<cr>
-nnoremap <gt :tabmove -1<cr>
+nnoremap gwN      :tabnew<cr>
+nnoremap gwC      :tabclose<cr>
+nnoremap gw<c-l>  :tabmove +1<cr>
+nnoremap gw<c-h>  :tabmove -1<cr>
 " move tab to Nth position (this is slightly different than :tabmove)
 nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
 
