@@ -725,6 +725,7 @@ nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
+nmap     Uc :exe 'Gsplit '.matchstr('<c-r><c-g>', '[^:]*')<cr>
 nnoremap Us :Gstatus<cr>
 nnoremap Ul :Gllog<cr>
 nnoremap Ug :Ggrep<space>
