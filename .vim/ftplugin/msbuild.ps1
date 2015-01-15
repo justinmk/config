@@ -1,3 +1,12 @@
+param(
+    [String]
+    $dir = $null
+)
+
+if ($dir) {
+  & cd $dir
+}
+
 # http://www.dougfinke.com/blog/index.php/2010/08/29/how-to-load-net-assemblies-in-a-powershell-session/
 [Reflection.Assembly]::LoadFile('C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\Microsoft.Build.Utilities.v12.0.dll')
 

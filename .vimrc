@@ -110,7 +110,13 @@ Plug 'wellle/tmux-complete.vim'
 let g:tmuxcomplete#trigger = ''
 endif
 
-Plug 'dbext.vim'
+"TODO: dbext bugs:
+"   - dbext BufRead handler adds `gg` to jumplist. steps:
+"       :h h
+"       :h a
+"       <c-o>
+"   - does not honor g:dbext_default_usermaps
+Plug 'dbext.vim', { 'on': [ 'DBExecRangeSQL', 'DBExecVisualSQL'  ] }
 " dbext profile example:
 "   let g:dbext_default_profile = 'default'
 "   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\120\Tools\Binn'
@@ -180,6 +186,10 @@ Plug 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
 Plug 'tpope/vim-projectionist'
 " look at derekwyatt/vim-fswitch for more C combos.
 let g:projectionist_heuristics = {
+      \  '*.sln': {
+      \    '*.cs': {'alternate': ['{}.designer.cs']},
+      \    '*.designer.cs': {'alternate': ['{}.cs']},
+      \  },
       \  '/*.c|src/*.c': {
       \    '*.c': {'alternate': ['../include/{}.h', '{}.h']},
       \    '*.h': {'alternate': '{}.c'},
@@ -463,10 +473,10 @@ endif
         \'
 
   if !s:is_mac
-    exe s:color_force_high_contrast
-    if has('vim_starting')
-      exe 'autocmd ColorScheme * '.s:color_force_high_contrast
-    endif
+    " exe s:color_force_high_contrast
+    " if has('vim_starting')
+    "   exe 'autocmd ColorScheme * '.s:color_force_high_contrast
+    " endif
   endif
 
   if !s:is_gui && &t_Co <= 88
