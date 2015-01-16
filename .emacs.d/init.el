@@ -33,25 +33,12 @@
       (after 'git-gutter+-autoloads
         (global-git-gutter+-mode))))
 
-(with-package* (smart-mode-line pos-tip diminish* moe-theme)
+(with-package* (smart-mode-line pos-tip moe-theme)
   ;; (with 'color-theme-sanityinc-tomorrow)
   ;; (with 'zenburn-theme)
 
   (setq sml/theme 'dark)
   (sml/setup)
-
-  (after 'diminish-autoloads
-    (diminish 'visual-line-mode)
-    (after 'undo-tree (diminish 'undo-tree-mode))
-    (after 'auto-complete (diminish 'auto-complete-mode))
-    (after 'projectile (diminish 'projectile-mode))
-    (after 'guide-key (diminish 'guide-key-mode))
-    (after 'eldoc (diminish 'eldoc-mode))
-    (after 'smartparens (diminish 'smartparens-mode))
-    (after 'company (diminish 'company-mode))
-    (after 'git-gutter+ (diminish 'git-gutter+-mode))
-    (after 'elisp-slime-nav (diminish 'elisp-slime-nav-mode))
-    )
 
   (custom-set-faces
    ;; init file should contain only one custom-set-faces. If there is more than one, they won't work right.
