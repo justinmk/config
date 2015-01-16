@@ -51,7 +51,7 @@
 
   ;; fight the "low contrast" fad.
   (set-face-attribute 'default nil
-                      :background "black"
+                      ;; :background "black"
                       :foreground "white")
 
   (pcase (window-system)
@@ -160,20 +160,7 @@
   (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 )
 
-(with-package* projectile
-  (setq projectile-cache-file (concat user-emacs-directory ".cache/projectile.cache"))
-  (setq projectile-known-projects-file (concat user-emacs-directory ".cache/projectile-bookmarks.eld"))
-
-  ;; (setq projectile-show-paths-function 'projectile-hashify-with-relative-paths)
-  (setq projectile-show-paths-function 'helm-projectile)
-
-  (add-to-list 'projectile-globally-ignored-directories "elpa")
-  (add-to-list 'projectile-globally-ignored-directories ".cache")
-  (add-to-list 'projectile-globally-ignored-directories "node_modules")
-
-  (projectile-global-mode t))
-
-(with-package* (helm helm-config helm-swoop pt helm-projectile)
+(with-package* (helm helm-config helm-swoop pt)
   ;; enable partial matches separated by SPC
   (helm-match-plugin-mode)
 
