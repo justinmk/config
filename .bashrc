@@ -17,6 +17,9 @@ if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
     umask $old
   }
 fi
+
+command -v nvim 2>&1 > /dev/null && EDITOR=nvim
+
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 
 # golang root
@@ -212,7 +215,7 @@ if [ -f ~/.fzf.bash ]; then
     cd $(f "-type d")
   }
   fv() { # fzf / open file in Vim
-    command -v nvim 2>&1 > /dev/null && nvim $(f) || vim $(f)
+    $EDITOR $(f)
   }
 fi
 
