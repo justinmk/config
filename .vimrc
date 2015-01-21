@@ -101,6 +101,7 @@ Plug 'https://github.com/justinmk/vim-ipmotion.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
+" https://github.com/vim-scripts/surrparen
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
 " Plug 'https://github.com/justinmk/diffchar.vim.git'
 Plug 'bruno-/vim-vertical-move'
@@ -140,10 +141,39 @@ let g:surround_no_insert_mappings = 1
 Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
 nnoremap !] :<c-u>Start! ctags -R *<cr>
-nnoremap !T :<c-u>Tmux send-keys -t bottom-left '' C-m<left><left><left><left><left>
 " ways to run external commands in vim: https://gist.github.com/sjl/b9e3d9f821e57c9f96b3
-nnoremap !t :<c-u>execute tbone#mux_command("send-keys -t bottom-left ".shellescape(@")." C-m")<cr>
-" nnoremap zut :<c-u>Make unittest<cr>
+nnoremap !t :<c-u>Trun TEST_FILE=<c-r>% make functionaltest<cr>
+nnoremap !T :<c-u>Make unittest<cr>
+
+nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
+xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
+nnoremap <silent> yrr V:<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
+func! s:tmux_run_operator(type, ...)
+  let sel_save = &selection
+  let &selection = "inclusive"
+  let isvisual = a:0
+
+  let lines = isvisual ? getline("'<", "'>") : getline("'[", "']")
+  if a:type !=# 'line' && a:type !=# 'V'
+    let startcol  = isvisual ? col("'<") : col("'[")
+    let endcol    = isvisual ? col("'>")-2 : col("']")
+    let lines[0]  = lines[0][startcol-1 : ]
+    let lines[-1] = lines[-1][ : endcol-1]
+  endif
+
+  call s:tmux_run(join(lines))
+
+  let &selection = sel_save
+endf
+"Runs `cmd` in the bottom-left pane.
+"Creates a new pane if needed.
+func! s:tmux_run(cmd)
+  if tbone#pane_id(".") == tbone#pane_id("bottom-left")
+    Tmux split-window -d -p 33
+  endif
+  call tbone#send_keys("bottom-left", "\<c-e>\<c-u>".a:cmd."\<cr>")
+endf
+command! -nargs=? Trun call s:tmux_run(<q-args>)
 
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch'
@@ -230,7 +260,6 @@ if exists("$GOPATH")
 Plug 'Blackrush/vim-gocode'
 endif
 
-" https://github.com/vim-scripts/surrparen
 Plug 'Keithbsmiley/investigate.vim'
 Plug 'Shougo/unite.vim'
 Plug 'thinca/vim-unite-history'
@@ -821,8 +850,8 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 " available mappings:
 "   visual: <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-g
-"   normal: g= z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
-" nnoremap c<space>       :easyalign...
+"   normal: g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"           c<space> --> easyalign
 
 func! s:buf_compare(b1, b2)
   let b1_visible = -1 == index(tabpagebuflist(), a:b1)
