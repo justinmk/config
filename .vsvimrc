@@ -106,10 +106,10 @@ nnoremap <C-k> :vsc ReSharper.ReSharper_InspectThis<cr>
 nnoremap gk    :vsc Edit.PeekDefinition<cr>
 
 "show refactor menu
-nnoremap crr :vsc ReSharper.ReSharper_RefactorThis<cr>
-xnoremap R   :vsc ReSharper.ReSharper_RefactorThis<cr>
-nnoremap crn :vsc Refactor.Rename<cr>
-nnoremap cri :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
+nnoremap crr        :vsc ReSharper.ReSharper_RefactorThis<cr>
+xnoremap <c-r><c-r> :vsc ReSharper.ReSharper_RefactorThis<cr>
+nnoremap crn        :vsc Refactor.Rename<cr>
+nnoremap cri        :vsc EditorContextMenus.CodeWindow.OrganizeUsings.RemoveAndSort<cr>
 "show quickfix menu
 nnoremap <bs> :vsc ReSharper_AltEnter<cr>
 xnoremap <bs> :vsc ReSharper_AltEnter<cr>
