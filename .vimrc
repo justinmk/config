@@ -678,7 +678,6 @@ nnoremap <m-i> <c-i>
 func! s:win_motion_resize(type)
   let sel_save = &selection
   let &selection = "inclusive"
-  let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
 
   if a:type ==# 'line' || line("']") > line("'[")
     exe (line("']") - line("'[") + 1) 'wincmd _'
@@ -993,8 +992,8 @@ func! s:replace_without_yank(type)
   call setreg(s:rr_reg, rr_orig, rr_type)
 endf
 
-nnoremap <silent> rr  :<C-u>call <sid>set_reg(v:register)<bar>set opfunc=<sid>replace_without_yank<CR>g@
-nnoremap <silent> rrr :<C-u>call <sid>set_reg(v:register)<cr>0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
+nnoremap <silent> dr  :<C-u>call <sid>set_reg(v:register)<bar>set opfunc=<sid>replace_without_yank<CR>g@
+nnoremap <silent> drr :<C-u>call <sid>set_reg(v:register)<cr>0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
 
 inoremap jk <esc>
 inoremap kj <esc>
