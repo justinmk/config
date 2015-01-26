@@ -779,16 +779,16 @@ function! s:git_do(cmd) abort
         \ . ' ' . a:cmd)
 endfunction
 
-" Gets the SHA of the given line.
-function! s:git_get_sha(filepath, line1) abort
+" Gets the git commit hash associated with the given line.
+function! s:git_sha(filepath, line) abort
   if !exists("b:git_dir")
     echoerr "Missing b:git_dir"
   endif
-  if a:line1 <= 0
+  if a:line <= 0
     echoerr "Invalid a:line: ".a:line
   endif
 
-  let cmd_out = join(s:git_do('blame -l -L'.a:line1.','.a:line1.' -- '.a:filepath))
+  let cmd_out = join(s:git_do('blame --root -l -L'.a:line.','.a:line.' -- '.a:filepath))
   if cmd_out =~# '\v^0{40,}'
     return ""
   endif
@@ -796,23 +796,21 @@ function! s:git_get_sha(filepath, line1) abort
   return matchstr(cmd_out, '\w\+\ze\W\?', 0, 1)
 endfunction
 
-function! s:git_blame_line(filepath, line1) abort
-  let commit_id = s:git_get_sha(a:filepath, a:line1)
+function! s:git_blame_line(filepath, line) abort
+  let commit_id = s:git_sha(a:filepath, a:line)
   if commit_id ==# ""
     echo 'not committed'
     return
   endif
 
   " Find commit(s) with 0 parents.
-  let b:git_initial_commits = get(b:, 'git_initial_commits', s:git_do('rev-list --max-parents=0 HEAD'))
+  " Note: `git blame` prepends a caret ^ to root commits unless --root is
+  "       passed. But it doesn't always mark the 'root' commits we are
+  "       interested in, so collect them explicitly with `git rev-list`.
+  let b:git_root_commits = get(b:, 'git_root_commits', s:git_do('rev-list --max-parents=0 HEAD'))
 
-  " On the initial commit, 'git blame' weirdly prepends a ^ and trims the
-  " last char. So, only compare the first (N-1) chars.
-  let is_initial_commit = 0 < len(filter(copy(b:git_initial_commits),
-        \ 'commit_id[ : strchars(v:val)-2] ==# v:val[:-2]'))
-
-  if is_initial_commit
-    echo 'initial commit'
+  if -1 != index(b:git_root_commits, commit_id)
+    echo 'root commit'
     return
   endif
 
@@ -820,7 +818,7 @@ function! s:git_blame_line(filepath, line1) abort
 endfunction
 
 nmap     Ub :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
-"                                                 ^
+"                                            ^^
 " Get the repo-relative path with fugitive's CTRL-R_CTRL-G
 
 
