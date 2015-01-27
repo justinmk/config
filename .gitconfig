@@ -1,3 +1,5 @@
+[user]
+  name = Justin M. Keyes
 [core]
   ignorecase = false
   autocrlf = false
@@ -39,7 +41,7 @@
   #script-consumable list of modified files (does NOT include deleted/added/staged)
   df = diff --name-only
   #open modified files (does NOT include deleted/added/staged)
-  em = !vim `git df`
+  em = !$EDITOR `git df`
 [advice]
   statusHints = false
 [color]
@@ -79,8 +81,8 @@
   cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start . &> /dev/null || open . &> /dev/null || xdg-open .
   needsfile = yes
   noconsole = yes
-[guitool "vim"]
-  cmd = source ~/.bashrc && gvim $FILENAME
+[guitool "edit"]
+  cmd = source $HOME/.bashrc && $EDITOR $FILENAME
   noconsole = yes
 [tig "color"]
   date = cyan default bold
