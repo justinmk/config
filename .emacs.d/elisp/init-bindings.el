@@ -10,11 +10,6 @@
      (interactive)
      ,@commands))
 
-(with-package* guide-key
-  (setq guide-key/guide-key-sequence '("C-x" "C-c"))
-  (setq guide-key/recursive-key-sequence-flag t)
-  (guide-key-mode 1))
-
 (after 'smex
   (global-set-key (kbd "M-x") 'smex))
 

@@ -37,8 +37,8 @@
   ;; (with 'color-theme-sanityinc-tomorrow)
   ;; (with 'zenburn-theme)
 
-  (setq sml/theme 'dark)
-  (sml/setup)
+  (moe-dark)
+  (moe-theme-set-color 'w/b)
 
   (custom-set-faces
    ;; init file should contain only one custom-set-faces. If there is more than one, they won't work right.
@@ -51,7 +51,7 @@
 
   ;; fight the "low contrast" fad.
   (set-face-attribute 'default nil
-                      ;; :background "black"
+                      :background "#1B1D1E"
                       :foreground "white")
 
   (pcase (window-system)
@@ -60,8 +60,6 @@
                               :family "Consolas" :height 110)))
 
   (global-hl-line-mode +1)
-
-  (moe-dark)
 )
 
 ;; shell
