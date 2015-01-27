@@ -972,9 +972,9 @@ func! s:replace_without_yank(type)
   let &selection = "inclusive"
   let replace_curlin = (1==col("'[") && (col('$')==1 || col('$')==(col("']")+1)) && line("'[")==line("']"))
 
-  if a:type == 'line' || replace_curlin
+  if a:type ==? 'line' || replace_curlin
     exe "keepjumps normal! '[V']\"".s:rr_reg."p"
-  elseif a:type == 'block'
+  elseif a:type ==? 'block'
     exe "keepjumps normal! `[\<C-V>`]\"".s:rr_reg."p"
   else
     "DWIM: if pasting linewise contents in a _characterwise_ motion, trim
@@ -1067,7 +1067,7 @@ func! s:get_visual_selection()
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
   let lines = getline(lnum1, lnum2)
-  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[-1] = lines[-1][: col2 - (&selection ==? 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
   return join(lines, "\n")
 endf
@@ -1324,7 +1324,7 @@ function! s:ilist_qf(start_at_cursor)
     silent! exec 'normal! '.(a:start_at_cursor ? ']I' : '[I')
   redir END
   let lines = split(output, '\n')
-  if lines[0] =~ '^Error detected'
+  if lines[0] =~? '^Error detected'
     echomsg "Could not find the word in file"
     return
   endif
