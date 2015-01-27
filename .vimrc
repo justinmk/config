@@ -132,7 +132,6 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
-Plug 'int3/vim-extradite'
 Plug 'kmnk/vim-unite-giti'
 
 Plug 'tpope/vim-surround'
@@ -272,11 +271,11 @@ Plug 'junegunn/vader.vim'
 Plug 'junegunn/vim-easy-align'
 vmap z; <Plug>(EasyAlign)
 nmap z; <Plug>(EasyAlign)
+
 Plug 'junegunn/vim-github-dashboard'
-let g:github_dashboard = {}
-let g:github_dashboard['position'] = 'right'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
+"Plug 'mmozuras/vim-github-comment'
 
 Plug 'gcavallanti/vim-noscrollbar'
 
@@ -779,12 +778,13 @@ function! s:git_do(cmd) abort
         \ . ' ' . a:cmd)
 endfunction
 
-" Gets the git commit hash associated with the given line.
+" Gets the git commit hash associated with the given file line.
 function! s:git_sha(filepath, line) abort
-  if !exists("b:git_dir")
+  if "" ==# s:trimws_ml(a:filepath)
+    echoerr "invalid (empty) filepath"
+  elseif !exists("b:git_dir")
     echoerr "Missing b:git_dir"
-  endif
-  if a:line <= 0
+  elseif a:line <= 0
     echoerr "Invalid a:line: ".a:line
   endif
 
