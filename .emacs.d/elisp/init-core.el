@@ -96,6 +96,7 @@
 (show-paren-mode t)
 (setq show-paren-style 'expression)
 
+;; layout
 (which-function-mode t)
 (global-visual-line-mode)
 (global-auto-revert-mode 1)
@@ -104,6 +105,9 @@
 (line-number-mode)
 (column-number-mode)
 (setq-default indent-tabs-mode nil)
+
+;; editing
+(setq fill-column 80)
 
 (setq x-select-enable-clipboard t
   save-interprogram-paste-before-kill t
