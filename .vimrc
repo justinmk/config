@@ -181,13 +181,9 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-jdaddy'
-" Plug 'Raimondi/delimitMate'
-" force delimitmate to leave <c-g> alone
-" imap <silent> <Plug>(blah) <Plug>delimitMateJumpMany
 Plug 'zhaocai/DirDiff.vim'
 nmap dc <Plug>(DiffChar_ToggleCurrentLine)
 Plug 'AndrewRadev/linediff.vim'
-Plug 'chrisbra/NrrwRgn'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
