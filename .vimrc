@@ -845,6 +845,7 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 "   insert: c-g
 "   normal: g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 "           c<space> --> easyalign
+"           !@       --> async run
 
 func! s:buf_compare(b1, b2)
   let b1_visible = -1 == index(tabpagebuflist(), a:b1)
@@ -1183,7 +1184,7 @@ let g:sexp_mappings = {
       \ 'sexp_curly_tail_wrap_element':   'gs}',
       \ 'sexp_insert_at_list_head':       '<I',
       \ 'sexp_insert_at_list_tail':       '>I',
-      \ 'sexp_splice_list':               'dsf',
+      \ 'sexp_splice_list':               'gs<bs>',
       \ 'sexp_raise_list':                'gsO',
       \ 'sexp_raise_element':             'gso',
       \ 'sexp_swap_list_backward':        '<f',

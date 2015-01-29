@@ -31,17 +31,15 @@ if exists("g:OmniSharp_loaded")
   nnoremap <buffer> gd    :<c-u>OmniSharpGotoDefinition<cr>
   nnoremap <buffer> gr    :<c-u>OmniSharpFindUsages<cr>
   nnoremap <buffer> gI    :<c-u>OmniSharpFindImplementations<cr>
-  nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
   nnoremap <buffer> crr   :<c-u>OmniSharpRename<cr>
   nnoremap <buffer> cpA   :<c-u>OmniSharpAddToProject<cr>
   nnoremap <buffer> cpR   :<c-u>OmniSharpReloadSolution<cr>
-  nnoremap <buffer> @!    :<c-u>OmniSharpBuildAsync<cr>
   nnoremap <buffer> K     :<c-u>OmniSharpDocumentation<cr>
   nnoremap <buffer> gk    :<c-u>OmniSharpTypeLookup<cr>
   nnoremap <buffer> <m-o> :<c-u>OmniSharpFindMembers<cr>
   nnoremap <buffer> <bs>  :<c-u>OmniSharpFixIssue<cr>
+  nnoremap <buffer> !m    :<c-u>OmniSharpBuildAsync<cr>
   nnoremap <buffer> !e    :<c-u>OmniSharpFindSyntaxErrors<cr>
-  nnoremap <buffer>   :<c-u>JavaCorrect<cr>
 
   command! -buffer Format OmniSharpCodeFormat
 
