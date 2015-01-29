@@ -38,7 +38,12 @@
   (global-unset-key (kbd "C-l"))
 
   (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
-  (define-key evil-normal-state-map (kbd "M-v") (bind (term "vim")))
+  (define-key evil-normal-state-map (kbd "M-v")
+    (bind (start-process "vim" nil
+                         (if (executable-find "gvim")
+                             "gvim"
+                              (if (executable-find "nvim") "nvim" "vim"))
+                         buffer-file-name)))
   (define-key evil-normal-state-map (kbd "z.") 'evil-write)
 
   (after 'evil-matchit
