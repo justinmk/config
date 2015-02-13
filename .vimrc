@@ -80,6 +80,8 @@ else
     set runtimepath+=~/.vim/
   endif
 
+  set ttyfast
+
   " avoid sourcing stupid menu.vim (saves ~100ms)
   let g:did_install_default_menus = 1
 endif
@@ -434,7 +436,6 @@ set path+=**    " Also search CWD
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
-set ttyfast
 set cmdheight=2
 set backspace=eol,start,indent
 set ignorecase " case-insensitive searching

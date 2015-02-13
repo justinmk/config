@@ -219,5 +219,26 @@ if [ -f ~/.fzf.bash ]; then
   }
 fi
 
+ghrebasepr() {
+  GITHUB_PR=$1
+  git fetch --all &&
+    git checkout refs/pull/upstream/$GITHUB_PR &&
+    git rebase upstream/master &&
+    git checkout master &&
+    git rebase upstream/master &&
+    git merge --no-ff -
+}
+
+ghrebase1() {
+  GITHUB_PR=$1
+  #FOO=bar nvim -c 'au VimEnter * Gcommit --amend' -s <(echo 'Afoo')
+  git fetch --all &&
+    git checkout refs/pull/upstream/$GITHUB_PR &&
+    git rebase upstream/master &&
+    git commit --amend -m "$(git log -1 --pretty=format:"%B" \
+      | sed -E "1 s/^(.*)\$/\\1 #$GITHUB_PR/g")" &&
+    git l -n 5
+}
+
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
 
