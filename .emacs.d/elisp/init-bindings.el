@@ -141,7 +141,8 @@
     ;; unbind default 'g' binding in speedbar
     (define-key speedbar-mode-map (kbd "g") nil)
     (evil-define-key 'normal speedbar-mode-map
-      (kbd "-") 'speedbar-up-directory))
+      (kbd "-") 'speedbar-up-directory
+      (kbd "o") 'speedbar-edit-line))
 
   (define-key evil-normal-state-map (kbd "gx") 'browse-url-at-point)
   (define-key evil-visual-state-map (kbd "gx") 'my-google)

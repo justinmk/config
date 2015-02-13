@@ -196,6 +196,7 @@ Plug 'guns/vim-clojure-static'
 Plug 'guns/vim-clojure-highlight'
 Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-commentary'
 
 if !s:is_cygwin && has('python')
@@ -268,6 +269,7 @@ Plug 'junegunn/vim-easy-align'
 vmap z; <Plug>(EasyAlign)
 nmap z; <Plug>(EasyAlign)
 
+Plug 'ryanss/vim-hackernews'
 Plug 'junegunn/vim-github-dashboard'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
@@ -1361,7 +1363,8 @@ endif
 if s:plugins "unite.vim =============================================== {{{
 " gvim -u NONE -N -c ":set runtimepath+=~/.vim/bundle/unite.vim/,~/.vim/bundle/unite-mru" -c ":runtime plugin/unite.vim" -c ":runtime plugin/neomru.vim"
 call unite#custom#profile('files', 'filters', 'sorter_rank')
-call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
+let g:my_unite_defaults = {'no_split':1, 'resize':0}
+call unite#custom#profile('default', 'context', g:my_unite_defaults)
 
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
@@ -1390,15 +1393,15 @@ endif
 " don't track help files in MRU list
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
-" search current directory
+" search current working directory
 nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
 " search direcory of current file
-nnoremap <silent> g/.   :exec ":Unite file_rec:".escape(expand("%:p:h"), ':\ ')<cr>
+nnoremap <silent> g/.   :Unite file_rec:<c-r>=escape(expand("%:p:h"), ':\ ')<cr><cr>
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
 nnoremap <silent> g/L mS:Unite line:buffers<cr>
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
-nnoremap <silent> gl    :Unite buffer neomru/file<cr>
+nnoremap <silent> gl    :Unite buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline -auto-preview<cr>
 nnoremap <silent> g/t   :Unite tag <cr>
@@ -1417,6 +1420,15 @@ augroup vimrc_unite
   " obliterate unite buffers (marks especially).
   autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
   autocmd FileType unite call s:unite_settings()
+
+  " HACK: prevent unite from trashing fugitive buffers, etc.
+  autocmd FileType gitcommit let g:my_unite_defaults.no_split = 0
+  autocmd BufEnter * if &bufhidden =~# 'delete\|wipe'
+        \ | let g:my_unite_defaults.no_split = 0
+        \ | endif
+  autocmd BufLeave * if &bufhidden =~# 'delete\|wipe'
+        \ | let g:my_unite_defaults.no_split = 1
+        \ | endif
 augroup END
 
 function! s:unite_settings()

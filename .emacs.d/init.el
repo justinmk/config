@@ -1,6 +1,9 @@
-;; Windows build (includes libxml2, gnutls, etc): http://semantic.supelec.fr/popineau/programming-emacs.html
+;; Windows build (includes libxml2, gnutls, etc):
+;;   http://emacsbinw64.sourceforge.net/
+;;   http://semantic.supelec.fr/popineau/programming-emacs.html
 ;;
-;; TODO: https://github.com/skeeto/.emacs.d
+;; use-package: https://github.com/vermiculus/dotfiles/blob/de9deb57317c7a10dd533e0e80a1d90a9b97f640/.emacs.d/init.el#L313
+;; TODO: https://github.com/skeeto/.emacs.d#skewer
 
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
@@ -33,7 +36,7 @@
       (after 'git-gutter+-autoloads
         (global-git-gutter+-mode))))
 
-(with-package* (smart-mode-line pos-tip moe-theme)
+(with-package* (smart-mode-line moe-theme)
   ;; (with 'color-theme-sanityinc-tomorrow)
   ;; (with 'zenburn-theme)
 
@@ -125,7 +128,7 @@
         (smartparens-mode 1)))
 )
 
-(with-package* (company company-cider)
+(with-package* (company company-quickhelp pos-tip company-cider)
   (setq company-auto-complete t)
   (setq company-global-modes t)
   (setq company-idle-delay 0.2)
@@ -134,6 +137,8 @@
   (setq company-tooltip-limit 30)
   (setq company-dabbrev-downcase nil)
   (setq company-dabbrev-ignore-case nil)
+
+  (company-quickhelp-mode 1)
 
   (add-hook 'cider-repl-mode-hook (add-to-list 'company-backends 'company-cider))
   (add-hook 'cider-mode-hook (add-to-list 'company-backends 'company-cider))
@@ -267,6 +272,9 @@
 (require 'init-bindings)
 
 (with-package (markdown-mode ace-jump-mode))
+
+(with-package* (symon)
+  (symon-mode))
 
 (setq ring-bell-function 'ignore)
 ;;; flash top/bottom line only

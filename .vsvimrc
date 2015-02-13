@@ -19,8 +19,7 @@ set tabstop=4
 set backspace=eol,start,indent
 set nostartofline
 
-inoremap z,r <c-r>"
-cnoremap z,r <c-r>"
+inoremap z, <c-o>
 
 nnoremap <c-j> i<cr><esc>k$
 inoremap jk <esc>
