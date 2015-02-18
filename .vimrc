@@ -291,7 +291,6 @@ elseif s:lua_patch885
   let g:neocomplete#enable_omni_fallback = 1
   let g:neocomplete#enable_at_startup = 1
   let g:neocomplete#enable_smart_case = 1
-  inoremap <expr> <C-l> neocomplete#complete_common_string()
   inoremap <expr> <cr>  pumvisible() && exists("*neocomplete#close_popup") ? neocomplete#close_popup() : "\<cr>"
 
   " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
@@ -718,8 +717,8 @@ endf
 "        gw<space>{motion} => size window height to {motion}
 nnoremap gwN      :tabnew<cr>
 nnoremap gwC      :tabclose<cr>
-nnoremap gw<c-l>  :tabmove +1<cr>
-nnoremap gw<c-h>  :tabmove -1<cr>
+nnoremap ]gt      :tabmove +1<cr>
+nnoremap [gt      :tabmove -1<cr>
 " move tab to Nth position (this is slightly different than :tabmove)
 nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
 
@@ -1404,7 +1403,7 @@ nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
 nnoremap <silent> g/L mS:Unite line:buffers<cr>
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
-nnoremap <silent> gl    :Unite buffer<cr>
+nnoremap <silent> gl    :Unite -buffer-name=buffers buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline -auto-preview<cr>
 nnoremap <silent> g/t   :Unite tag <cr>
@@ -1436,11 +1435,14 @@ augroup END
 
 function! s:unite_settings()
   setlocal nopaste
-  let b:delimitMate_autoclose = 0
   unmap! <buffer> <c-d>
   unmap  <buffer> M
   nnoremap <silent><buffer> <C-n> j
   nnoremap <silent><buffer> <C-p> k
+
+  if b:unite.profile_name ==# 'buffers'
+    inoremap <silent><buffer> <c-l> <esc>:Unite neomru/file<cr>
+  endif
 endfunction
 
 endif "}}}

@@ -8,6 +8,7 @@ set ignorecase
 set smartcase
 set incsearch
 set tabstop=4
+set shiftwidth=4
 set nostartofline
 
 inoremap z, <c-o>
@@ -48,6 +49,8 @@ nnoremap [e :.,.m<space>.-2<cr>
 vnoremap ]e :m<space>.+1<cr>gv
 vnoremap [e :m<space>.-2<cr>kgv
 
+nnoremap Y y$
+
 " vrapper
 " http://evans-stuff.blogspot.com/2007/10/it-seems-that-im-not-only-one-still.html
 " https://github.com/vrapper/vrapper/issues/265#issuecomment-22112349
@@ -68,11 +71,6 @@ nnoremap [[ :eclipseprevmember<cr>
 " nnoremap <M-j> :eclipsenextelement<cr>
 " eclipseaction eclipseprevelement org.eclipse.jdt.ui.edit.text.java.select.previous
 " nnoremap <M-k> :eclipseprevelement<cr>
-
-" temporary workaround for issue #333
-eclipseaction eclipsegotodef org.eclipse.jdt.ui.edit.text.java.open.editor
-au "Dart Editor" eclipseaction eclipsegotodef com.google.dart.tools.ui.edit.text.dart.open.editor
-nnoremap gd :eclipsegotodef<cr>
 
 "version control
 eclipseaction eclipsecomparehead org.eclipse.egit.ui.team.CompareWithHead
@@ -150,7 +148,6 @@ nnoremap got :opentermhere<cr>
 nnoremap <m-v> :vim<cr>
 set autochdir
 set cleanindent
-set saney
 set contentassistmode
 set gvimpath=/usr/local/bin/mvim
 
