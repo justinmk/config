@@ -225,6 +225,8 @@ ghrebasepr() {
     git checkout refs/pull/upstream/$GITHUB_PR &&
     git rebase upstream/master &&
     git checkout master &&
+    git stash save autosave-$(date +%Y%m%d_%H%M%S) &&
+    git reset --hard upstream/master &&
     git rebase upstream/master &&
     git merge --no-ff -
 }

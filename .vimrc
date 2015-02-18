@@ -275,7 +275,9 @@ Plug 'ryanss/vim-hackernews'
 Plug 'junegunn/vim-github-dashboard'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
-"Plug 'mmozuras/vim-github-comment'
+"Plug 'jaxbot/github-issues.vim'
+"Plug 'codegram/vim-codereview'
+
 
 Plug 'gcavallanti/vim-noscrollbar'
 
@@ -1452,15 +1454,17 @@ set titlestring=%{getcwd()}
 set titleold=?
 
 " =============================================================================
-if s:is_cygwin
-  " use separate viminfo to avoid weird permissions issues
-  set viminfo+=n~/.viminfo_cygwin
-
+if s:is_cygwin || s:is_tmux
   " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
   let &t_ti.="\e[1 q"
   let &t_SI.="\e[5 q"
   let &t_EI.="\e[1 q"
   let &t_te.="\e[0 q"
+endif
+
+if s:is_cygwin
+  " use separate viminfo to avoid weird permissions issues
+  set viminfo+=n~/.viminfo_cygwin
 
   " set escape key to an unambiguous keycode, to avoid escape timeout delay.
   let &t_ti.="\e[?7727h"
