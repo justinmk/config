@@ -78,9 +78,14 @@ nnoremap Us :vsc Team.Git.GoToGitChanges<cr>
 nnoremap ]c :vsc Diff.NextDifference<cr>
 nnoremap [c :vsc Diff.PreviousDifference<cr>
 
-" gs => expression manipulation
-" cr => refactor the current symbol
-" g/ => search for files and symbols
+" gs  =>  expression manipulation
+" cr  =>  refactor
+" g/  =>  navigation (search for files/symbols)
+" gk  =>  inspection
+"   g]  =>  peek current symbol
+"   ]I
+"   ]d
+" debugging
 
 nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol

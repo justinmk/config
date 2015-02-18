@@ -166,15 +166,15 @@ func! s:tmux_run_operator(type, ...)
 
   let &selection = sel_save
 endf
-"Runs `cmd` in the bottom-left pane.
-"Creates a new pane if needed.
-func! s:tmux_run(cmd)
-  if tbone#pane_id(".") == tbone#pane_id("bottom-left")
+"Sends `cmd` to the bottom-right pane and optionally runs it.
+func! s:tmux_run(creatnew, run, cmd) abort
+  "Create a new pane if demanded or if we are _in_ the target pane.
+  if a:creatnew || tbone#pane_id(".") == tbone#pane_id("bottom-right")
     Tmux split-window -d -p 33
   endif
   call tbone#send_keys("bottom-left", "\<c-e>\<c-u>".a:cmd."\<cr>")
 endf
-command! -nargs=? Trun call s:tmux_run(<q-args>)
+command! -nargs=? -bang Trun call s:tmux_run(<bang>0, 1, <q-args>)
 
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch'
@@ -658,8 +658,8 @@ iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 noremap! <leader>fd <c-r>=expand('%:p:h', 1)<cr>
 noremap! <leader>fn <c-r>=expand('%:p:t', 1)<cr>
 
-inoremap <leader>r <c-r>"
-cnoremap <leader>r <c-r>"
+inoremap z,   <c-o>
+inoremap z,p  <c-r>"
 
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
@@ -845,9 +845,9 @@ nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 
 " available mappings:
-"   visual: <space> m R c-r c-n c-g c-a c-x c-h,<bs>
-"   insert: c-g
-"   normal: g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
+"   insert: c-\ c-g
+"   normal: c-\ g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 "           c<space> --> easyalign
 "           !@       --> async run
 
@@ -1309,8 +1309,8 @@ nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
 nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
 xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
-nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C\V<c-r><c-w>/ ** <bar>RstWI<cr>
-xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C<c-r>=<SID>get_visual_selection()<cr>/ ** <bar>RstWI<cr>
+nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C\V<c-r><c-w>/j ** <bar>RstWI<cr>
+xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C<c-r>=<SID>get_visual_selection()<cr>/j ** <bar>RstWI<cr>
 nnoremap g/g mS:<c-u>grep ''<left>
 if executable("pt")
 set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
@@ -1503,6 +1503,23 @@ command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~").
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
+command! NvimCtags      call jobstart("ctags", 'ctags',
+      \ ['-R'
+      \ , '-I', 'FUNC_ATTR_MALLOC'
+      \ , '-I', 'FUNC_ATTR_ALLOC_SIZE+'
+      \ , '-I', 'FUNC_ATTR_ALLOC_SIZE_PROD+'
+      \ , '-I', 'FUNC_ATTR_ALLOC_ALIGN+'
+      \ , '-I', 'FUNC_ATTR_PURE'
+      \ , '-I', 'FUNC_ATTR_CONST'
+      \ , '-I', 'FUNC_ATTR_WARN_UNUSED_RESULT'
+      \ , '-I', 'FUNC_ATTR_ALWAYS_INLINE'
+      \ , '-I', 'FUNC_ATTR_UNUSED'
+      \ , '-I', 'FUNC_ATTR_NONNULL_ALL'
+      \ , '-I', 'FUNC_ATTR_NONNULL_ARG+'
+      \ , '-I', 'FUNC_ATTR_NONNULL_RET'
+      \ , '.'])
+command! NvimGDB      call s:tmux_run(1, 0, 'gdb -q -tui '.v:progpath.' PID_HERE')
 
-" " special-purpose mappings/commands ===========================================
+xnoremap <leader>{ <esc>'<A {`>o}==`<
+
 silent! source ~/.vimrc.local
