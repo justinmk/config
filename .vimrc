@@ -99,6 +99,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'tomasr/molokai'
 Plug 'tommcdo/vim-exchange'
+Plug 'kopischke/vim-fetch'
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
@@ -130,7 +131,7 @@ let g:dbext_default_usermaps = 0
 
 Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-sleuth'
+" Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
@@ -1365,8 +1366,7 @@ endif
 if s:plugins "unite.vim =============================================== {{{
 " gvim -u NONE -N -c ":set runtimepath+=~/.vim/bundle/unite.vim/,~/.vim/bundle/unite-mru" -c ":runtime plugin/unite.vim" -c ":runtime plugin/neomru.vim"
 call unite#custom#profile('files', 'filters', 'sorter_rank')
-let g:my_unite_defaults = {'no_split':1, 'resize':0}
-call unite#custom#profile('default', 'context', g:my_unite_defaults)
+call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
 
 "let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
 let g:unite_source_history_yank_enable = 1
@@ -1422,15 +1422,6 @@ augroup vimrc_unite
   " obliterate unite buffers (marks especially).
   autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
   autocmd FileType unite call s:unite_settings()
-
-  " HACK: prevent unite from trashing fugitive buffers, etc.
-  autocmd FileType gitcommit let g:my_unite_defaults.no_split = 0
-  autocmd BufEnter * if &bufhidden =~# 'delete\|wipe'
-        \ | let g:my_unite_defaults.no_split = 0
-        \ | endif
-  autocmd BufLeave * if &bufhidden =~# 'delete\|wipe'
-        \ | let g:my_unite_defaults.no_split = 1
-        \ | endif
 augroup END
 
 function! s:unite_settings()
