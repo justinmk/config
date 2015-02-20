@@ -106,8 +106,6 @@ Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
 " https://github.com/vim-scripts/surrparen
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
-" Plug 'https://github.com/justinmk/diffchar.vim.git'
-Plug 'bruno-/vim-vertical-move'
 if executable("tmux")
 Plug 'tpope/vim-tbone'
 Plug 'wellle/tmux-complete.vim'
@@ -389,13 +387,46 @@ omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
 let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
-let g:vertical_move_default_mapping = 0
-nmap <silent> + <Plug>(vertical_move_down)
-nmap <silent> _ <Plug>(vertical_move_up)
-xmap <silent> + <Plug>(vertical_move_down)
-xmap <silent> _ <Plug>(vertical_move_up)
-omap <silent> + <Plug>(vertical_move_down)
-omap <silent> _ <Plug>(vertical_move_up)
+" replacement for vim-vertical-move
+func! s:vjump(col, direction) abort
+  let w=winsaveview()
+
+  " Find a:col _above_ a line that has only whitespace extending to the first
+  " or last column.
+  let pat_above_ws =
+    \ '\v.*\S.*%'.(a:col).'v\zs.\ze(.*\S.*)?\n((.*%<'.(a:col).'v.)?|(\s*%'.(a:col+1).'v.*)|(.*%'.(a:col-1).'v\s*))$'
+  "             ^                       ^          ^                   ^                     ^
+  "             match                 line2:       |                   |                     |
+  "                                              empty?         all whitespace      all whitespace
+  "                                                             to the left?        to the right?
+
+  " Find a:col _below_ a line that has only whitespace extending to the first
+  " or last column.
+  let pat_below_ws =
+    \ '\v\_^((.*%<'.(a:col).'v.)?|(\s*%'.(a:col+1).'v.*)|(.*%'.(a:col-1).'v\s*))\n.*\S.*%'.(a:col).'v\zs.\ze(.*\S.*)?$'
+
+  let above = searchpos(pat_above_ws, 'nW'.(a:direction ? 'b' : ''), 0, 1000)
+  let below = searchpos(pat_below_ws, 'nW'.(a:direction ? 'b' : ''), 0, 1000)
+  "choose the nearest match
+  let goto = a:direction ? (above[0] > below[0] ? above : below)
+        \ : (above[0] > 0 && above[0] < below[0] ? above : below)
+  norm! m`
+
+  call winrestview(w)
+  if goto[0] != 0
+    call cursor(goto)
+  endif "else, no match found
+
+  " let @a = pat_below_ws
+  " echom 'patabove:' pat_above_ws
+  " echom 'above:' above[0] 'below:' below[0]
+endf
+nnoremap <silent> 1j      :<c-u>call <sid>vjump(virtcol('.'), 0)<cr>
+nnoremap <silent> 1k      :<c-u>call <sid>vjump(virtcol('.'), 1)<cr>
+xnoremap <silent> 1j <esc>:<c-u>call <sid>vjump(virtcol('.'), 0)<cr>``gv``
+xnoremap <silent> 1k <esc>:<c-u>call <sid>vjump(virtcol('.'), 1)<cr>``gv``
+onoremap <silent> 1j      :<c-u>call <sid>vjump(virtcol('.'), 0)<cr>
+onoremap <silent> 1k      :<c-u>call <sid>vjump(virtcol('.'), 1)<cr>
 
 let g:EclimBufferTabTracking = 0 "legacy version
 let g:EclimBuffersTabTracking = 0
@@ -656,8 +687,7 @@ iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 " key mappings/bindings
 
 " current file directory
-noremap! <leader>fd <c-r>=expand('%:p:h', 1)<cr>
-noremap! <leader>fn <c-r>=expand('%:p:t', 1)<cr>
+noremap! <silent> <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
 
 inoremap z,   <c-o>
 inoremap z,p  <c-r>"
@@ -848,7 +878,8 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-\ c-g
-"   normal: c-\ g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: + _ c-\ g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"           1j 1k 1...
 "           c<space> --> easyalign
 "           !@       --> async run
 
