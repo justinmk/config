@@ -84,6 +84,25 @@ else
 
   " avoid sourcing stupid menu.vim (saves ~100ms)
   let g:did_install_default_menus = 1
+
+  if s:is_cygwin || s:is_tmux
+    " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
+    let &t_ti.="\e[1 q"
+    let &t_SI.="\e[5 q"
+    let &t_EI.="\e[1 q"
+    let &t_te.="\e[0 q"
+  endif
+
+  if s:is_cygwin
+    " use separate viminfo to avoid weird permissions issues
+    set viminfo+=n~/.viminfo_cygwin
+
+    " set escape key to an unambiguous keycode, to avoid escape timeout delay.
+    let &t_ti.="\e[?7727h"
+    let &t_te.="\e[?7727l"
+    noremap  <Esc>O[ <Esc>
+    noremap! <Esc>O[ <C-c>
+  endif
 endif
 
 if !s:plugins "{{{
@@ -1478,25 +1497,6 @@ set titlestring=%{getcwd()}
 set titleold=?
 
 " =============================================================================
-if s:is_cygwin || s:is_tmux
-  " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
-  let &t_ti.="\e[1 q"
-  let &t_SI.="\e[5 q"
-  let &t_EI.="\e[1 q"
-  let &t_te.="\e[0 q"
-endif
-
-if s:is_cygwin
-  " use separate viminfo to avoid weird permissions issues
-  set viminfo+=n~/.viminfo_cygwin
-
-  " set escape key to an unambiguous keycode, to avoid escape timeout delay.
-  let &t_ti.="\e[?7727h"
-  let &t_te.="\e[?7727l"
-  noremap  <Esc>O[ <Esc>
-  noremap! <Esc>O[ <C-c>
-endif
-
 "ensure transient dirs
 let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/vim' : $XDG_DATA_HOME.'/vim'
 call EnsureDir(s:dir)
