@@ -1,5 +1,0 @@
-alias g git $*
-alias la ls -la
-alias ll ls -l
-alias ff find-file $1
-alias d dired $1
