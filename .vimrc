@@ -202,7 +202,6 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-jdaddy'
 Plug 'zhaocai/DirDiff.vim'
-nmap dc <Plug>(DiffChar_ToggleCurrentLine)
 Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
@@ -211,9 +210,13 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
 Plug 'kana/vim-textobj-entire'
 Plug 'gaving/vim-textobj-argument'
+
 Plug 'guns/vim-sexp'
 Plug 'guns/vim-clojure-static'
 Plug 'guns/vim-clojure-highlight'
+let g:clojure_fold = 1
+let g:sexp_filetypes = ''
+
 Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-leiningen'
@@ -1202,61 +1205,11 @@ augroup vimrc_golang
   endif
 augroup END
 
-" clojure/lisp ================================================================
-let g:clojure_fold = 1
 
 "transpose words, preserving punctuation
 nnoremap <silent> gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1,<bar>nohl<CR>
 "transpose WORDs, preserving whitespace
 nnoremap <silent> gsT :s,\v(\S+)(\s*\S*%#\S*\s*)(\S+),\3\2\1,<bar>nohl<CR>
-
-"cf. emacs 'sp-down-sexp'
-nmap <M-j> l<Plug>(sexp_move_to_next_element_head)
-"cf. emacs 'sp-up-sexp'
-nmap <M-k> h<Plug>(sexp_move_to_prev_element_head)
-
-let g:sexp_enable_insert_mode_mappings = 0
-let g:sexp_mappings = {
-      \ 'sexp_outer_list':                'af',
-      \ 'sexp_inner_list':                'if',
-      \ 'sexp_outer_top_list':            'aF',
-      \ 'sexp_inner_top_list':            'iF',
-      \ 'sexp_outer_element':             'ae',
-      \ 'sexp_inner_element':             'ie',
-      \ 'sexp_move_to_prev_element_head': '(',
-      \ 'sexp_move_to_next_element_head': ')',
-      \ 'sexp_round_head_wrap_list':      'gS(',
-      \ 'sexp_round_tail_wrap_list':      'gS)',
-      \ 'sexp_square_head_wrap_list':     'gS[',
-      \ 'sexp_square_tail_wrap_list':     'gS]',
-      \ 'sexp_curly_head_wrap_list':      'gS{',
-      \ 'sexp_curly_tail_wrap_list':      'gS}',
-      \ 'sexp_round_head_wrap_element':   'gs(',
-      \ 'sexp_round_tail_wrap_element':   'gs)',
-      \ 'sexp_square_head_wrap_element':  'gs[',
-      \ 'sexp_square_tail_wrap_element':  'gs]',
-      \ 'sexp_curly_head_wrap_element':   'gs{',
-      \ 'sexp_curly_tail_wrap_element':   'gs}',
-      \ 'sexp_insert_at_list_head':       '<I',
-      \ 'sexp_insert_at_list_tail':       '>I',
-      \ 'sexp_splice_list':               'gs<bs>',
-      \ 'sexp_raise_list':                'gsO',
-      \ 'sexp_raise_element':             'gso',
-      \ 'sexp_swap_list_backward':        '<f',
-      \ 'sexp_swap_list_forward':         '>f',
-      \ 'sexp_swap_element_backward':     '<e',
-      \ 'sexp_swap_element_forward':      '>e',
-      \ 'sexp_emit_head_element':         'gsB',
-      \ 'sexp_emit_tail_element':         'gsb',
-      \ 'sexp_capture_prev_element':      'gsS',
-      \ 'sexp_capture_next_element':      'gss',
-      \ 'sexp_move_to_prev_bracket':      '',
-      \ 'sexp_move_to_next_bracket':      '',
-      \ 'sexp_outer_string':              '',
-      \ 'sexp_inner_string':              '',
-      \ 'sexp_move_to_prev_element_tail': '',
-      \ 'sexp_move_to_next_element_tail': '',
-      \ }
 
 " A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
 func! s:matchparen_cursorcolumn_setup()
