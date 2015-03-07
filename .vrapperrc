@@ -49,6 +49,11 @@ nnoremap [e :.,.m<space>.-2<cr>
 vnoremap ]e :m<space>.+1<cr>gv
 vnoremap [e :m<space>.-2<cr>kgv
 
+eclipseaction eclipsenextitem org.eclipse.ui.navigate.next
+nnoremap ]q :eclipsenextitem<cr>
+eclipseaction eclipsepreviousitem org.eclipse.ui.navigate.previous
+nnoremap [q :eclipsepreviousitem<cr>
+
 nnoremap Y y$
 
 " vrapper
