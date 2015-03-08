@@ -120,6 +120,7 @@ Plug 'tomasr/molokai'
 Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
+Plug 'https://github.com/justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
@@ -285,8 +286,6 @@ Plug 'thinca/vim-unite-history'
 Plug 'tsukkee/unite-tag'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
-Plug 'jeetsukumaran/vim-filebeagle'
-let g:filebeagle_suppress_keymaps = 1
 Plug 'junegunn/vader.vim'
 Plug 'junegunn/vim-easy-align'
 vmap z; <Plug>(EasyAlign)
@@ -786,7 +785,7 @@ nnoremap <silent><c-q> :silent! botright copen<cr>
 " location window
 " nnoremap q] :botright lopen<cr>
 
-nnoremap <silent> ^ :FileBeagleBufferDir<cr>
+nnoremap <silent> ^ :Dirvish %<cr>
 " set working directory to the current buffer's directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
@@ -1409,7 +1408,7 @@ nnoremap <silent> g/L mS:Unite line:buffers<cr>
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite -buffer-name=buffers buffer<cr>
 " auto-generates an outline of the current buffer
-nnoremap <silent> <m-o> :Unite outline -auto-preview<cr>
+nnoremap <silent> <m-o> :Unite outline<cr>
 nnoremap <silent> g/t   :Unite tag <cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
 imap     <silent> <m-y> <C-o><m-y>
