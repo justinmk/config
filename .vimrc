@@ -76,6 +76,19 @@ if has("nvim")
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
+
+  " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
+  " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
+  " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
+  " http://stackoverflow.com/a/10633069/152142
+  if !s:is_msysgit && !s:is_gui
+      "avoid: m-b m-d m-f
+      set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
+            \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
+            \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
+            \ <m-]>=]
+  endif
+
   if has('vim_starting') && s:is_windows
     set runtimepath+=~/.vim/
   endif
@@ -451,18 +464,6 @@ onoremap <silent> 1k      :<c-u>call <sid>vjump(virtcol('.'), 1)<cr>
 
 let g:EclimBufferTabTracking = 0 "legacy version
 let g:EclimBuffersTabTracking = 0
-
-" To map a 'meta' escape sequence in a terminal, you must map the literal control character.
-" insert-mode, type ctrl-v, then press alt+<key>. Must be done in a terminal, not gvim/macvim.
-" http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
-" http://stackoverflow.com/a/10633069/152142
-if !s:is_msysgit && !s:is_gui
-    "avoid: m-b m-d m-f
-    set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
-          \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
-          \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
-          \ <m-]>=]
-endif
 
 let mapleader = "z,"
 let g:mapleader = "z,"
