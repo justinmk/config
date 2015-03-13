@@ -130,15 +130,19 @@ else
 call plug#begin('~/.vim/bundle')
 
 Plug 'tomasr/molokai'
+
+"Plug 'ludovicchabant/vim-gutentags'
+
 Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
+
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
 Plug 'https://github.com/justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
-" https://github.com/vim-scripts/surrparen
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
+
 if executable("tmux")
 Plug 'tpope/vim-tbone'
 Plug 'wellle/tmux-complete.vim'
