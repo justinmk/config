@@ -1309,7 +1309,7 @@ augroup vimrc_autocmd
 augroup END
 
 nnoremap <c-f> :find 
-nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep /\C/ **<bar>RstWI<left><left><left><left><left><left><left><left><left><left>
+nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep /\C/j **<bar>RstWI<left><left><left><left><left><left><left><left><left><left><left>
 " search all file buffers (clear loclist first). g: get all matches. j: no jumping.
 nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search current buffer and open results in quickfix window
