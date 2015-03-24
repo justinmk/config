@@ -37,7 +37,7 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
-if has('vim_starting') && !has('nvim')
+if has('vim_starting')
   " ensure that we always start with Vim defaults (as opposed to the arbitrary system vimrc)
   set all&
 endif
@@ -55,7 +55,6 @@ let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
-let s:is_tmux = !empty($TMUX)
 let s:is_ssh = !empty($SSH_TTY)
 let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
@@ -98,7 +97,7 @@ else
   " avoid sourcing stupid menu.vim (saves ~100ms)
   let g:did_install_default_menus = 1
 
-  if s:is_cygwin || s:is_tmux
+  if s:is_cygwin || !empty($TMUX)
     " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
     let &t_ti.="\e[1 q"
     let &t_SI.="\e[5 q"
@@ -173,6 +172,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'kmnk/vim-unite-giti'
 
 Plug 'tpope/vim-surround'
+let g:surround_indent = 1
 let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
@@ -345,6 +345,11 @@ call plug#end()
 runtime plugin/sensible.vim
 runtime plugin/rsi.vim
 
+if has("nvim")
+  "enforce nvim default (override sensible.vim)
+  set nottimeout " https://github.com/neovim/neovim/issues/2051#issuecomment-75937744
+endif
+
 function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
   if getcmdpos() > 1
     let @- = getcmdline()[:getcmdpos()-2]
@@ -492,6 +497,7 @@ set cursorline
 set path+=/usr/lib/gcc/**/include
 set path+=**    " Also search CWD
 
+let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
@@ -1056,6 +1062,10 @@ inoremap jk <esc>
 inoremap kj <esc>
 nnoremap ' `
 xnoremap ' `
+" from tpope vimrc
+inoremap <M-o> <C-O>o
+inoremap <M-O> <C-O>O
+inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y"],'strftime(v:val)')+[localtime()]),0)<CR>
 
 nnoremap z. :w<cr>
 
@@ -1281,7 +1291,10 @@ augroup vimrc_autocmd
   " force windows to be sized equally after viewport resize
   autocmd VimResized * wincmd =
 
+  autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if &ft == ""|set ft=text|endif
   autocmd FileType text setlocal tabstop=4 shiftwidth=4
+  autocmd FileType gitconfig setlocal commentstring=#\ %s
+  autocmd FileType gitcommit setlocal spell
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
