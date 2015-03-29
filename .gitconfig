@@ -20,7 +20,8 @@
   default = current
 [merge]
   tool = vimdiff
-[mergetool]
+[mergetool "vimdiff"]
+  cmd = $EDITOR -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
   keepBackup = false
 [i18n]
   filesEncoding = utf-8

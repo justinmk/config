@@ -622,7 +622,9 @@ set formatoptions+=rno1l
 set synmaxcol=1000
 
 set expandtab
-set softtabstop=-1 "use value of 'shiftwidth'
+if (v:version > 703)
+  set softtabstop=-1 "use value of 'shiftwidth'
+endif
 set shiftwidth=2
 set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
@@ -796,7 +798,7 @@ nnoremap <silent><c-q> :silent! botright copen<cr>
 " location window
 " nnoremap q] :botright lopen<cr>
 
-nnoremap <silent> ^ :Dirvish %<cr>
+nnoremap <silent> ^ :Dirvish %:p:h<cr>
 " set working directory to the current buffer's directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
