@@ -151,11 +151,8 @@ nnoremap cow :vsc Edit.ToggleWordWrap<cr>
 
 set hlsearch
 set autoindent
-set showmatch
 set expandtab
 set shiftwidth=4
-set smarttab " Use 'shiftwidth' when using <Tab> in front of a line.
-set shiftround
 set ttimeout
 set ttimeoutlen=50
 

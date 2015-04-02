@@ -219,6 +219,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-jdaddy'
+Plug 'chrisbra/vim-diff-enhanced'
 Plug 'zhaocai/DirDiff.vim'
 Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
@@ -480,7 +481,7 @@ let g:mapleader = "z,"
 try | lang en_US | catch | endtry
 
 if !s:is_msysgit && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
-  let &listchars = "tab:\u25b8 ,trail:\u25ab"
+  let &listchars = "tab:\u25b8 ,trail:\u25ab,nbsp:_"
 
   if !(s:is_windows || s:is_cygwin || s:is_ssh)
     " may affect performance: https://github.com/tpope/vim-sensible/issues/57
@@ -558,6 +559,8 @@ elseif s:is_gui "linux or other
 endif
 
 "colorscheme {{{
+  call matchadd('ColorColumn', '\%81v', 100)
+
   let s:color_force_high_contrast = ' 
         \ if &background == "dark"
         \ | hi Normal  guibg=black guifg=white ctermfg=255 ctermbg=0
@@ -580,6 +583,7 @@ endif
     let s:color_override = '
           \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
           \ | hi VisualNOS     term=bold,underline cterm=bold,underline ctermbg=23 gui=bold,underline guibg=#007475
+          \ | hi ColorColumn   guifg=#000000 guibg=#ffffff ctermbg=15 ctermfg=16
           \'
 
     " guibg=LimeGreen ctermbg=154
@@ -1296,7 +1300,6 @@ augroup vimrc_autocmd
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if &ft == ""|set ft=text|endif
   autocmd FileType text setlocal tabstop=4 shiftwidth=4
   autocmd FileType gitconfig setlocal commentstring=#\ %s
-  autocmd FileType gitcommit setlocal spell
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 

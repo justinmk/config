@@ -276,6 +276,8 @@
 (with-package* (symon)
   (symon-mode))
 
+(with-package* (restclient company-restclient))
+
 (setq ring-bell-function 'ignore)
 ;;; flash top/bottom line only
 ; (setq visible-bell 'top/bottom)
