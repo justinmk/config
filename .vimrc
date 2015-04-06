@@ -1138,22 +1138,30 @@ endf
 command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>1, <q-args>)
 inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
-func! s:get_visual_selection()
+func! s:get_visual_selection_list()
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
   let lines = getline(lnum1, lnum2)
   let lines[-1] = lines[-1][: col2 - (&selection ==? 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
-  return join(lines, "\n")
+  return lines
 endf
+
+func! s:get_visual_selection_searchpattern()
+  let lines = s:get_visual_selection_list()
+  let lines = map(lines, 'escape(v:val, ''/\'')')
+  " Join with a _literal_ \n to make a valid search pattern.
+  return join(lines, '\n')
+endf
+
 "read last visual-selection into command line
-cnoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
-inoremap <c-r><c-v> <c-r>=<sid>get_visual_selection()<cr>
+cnoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
+inoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
 
 "read the current line into command line
 cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 
-xmap * <esc>/\V<c-r>=escape(<sid>get_visual_selection(), '/\')<cr><cr><Plug>Pulse
+xmap * <esc>/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr><Plug>Pulse
 nmap <silent> *  :<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr><Plug>Pulse
 nmap <silent> g* :<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr><Plug>Pulse
 
@@ -1337,7 +1345,7 @@ nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
 xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
 nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C\V<c-r><c-w>/j ** <bar>RstWI<cr>
-xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C<c-r>=<SID>get_visual_selection()<cr>/j ** <bar>RstWI<cr>
+xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j ** <bar>RstWI<cr>
 nnoremap g/g mS:<c-u>grep ''<left>
 if executable("pt")
 set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
