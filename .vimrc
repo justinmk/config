@@ -130,7 +130,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'tomasr/molokai'
 
-"Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
