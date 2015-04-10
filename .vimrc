@@ -304,6 +304,7 @@ Plug 'thinca/vim-unite-history'
 Plug 'tsukkee/unite-tag'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
 Plug 'junegunn/vader.vim'
 Plug 'junegunn/vim-easy-align'
 vmap z; <Plug>(EasyAlign)
@@ -502,7 +503,6 @@ let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
-set cmdheight=2
 set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
@@ -1436,9 +1436,9 @@ endif
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
 " search current working directory
-nnoremap <silent> <c-p> :Unite -buffer-name=files file_rec <cr>
+nnoremap <silent> <c-p> :FZF<cr>
 " search direcory of current file
-nnoremap <silent> g/.   :Unite file_rec:<c-r>=escape(expand("%:p:h"), ':\ ')<cr><cr>
+nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
 nnoremap <silent> g/L mS:Unite line:buffers<cr>

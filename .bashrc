@@ -219,6 +219,7 @@ if [ -f ~/.fzf.bash ]; then
   }
 fi
 
+#TODO: https://github.com/fwalch/dotfiles/blob/4398b2e9ac321574f2a5d42848028d5c7bb60343/zshrc#L48
 ghrebasepr() {
   GITHUB_PR=$1
   git fetch --all &&
