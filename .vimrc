@@ -894,7 +894,6 @@ nmap     Ub :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
-set diffopt+=vertical
 nnoremap <silent> co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
 " execute/evaluate
@@ -1014,8 +1013,15 @@ nnoremap - $
 xnoremap - $
 onoremap - $
 
+nnoremap <c-j> +
+xnoremap <c-j> +
+onoremap <c-j> +
+nnoremap <c-k> -
+xnoremap <c-k> -
+onoremap <c-k> -
+
 " un-join (split) the current line at the cursor position
-nnoremap <c-j> i<c-j><esc>k$
+nnoremap gj i<c-j><esc>k$
 " vaporize delete without overwriting the default register
 nnoremap vd "_d
 xnoremap x  "_d
