@@ -10,6 +10,7 @@
   fscache = true
   # set tab width for pager (affects 'git diff')
   pager = less -x1,5
+  trustctime = false
 [gui]
   gcwarning = false
 [branch]
@@ -22,15 +23,18 @@
   algorithm = patience
 [merge]
   tool = vimdiff
+[mergetool]
+  prompt = false
+  keepBackup = false
 [mergetool "vimdiff"]
   cmd = $EDITOR -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-  keepBackup = false
 [i18n]
   filesEncoding = utf-8
 [alias]
   #l = log --all --graph --oneline --decorate
   l  = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
   ll = "!f() { git l --all \"$@\"; }; f"
+  lg = log --stat
   d  = diff
   ds = diff --stat --color
   #compare $REF to its parent.
@@ -43,8 +47,6 @@
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
   #script-consumable list of modified files (does NOT include deleted/added/staged)
   df = diff --name-only
-  #open modified files (does NOT include deleted/added/staged)
-  em = !$EDITOR `git df`
 [advice]
   statusHints = false
 [color]
