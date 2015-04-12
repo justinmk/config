@@ -208,14 +208,16 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 if [ -f ~/.fzf.bash ]; then
   export FZF_DEFAULT_OPTS='--black -x'
   source ~/.fzf.bash
-  f() { # fzf / includes hidden directories
+  f() { # fzf / includes hidden directories (except .git)
     find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | fzf
   }
   fd() { # fzf / change to directory
-    cd $(f "-type d")
+    local path="$(f '-type d')"
+    [ -z "$path" ] || cd $path
   }
   fv() { # fzf / open file in Vim
-    $EDITOR $(f)
+    local path="$(f '-type f')"
+    [ -z "$path" ] || $EDITOR $path
   }
 fi
 
