@@ -72,6 +72,9 @@ if has("nvim")
   if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
     echoerr "Missing .nvim/ or .nvimrc"
   endif
+
+  tnoremap jk <c-\><c-n>
+  tnoremap kj <c-\><c-n>
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
