@@ -1,6 +1,6 @@
 # Darwin, Debian, Cygwin, and MSYS have differing behavior:
 #   - Darwin (and MacVim) runs a login shell every time (sources .bash_profile)
-#   - MSYSGIT bash sources .bashrc _then_ .bash_profile (wtf?)
+#   - MSYSGIT sources .bashrc _then_ .bash_profile (wtf?)
 #   - Cygwin runs a login shell every time (sources .bash_profile)
 #   - Debian/Ubuntu sources .bash_profile on login; thereafter only .bashrc
 
@@ -151,7 +151,7 @@ if ! command -v watch > /dev/null 2>&1 ; then
     while sleep 1; do
       # clear screen if possible
       command -v clear > /dev/null 2>&1 && clear
-      "$@"
+      $*
     done
   }
 fi
