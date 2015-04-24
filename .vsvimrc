@@ -10,19 +10,27 @@
 "   nnoremap yx<bs>  :vsc OtherContextMenus.FSIConsoleContext.ResetInteractiveSession<cr>
 "   nnoremap !m  :vsc OtherContextMenus.FSIConsoleContext.ResetInteractiveSession<bar>vsc Build.BuildSelection<cr>
 
-nnoremap \ ,
-
 set ignorecase
 set smartcase
 set incsearch
 set tabstop=4
+set shiftwidth=4
 set backspace=eol,start,indent
 set nostartofline
+set hlsearch
+set autoindent
+set expandtab
+set ttimeout
+set ttimeoutlen=50
 
 inoremap z,  <c-o>
 inoremap z,p <c-r>"
 
-nnoremap <c-j> i<cr><esc>k$
+"horrible hack because VsVim refuses to fix this bug
+nnoremap g; u<c-r>
+
+nnoremap \ ,
+nnoremap gj i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
 nnoremap s /
@@ -148,12 +156,4 @@ nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
 nnoremap ^ :vsc SolutionExplorer.SyncWithActiveDocument<cr>
 
 nnoremap cow :vsc Edit.ToggleWordWrap<cr>
-
-set hlsearch
-set autoindent
-set expandtab
-set shiftwidth=4
-set ttimeout
-set ttimeoutlen=50
-
 

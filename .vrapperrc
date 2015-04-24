@@ -14,7 +14,7 @@ inoremap z,  <c-o>
 inoremap z,p <c-r>"
 
 nnoremap \ ,
-nnoremap <c-j> i<cr><esc>k$
+nnoremap gj i<cr><esc>k$
 inoremap jk <esc>
 inoremap kj <esc>
 nnoremap s /

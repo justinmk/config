@@ -307,7 +307,11 @@ Plug 'thinca/vim-unite-history'
 Plug 'tsukkee/unite-tag'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
+
+if !s:is_windows
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
+endif
+
 Plug 'junegunn/vader.vim'
 Plug 'junegunn/vim-easy-align'
 vmap z; <Plug>(EasyAlign)
