@@ -206,7 +206,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # fzf (https://github.com/junegunn/fzf)
 if [ -f ~/.fzf.bash ]; then
-  export FZF_DEFAULT_OPTS='--black -x'
+  export FZF_DEFAULT_OPTS='--multi --black -x --inline-info'
   source ~/.fzf.bash
   f() { # fzf / includes hidden directories (except .git)
     find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | fzf

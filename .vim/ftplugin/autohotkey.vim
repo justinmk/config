@@ -1,2 +1,2 @@
-nnoremap <buffer> gX :silent exe '!start explorer '.expand("%")<cr>
+nnoremap <buffer> yx. :silent exe '!start explorer '.expand("%")<cr>
 

@@ -328,9 +328,9 @@ Plug 'mattn/gist-vim'
 Plug 'gcavallanti/vim-noscrollbar'
 
 if !s:is_windows && (has("python") || has("python3"))
-  Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
-  let g:ycm_enable_diagnostic_signs = 0
-  let g:ycm_always_populate_location_list = 1
+  " Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
+  " let g:ycm_enable_diagnostic_signs = 0
+  " let g:ycm_always_populate_location_list = 1
 elseif s:lua_patch885
   Plug 'Shougo/neocomplete.vim'
 
@@ -795,8 +795,8 @@ nnoremap gwN      :tabnew<cr>
 nnoremap gwC      :tabclose<cr>
 nnoremap ]gt      :tabmove +1<cr>
 nnoremap [gt      :tabmove -1<cr>
-" move tab to Nth position (this is slightly different than :tabmove)
-nnoremap <expr> gT (v:count > 0 ? '<c-u>:tabmove '.(v:count - 1).'<cr>' : 'gT')
+" move tab to Nth tab position
+nnoremap <expr> gT (v:count > 0 ? ':<c-u>tabmove '.(v:count - 1).'<cr>' : 'gT')
 
 " manage buffers
 nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
@@ -1330,8 +1330,6 @@ augroup vimrc_autocmd
     autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   endif
 
-  autocmd FileType vim nnoremap <buffer> yxx :Runtime<cr>| xnoremap <buffer><silent> <enter> :<c-u>QuickRun -mode v -outputter message<cr>
-
   if exists("*mkdir") "auto-create directories for new files
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
   endif
@@ -1350,7 +1348,7 @@ augroup END
 nnoremap <c-f> :find 
 nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep /\C/j **<bar>RstWI<left><left><left><left><left><left><left><left><left><left><left>
 " search all file buffers (clear loclist first). g: get all matches. j: no jumping.
-nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/gj %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
+nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left><left>
 " search current buffer and open results in quickfix window
 nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
 " search-replace
@@ -1455,9 +1453,6 @@ nnoremap <silent> gl    :Unite -buffer-name=buffers buffer<cr>
 nnoremap <silent> <m-o> :Unite outline<cr>
 nnoremap <silent> g/t   :Unite tag <cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
-imap     <silent> <m-y> <C-o><m-y>
-nnoremap <silent> g/d   :Unite neomru/directory directory_rec:. -default-action=cd<CR>
-nnoremap <silent> g/ps  :Unite process <CR>
 nnoremap <silent> <m-w> :Unite tmuxcomplete<CR>
 imap     <silent> <m-w> <C-o><m-w>
 nnoremap <silent> <m-l> :Unite tmuxcomplete/lines<CR>
