@@ -1,5 +1,7 @@
 setlocal commentstring=//\ %s
 
+nnoremap <buffer> [[    [[3<c-y>
+
 if exists(":YcmCompleter")
   nnoremap <buffer> gd    :<c-u>YcmCompleter GoToDefinition<cr>
 endif

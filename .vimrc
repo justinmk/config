@@ -75,6 +75,7 @@ if has("nvim")
 
   tnoremap jk <c-\><c-n>
   tnoremap kj <c-\><c-n>
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
@@ -168,6 +169,7 @@ let g:dbext_default_usermaps = 0
 
 Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-characterize'
 " Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
@@ -308,6 +310,9 @@ Plug 'tsukkee/unite-tag'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
 
+" https://gitter.im/neovim/neovim?at=5527f5b727e4ff0c43e25961
+" Delete multiple buffers:
+"   call fzf#run({'source': BufList(), 'sink': function('BufDelete'), 'options': '-m'})
 if !s:is_windows
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
 endif
