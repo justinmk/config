@@ -1084,8 +1084,6 @@ nnoremap <silent> drr :<C-u>call <sid>set_reg(v:register)<cr>0:<C-u>set opfunc=<
 
 inoremap jk <esc>
 inoremap kj <esc>
-nnoremap ' `
-xnoremap ' `
 " from tpope vimrc
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
