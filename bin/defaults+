@@ -1,0 +1,174 @@
+#!/usr/bin/python
+
+# ^^-- use OSX stock python so that CoreFoundation is available.
+
+# https://github.com/boochtek/defaults_plus
+#
+# Copyright (c) 2014 by Craig Buchek.
+# Copyright (c) 2014 by BoochTek, LLC.
+# Licensed under the MIT License.
+#
+# Modified by Justin M. Keyes
+
+# Description:
+#	This program is like the Mac OS X `defaults` program, but is able to manipulate nested dicts.
+
+
+from __future__ import print_function
+import sys
+import CoreFoundation
+
+
+KEY_PATH_SEPARATOR = "."
+command = sys.argv[1]
+domain = sys.argv[2]
+key_path = sys.argv[3]
+if len(sys.argv) >= 5:
+	value = sys.argv[4]
+
+
+def main():
+	if command == "read":
+		try:
+			prefs = Preferences(domain)
+			print(prefs.read(KeyPath(key_path)))
+		except:
+			print("Couldn't get the value %s for %s" % (key_path, domain), file=sys.stderr)
+			exit(2)
+	elif command == "write":
+		prefs = Preferences(domain)
+		try:
+			parsed_value = int(value)
+		except ValueError:
+			parsed_value = value
+		prefs.write(KeyPath(key_path), parsed_value)
+	elif command == "delete":
+		prefs = Preferences(domain)
+		# Can't get delete to work, so just "clear" with an empty dict.
+		prefs.write(KeyPath(key_path), {})
+	elif command == "copy":
+		prefs = Preferences(domain)
+		prefs.copy(KeyPath(key_path), KeyPath(value))
+	else:
+		print("Don't know how to %s" % command)
+		exit(1)
+
+
+class Preferences(object):
+	def __init__(self, domain):
+		self.domain = domain
+
+	def read(self, key_path):
+		top = self.top_dict(key_path)
+		return top[key_path.rest()]
+
+	def write(self, key_path, value):
+		top = self.top_dict(key_path)
+		top[key_path.rest()] = value
+		CoreFoundation.CFPreferencesSetAppValue(key_path.first(), top, self.domain)
+		self.sync()
+
+	# def delete(self, key_path):
+	# 	top = self.top_dict(key_path)
+	# 	top.delete(key_path.keys())
+	# 	CoreFoundation.CFPreferencesSetAppValue(key_path.first(), top, self.domain)
+	# 	self.sync()
+
+	def copy(self, source_key_path, destination_key_path):
+		self.write(destination_key_path, self.read(source_key_path))
+
+	def top_dict(self, key_path):
+		return NestedDict(mutable_copy_of_dict(CoreFoundation.CFPreferencesCopyAppValue(key_path.first(), self.domain)))
+
+	def sync(self):
+		CoreFoundation.CFPreferencesAppSynchronize(self.domain)
+
+
+class KeyPath(object):
+	def __init__(self, key_path_str):
+		self.key_path_str = key_path_str
+
+	def keys(self):
+		return self.key_path_str.split(KEY_PATH_SEPARATOR)
+
+	def first(self):
+		return self.keys()[0]
+
+	def last(self):
+		return self.keys()[-1]
+
+	def rest(self):
+		return self.keys()[1:]
+
+
+# Adapted from http://stackoverflow.com/questions/15077973/how-can-i-access-a-deeply-nested-dictionary-using-tuples
+class NestedDict(dict):
+	"""
+		Nested dictionary of arbitrary depth.
+		Allows data access via a list or tuple of keys, specifying the path to an element.
+		Also makes mutable copies of dicts before setting.
+	"""
+	def __getitem__(self, keys):
+		# If `keys` is a collection (other than string), convert it to a tuple.
+		if hasattr(keys, '__iter__'):
+			keys = tuple(keys)
+			node = self
+			for key in keys:
+				node = node.get(key)
+			return node
+		else:
+			try:
+				return dict.__getitem__(self, keys)
+			except KeyError:
+				raise KeyError(keys)
+
+	def __setitem__(self, keys, value):
+		# If `keys` is a collection (other than string).
+		if hasattr(keys, '__iter__'):
+			try:
+				node = self
+				for key in keys[:-1]:
+					try:
+						node[key] = mutable_copy_of_dict(node[key])
+						node = node[key]
+					except KeyError:
+						node[key] = type(self)()
+						node = node[key]
+				node[keys[-1]] = value
+			except TypeError:
+				print("TypeError")
+		else:
+			dict.__setitem__(self, keys, value)
+
+        # XXX: this doesn't work.
+	# def delete(self, keys):
+	# 	# If `keys` is a collection (other than string).
+	# 	if hasattr(keys, '__iter__'):
+	# 		try:
+	# 			node = self
+	# 			for key in keys[:-1]:
+	# 				try:
+	# 					node[key] = mutable_copy_of_dict(node[key])
+	# 					node = node[key]
+	# 				except KeyError:
+	# 					node[key] = type(self)()
+	# 					node = node[key]
+	# 			# node[keys[-1]] = {}
+	# 			# print("delete1: " + str(node))
+	# 			node.pop(keys[-1], None)
+	# 		except TypeError:
+	# 			print("TypeError")
+	# 	else:
+	# 		dict.pop(self, keys, None)
+	# 		print("delete2")
+
+
+def mutable_copy_of_dict(dict):
+	"""
+		Return a mutable copy of a CFDictionary.
+	"""
+	return CoreFoundation.CFDictionaryCreateMutableCopy(CoreFoundation.kCFAllocatorDefault, 0, dict)
+
+
+if __name__ == "__main__":
+	main()
