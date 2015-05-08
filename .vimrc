@@ -1,8 +1,4 @@
-" r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
-"
-" windows builds: https://bitbucket.org/Haroogan/vim-for-windows/downloads
-"                 http://tuxproject.de/projects/vim/
-"                 http://files.kaoriya.net/vim/
+" windows builds: http://files.kaoriya.net/vim/
 "                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
 " neovim:
 "   msys:
@@ -20,10 +16,6 @@
 "       https://github.com/JuliaLang/julia/issues/3640
 "   julia msys2 build instructions:
 "       https://github.com/JuliaLang/julia/pull/5982
-"
-" MacVim with homebrew:
-"   brew install macvim --with-cscope --with-luajit --HEAD --override-system-vim
-"   brew linkapps --system
 "
 " If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
 "    set runtimepath+=/path/to/.vim
@@ -128,6 +120,8 @@ fun! InstallPlug() "bootstrap plug.vim on new systems
     exe '!curl -fLo '.expand("~/.vim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endfun
 
+" r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
+
 else
 
 call plug#begin('~/.vim/bundle')
@@ -142,7 +136,27 @@ Plug 'kopischke/vim-fetch'
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
 Plug 'https://github.com/justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
+
 Plug 'https://github.com/justinmk/vim-sneak.git'
+let g:sneak#streak = 1
+let g:sneak#use_ic_scs = 1
+nmap \ <Plug>SneakPrevious
+xmap \ <Plug>SneakPrevious
+omap \ <Plug>SneakPrevious
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+xmap f <Plug>Sneak_f
+xmap F <Plug>Sneak_F
+omap f <Plug>Sneak_f
+omap F <Plug>Sneak_F
+nmap t <Plug>Sneak_t
+nmap T <Plug>Sneak_T
+xmap t <Plug>Sneak_t
+xmap T <Plug>Sneak_T
+omap t <Plug>Sneak_t
+omap T <Plug>Sneak_T
+let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
+
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
 Plug 'https://github.com/justinmk/vim-matchparenalways.git'
 
@@ -425,24 +439,6 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
-let g:sneak#streak = 1
-let g:sneak#use_ic_scs = 1
-nmap \ <Plug>SneakPrevious
-xmap \ <Plug>SneakPrevious
-omap \ <Plug>SneakPrevious
-nmap f <Plug>Sneak_f
-nmap F <Plug>Sneak_F
-xmap f <Plug>Sneak_f
-xmap F <Plug>Sneak_F
-omap f <Plug>Sneak_f
-omap F <Plug>Sneak_F
-nmap t <Plug>Sneak_t
-nmap T <Plug>Sneak_T
-xmap t <Plug>Sneak_t
-xmap T <Plug>Sneak_T
-omap t <Plug>Sneak_t
-omap T <Plug>Sneak_T
-let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
 " replacement for vim-vertical-move
 func! s:vjump(col, direction) abort
@@ -1413,7 +1409,6 @@ if s:is_windows
 endif
 
 if s:plugins "unite.vim =============================================== {{{
-" gvim -u NONE -N -c ":set runtimepath+=~/.vim/bundle/unite.vim/,~/.vim/bundle/unite-mru" -c ":runtime plugin/unite.vim" -c ":runtime plugin/neomru.vim"
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
 
@@ -1486,8 +1481,11 @@ endif "}}}
 
 " statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
-hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
-set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
+if s:plugins
+  hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
+  set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
+endif
+
 set title
 set titlestring=%{getcwd()}
 set titleold=?
