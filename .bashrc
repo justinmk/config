@@ -120,7 +120,7 @@ fi
 PS1=$PS1'
 $ '
 
-[[ "$SSH_TTY" != "" ]] && PS1='\[\033[0;30m\]\[\033[47m\]SSH\[\033[0m\] '$PS1
+[ -z $SSH_TTY ] || PS1='\[\033[0;30m\]\[\033[47m\]SSH\[\033[0m\] '$PS1
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"

@@ -47,8 +47,6 @@ let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
-let s:is_ssh = !empty($SSH_TTY)
-let s:lua_patch885 = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
 let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
 
@@ -346,11 +344,11 @@ Plug 'mattn/gist-vim'
 
 Plug 'gcavallanti/vim-noscrollbar'
 
-if !s:is_windows && (has("python") || has("python3"))
+" if !s:is_windows && (has("python") || has("python3"))
   " Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
   " let g:ycm_enable_diagnostic_signs = 0
   " let g:ycm_always_populate_location_list = 1
-elseif s:lua_patch885
+if has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
   Plug 'Shougo/neocomplete.vim'
 
   let g:neocomplete#enable_omni_fallback = 1
@@ -365,6 +363,8 @@ elseif s:lua_patch885
   let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
   let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
   let omni.cs = '.*[^=\);]'
+else
+  Plug 'ajh17/VimCompletesMe'
 endif
 
 call plug#end()
@@ -492,11 +492,9 @@ try | lang en_US | catch | endtry
 if !s:is_msysgit && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
   let &listchars = "tab:\u25b8 ,trail:\u25ab,nbsp:_"
 
-  if !(s:is_windows || s:is_cygwin || s:is_ssh)
-    " may affect performance: https://github.com/tpope/vim-sensible/issues/57
-    " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-    " let &showbreak="\u21aa" " precedes line wrap
-  endif
+  " may affect performance: https://github.com/tpope/vim-sensible/issues/57
+  " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
+  " let &showbreak="\u21aa" " precedes line wrap
 else
   set listchars+=trail:.
 endif
@@ -568,20 +566,6 @@ endif
 
 "colorscheme {{{
   call matchadd('ColorColumn', '\%81v', 100)
-
-  let s:color_force_high_contrast = ' 
-        \ if &background == "dark"
-        \ | hi Normal  guibg=black guifg=white ctermfg=255 ctermbg=0
-        \ | hi NonText guibg=black guifg=white ctermfg=255 ctermbg=0
-        \ | endif
-        \'
-
-  if !s:is_mac
-    " exe s:color_force_high_contrast
-    " if has('vim_starting')
-    "   exe 'autocmd ColorScheme * '.s:color_force_high_contrast
-    " endif
-  endif
 
   if !s:is_gui && &t_Co <= 88
     hi CursorLine ctermfg=white
