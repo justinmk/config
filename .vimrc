@@ -182,7 +182,7 @@ let g:dbext_default_usermaps = 0
 Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-characterize'
-" Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
@@ -608,6 +608,17 @@ endif
       endif
     endif
   endif
+
+func! s:set_CursorLine()
+  if s:is_msysgit | return | endif
+
+  hi clear CursorLine
+  if &diff
+    hi CursorLine gui=underline cterm=underline
+  else
+    hi CursorLine guibg=#293739 ctermbg=236
+  endif
+endf
 "}}}
 
 "==============================================================================
@@ -907,7 +918,7 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-\ c-g
-"   normal: + _ c-\ g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: c-j c-k + _ c-\ g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 "           1j 1k 1...
 "           c<space> --> easyalign
 "           !@       --> async run
@@ -1005,12 +1016,9 @@ nnoremap - $
 xnoremap - $
 onoremap - $
 
-nnoremap <c-j> +
-xnoremap <c-j> +
-onoremap <c-j> +
-nnoremap <c-k> -
-xnoremap <c-k> -
-onoremap <c-k> -
+nnoremap <c-cr> -
+xnoremap <c-cr> -
+onoremap <c-cr> -
 
 " un-join (split) the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
@@ -1317,8 +1325,11 @@ augroup vimrc_autocmd
     au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
   endif
 
-  "when Vim is started in diff-mode (vim -d, git mergetool) do/dp should not auto-fold.
-  autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | endif
+  "when Vim starts in diff-mode (vim -d, git mergetool):
+  "  - do/dp should not auto-fold
+  "  - tweak CursorLine to be less broken
+  autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | call <sid>set_CursorLine() | endif
+  autocmd WinEnter * call <sid>set_CursorLine()
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
 
