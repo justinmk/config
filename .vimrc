@@ -63,8 +63,7 @@ if has("nvim")
     echoerr "Missing .nvim/ or .nvimrc"
   endif
 
-  tnoremap jk <c-\><c-n>
-  tnoremap kj <c-\><c-n>
+  tnoremap <esc><esc> <c-\><c-n>
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
