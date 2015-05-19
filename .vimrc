@@ -117,8 +117,6 @@ fun! InstallPlug() "bootstrap plug.vim on new systems
     exe '!curl -fLo '.expand("~/.vim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endfun
 
-" r!wget -qO - https://raw.github.com/tpope/vim-sensible/master/plugin/sensible.vim
-
 else
 
 call plug#begin('~/.vim/bundle')
@@ -179,7 +177,6 @@ let g:dbext_default_history_max_entry = 10*1024
 let g:dbext_default_usermaps = 0
 
 Plug 'thinca/vim-quickrun'
-Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
@@ -369,13 +366,58 @@ endif
 call plug#end()
 
 " eager-load these plugins so we can override their settings below
-runtime plugin/sensible.vim
 runtime plugin/rsi.vim
 
-if has("nvim")
-  "enforce nvim default (override sensible.vim)
-  set nottimeout " https://github.com/neovim/neovim/issues/2051#issuecomment-75937744
+" sensible.vim {{{
+if !has("nvim")
+  set ttimeout
+  set ttimeoutlen=100
+  set backspace=indent,eol,start
+  set wildmenu
 endif
+
+if has('syntax') && !exists('g:syntax_on')
+  syntax enable
+endif
+
+set autoindent " NOTE: 'smartindent' is superseded by 'cindent' and 'indentexpr'. 
+set complete-=i
+set smarttab
+set nrformats-=octal
+set incsearch
+
+" Use <C-L> to clear the highlighting of :set hlsearch.
+nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+
+set laststatus=2
+set ruler
+set showcmd
+set display+=lastline
+
+if v:version > 703 || v:version == 703 && has("patch541")
+  set formatoptions+=j " Delete comment character when joining commented lines
+endif
+
+setglobal tags-=./tags tags-=./tags; tags^=./tags;
+
+set autoread
+set fileformats+=mac
+set history=10000
+set viminfo^=!
+set sessionoptions-=options
+
+" Allow color schemes to do bright colors without forcing bold.
+if &t_Co == 8 && $TERM !~# '^linux'
+  set t_Co=16
+endif
+
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
+
+inoremap <C-U> <C-G>u<C-U>
+" }}}
 
 function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
   if getcmdpos() > 1
@@ -489,13 +531,13 @@ let g:mapleader = "z,"
 try | lang en_US | catch | endtry
 
 if !s:is_msysgit && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
-  let &listchars = "tab:\u25b8 ,trail:\u25ab,nbsp:_"
+  let &listchars = "tab:\u25b8 ,trail:\u25ab,extends:>,precedes:<,nbsp:+"
 
   " may affect performance: https://github.com/tpope/vim-sensible/issues/57
   " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
   " let &showbreak="\u21aa" " precedes line wrap
 else
-  set listchars+=trail:.
+  set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 endif
 set list
 
@@ -521,8 +563,6 @@ set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
 nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable foldmethod=manual <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
 nnoremap zy  zt5<c-y>
-set scrolloff=0
-set sidescrolloff=0
 set noequalalways
 set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
@@ -636,8 +676,6 @@ set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default 
 
 set linebreak
 set nowrap
-
-set autoindent " NOTE: 'smartindent' is superseded by 'cindent' and 'indentexpr'. 
 
 " =============================================================================
 " util functions
