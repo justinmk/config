@@ -848,12 +848,16 @@ nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
 nnoremap cD :cd %:p:h<bar>pwd<cr>
 nnoremap cU :cd ..<bar>pwd<cr>
-" show git branch with ctrl-g info
-func! s:ctrl_g()
-  redir => msg | silent exe "norm! 1\<c-g>" | redir END
-  echo fugitive#head(7) msg[2:]
-endf
-nnoremap <C-g> :call <sid>ctrl_g()<cr>
+
+if findfile('plugin/fugitive.vim', &rtp) !=# ''
+  " show git branch with ctrl-g info
+  func! s:ctrl_g()
+    redir => msg | silent exe "norm! 1\<c-g>" | redir END
+    echo fugitive#head(7) msg[2:]
+  endf
+  nnoremap <C-g> :call <sid>ctrl_g()<cr>
+endif
+
 " show the working directory and session
 nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
       \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
