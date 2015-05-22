@@ -1226,7 +1226,7 @@ nnoremap <silent> g/m :Unite bookmark<cr>
 " python ======================================================================
 augroup vimrc_python
   autocmd!
-  autocmd FileType python syn keyword pythonDecorator True None False self | setlocal nosmartindent
+  autocmd FileType python syn keyword pythonDecorator True None False self | setlocal nosmartindent tabstop=4
   let g:jedi#force_py_version = 3
   let g:jedi#auto_vim_configuration = 0
   let g:jedi#goto_assignments_command = 'gd'
