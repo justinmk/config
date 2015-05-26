@@ -124,6 +124,7 @@ call plug#begin('~/.vim/bundle')
 Plug 'tomasr/molokai'
 
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'majutsushi/tagbar'
 
 Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
@@ -1379,24 +1380,21 @@ augroup END
 
 nnoremap <c-f> :find 
 nnoremap <c-t> :tag 
-nnoremap g// mS:<c-u>SetWI<bar> noau vimgrep /\C/j **<bar>RstWI<left><left><left><left><left><left><left><left><left><left><left>
+nnoremap g// mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear loclist first). g: get all matches. j: no jumping.
-nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<left><left><left><left><left><left><left><left><left><left><left>
+nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<s-left><left><left><left>
 " search current buffer and open results in quickfix window
-nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<left><left><left><left><left><left>
+nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<s-left><left><left><left>
 " search-replace
 nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
 xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
-nnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C\V<c-r><c-w>/j ** <bar>RstWI<cr>
-xnoremap g/* mS:<c-u>SetWI<bar> noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j ** <bar>RstWI<cr>
+nnoremap g/* mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
+xnoremap g/* mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
 nnoremap g/g mS:<c-u>grep ''<left>
 if executable("pt")
 set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
 endif
-
-command! -bar SetWI set wildignore+=*/bin/*,*/build/*
-command! -bar RstWI set wildignore-=*/bin/*,*/build/*
 
 " show :ilist or ]I results in the quickfix window
 function! s:ilist_qf(start_at_cursor)
@@ -1431,7 +1429,7 @@ set completeopt+=longest
 
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
-set wildignore+=tags,*.o,*.obj,*.dll,*.class,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
+set wildignore+=*/bin/*,tags,*.o,*.obj,*.dll,*.class,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
 
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
