@@ -238,8 +238,8 @@ if [[ `uname` == 'Darwin' ]]; then
       defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^0069'  $(echo -e "\033[105;5u")
       # ctrl-s-I (ASCII 73 0x49)
       defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^$0049' $(echo -e "\033[73;5u")
-      # ctrl-a (ASCII 97 0x61)
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^0061'  $(echo -e "\033[97;5u")
+      # ctrl-a (ASCII 97 0x61) back-compat: don't bind ctrl-{lowercase} chords (except ctrl-i).
+      # defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^0061'  $(echo -e "\033[97;5u")
       # ctrl-s-A (ASCII 65 0x41)
       defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^$0041' $(echo -e "\033[65;5u")
     }
@@ -253,14 +253,17 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 if [ -f ~/.fzf.bash ]; then
   export FZF_DEFAULT_OPTS='--multi --black -x --inline-info'
   source ~/.fzf.bash
-  f() { # fzf / includes hidden directories (except .git)
+  fg() { # full-text search
+    grep --line-buffered --color=never -r "" * | fzf
+  }
+  f() { # includes hidden directories (except .git)
     find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | fzf
   }
-  fd() { # fzf / change to directory
+  fd() { # change to directory
     local path="$(f '-type d')"
     [ -z "$path" ] || cd $path
   }
-  fv() { # fzf / open file in Vim
+  fv() { # open file in Vim
     local path="$(f '-type f')"
     [ -z "$path" ] || $EDITOR $path
   }

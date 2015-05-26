@@ -244,7 +244,6 @@ Plug 'kana/vim-textobj-entire'
 Plug 'gaving/vim-textobj-argument'
 
 Plug 'guns/vim-sexp'
-Plug 'guns/vim-clojure-static'
 Plug 'guns/vim-clojure-highlight'
 let g:clojure_fold = 1
 let g:sexp_filetypes = ''
@@ -374,6 +373,10 @@ if !has("nvim")
   set ttimeoutlen=100
   set backspace=indent,eol,start
   set wildmenu
+  if v:version > 703 || v:version == 703 && has("patch541")
+    set formatoptions+=j " Delete comment character when joining commented lines
+  endif
+  setglobal tags-=./tags tags-=./tags; tags^=./tags;
 endif
 
 if has('syntax') && !exists('g:syntax_on')
@@ -393,12 +396,6 @@ set laststatus=2
 set ruler
 set showcmd
 set display+=lastline
-
-if v:version > 703 || v:version == 703 && has("patch541")
-  set formatoptions+=j " Delete comment character when joining commented lines
-endif
-
-setglobal tags-=./tags tags-=./tags; tags^=./tags;
 
 set autoread
 set fileformats+=mac
