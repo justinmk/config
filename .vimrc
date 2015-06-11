@@ -379,6 +379,11 @@ if !has("nvim")
     set formatoptions+=j " Delete comment character when joining commented lines
   endif
   setglobal tags-=./tags tags-=./tags; tags^=./tags;
+
+  " Load matchit.vim, but only if the user hasn't installed a newer version.
+  if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+    runtime! macros/matchit.vim
+  endif
 endif
 
 if has('syntax') && !exists('g:syntax_on')
@@ -408,11 +413,6 @@ set sessionoptions-=options
 " Allow color schemes to do bright colors without forcing bold.
 if &t_Co == 8 && $TERM !~# '^linux'
   set t_Co=16
-endif
-
-" Load matchit.vim, but only if the user hasn't installed a newer version.
-if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-  runtime! macros/matchit.vim
 endif
 
 inoremap <C-U> <C-G>u<C-U>
