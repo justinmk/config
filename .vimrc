@@ -249,9 +249,10 @@ Plug 'guns/vim-clojure-highlight'
 let g:clojure_fold = 1
 let g:sexp_filetypes = ''
 
-Plug 'tpope/vim-leiningen'
+Plug 'tpope/vim-salve'
+let g:salve_auto_start_repl = 1
 Plug 'tpope/vim-fireplace'
-Plug 'tpope/vim-leiningen'
+
 Plug 'tpope/vim-commentary'
 
 if !s:is_cygwin && has('python')
