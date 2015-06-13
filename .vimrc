@@ -1471,9 +1471,16 @@ endif
 " don't track help files in MRU list
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
 
+function! s:fzf_open_file_at_line(e)
+  "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
+  execute 'edit' matchstr(a:e, '\v([^:]{-}:\d+)')
+endfunction
+
 " search current working directory
 nnoremap <silent> <c-p> :FZF<cr>
-" search direcory of current file
+nnoremap <silent> <m-p> :call fzf#run({'source':'grep -n --line-buffered --color=never -r -v "^[[:space:]]*$" *',
+      \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
+" search current file directory
 nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
