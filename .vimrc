@@ -366,8 +366,11 @@ endif
 
 call plug#end()
 
-" eager-load these plugins so we can override their settings below
-runtime plugin/rsi.vim
+" Eager-load these plugins so we can override their settings. {{{
+runtime! plugin/rsi.vim
+" https://github.com/tpope/vim-sleuth/issues/29#issuecomment-109807606
+runtime! plugin/sleuth.vim
+" }}}
 
 " sensible.vim {{{
 if !has("nvim")
