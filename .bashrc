@@ -251,7 +251,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # fzf (https://github.com/junegunn/fzf)
 if [ -f ~/.fzf.bash ]; then
-  export FZF_DEFAULT_OPTS='--multi --black -x --inline-info'
+  export FZF_DEFAULT_OPTS='--multi --black -x --inline-info --no-color'
   source ~/.fzf.bash
   fg() { # full-text search
     grep --line-buffered --color=never -r "" * | fzf
@@ -269,28 +269,43 @@ if [ -f ~/.fzf.bash ]; then
   }
 fi
 
-#TODO: https://github.com/fwalch/dotfiles/blob/4398b2e9ac321574f2a5d42848028d5c7bb60343/zshrc#L48
-ghrebasepr() {
-  GITHUB_PR=$1
-  git fetch --all &&
-    git checkout refs/pull/upstream/$GITHUB_PR &&
-    git rebase upstream/master &&
-    git checkout master &&
-    git stash save autosave-$(date +%Y%m%d_%H%M%S) &&
-    git reset --hard upstream/master &&
-    git rebase upstream/master &&
-    git merge --no-ff -
-}
+ghrebasepr() {(
+  set -e
+  set -o pipefail
+  sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
+  PR=${1}
+  REPO_SLUG="$(git config --get remote.upstream.url \
+    | sed 's/^.*:\/\/github.com\/\(.*\)\.git/\1/')"
+  PR_TITLE="$(curl -Ss "https://api.github.com/repos/${REPO_SLUG}/pulls/${PR}" \
+    | grep '"title"' \
+    | $sed_cmd -E 's/.*(\[(RFC|RDY)\]) *(.*)../\3/')"
+  #                                         ^ Trailing ", in JSON response.
+
+  git fetch --all \
+    && git checkout refs/pull/upstream/${PR} \
+    && git rebase upstream/master \
+    && git checkout master \
+    && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
+    && git reset --hard upstream/master \
+    && git merge -m "Merge #${PR} '${PR_TITLE}'." --no-ff - \
+    && git log --oneline --graph --decorate -n 5
+)}
 
 ghrebase1() {
-  GITHUB_PR=$1
+  local PR=${1}
+  local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
+
   #FOO=bar nvim -c 'au VimEnter * Gcommit --amend' -s <(echo 'Afoo')
-  git fetch --all &&
-    git checkout refs/pull/upstream/$GITHUB_PR &&
-    git rebase upstream/master &&
-    git commit --amend -m "$(git log -1 --pretty=format:"%B" \
-      | sed -E "1 s/^(.*)\$/\\1 #$GITHUB_PR/g")" &&
-    git l -n 5
+  git fetch --all \
+    && git checkout refs/pull/upstream/${PR} \
+    && git rebase upstream/master \
+    && git checkout master \
+    && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
+    && git reset --hard upstream/master \
+    && git merge --ff-only - \
+    && git commit --amend -m "$(git log -1 --pretty=format:"%B" \
+      | $sed_cmd "1 s/^(.*)\$/\\1 #${PR}/g")" \
+    && git log --oneline --graph --decorate -n 5
 }
 
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
