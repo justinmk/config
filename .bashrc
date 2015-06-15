@@ -282,7 +282,7 @@ ghrebasepr() {(
   #                                         ^ Trailing ", in JSON response.
 
   git fetch --all \
-    && git checkout refs/pull/upstream/${PR} \
+    && git checkout --quiet refs/pull/upstream/${PR} \
     && git rebase upstream/master \
     && git checkout master \
     && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
@@ -297,7 +297,7 @@ ghrebase1() {
 
   #FOO=bar nvim -c 'au VimEnter * Gcommit --amend' -s <(echo 'Afoo')
   git fetch --all \
-    && git checkout refs/pull/upstream/${PR} \
+    && git checkout --quiet refs/pull/upstream/${PR} \
     && git rebase upstream/master \
     && git checkout master \
     && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
