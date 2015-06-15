@@ -128,7 +128,7 @@
         (smartparens-mode 1)))
 )
 
-(with-package* (company company-quickhelp pos-tip company-cider)
+(with-package* (company pos-tip company-cider)
   (setq company-auto-complete t)
   (setq company-global-modes t)
   (setq company-idle-delay 0.2)
@@ -137,8 +137,6 @@
   (setq company-tooltip-limit 30)
   (setq company-dabbrev-downcase nil)
   (setq company-dabbrev-ignore-case nil)
-
-  (company-quickhelp-mode 1)
 
   (add-hook 'cider-repl-mode-hook (add-to-list 'company-backends 'company-cider))
   (add-hook 'cider-mode-hook (add-to-list 'company-backends 'company-cider))
@@ -235,8 +233,9 @@
   (setq cider-repl-history-size 2000)
   (setq cider-repl-popup-stacktraces t))
 
+; alternative: https://github.com/linktohack/evil-commentary
 (setq evilnc-hotkey-comment-operator "gc") ;must happen before (require 'evil-nerd-commenter)
-(with-package* (evil evil-visualstar evil-nerd-commenter evil-args evil-matchit evil-surround evil-jumper)
+(with-package* (evil evil-rsi evil-visualstar evil-nerd-commenter evil-args evil-matchit evil-surround evil-jumper)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-w-in-emacs-state t)
 
@@ -272,9 +271,6 @@
 (require 'init-bindings)
 
 (with-package (markdown-mode ace-jump-mode))
-
-(with-package* (symon)
-  (symon-mode))
 
 (with-package* (restclient company-restclient))
 
