@@ -278,7 +278,7 @@ ghrebasepr() {(
     | sed 's/^.*:\/\/github.com\/\(.*\)\.git/\1/')"
   PR_TITLE="$(curl -Ss "https://api.github.com/repos/${REPO_SLUG}/pulls/${PR}" \
     | grep '"title"' \
-    | $sed_cmd -E 's/.*(\[(RFC|RDY)\]) *(.*)../\3/')"
+    | $sed_cmd 's/.*(\[(RFC|RDY)\]) *(.*)../\3/')"
   #                                         ^ Trailing ", in JSON response.
 
   git fetch --all \
