@@ -552,6 +552,7 @@ let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
 set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
+set cmdheight=2
 set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
@@ -568,6 +569,7 @@ nnoremap zy  zt5<c-y>
 set noequalalways
 set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
+set shortmess+=I
 
 set nojoinspaces
 
@@ -636,6 +638,7 @@ endif
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
           \ | hi TODO                        guifg=#ffff87 gui=bold,underline
           \ | hi Underlined    guifg=NONE
+          \ | hi MatchParen    guifg=NONE   guibg=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline
           \ | endif
           \'
 
@@ -800,9 +803,9 @@ func! s:win_motion_resize(type)
   let &selection = sel_save
 endf
 
-nnoremap <silent> gwe :<C-u>set opfunc=<sid>win_motion_resize<CR>g@
+nnoremap <silent> gwe :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>g@
 " fit the current window height to the selected text
-xnoremap <silent> gwe :<C-u>set opfunc=<sid>win_motion_resize<CR>gvg@
+xnoremap <silent> gwe :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -1295,7 +1298,7 @@ func! s:matchparen_cursorcolumn_setup()
     autocmd InsertEnter * set nocursorcolumn
   augroup END
 endf
-if !&cursorcolumn
+if 0 && !&cursorcolumn
   augroup matchparen_cursorcolumn_setup
     autocmd!
     " - Add the event _only_ if matchparen is enabled.
