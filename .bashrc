@@ -18,7 +18,7 @@ if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
   }
 fi
 
-command -v nvim 2>&1 > /dev/null && EDITOR=nvim
+command -v nvim > /dev/null 2>&1 && EDITOR=nvim
 
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 

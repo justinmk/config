@@ -1175,7 +1175,8 @@ noremap! <F1> <nop>
 noremap <F1> <nop>
 
 nnoremap ZZ :xa<cr>
-nnoremap Zq :qa<cr>
+"use ctrl-w_ctrl-q instead
+"nnoremap Zq :qa<cr>
 nnoremap ZQ :qa!<cr>
 
 func! ReadExCommandOutput(newbuf, cmd)
@@ -1398,10 +1399,6 @@ xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
 nnoremap g/* mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
 xnoremap g/* mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
-nnoremap g/g mS:<c-u>grep ''<left>
-if executable("pt")
-set grepprg=pt\ --nocolor\ --nogroup\ -e\ '$*'
-endif
 
 " show :ilist or ]I results in the quickfix window
 function! s:ilist_qf(start_at_cursor)
@@ -1484,7 +1481,8 @@ endfunction
 
 " search current working directory
 nnoremap <silent> <c-p> :FZF<cr>
-nnoremap <silent> <m-p> :call fzf#run({'source':'grep -n --line-buffered --color=never -r -v "^[[:space:]]*$" *',
+
+nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
       \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
 " search current file directory
 nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
