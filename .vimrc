@@ -34,6 +34,9 @@ if has('vim_starting')
   set all&
 endif
 
+" Tell vimball to get lost.
+let g:loaded_vimballPlugin = 1
+
 if exists('&guioptions')
     "use console dialogs instead of popup dialogs; disable all other GUI options.
     set guioptions=c
