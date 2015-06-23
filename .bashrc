@@ -250,14 +250,25 @@ fi
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # fzf (https://github.com/junegunn/fzf)
-if [ -f ~/.fzf.bash ]; then
+if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
   export FZF_DEFAULT_OPTS='--multi --black -x --inline-info --no-color'
-  source ~/.fzf.bash
+
+  if command -v peco >/dev/null 2>&1 ; then
+    filterprog=peco
+  else
+    source ~/.fzf.bash
+    filterprog=fzf
+  fi
+
   fg() { # full-text search
-    grep --line-buffered --color=never -r "" * | fzf
+    if [ "$MSYSTEM" == MINGW32 ]; then
+      grep -n -r -v "^[[:space:]]*$" * | $filterprog
+    else
+      grep --line-buffered --color=never -n -r -v "^[[:space:]]*$" * | $filterprog
+    fi
   }
   f() { # includes hidden directories (except .git)
-    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | fzf
+    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | $filterprog
   }
   fd() { # change to directory
     local path="$(f '-type d')"
