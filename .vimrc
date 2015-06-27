@@ -139,9 +139,6 @@ Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 let g:sneak#streak = 1
 let g:sneak#use_ic_scs = 1
-nmap \ <Plug>SneakPrevious
-xmap \ <Plug>SneakPrevious
-omap \ <Plug>SneakPrevious
 nmap f <Plug>Sneak_f
 nmap F <Plug>Sneak_F
 xmap f <Plug>Sneak_f
@@ -549,7 +546,7 @@ set list
 set cursorline
 
 set path+=/usr/lib/gcc/**/include
-set path+=**    " Also search CWD
+set path+=**    " Search CWD recursively.
 
 let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
@@ -784,8 +781,18 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 nnoremap / ms/
 
 " manage windows
-nnoremap gw <c-w>
-nnoremap gwV :vnew<cr>
+"       [count]<c-w>s creates a [count]-sized split
+"       [count]<c-w>v creates a [count]-sized vsplit
+" user recommendation:
+"       <c-w>eip
+" available:
+"       <c-w><space>{motion}
+nnoremap <m-h> <c-w>h
+nnoremap <m-j> <c-w>j
+nnoremap <m-k> <c-w>k
+nnoremap <m-l> <c-w>l
+nnoremap c<tab> <c-w>s
+nnoremap c<s-tab> <c-w>v
 nnoremap <silent> d<tab> <c-w>c
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
@@ -802,6 +809,8 @@ func! s:win_motion_resize(type)
     "TODO: this assumes sign column is visible.
     exe ( col("']") -  col("'[") + 3) 'wincmd |'
   endif
+
+  norm! `[zt
 
   let &selection = sel_save
 endf
@@ -827,13 +836,9 @@ func! s:get_alt_winnr()
 endf
 
 " manage tabs
-"        gwT (built-in) breaks out window into new Tab.
-" TODO:
-"        {visual}gws => split with height of visual selection
-"        {visual}gwv => vsplit with width of visual selection
-"        gw<space>{motion} => size window height to {motion}
-nnoremap gwN      :tabnew<cr>
-nnoremap gwC      :tabclose<cr>
+"       gwT (built-in) breaks out window into new Tab.
+nnoremap cgt      :tabnew<cr>
+nnoremap dgt      :tabclose<cr>
 nnoremap ]gt      :tabmove +1<cr>
 nnoremap [gt      :tabmove -1<cr>
 " move tab to Nth tab position
@@ -842,8 +847,6 @@ nnoremap <expr> gT (v:count > 0 ? ':<c-u>tabmove '.(v:count - 1).'<cr>' : 'gT')
 " manage buffers
 nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
 nnoremap <silent> Zb :<c-u>call <SID>buf_kill(1)<cr>
-set wildcharm=<C-z>
-nnoremap <c-b> :buffer <C-z><S-Tab>
 
 " quickfix window
 nnoremap <silent><c-q> :silent! botright copen<cr>
@@ -1127,6 +1130,8 @@ inoremap <M-O> <C-O>O
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y"],'strftime(v:val)')+[localtime()]),0)<CR>
 
 nnoremap z. :w<cr>
+nnoremap z<space> :enew<cr>
+xnoremap z<space> :enew<cr>
 
 func! s:reload_without_jank()
   let w=winsaveview()
@@ -1389,8 +1394,9 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap <c-f> :find 
-nnoremap <c-t> :tag 
+nnoremap <c-b> :buffer<space>
+nnoremap <c-f> :find<space>
+nnoremap <c-t> :tag<space>
 nnoremap g// mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear loclist first). g: get all matches. j: no jumping.
 nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<s-left><left><left><left>
@@ -1491,17 +1497,18 @@ nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=
 nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
-nnoremap <silent> g/L mS:Unite line:buffers<cr>
+if findfile('plugin/tmuxcomplete.vim', &rtp) !=# ''
+  nnoremap <silent> g/L mS:Unite line:buffers<cr>
+else
+  nnoremap <silent> g/L mS:Unite line:buffers tmuxcomplete/lines<CR>
+  nnoremap <silent> g/W :Unite tmuxcomplete<CR>
+endif
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite -buffer-name=buffers buffer<cr>
 " auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline<cr>
 nnoremap <silent> g/t   :Unite tag <cr>
 nnoremap <silent> <m-y> :Unite history/yank<cr>
-nnoremap <silent> <m-w> :Unite tmuxcomplete<CR>
-imap     <silent> <m-w> <C-o><m-w>
-nnoremap <silent> <m-l> :Unite tmuxcomplete/lines<CR>
-imap     <silent> <m-l> <C-o><m-l>
 nnoremap <silent> <space> :Unite history/command command<CR>
 
 augroup vimrc_unite
