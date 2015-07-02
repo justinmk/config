@@ -755,8 +755,7 @@ endfunc
 
 iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
 
-"==============================================================================
-" key mappings/bindings
+" key mappings/bindings =================================================== {{{
 
 " current file directory
 noremap! <silent> <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
@@ -1225,6 +1224,11 @@ nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
 nnoremap <silent> m<enter> :UniteBookmarkAdd<cr><cr>
 "                                          ^- always choose 'default'
 nnoremap <silent> g/m :Unite bookmark<cr>
+
+
+nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
+
+" }}} mappings
 
 " python ======================================================================
 augroup vimrc_python
