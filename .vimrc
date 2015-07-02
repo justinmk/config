@@ -29,11 +29,6 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
-if has('vim_starting')
-  " ensure that we always start with Vim defaults (as opposed to the arbitrary system vimrc)
-  set all&
-endif
-
 " Tell vimball to get lost.
 let g:loaded_vimballPlugin = 1
 
@@ -319,9 +314,6 @@ Plug 'tsukkee/unite-tag'
 Plug 'Shougo/unite-mru'
 Plug 'Shougo/unite-outline'
 
-" https://gitter.im/neovim/neovim?at=5527f5b727e4ff0c43e25961
-" Delete multiple buffers:
-"   call fzf#run({'source': BufList(), 'sink': function('BufDelete'), 'options': '-m'})
 if !s:is_windows
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
 endif
@@ -376,16 +368,35 @@ runtime! plugin/sleuth.vim
 if !has("nvim")
   set ttimeout
   set ttimeoutlen=100
-  set backspace=indent,eol,start
+  set backspace=eol,start,indent
   set wildmenu
+  set display+=lastline
+  set viminfo^=!
+  set sessionoptions-=options
+
   if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j " Delete comment character when joining commented lines
   endif
   setglobal tags-=./tags tags-=./tags; tags^=./tags;
 
+  set autoindent  " Note: 'smartindent' is superseded by 'cindent' and 'indentexpr'.
+  set complete-=i
+  set smarttab    " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
+
+  set incsearch
+  set mouse=a     " Enable mouse usage (all modes)
+  set hlsearch    " highlight search matches
+
+  set autoread
+
   " Load matchit.vim, but only if the user hasn't installed a newer version.
   if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
     runtime! macros/matchit.vim
+  endif
+
+  " Allow color schemes to do bright colors without forcing bold.
+  if &t_Co == 8 && $TERM !~# '^linux'
+    set t_Co=16
   endif
 endif
 
@@ -393,11 +404,7 @@ if has('syntax') && !exists('g:syntax_on')
   syntax enable
 endif
 
-set autoindent " NOTE: 'smartindent' is superseded by 'cindent' and 'indentexpr'. 
-set complete-=i
-set smarttab
 set nrformats-=octal
-set incsearch
 
 " Use <C-L> to clear the highlighting of :set hlsearch.
 nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
@@ -405,18 +412,8 @@ nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 set laststatus=2
 set ruler
 set showcmd
-set display+=lastline
 
-set autoread
-set fileformats+=mac
 set history=10000
-set viminfo^=!
-set sessionoptions-=options
-
-" Allow color schemes to do bright colors without forcing bold.
-if &t_Co == 8 && $TERM !~# '^linux'
-  set t_Co=16
-endif
 
 inoremap <C-U> <C-G>u<C-U>
 " }}}
@@ -550,13 +547,10 @@ set path+=**    " Search CWD recursively.
 
 let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
-set mouse=a     " Enable mouse usage (all modes)
 set lazyredraw  " no redraws in macros
 set cmdheight=2
-set backspace=eol,start,indent
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
-set hlsearch   " highlight search matches
 
 "audible bell persists unless visualbell is enabled.
 set noerrorbells novisualbell t_vb= visualbell
@@ -677,7 +671,6 @@ if (v:version > 703)
   set softtabstop=-1 "use value of 'shiftwidth'
 endif
 set shiftwidth=2
-set smarttab " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
 set linebreak
 set nowrap
@@ -1365,7 +1358,7 @@ augroup vimrc_autocmd
   autocmd VimResized * wincmd =
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if &ft == ""|set ft=text|endif
-  autocmd FileType text setlocal tabstop=4 shiftwidth=4
+  autocmd FileType text setlocal tabstop=4 shiftwidth=4 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
