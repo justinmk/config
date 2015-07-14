@@ -18,8 +18,6 @@ if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
   }
 fi
 
-command -v nvim > /dev/null 2>&1 && EDITOR=nvim
-
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 
 # golang root
@@ -80,7 +78,7 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
   trap "kill $SSH_AGENT_PID" 0
 fi
 
-# Set PATH so it includes user's private bin if it exists                       
+# Set PATH so it includes user bin if it exists.
 [ -d "${HOME}/bin" ] && PATH=${HOME}/bin:${PATH}
 
 # make less more friendly for non-text input files, see lesspipe(1)
@@ -94,15 +92,16 @@ if [ "$MSYSTEM" == MINGW32 ]; then
 fi
 
 #try to find git-prompt.sh if __git_ps1 was not automatically provided.
-if ! type -t __git_ps1 &> /dev/null ; then
+if ! type -t __git_ps1 > /dev/null 2>&1 ; then
     #cygwin (non-msysgit): try to find git-prompt.sh
     gitprompt_home="`which git`/../../etc/git-prompt.sh" 
     [ -f "$gitprompt_home" ] && source "$gitprompt_home"
 fi
 
 #bash completion; this also provides __git_ps1 on some systems
-if command -v brew > /dev/null 2>&1 && [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
+if [ -f /usr/local/etc/bash_completion ]; then
+  # `brew --prefix` is horribly expensive, do not use it!
+  source /usr/local/etc/bash_completion
 elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   . /etc/bash_completion
 fi
@@ -178,10 +177,10 @@ if [[ `uname` == 'Darwin' ]]; then
     alias ls='ls -GC'
     alias su='echo "***REMINDER: verify umask" && su -l'
 
-    #MacVim: ensure Core Text renderer (improves performance)
-    defaults write org.vim.MacVim MMRenderer 2
+    if ! [ 0 -eq `defaults read -g KeyRepeat` ] ; then
+      #MacVim: ensure Core Text renderer (improves performance)
+      defaults write org.vim.MacVim MMRenderer 2
 
-    if [[ 0 == `defaults read com.apple.finder DisableAllAnimations` ]] ; then
       # Display ASCII control characters using caret notation in standard text views
       # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
       defaults write -g NSTextShowsControlCharacters -bool true
