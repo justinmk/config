@@ -279,17 +279,17 @@ if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
   }
 fi
 
-ghrebasepr() {(
-  set -e
-  set -o pipefail
-  sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
-  PR=${1}
-  REPO_SLUG="$(git config --get remote.upstream.url \
-    | sed 's/^.*:\/\/github.com\/\(.*\)\.git/\1/')"
-  PR_TITLE="$(curl -Ss "https://api.github.com/repos/${REPO_SLUG}/pulls/${PR}" \
+ghrebasepr() {
+  local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
+  local PR=${1}
+  local REPO_SLUG="$(git config --get remote.upstream.url \
+    | sed 's/^.*github.com[\/:]\(.*\)\.git/\1/')"
+  local PR_TITLE="$(curl -Ss "https://api.github.com/repos/${REPO_SLUG}/pulls/${PR}" \
     | grep '"title"' \
     | $sed_cmd 's/.*(\[(RFC|RDY)\]) *(.*)../\3/')"
   #                                         ^ Trailing ", in JSON response.
+
+  [ -z "$PR_TITLE" ] && { echo error; return 1; }
 
   git fetch --all \
     && git checkout --quiet refs/pull/upstream/${PR} \
@@ -299,7 +299,7 @@ ghrebasepr() {(
     && git reset --hard upstream/master \
     && git merge -m "Merge #${PR} '${PR_TITLE}'." --no-ff - \
     && git log --oneline --graph --decorate -n 5
-)}
+}
 
 ghrebase1() {
   local PR=${1}
