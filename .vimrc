@@ -217,7 +217,8 @@ func! s:tmux_run(creatnew, run, cmd) abort
   if a:creatnew || tbone#pane_id(".") == tbone#pane_id("bottom-right")
     Tmux split-window -d -p 33
   endif
-  call tbone#send_keys("bottom-left", "\<c-e>\<c-u>".a:cmd."\<cr>")
+  call tbone#send_keys("bottom-right",
+        \"\<c-e>\<c-u>".a:cmd.(a:run ? "\<cr>" : ""))
 endf
 command! -nargs=? -bang Trun call s:tmux_run(<bang>0, 1, <q-args>)
 
