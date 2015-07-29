@@ -250,12 +250,8 @@ Plug 'tpope/vim-fireplace'
 
 Plug 'tpope/vim-commentary'
 
-if !s:is_cygwin && has('python')
-Plug 'Valloric/MatchTagAlways'
-endif
-if !s:is_cygwin && (has('python') || has('python3'))
-Plug 'davidhalter/jedi-vim'
-endif
+Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
 " if s:is_windows && has('python') && !s:is_msysgit
 " Plug 'nosami/Omnisharp'
