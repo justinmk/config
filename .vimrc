@@ -326,31 +326,9 @@ Plug 'mattn/gist-vim'
 "Plug 'jaxbot/github-issues.vim'
 "Plug 'codegram/vim-codereview'
 
-
 Plug 'gcavallanti/vim-noscrollbar'
 
-" if !s:is_windows && (has("python") || has("python3"))
-  " Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
-  " let g:ycm_enable_diagnostic_signs = 0
-  " let g:ycm_always_populate_location_list = 1
-if has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
-  Plug 'Shougo/neocomplete.vim'
-
-  let g:neocomplete#enable_omni_fallback = 1
-  let g:neocomplete#enable_at_startup = 1
-  let g:neocomplete#enable_smart_case = 1
-  inoremap <expr> <cr>  pumvisible() && exists("*neocomplete#close_popup") ? neocomplete#close_popup() : "\<cr>"
-
-  " let force = get(g:, 'neocomplete#force_omni_input_patterns', {})
-  let omni = get(g:, 'neocomplete#sources#omni#input_patterns', {})
-  let g:neocomplete#sources#omni#input_patterns = omni
-  let omni.go  = '[^.[:digit:] *\t]\.\w*'
-  let omni.sql = '[^.[:digit:] *\t]\%(\.\)\%(\h\w*\)\?'
-  let omni.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-  let omni.cs = '.*[^=\);]'
-else
-  Plug 'ajh17/VimCompletesMe'
-endif
+Plug 'ajh17/VimCompletesMe'
 
 call plug#end()
 
