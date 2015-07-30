@@ -779,8 +779,7 @@ nnoremap <m-h> <c-w>h
 nnoremap <m-j> <c-w>j
 nnoremap <m-k> <c-w>k
 nnoremap <m-l> <c-w>l
-nnoremap c<tab> <c-w>s
-nnoremap c<s-tab> <c-w>v
+nnoremap <c-w>N :vnew<cr>
 nnoremap <silent> d<tab> <c-w>c
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
@@ -803,9 +802,9 @@ func! s:win_motion_resize(type)
   let &selection = sel_save
 endf
 
-nnoremap <silent> gwe :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>g@
+nnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>g@
 " fit the current window height to the selected text
-xnoremap <silent> gwe :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
+xnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -1488,6 +1487,7 @@ nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=
       \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
 " search current file directory
 nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
+" TODO: https://github.com/junegunn/fzf/wiki/Examples-(vim)#jump-to-tags-in-the-current-buffer
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
 if findfile('plugin/tmuxcomplete.vim', &rtp) !=# ''
