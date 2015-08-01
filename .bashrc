@@ -86,7 +86,7 @@ fi
 
 # msysgit cygwin
 # if [[ $TERM == 'cygwin' && $OSTYPE == 'msys' ]] ; then
-if [ "$MSYSTEM" == MINGW32 ]; then
+if [ "$MSYSTEM" = MINGW32 ]; then
     export LS_COLORS='di=01;36'
     alias pt='pt --nocolor'
 fi
@@ -253,21 +253,21 @@ if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
   export FZF_DEFAULT_OPTS='--multi --black -x --inline-info --no-color'
 
   if command -v peco >/dev/null 2>&1 ; then
-    filterprog=peco
+    _fzfprog=peco
   else
     source ~/.fzf.bash
-    filterprog=fzf
+    _fzfprog=fzf
   fi
 
   fg() { # full-text search
-    if [ "$MSYSTEM" == MINGW32 ]; then
-      grep -n -r -v "^[[:space:]]*$" * | $filterprog
+    if [ "$MSYSTEM" = MINGW32 ]; then
+      grep -n -r -v "^[[:space:]]*$" * | $_fzfprog
     else
-      grep --line-buffered --color=never -n -r -v "^[[:space:]]*$" * | $filterprog
+      grep --line-buffered --color=never -n -r -v "^[[:space:]]*$" * | $_fzfprog
     fi
   }
   f() { # includes hidden directories (except .git)
-    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/..// | $filterprog
+    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/^..// | $_fzfprog
   }
   fd() { # change to directory
     local path="$(f '-type d')"
