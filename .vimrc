@@ -533,7 +533,6 @@ set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
 nnoremap coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable foldmethod=manual <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
-nnoremap zy  zt5<c-y>
 set noequalalways
 set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
@@ -817,6 +816,9 @@ nnoremap <silent> Zb :<c-u>call <SID>buf_kill(1)<cr>
 nnoremap <silent><c-q> :silent! botright copen<cr>
 " location window
 " nnoremap q] :botright lopen<cr>
+
+nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
+nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 
 nnoremap <silent> ^ :Dirvish %:p:h<cr>
 " set working directory to the current buffer's directory
