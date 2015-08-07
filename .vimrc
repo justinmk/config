@@ -1330,7 +1330,7 @@ augroup vimrc_autocmd
     "   lclose
     " endif
   endf
-  autocmd BufWinEnter quickfix nnoremap <buffer> <c-p> <up>
+  autocmd FileType qf nnoremap <buffer> <c-p> <up>
         \|nnoremap <buffer> <c-n> <down>
         \|nnoremap <silent><buffer> q :call <sid>close_qflist()<cr>
 
