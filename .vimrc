@@ -1513,6 +1513,66 @@ if s:plugins
   set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#ErrorMsg#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %y\ %-10.(%l,%c%V%)
 endif
 
+" Slides plugin {{{
+func! SlidesStatusline()
+  " echo substitute(substitute(expand('%:p:t:r'), '\v(\d+-)|_', ' ', 'g'), '\v(\W)(\w)', '\=submatch(1).toupper(submatch(2))', 'g')
+  let section_dot_subsection = substitute(expand('%:p:t:r'), '\v(\d+)-(\d+).*', '\=(0+submatch(1)).".".(0+submatch(2))', '')
+  let title  = substitute(expand('%:p:t:r'), '\v(\d+-)|_', ' ', 'g')
+  if len(section_dot_subsection) < 6
+    "pad with leading spaces
+    let section_dot_subsection = repeat(' ', 7 - len(section_dot_subsection))
+          \ . section_dot_subsection
+  endif
+  return section_dot_subsection.'        '.title
+endf
+func! StartSlides()
+  let g:oldstatusline = get(g:, 'oldstatusline', &statusline)
+  let g:oldguifont = get(g:, 'oldguifont', &guifont)
+  set statusline=%{SlidesStatusline()}
+  set guifont=Consolas:h32 cmdheight=1 nocursorline background=light
+
+  autocmd! BufReadPost
+
+  hi Normal guibg=white guifg=black
+  hi StatusLine guibg=#000000 guifg=#ffffff
+
+  nmap <right> ]f:echo ''<bar>redraw<cr>
+  nmap <left>  [f:echo ''<bar>redraw<cr>
+  sign unplace *
+  augroup vimrc_slides
+    autocmd!
+    autocmd BufEnter,WinEnter * set colorcolumn=54,67 textwidth=66 | silent! call sy#stop(bufnr('%'))
+    autocmd SwapExists * let v:swapchoice='e'
+  augroup END
+
+  "faster ]f [f
+  set noshelltemp
+endf
+func! EditSlides()
+  cd ~/Desktop/git_slides/
+
+  silent! let &statusline = g:oldstatusline
+  silent! let &guifont = g:oldguifont
+  hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
+  sign define limit  text== texthl=SlidesSign
+
+  augroup vimrc_slides
+    autocmd!
+    autocmd BufEnter,WinEnter * set colorcolumn=54,67 textwidth=53
+    autocmd TextChanged,TextChangedI * exe 'sign unplace *'
+          \ |exe 'sign place 123 line=14 name=limit buffer='.bufnr('%')
+          \ |exe 'sign place 124 line=17 name=limit buffer='.bufnr('%')
+    autocmd User DirvishEnter map <buffer> <down> jpp<c-w>p|map <buffer> <up> kpp<c-w>p
+  augroup END
+
+  hi ColorColumn guibg=#555555 guifg=#ffffff
+  set cmdheight=2
+
+  "faster ]f [f
+  set noshelltemp
+endf
+" }}}
+
 set title
 set titlestring=%{getcwd()}
 set titleold=?
