@@ -1516,7 +1516,7 @@ endif "}}}
 if s:plugins
   hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
   hi StatusLineRO  guibg=red   guifg=white    ctermbg=12 ctermfg=15 gui=bold cterm=bold
-  set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#StatusLineRO#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{VimrcNoscrollbar(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
+  set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#StatusLineRO#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
 endif
 
 " Slides plugin {{{
