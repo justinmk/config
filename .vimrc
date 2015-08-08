@@ -1339,9 +1339,6 @@ augroup vimrc_autocmd
   " Jump to the last position when reopening a file (except Git commit)
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
-  " force windows to be sized equally after viewport resize
-  autocmd VimResized * wincmd =
-
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if &ft == ""|set ft=text|endif
   autocmd FileType text setlocal tabstop=4 shiftwidth=4 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
