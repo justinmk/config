@@ -1473,7 +1473,7 @@ nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
 " TODO: https://github.com/junegunn/fzf/wiki/Examples-(vim)#jump-to-tags-in-the-current-buffer
 nnoremap <silent> g/f   :Unite function<cr>
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
-if findfile('plugin/tmuxcomplete.vim', &rtp) !=# ''
+if findfile('plugin/tmuxcomplete.vim', &rtp) ==# ''
   nnoremap <silent> g/L mS:Unite line:buffers<cr>
 else
   nnoremap <silent> g/L mS:Unite line:buffers tmuxcomplete/lines<CR>
