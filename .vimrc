@@ -752,8 +752,8 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 nnoremap / ms/
 
 " manage windows
-"       [count]<c-w>s creates a [count]-sized split
-"       [count]<c-w>v creates a [count]-sized vsplit
+"       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
+"       [count]<c-w>| and [count]<c-w>_ resize the current window
 " user recommendation:
 "       <c-w>eip
 " available:
@@ -774,18 +774,16 @@ func! s:win_motion_resize(type)
 
   if a:type ==# 'line' || line("']") > line("'[")
     exe (line("']") - line("'[") + 1) 'wincmd _'
+    norm! `[zt
   endif
   if a:type !=# 'line'
     "TODO: this assumes sign column is visible.
     exe ( col("']") -  col("'[") + 3) 'wincmd |'
   endif
 
-  norm! `[zt
-
   let &selection = sel_save
 endf
 
-nnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>g@
 " fit the current window height to the selected text
 xnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
 
