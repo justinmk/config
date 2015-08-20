@@ -7,7 +7,7 @@
 # Environment variables (non-bash-specific)
 # =============================================================================
 
-if [[ "$MSYSTEM" != MINGW32 && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
+if [[ "$MSYSTEM" != MINGW* && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
   umask 0077
 
   sudo() {
@@ -170,7 +170,7 @@ fi
 #MacOS
 # http://stackoverflow.com/q/394230/152142
 #   also: $OSTYPE
-if [[ `uname` == 'Darwin' ]]; then
+if [[ "$(uname)" == Darwin ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
 
     #BSD-style aliases 

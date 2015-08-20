@@ -45,8 +45,10 @@ let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
+let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
-let s:plugins=filereadable(expand("~/.vim/autoload/plug.vim", 1))
+let s:plugins = filereadable(expand("~/.vim/autoload/plug.vim", 1))
+let s:plugins_fluff = !s:is_msys && s:plugins
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -122,7 +124,6 @@ call plug#begin('~/.vim/bundle')
 Plug 'tomasr/molokai'
 
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'
 
 Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
@@ -157,28 +158,11 @@ Plug 'wellle/tmux-complete.vim'
 let g:tmuxcomplete#trigger = ''
 endif
 
-"TODO: dbext bugs:
-"   - dbext BufRead handler adds `gg` to jumplist. steps:
-"       :h h
-"       :h a
-"       <c-o>
-"   - does not honor g:dbext_default_usermaps
-Plug 'dbext.vim', { 'on': [ 'DBExecRangeSQL', 'DBExecVisualSQL'  ] }
-" dbext profile example:
-"   let g:dbext_default_profile = 'default'
-"   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\120\Tools\Binn'
-let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
-let g:dbext_default_history_size = 1000
-let g:dbext_default_history_max_entry = 10*1024
-let g:dbext_default_usermaps = 0
-
-Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
-Plug 'kmnk/vim-unite-giti'
 
 Plug 'tpope/vim-surround'
 let g:surround_indent = 1
@@ -229,107 +213,129 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-jdaddy'
-Plug 'chrisbra/vim-diff-enhanced'
-Plug 'zhaocai/DirDiff.vim'
 Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
-Plug 'kana/vim-textobj-entire'
 Plug 'gaving/vim-textobj-argument'
 
-Plug 'guns/vim-sexp'
-Plug 'guns/vim-clojure-highlight'
-let g:clojure_fold = 1
-let g:sexp_filetypes = ''
-
-Plug 'tpope/vim-salve'
-let g:salve_auto_start_repl = 1
-Plug 'tpope/vim-fireplace'
-
 Plug 'tpope/vim-commentary'
-
-Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-Plug 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
-" if s:is_windows && has('python') && !s:is_msysgit
-" Plug 'nosami/Omnisharp'
-" endif
-
-Plug 'tpope/vim-projectionist'
-" look at derekwyatt/vim-fswitch for more C combos.
-let g:projectionist_heuristics = {
-      \  '*.sln': {
-      \    '*.cs': {'alternate': ['{}.designer.cs']},
-      \    '*.designer.cs': {'alternate': ['{}.cs']},
-      \  },
-      \  '/*.c|src/*.c': {
-      \    '*.c': {'alternate': ['../include/{}.h', '{}.h']},
-      \    '*.h': {'alternate': '{}.c'},
-      \  },
-      \  'Makefile': {
-      \    '*Makefile': {'alternate': '{dirname}CMakeLists.txt'},
-      \    '*CMakeLists.txt': {'alternate': '{dirname}Makefile'},
-      \  },
-      \}
-
-Plug 'embear/vim-localvimrc'
-let g:localvimrc_sandbox = 0
-let g:localvimrc_name = [".lvimrc", "contrib/localvimrc/lvimrc"]
-" let g:localvimrc_whitelist = escape(expand('~'), '\').'\.lvimrc'
-let g:localvimrc_persistent = 1
-
-
-Plug 'PProvost/vim-ps1'
-Plug 'pangloss/vim-javascript'
-Plug 'leafo/moonscript-vim'
-Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
-" Plug 'chrisbra/Recover.vim'
-Plug 'osyo-manga/vim-over'
-
-Plug 'inside/vim-search-pulse'
-let g:vim_search_pulse_mode = 'pattern'
-let g:vim_search_pulse_disable_auto_mappings = 1
-let g:vim_search_pulse_color_list = ["red", "white"]
-let g:vim_search_pulse_duration = 200
-nmap n n<Plug>Pulse
-nmap N N<Plug>Pulse
 
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
 
-if exists("$GOPATH")
-Plug 'Blackrush/vim-gocode'
-endif
-
-Plug 'Keithbsmiley/investigate.vim'
-Plug 'Shougo/unite.vim'
-Plug 'thinca/vim-unite-history'
-Plug 'tsukkee/unite-tag'
-Plug 'Shougo/unite-mru'
-Plug 'Shougo/unite-outline'
-
-if !s:is_windows
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
-endif
-
-Plug 'junegunn/vader.vim'
-Plug 'junegunn/vim-easy-align'
-vmap z; <Plug>(EasyAlign)
-nmap z; <Plug>(EasyAlign)
-
-Plug 'ryanss/vim-hackernews'
-Plug 'junegunn/vim-github-dashboard'
-Plug 'mattn/webapi-vim'
-Plug 'mattn/gist-vim'
-"Plug 'jaxbot/github-issues.vim'
-"Plug 'codegram/vim-codereview'
-
-Plug 'gcavallanti/vim-noscrollbar'
-
 Plug 'ajh17/VimCompletesMe'
+
+if s:plugins_fluff
+  "TODO: dbext bugs:
+  "   - dbext BufRead handler adds `gg` to jumplist. steps:
+  "       :h h
+  "       :h a
+  "       <c-o>
+  "   - does not honor g:dbext_default_usermaps
+  Plug 'dbext.vim', { 'on': [ 'DBExecRangeSQL', 'DBExecVisualSQL'  ] }
+  " dbext profile example:
+  "   let g:dbext_default_profile = 'default'
+  "   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\120\Tools\Binn'
+  let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
+  let g:dbext_default_history_size = 1000
+  let g:dbext_default_history_max_entry = 10*1024
+  let g:dbext_default_usermaps = 0
+
+  Plug 'majutsushi/tagbar'
+
+  Plug 'guns/vim-sexp'
+  Plug 'guns/vim-clojure-highlight'
+  let g:clojure_fold = 1
+  let g:sexp_filetypes = ''
+
+  Plug 'tpope/vim-salve'
+  let g:salve_auto_start_repl = 1
+  Plug 'tpope/vim-fireplace'
+
+  Plug 'chrisbra/vim-diff-enhanced'
+  Plug 'zhaocai/DirDiff.vim'
+
+  Plug 'PProvost/vim-ps1'
+  Plug 'pangloss/vim-javascript'
+  Plug 'leafo/moonscript-vim'
+  Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
+  " Plug 'chrisbra/Recover.vim'
+  Plug 'osyo-manga/vim-over'
+
+  Plug 'inside/vim-search-pulse'
+  let g:vim_search_pulse_mode = 'pattern'
+  let g:vim_search_pulse_disable_auto_mappings = 1
+  let g:vim_search_pulse_color_list = ["red", "white"]
+  let g:vim_search_pulse_duration = 200
+  nmap n n<Plug>Pulse
+  nmap N N<Plug>Pulse
+
+  Plug 'ryanss/vim-hackernews'
+  Plug 'junegunn/vim-github-dashboard'
+  Plug 'mattn/webapi-vim'
+  Plug 'mattn/gist-vim'
+  "Plug 'jaxbot/github-issues.vim'
+  "Plug 'codegram/vim-codereview'
+  Plug 'gcavallanti/vim-noscrollbar'
+
+  Plug 'junegunn/vim-easy-align'
+  vmap z; <Plug>(EasyAlign)
+  nmap z; <Plug>(EasyAlign)
+
+  Plug 'junegunn/vader.vim'
+
+  if !s:is_windows && !s:is_msys
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
+  endif
+
+  Plug 'Shougo/unite.vim'
+  Plug 'Shougo/unite-outline'
+  Plug 'Shougo/unite-mru'
+  Plug 'tsukkee/unite-tag'
+  Plug 'thinca/vim-unite-history'
+  Plug 'kmnk/vim-unite-giti'
+  Plug 'Keithbsmiley/investigate.vim'
+  if exists("$GOPATH")
+    Plug 'Blackrush/vim-gocode'
+  endif
+
+  Plug 'tpope/vim-projectionist'
+  " look at derekwyatt/vim-fswitch for more C combos.
+  let g:projectionist_heuristics = {
+        \  '*.sln': {
+        \    '*.cs': {'alternate': ['{}.designer.cs']},
+        \    '*.designer.cs': {'alternate': ['{}.cs']},
+        \  },
+        \  '/*.c|src/*.c': {
+        \    '*.c': {'alternate': ['../include/{}.h', '{}.h']},
+        \    '*.h': {'alternate': '{}.c'},
+        \  },
+        \  'Makefile': {
+        \    '*Makefile': {'alternate': '{dirname}CMakeLists.txt'},
+        \    '*CMakeLists.txt': {'alternate': '{dirname}Makefile'},
+        \  },
+        \}
+
+  Plug 'embear/vim-localvimrc'
+  let g:localvimrc_sandbox = 0
+  let g:localvimrc_name = [".lvimrc", "contrib/localvimrc/lvimrc"]
+  " let g:localvimrc_whitelist = escape(expand('~'), '\').'\.lvimrc'
+  let g:localvimrc_persistent = 1
+
+  Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
+  Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+  if !s:is_msys
+  Plug 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
+  endif
+  " if s:is_windows && has('python') && !s:is_msysgit
+  " Plug 'nosami/Omnisharp'
+  " endif
+
+  Plug 'thinca/vim-quickrun'
+endif
 
 call plug#end()
 
@@ -582,6 +588,9 @@ endif
 
 "colorscheme {{{
   call matchadd('ColorColumn', '\%81v', 100)
+  if s:is_msys
+    let &t_Co = 256
+  endif
 
   if !s:is_gui && &t_Co <= 88
     hi CursorLine ctermfg=white
@@ -1425,7 +1434,7 @@ if s:is_windows
   set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*\\AppData\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo,*.ntuser,*.blf,*.dat,*.regtrans-ms
 endif
 
-if s:plugins "unite.vim =============================================== {{{
+if s:plugins_fluff "unite.vim =============================================== {{{
 call unite#custom#profile('files', 'filters', 'sorter_rank')
 call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
 
@@ -1508,7 +1517,7 @@ endif "}}}
 
 " statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
-if s:plugins
+if s:plugins_fluff
   hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
   hi StatusLineRO  guibg=red   guifg=white    ctermbg=12 ctermfg=15 gui=bold cterm=bold
   set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#StatusLineRO#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
