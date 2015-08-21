@@ -1377,7 +1377,7 @@ augroup END
 
 nnoremap <c-b> :buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
-nnoremap <c-f> :find **/
+nnoremap <c-f> :edit **/
 nnoremap <c-t> :tag<space>
 nnoremap g// mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear loclist first). g: get all matches. j: no jumping.
