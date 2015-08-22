@@ -81,6 +81,11 @@ else
             \ <m-]>=]
   endif
 
+  " may affect performance: https://github.com/tpope/vim-sensible/issues/57
+  " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
+  " let &showbreak="\u21aa" " precedes line wrap
+  set listchars=tab:>\ ,trail:-,nbsp:+
+
   if has('vim_starting') && s:is_windows
     set runtimepath+=~/.vim/
   endif
@@ -510,15 +515,6 @@ let g:mapleader = "z,"
 
 try | lang en_US | catch | endtry
 
-if !s:is_msysgit && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
-  let &listchars = "tab:\u25b8 ,trail:\u25ab,extends:>,precedes:<,nbsp:+"
-
-  " may affect performance: https://github.com/tpope/vim-sensible/issues/57
-  " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-  " let &showbreak="\u21aa" " precedes line wrap
-else
-  set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-endif
 set list
 
 set cursorline
@@ -1420,7 +1416,6 @@ nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 " Don't scan includes; tags file is more performant.
 set complete-=i
 set completeopt-=preview
-set completeopt+=longest
 
 set wildmode=full
 "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
@@ -1631,7 +1626,7 @@ command! NvimCtags      call jobstart("ctags", 'ctags',
       \ , '-I', 'FUNC_ATTR_NONNULL_ARG+'
       \ , '-I', 'FUNC_ATTR_NONNULL_RET'
       \ , '.'])
-command! NvimGDB      call s:tmux_run(1, 0, 'gdb -q -tui '.v:progpath.' PID_HERE')
+command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
