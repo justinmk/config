@@ -384,18 +384,18 @@ if !has("nvim")
   if &t_Co == 8 && $TERM !~# '^linux'
     set t_Co=16
   endif
+
+  set nrformats-=octal
 endif
 
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
 endif
 
-set nrformats-=octal
-
 " Use <C-L> to clear the highlighting of :set hlsearch.
 nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 
-set laststatus=2
+set laststatus=1
 set ruler
 set showcmd
 
