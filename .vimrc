@@ -222,6 +222,8 @@ Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
+
+" TODO: https://github.com/vheon/home/blob/master/.vim/plugin/text-object-entire.vim
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
 Plug 'gaving/vim-textobj-argument'
@@ -386,6 +388,7 @@ if !has("nvim")
   endif
 
   set nrformats-=octal
+  set laststatus=2
 endif
 
 if has('syntax') && !exists('g:syntax_on')
@@ -395,8 +398,6 @@ endif
 " Use <C-L> to clear the highlighting of :set hlsearch.
 nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 
-set laststatus=1
-set ruler
 set showcmd
 
 set history=10000
@@ -613,7 +614,6 @@ endif
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
-          \ | hi TODO                        guifg=#ffff87 gui=bold,underline
           \ | hi Underlined    guifg=NONE
           \ | hi MatchParen    guifg=NONE   guibg=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline
           \ | endif
