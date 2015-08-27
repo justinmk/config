@@ -164,7 +164,7 @@ let g:tmuxcomplete#trigger = ''
 endif
 
 Plug 'tpope/vim-characterize'
-Plug 'tpope/vim-sleuth'
+" Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
@@ -530,7 +530,7 @@ set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 
 "audible bell persists unless visualbell is enabled.
-set noerrorbells novisualbell t_vb= visualbell
+set noerrorbells novisualbell t_vb=
 
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
@@ -603,7 +603,6 @@ endif
     let s:color_override_dark = '
           \ if &background == "dark"
           \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
-          \ | hi Comment       guifg=#afafaf               gui=NONE  ctermfg=102               cterm=NONE
           \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE
           \ | hi CursorLine    guibg=#293739 ctermbg=236
           \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
@@ -660,16 +659,6 @@ set nowrap
 
 " =============================================================================
 " util functions
-
-func! s:trim_whitespace()
-  let s=@/
-  let w=winsaveview()
-  s/\s\+$//ge
-  call histdel("/", histnr("/"))
-  call winrestview(w)
-  let @/=s
-endfunc
-command! -range=% Trim <line1>,<line2>call s:trim_whitespace()
 
 " http://www.vim.org/scripts/script.php?script_id=1714
 " - uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
@@ -730,14 +719,9 @@ func! s:delete_until()
   return substitute(getcmdline(), '\(.*['.escape(c, '\').']\).*', '\1', '')
 endfunc
 
-
-" abbreviations ===============================================================
-
-iabbrev date- <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
-
 " key mappings/bindings =================================================== {{{
 
-" current file directory
+" current-file directory
 noremap! <silent> <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
 
 inoremap z,   <c-o>
@@ -912,6 +896,61 @@ endfunction
 nmap     Ub :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
 "                                            ^^
 " Get the repo-relative path with fugitive's CTRL-R_CTRL-G
+
+func! Fugitive_browse_cwsrc2(o) "https://github.com/tommcdo/vim-fubitive/blob/master/plugin/fubitive.vim
+  if a:0 || type(a:o) != type({})
+    return ''
+  endif
+  let path = a:o.path
+  let domain_pattern = 'cwsrc2'
+  let repo = matchstr(a:o.remote,'^\%(https\=://\|git://\|\(ssh://\)\=git@\)\zs\('.domain_pattern.'\)[/:].\{-\}\ze\%(\.git\)\=$')
+  let repo = substitute(repo, '^cwsrc2:', '', '')
+  if repo ==# ''
+    return ''
+  endif
+  let root = 'http://cwsrc2/' . repo
+  if path =~# '^\.git/refs/heads/'
+    let branch = a:o.repo.git_chomp('config','branch.'.path[16:-1].'.merge')[11:-1]
+    if branch ==# ''
+      return root . '/commits/' . path[16:-1]
+    else
+      return root . '/commits/' . branch
+    endif
+  elseif path =~# '^\.git/refs/.'
+    return root . '/commits/' . matchstr(path,'[^/]\+$')
+  elseif path =~# '.git/\%(config$\|hooks\>\)'
+    return root . '/admin'
+  elseif path =~# '^\.git\>'
+    return root
+  endif
+  if a:o.revision =~# '^[[:alnum:]._-]\+:'
+    let commit = matchstr(a:o.revision,'^[^:]*')
+  elseif a:o.commit =~# '^\d\=$'
+    let local = matchstr(a:o.repo.head_ref(),'\<refs/heads/\zs.*')
+    let commit = a:o.repo.git_chomp('config','branch.'.local.'.merge')[11:-1]
+    if commit ==# ''
+      let commit = local
+    endif
+  else
+    let commit = a:o.commit
+  endif
+  if a:o.type == 'tree'
+    let url = s:sub(root . '/tree/' . commit . '/' . path,'/$','')
+  elseif a:o.type == 'blob'
+    let url = root . '/blob/' . commit . '/' . path
+    if get(a:o, 'line1')
+      let url .= '#cl-' . a:o.line1
+    endif
+  elseif a:o.type == 'tag'
+    let commit = matchstr(getline(3),'^tag \zs.*')
+    let url = root . '/tree/' . commit
+  else
+    let url = root . '/commit/' . commit
+  endif
+  return url
+endf
+let g:fugitive_browse_handlers = [ function('Fugitive_browse_cwsrc2') ]
+
 
 
 " :help :DiffOrig
@@ -1600,6 +1639,7 @@ endif
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
 nnoremap <leader>vv   :e ~/.vimrc<cr>
+command! DateInsert   norm! a<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
