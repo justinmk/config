@@ -671,13 +671,6 @@ func! s:trim_whitespace()
 endfunc
 command! -range=% Trim <line1>,<line2>call s:trim_whitespace()
 
-func! AppendToFile(file, lines)
-  let l:file = expand(a:file, 1)
-  call EnsureFile(l:file)
-  "credit ZyX: http://stackoverflow.com/a/8976314/152142
-  call writefile(readfile(l:file)+a:lines, l:file)
-endf
-
 " http://www.vim.org/scripts/script.php?script_id=1714
 " - uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
 " - only updates if the buffer is visible.
