@@ -156,7 +156,7 @@ nnoremap q[ :vsc TestExplorer.ShowTestExplorer<cr>
 nnoremap q] :vsc View.ErrorList<cr>
 
 nnoremap gof :vsc File.OpenContainingFolder<cr>
-nnoremap got :vsc Tools.ExternalCommand8<cr>
+nnoremap got :vsc Tools.ExternalCommand2<cr>
 " toggle 'Track Active Item in Solution Explorer' option
 nnoremap cos :vsc View.TrackActivityinSolutionExplorer<cr>
 " highlight active file in Solution Explorer (VS 2012+)

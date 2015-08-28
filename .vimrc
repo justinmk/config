@@ -744,6 +744,7 @@ nnoremap <m-j> <c-w>j
 nnoremap <m-k> <c-w>k
 nnoremap <m-l> <c-w>l
 nnoremap <c-w>N :vnew<cr>
+nnoremap <silent> c<tab> <c-w>s
 nnoremap <silent> d<tab> <c-w>c
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
@@ -794,8 +795,7 @@ nnoremap [gt      :tabmove -1<cr>
 nnoremap <expr> gT (v:count > 0 ? ':<c-u>tabmove '.(v:count - 1).'<cr>' : 'gT')
 
 " manage buffers
-nnoremap <silent> ZB :<c-u>call <SID>buf_kill(0)<cr>
-nnoremap <silent> Zb :<c-u>call <SID>buf_kill(1)<cr>
+nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 
 " quickfix window
 nnoremap <silent><c-q> :silent! botright copen<cr>
@@ -1045,7 +1045,7 @@ func! s:buf_kill(mercy)
   let l:origbuf = bufnr("%")
   let l:origbufname = bufname(l:origbuf)
   if a:mercy && &modified
-    echom 'buffer has unsaved changes (use "ZB" to override)'
+    echom 'buffer has unsaved changes (use "[count]ZB" to discard changes)'
     return
   endif
 
@@ -1189,10 +1189,10 @@ inoremap <Up>   <C-o>gk
 noremap! <F1> <nop>
 noremap <F1> <nop>
 
-nnoremap ZZ :xa<cr>
-"use ctrl-w_ctrl-q instead
-"nnoremap Zq :qa<cr>
-nnoremap ZQ :qa!<cr>
+nnoremap <expr> <c-w><c-q>  (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
+nnoremap <expr> <c-w>q      (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
+nnoremap <expr> ZZ          (v:count ? ':<c-u>xa!<cr>' : '@_ZZ')
+nnoremap <expr> ZQ          (v:count ? ':<c-u>qa!<cr>' : '@_ZQ')
 
 func! ReadExCommandOutput(newbuf, cmd)
   redir => l:message
@@ -1639,7 +1639,8 @@ endif
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
 nnoremap <leader>vv   :e ~/.vimrc<cr>
-command! DateInsert   norm! a<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
+command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
+command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
