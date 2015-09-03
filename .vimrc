@@ -588,10 +588,8 @@ endif
     let &t_Co = 256
   endif
 
-  if !s:is_gui && &t_Co <= 88
-    hi CursorLine ctermfg=white
-    hi Comment ctermfg=7
-    hi PreProc ctermfg=10
+  if (!s:is_gui && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
+    silent! colorscheme ron
   else
     let s:color_override = '
           \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
