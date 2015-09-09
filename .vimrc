@@ -591,17 +591,9 @@ endif
   if (!s:is_gui && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
     silent! colorscheme ron
   else
-    let s:color_override = '
-          \   hi Visual        guifg=#000000 guibg=#CBF8B0 gui=NONE ctermfg=000 ctermbg=193 cterm=none
-          \ | hi VisualNOS     term=bold,underline cterm=bold,underline ctermbg=23 gui=bold,underline guibg=#007475
-          \ | hi ColorColumn   guifg=#000000 guibg=#ffffff ctermbg=15 ctermfg=16
-          \'
-
-    " guibg=LimeGreen ctermbg=154
     let s:color_override_dark = '
           \ if &background == "dark"
           \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
-          \ | hi Cursor        guibg=#0a9dff guifg=white   gui=NONE
           \ | hi CursorLine    guibg=#293739 ctermbg=236
           \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
           \ | hi PmenuSbar     guibg=#857f78
@@ -611,13 +603,11 @@ endif
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
-          \ | hi Underlined    guifg=NONE
           \ | hi MatchParen    guifg=NONE   guibg=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline
           \ | endif
           \'
 
     if has('vim_starting') "only on startup
-      exe 'autocmd ColorScheme * '.s:color_override
       exe 'autocmd ColorScheme * '.s:color_override_dark
       " expects &runtimepath/colors/{name}.vim.
       silent! colorscheme molokai
@@ -975,7 +965,7 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-\ c-g
-"   normal: c-j c-k + _ c-\ g= zu z/ m<enter> zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 "           1j 1k 1...
 "           c<space> --> easyalign
 "           !@       --> async run
@@ -1639,6 +1629,7 @@ nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
 nnoremap <leader>vv   :e ~/.vimrc<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
+command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
 command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
 command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
