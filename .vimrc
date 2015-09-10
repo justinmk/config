@@ -611,9 +611,6 @@ endif
       exe 'autocmd ColorScheme * '.s:color_override_dark
       " expects &runtimepath/colors/{name}.vim.
       silent! colorscheme molokai
-      if !(s:is_gui || s:is_mac || s:is_cygwin)
-        exe s:color_override
-      endif
     endif
   endif
 
