@@ -31,6 +31,11 @@
 
 " Tell vimball to get lost.
 let g:loaded_vimballPlugin = 1
+let g:loaded_getscriptPlugin = 1
+let g:loaded_rrhelper = 1
+
+let g:python_host_skip_check = 1
+let g:python3_host_skip_check = 1
 
 if exists('&guioptions')
     "use console dialogs instead of popup dialogs; disable all other GUI options.
@@ -60,7 +65,7 @@ let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gu
 
 if has("nvim")
   if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
-    echoerr "Missing .nvim/ or .nvimrc"
+    echomsg "Missing .nvim/ or .nvimrc"
   endif
 
   tnoremap <esc><esc> <c-\><c-n>
@@ -334,9 +339,6 @@ if s:plugins_fluff
 
   Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
   Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-  if !s:is_msys
-  Plug 'OrangeT/vim-csharp' "should come _before_ omnisharp for better syntax
-  endif
   " if s:is_windows && has('python') && !s:is_msysgit
   " Plug 'nosami/Omnisharp'
   " endif
@@ -1178,6 +1180,7 @@ nnoremap <expr> <c-w><c-q>  (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> <c-w>q      (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> ZZ          (v:count ? ':<c-u>xa!<cr>' : '@_ZZ')
 nnoremap <expr> ZQ          (v:count ? ':<c-u>qa!<cr>' : '@_ZQ')
+nnoremap <expr> <c-w>=      (v:count ? ':<c-u>windo set nowinfixheight nowinfixwidth<cr><c-w>=' : '@_<c-w>=')
 
 func! ReadExCommandOutput(newbuf, cmd)
   redir => l:message
