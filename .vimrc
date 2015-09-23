@@ -48,7 +48,6 @@ endif
 
 let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
-let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
 let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
@@ -572,14 +571,6 @@ if s:is_windows
     if has("directx")
       set renderoptions=type:directx
     endif
-elseif s:is_mac && s:is_gui
-    set macmeta " Use option (alt) as meta key.
-
-    " macvim options  :view $VIM/gvimrc
-    let macvim_skip_colorscheme=1
-    let macvim_skip_cmd_opt_movement=1
-
-    set guifont=Menlo:h14 "Monaco:h16
 elseif s:is_gui "linux or other
     set guifont=Monospace\ 10
 endif
@@ -1474,8 +1465,6 @@ call extend(unite#get_all_sources('file_rec')['ignore_globs'], split(&wildignore
 call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['*.jar', '*.jpg', '*.gif', '*.png'])
 if s:is_windows
   call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['AppData/*'])
-elseif s:is_mac
-  call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['Library/*'])
 endif
 " don't track help files in MRU list
 call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
