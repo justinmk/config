@@ -801,11 +801,11 @@ nnoremap cU :cd ..<bar>pwd<cr>
 
 if findfile('plugin/fugitive.vim', &rtp) !=# ''
   " show git branch with ctrl-g info
-  func! s:ctrl_g()
+  func! s:ctrl_g(cnt) abort
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
-    echo fugitive#head(7) msg[2:]
+    echo fugitive#head(7) msg[2:] (a:cnt?strftime('%Y-%m-%d %H:%M',getftime(expand('%:p'))):'')
   endf
-  nnoremap <C-g> :call <sid>ctrl_g()<cr>
+  nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
 
 " show the working directory and session
@@ -1650,6 +1650,7 @@ command! NvimCtags      call jobstart("ctags", 'ctags',
       \ , '-I', 'FUNC_ATTR_NONNULL_RET'
       \ , '.'])
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
+command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
