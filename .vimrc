@@ -80,7 +80,7 @@ else
   if !s:is_msysgit && !s:is_gui
       "avoid: m-b m-d m-f
       set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
-            \ <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
+            \ <m-n>=n <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
             \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
             \ <m-]>=]
   endif
@@ -396,8 +396,11 @@ if has('syntax') && !exists('g:syntax_on')
   syntax enable
 endif
 
-" Use <C-L> to clear the highlighting of :set hlsearch.
-nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+" Use <C-L> to:
+"   - redraw
+"   - clear the highlighting of :set hlsearch
+"   - update the current diff (if any)
+nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 set showcmd
 
@@ -803,6 +806,9 @@ endif
 nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
       \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
 
+nmap     <c-n>    ]c
+nmap     <c-p>    [c
+
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
@@ -955,7 +961,7 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-\ c-g
-"   normal: c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
+"   normal: c-f c-t c-b c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
 "           1j 1k 1...
 "           c<space> --> easyalign
 "           !@       --> async run
@@ -1128,9 +1134,6 @@ nnoremap r<bs> :call <sid>reload_without_jank()<cr>
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
 
-" search within visual block
-xnoremap g/ <esc>/\%V
-
 " select last inserted text
 nnoremap gV `[v`]
 
@@ -1145,7 +1148,7 @@ xnoremap . :normal .<CR>
 nnoremap Q @@
 xnoremap Q :normal @@<CR>
 " repeat the last edit on the next [count] matches.
-nnoremap <C-n> :normal n.<cr>
+nnoremap <m-n> :normal n.<cr>
 
 " augroup vimrc_qompose
 "   autocmd!
@@ -1285,11 +1288,6 @@ augroup vimrc_golang
 augroup END
 
 
-"transpose words, preserving punctuation
-nnoremap <silent> gst :s,\v(\w+)(\W*%#\W*)(\w+),\3\2\1,<bar>nohl<CR>
-"transpose WORDs, preserving whitespace
-nnoremap <silent> gsT :s,\v(\S+)(\s*\S*%#\S*\s*)(\S+),\3\2\1,<bar>nohl<CR>
-
 " A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
 func! s:matchparen_cursorcolumn_setup()
   augroup matchparen_cursorcolumn
@@ -1382,21 +1380,21 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap <c-b> :buffer<space>
+nnoremap \b    :buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
-nnoremap <c-f> :edit **/
-nnoremap <c-t> :tag<space>
-nnoremap g// mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
-" search all file buffers (clear loclist first). g: get all matches. j: no jumping.
-nnoremap g/b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<s-left><left><left><left>
+nnoremap \f    :edit **/
+nnoremap \t    :tag<space>
+nnoremap \\\ mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
+" search all file buffers (clear loclist first).
+nnoremap \\b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<s-left><left><left><left>
 " search current buffer and open results in quickfix window
-nnoremap g/% ms:<c-u>lvimgrep  % <bar>lw<s-left><left><left><left>
+nnoremap \\a. ms:<c-u>lvimgrep  % <bar>lw<s-left><left><left><left>
 " search-replace
-nnoremap g/r ms:<c-u>OverCommandLine<cr>%s/
-xnoremap g/r ms:<c-u>OverCommandLine<cr>%s/\%V
+nnoremap gsa. ms:<c-u>OverCommandLine<cr>%s/
+xnoremap gs   ms:OverCommandLine<cr>s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
-nnoremap g/* mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
-xnoremap g/* mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
+nnoremap \\*  mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
+xnoremap \\*  mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
 
 " show :ilist or ]I results in the quickfix window
 function! s:ilist_qf(start_at_cursor)
@@ -1424,7 +1422,7 @@ nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 " =============================================================================
 " autocomplete / omnicomplete / tags
 " =============================================================================
-" Don't scan includes; tags file is more performant.
+" Don't scan includes (tags file is more performant).
 set complete-=i
 set completeopt-=preview
 
@@ -1475,14 +1473,12 @@ function! s:fzf_open_file_at_line(e)
 endfunction
 
 " search current working directory
-nnoremap <silent> <c-p> :FZF<cr>
-
+nnoremap <silent> <m-/> :FZF<cr>
+" full-text search
 nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
       \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
-" search current file directory
-nnoremap <silent> g/.   :FZF <c-r>=fnameescape(expand("%:p:h"))<cr><cr>
-" TODO: https://github.com/junegunn/fzf/wiki/Examples-(vim)#jump-to-tags-in-the-current-buffer
-nnoremap <silent> g/f   :Unite function<cr>
+nnoremap <silent> g/x   :Unite function history/command command<cr>
+nmap     <silent> <m-x> g/x
 nnoremap <silent> g/l   :Unite line -auto-preview<cr>
 if findfile('plugin/tmuxcomplete.vim', &rtp) ==# ''
   nnoremap <silent> g/L mS:Unite line:buffers<cr>
@@ -1492,11 +1488,9 @@ else
 endif
 nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
 nnoremap <silent> gl    :Unite -buffer-name=buffers buffer<cr>
-" auto-generates an outline of the current buffer
 nnoremap <silent> <m-o> :Unite outline<cr>
 nnoremap <silent> g/t   :Unite tag <cr>
-nnoremap <silent> <m-y> :Unite history/yank<cr>
-nnoremap <silent> <space> :Unite history/command command<CR>
+nnoremap <silent> g/y   :Unite history/yank<cr>
 
 augroup vimrc_unite
   autocmd!
