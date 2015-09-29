@@ -284,7 +284,7 @@ if s:plugins_fluff
   nmap n n<Plug>Pulse
   nmap N N<Plug>Pulse
 
-  Plug 'ryanss/vim-hackernews'
+  Plug 'ryanss/vim-hackernews', { 'on': ['HackerNews'] }
   Plug 'junegunn/vim-github-dashboard'
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim'
@@ -300,15 +300,9 @@ if s:plugins_fluff
 
   if !s:is_windows && !s:is_msys
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
+    Plug 'junegunn/fzf.vim'
   endif
 
-  Plug 'Shougo/unite.vim'
-  Plug 'Shougo/unite-outline'
-  Plug 'Shougo/unite-mru'
-  Plug 'tsukkee/unite-tag'
-  Plug 'thinca/vim-unite-history'
-  Plug 'kmnk/vim-unite-giti'
-  Plug 'Keithbsmiley/investigate.vim'
   if exists("$GOPATH")
     Plug 'Blackrush/vim-gocode'
   endif
@@ -943,7 +937,7 @@ command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis |
 nnoremap <silent> co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
 " execute/evaluate
-nmap yxx     <Plug>(quickrun)
+nmap yxa.    <Plug>(quickrun)
 xmap <enter> <Plug>(quickrun)
 
 " filter
@@ -1222,10 +1216,6 @@ func! s:markline()
 endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
 nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
-nnoremap <silent> m<enter> :UniteBookmarkAdd<cr><cr>
-"                                          ^- always choose 'default'
-nnoremap <silent> g/m :Unite bookmark<cr>
-
 
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
 
@@ -1265,10 +1255,6 @@ augroup END
 "    https://sourcegraph.com/code.google.com/p/go/tree
 " code navigation/inspection(!!!):
 "   https://github.com/AndrewRadev/go-oracle.vim
-" possible godoc solution    https://gist.github.com/mattn/569652
-"    Plug 'thinca/vim-ref'
-"    let g:ref_cache_dir = expand('~/.vim/tmp/ref_cache/', 1)
-"    nnoremap g/k :<C-u>Unite ref/godoc -buffer-name=godoc -start-insert -horizontal<CR>
 augroup vimrc_golang
   autocmd!
   autocmd FileType go iabbrev <buffer> err- if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
@@ -1438,35 +1424,6 @@ if s:is_windows
   set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*\\AppData\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo,*.ntuser,*.blf,*.dat,*.regtrans-ms
 endif
 
-if s:plugins_fluff "unite.vim =============================================== {{{
-call unite#custom#profile('files', 'filters', 'sorter_rank')
-call unite#custom#profile('default', 'context', {'no_split':1, 'resize':0})
-
-"let g:unite_source_grep_command=expand($ProgramFiles.'\Git\bin\grep.exe', 1)
-let g:unite_source_history_yank_enable = 1
-let g:neomru#time_format = "(%Y/%m/%d %H:%M) "
-let g:unite_source_buffer_time_format = "(%Y/%m/%d %H:%M) "
-let g:unite_enable_start_insert = 1
-
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-let s:unite_sources = 'file_rec/async,file_rec,neomru/file,directory_rec/async,directory_rec,neomru/directory'
-let g:unite_source_rec_max_cache_files = 5000
-call unite#custom#source(s:unite_sources, 'max_candidates', 5000)
-call unite#custom#source(s:unite_sources,
-            \ 'converters',
-            \ ['converter_relative_abbr', 'converter_file_directory'])
-
-" extend default ignore pattern for file_rec source (same as directory_rec)
-
-call extend(unite#get_all_sources('file_rec')['ignore_globs'], split(&wildignore, ',', 0))
-call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['*.jar', '*.jpg', '*.gif', '*.png'])
-if s:is_windows
-  call extend(unite#get_all_sources('file_rec')['ignore_globs'], ['AppData/*'])
-endif
-" don't track help files in MRU list
-call unite#custom#source('neomru/file', 'ignore_pattern', '\v[/\\]doc[/\\]\w+\.txt')
-
 function! s:fzf_open_file_at_line(e)
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
   execute 'edit' matchstr(a:e, '\v([^:]{-}:\d+)')
@@ -1477,41 +1434,21 @@ nnoremap <silent> <m-/> :FZF<cr>
 " full-text search
 nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
       \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
-nnoremap <silent> g/x   :Unite function history/command command<cr>
+nnoremap <silent> g/x   :call fzf#vim#command_history(g:fzf#vim#default_layout)<cr>
 nmap     <silent> <m-x> g/x
-nnoremap <silent> g/l   :Unite line -auto-preview<cr>
+nnoremap <silent> g/l   :call fzf#vim#buffer_lines(g:fzf#vim#default_layout)<cr>
 if findfile('plugin/tmuxcomplete.vim', &rtp) ==# ''
-  nnoremap <silent> g/L mS:Unite line:buffers<cr>
+  nnoremap <silent> g/L mS:call fzf#vim#lines(g:fzf#vim#default_layout)<cr>
 else
-  nnoremap <silent> g/L mS:Unite line:buffers tmuxcomplete/lines<CR>
-  nnoremap <silent> g/W :Unite tmuxcomplete<CR>
+  " TODO
+  " nnoremap <silent> g/L mS:Unite line:buffers tmuxcomplete/lines<CR>
+  " nnoremap <silent> g/W :Unite tmuxcomplete<CR>
 endif
-nnoremap <silent> g/v   :Unite runtimepath -default-action=rec<cr>
-nnoremap <silent> gl    :Unite -buffer-name=buffers buffer<cr>
-nnoremap <silent> <m-o> :Unite outline<cr>
-nnoremap <silent> g/t   :Unite tag <cr>
-nnoremap <silent> g/y   :Unite history/yank<cr>
+nnoremap <silent> g/v   :Scriptnames<cr>
+nnoremap <silent> gl    :ls<cr>
+nnoremap <silent> <m-o> :call fzf#vim#buffer_tags(g:fzf#vim#default_layout)<cr>
+nnoremap <silent> g/t   :call fzf#vim#tags(g:fzf#vim#default_layout)<cr>
 
-augroup vimrc_unite
-  autocmd!
-  " obliterate unite buffers (marks especially).
-  autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
-  autocmd FileType unite call s:unite_settings()
-augroup END
-
-function! s:unite_settings()
-  setlocal nopaste
-  unmap! <buffer> <c-d>
-  unmap  <buffer> M
-  nnoremap <silent><buffer> <C-n> j
-  nnoremap <silent><buffer> <C-p> k
-
-  if b:unite.profile_name ==# 'buffers'
-    inoremap <silent><buffer> <c-l> <esc>:Unite neomru/file<cr>
-  endif
-endfunction
-
-endif "}}}
 
 " statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
@@ -1613,9 +1550,9 @@ nnoremap <leader>vv   :e ~/.vimrc<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
-command! FindLibUV      exe 'lcd '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command! FindNvimDeps   exe 'lcd '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
-command! FindVim        exe 'lcd '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**") | Unite file_rec
+command! FindLibUV      tabnew<bar>exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! FindNvimDeps   tabnew<bar>exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! FindVim        tabnew<bar>exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimCtags      call jobstart("ctags", 'ctags',
       \ ['-R'
