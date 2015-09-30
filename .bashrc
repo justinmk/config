@@ -1,8 +1,9 @@
-# Darwin, Debian, Cygwin, and MSYS have differing behavior:
+# Darwin/Debian/Cygwin/MSYS have different behavior:
 #   - Darwin (and MacVim) runs a login shell every time (sources .bash_profile)
 #   - MSYSGIT sources .bashrc _then_ .bash_profile (wtf?)
 #   - Cygwin runs a login shell every time (sources .bash_profile)
 #   - Debian/Ubuntu sources .bash_profile on login; thereafter only .bashrc
+#   - GFW/MSYS2: .bash_profile > .profile > .bashrc
 
 # Environment variables (non-bash-specific)
 # =============================================================================

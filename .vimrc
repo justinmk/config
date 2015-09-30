@@ -107,7 +107,7 @@ else
     let &t_te.="\e[0 q"
   endif
 
-  if s:is_cygwin
+  if s:is_cygwin && !s:is_msys
     " use separate viminfo to avoid weird permissions issues
     set viminfo+=n~/.viminfo_cygwin
 
