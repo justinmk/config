@@ -281,8 +281,6 @@ if s:plugins_fluff
   let g:vim_search_pulse_disable_auto_mappings = 1
   let g:vim_search_pulse_color_list = ["red", "white"]
   let g:vim_search_pulse_duration = 200
-  nmap n n<Plug>Pulse
-  nmap N N<Plug>Pulse
 
   Plug 'ryanss/vim-hackernews', { 'on': ['HackerNews'] }
   Plug 'junegunn/vim-github-dashboard'
@@ -706,6 +704,21 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
 " mark position before search
 nnoremap / ms/
+
+func! s:norm_n(n)
+  let topline = winsaveview().topline
+  try
+    exe 'norm! ' a:n
+  catch /E486:/
+    echohl ErrorMsg | echom matchstr(v:exception, 'E486:.*') | echohl None
+  endtry
+  if topline != winsaveview().topline
+    normal! zz
+    call feedkeys("\<Plug>Pulse", 'm')
+  endif
+endf
+nnoremap <silent> n :<C-U>call <SID>norm_n('n')<CR>
+nnoremap <silent> N :<C-U>call <SID>norm_n('N')<CR>
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
