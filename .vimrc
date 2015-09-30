@@ -1426,7 +1426,7 @@ endif
 
 function! s:fzf_open_file_at_line(e)
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
-  execute 'edit' matchstr(a:e, '\v([^:]{-}:\d+)')
+  execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
 endfunction
 
 " search current working directory
