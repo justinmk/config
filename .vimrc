@@ -1425,17 +1425,8 @@ nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 set complete-=i
 set completeopt-=preview
 
-set wildmode=full
-"THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
-set wildignore+=*/bin/*,tags,*.o,*.obj,*.dll,*.class,.hg,.svn,*.pyc,*/tmp/*,*/grimoire-remote/*,*.so,*.swp,*.zip,*.exe,*.jar,*/opt/*,*/gwt-unitCache/*,*.cache.html,*.pdf,*.wav,*.mp3,*.ogg
-
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
-
-if s:is_windows
-  "THIS AFFECTS expand() !!!!!!!!!!!!!!!!!!!!
-  set wildignore+=*\\Debug\\*,*\\Release\\*,*\\Windows\\*,*\\Program\ Files*\\*,*\\AppData\\*,*.pch,*.ipch,*.pdb,*.sdf,*.opensdf,*.idb,*.suo,*.ntuser,*.blf,*.dat,*.regtrans-ms
-endif
 
 function! s:fzf_open_file_at_line(e)
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
