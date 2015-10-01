@@ -299,6 +299,7 @@ if s:plugins_fluff
   if !s:is_windows && !s:is_msys
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
     Plug 'junegunn/fzf.vim'
+    let g:fzf_command_prefix = 'Fzf'
   endif
 
   if exists("$GOPATH")
@@ -1425,8 +1426,10 @@ nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 set complete-=i
 set completeopt-=preview
 
+set wildignore+=tags,*/gwt-unitCache/*
+
 " Files with these suffixes get a lower priority when matching a wildcard
-set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
+set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.o,.obj,.dll,.class,.pyc,.so,.swp,.zip,.exe,.jar
 
 function! s:fzf_open_file_at_line(e)
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
