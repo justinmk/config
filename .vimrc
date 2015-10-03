@@ -695,6 +695,10 @@ endfunc
 
 " key mappings/bindings =================================================== {{{
 
+
+" word-wise i_CTRL-Y
+inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
+
 " current-file directory
 noremap! <silent> <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
 
@@ -1461,8 +1465,9 @@ nnoremap <silent> g/t   :call fzf#vim#tags(g:fzf#vim#default_layout)<cr>
 " show winnr iff there are >2 windows
 if s:plugins_fluff
   hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
-  hi StatusLineRO  guibg=red   guifg=white    ctermbg=12 ctermfg=15 gui=bold cterm=bold
-  set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%#StatusLineRO#%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
+  set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
+else
+  set statusline=
 endif
 
 " Slides plugin {{{
