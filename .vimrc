@@ -237,8 +237,6 @@ Plug 'tpope/vim-commentary'
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
 
-Plug 'ajh17/VimCompletesMe'
-
 if s:plugins_fluff
   "TODO: dbext bugs:
   "   - dbext BufRead handler adds `gg` to jumplist. steps:
@@ -344,6 +342,7 @@ call plug#end()
 runtime! plugin/rsi.vim
 " https://github.com/tpope/vim-sleuth/issues/29#issuecomment-109807606
 runtime! plugin/sleuth.vim
+runtime! plugin/commentary.vim
 " }}}
 
 " sensible.vim {{{
@@ -1125,8 +1124,6 @@ endf
 nnoremap <silent> dr  :<C-u>call <sid>set_reg(v:register)<bar>set opfunc=<sid>replace_without_yank<CR>g@
 nnoremap <silent> drr :<C-u>call <sid>set_reg(v:register)<cr>0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
 
-inoremap jk <esc>
-inoremap kj <esc>
 " from tpope vimrc
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
@@ -1384,7 +1381,7 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap \b    :buffer<space>
+nnoremap gl    :ls<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap \f    :edit **/
 nnoremap \t    :tag<space>
@@ -1456,7 +1453,6 @@ else
   " nnoremap <silent> g/W :Unite tmuxcomplete<CR>
 endif
 nnoremap <silent> g/v   :Scriptnames<cr>
-nnoremap <silent> gl    :ls<cr>
 nnoremap <silent> <m-o> :call fzf#vim#buffer_tags(g:fzf#vim#default_layout)<cr>
 nnoremap <silent> g/t   :call fzf#vim#tags(g:fzf#vim#default_layout)<cr>
 
