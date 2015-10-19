@@ -63,8 +63,8 @@ let s:plugins_fluff = !s:is_msys && s:plugins
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
 
 if has("nvim")
-  if (!filereadable(expand("~/.nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
-    echomsg "Missing .nvim/ or .nvimrc"
+  if (!filereadable(expand("~/.nvim/nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
+    echomsg "Missing .nvim/ or nvimrc"
   endif
 
   tnoremap <esc><esc> <c-\><c-n>
@@ -1554,7 +1554,7 @@ endif
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
-nnoremap <leader>vv   :e ~/.vimrc<cr>
+nnoremap <leader>vv   :e $MYVIMRC<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
