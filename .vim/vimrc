@@ -1535,23 +1535,19 @@ set titleold=?
 
 " =============================================================================
 "ensure transient dirs
-let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/vim' : $XDG_DATA_HOME.'/vim'
-call EnsureDir(s:dir)
+let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
 
 if isdirectory(expand(s:dir, 1))
   call EnsureDir(s:dir . '/swap/')
-  call EnsureDir(s:dir . '/backup/')
   call EnsureDir(s:dir . '/undo/')
 
   if &directory =~# '^\.,'
     let &directory = expand(s:dir, 1) . '/swap//,' . &directory
   endif
-  if &backupdir =~# '^\.,'
-    let &backupdir = expand(s:dir, 1) . '/backup//,' . &backupdir
-  endif
+
+  set undofile
   if has("persistent_undo") && &undodir =~# '^\.\%(,\|$\)'
     let &undodir = expand(s:dir, 1) . '/undo//,' . &undodir
-    set undofile
   endif
 endif
 
