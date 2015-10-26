@@ -694,6 +694,7 @@ endfunc
 
 " key mappings/bindings =================================================== {{{
 
+nnoremap <C-]> g<C-]>
 
 " word-wise i_CTRL-Y
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
@@ -830,6 +831,7 @@ nnoremap Ul :Gllog<cr>
 nnoremap Ug :Ggrep<space>
 nnoremap UB :Gblame<cr>
 nnoremap Ue :Gedit<cr>
+nnoremap Up :Gpedit <c-r><c-w><cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
 nnoremap UR :Gread<cr>
 nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))
@@ -1351,7 +1353,8 @@ augroup vimrc_autocmd
   " Jump to the last position when reopening a file (except Git commit)
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
-  autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if &ft == ""|set ft=text|endif
+  autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
+  autocmd BufNewFile,BufRead *.proj setf xml "msbuild project file
   autocmd FileType text setlocal tabstop=4 shiftwidth=4 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
 
@@ -1386,9 +1389,9 @@ nnoremap gl    :ls<cr>:buffer<space>
 nnoremap \f    :edit **/
 nnoremap \t    :tag<space>
 nnoremap \\\ mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
-" search all file buffers (clear loclist first).
-nnoremap \\b mS:<c-u>lexpr []<bar>exe 'bufdo silent! noau lvimgrepadd/\C/j %'<bar>lopen<s-left><left><left><left>
-" search current buffer and open results in quickfix window
+" search all file buffers (clear qf first).
+nnoremap \\b mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
+" search current buffer and open results in loclist
 nnoremap \\a. ms:<c-u>lvimgrep  % <bar>lw<s-left><left><left><left>
 " search-replace
 nnoremap gsa. ms:<c-u>OverCommandLine<cr>%s/
