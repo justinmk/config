@@ -63,12 +63,17 @@ let s:plugins_fluff = !s:is_msys && s:plugins
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
 
 if has("nvim")
-  if (!filereadable(expand("~/.nvim/nvimrc", 1)) || (!isdirectory(expand("~/.nvim", 1))))
-    echomsg "Missing .nvim/ or nvimrc"
+  if (!filereadable(expand("~/.config/nvim/init.vim", 1)) || (!isdirectory(expand("~/.config/nvim/", 1))))
+    echomsg "Missing .config/nvim/ or init.vim"
   endif
 
   tnoremap <esc><esc> <c-\><c-n>
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+  augroup nvimrc_aucmd
+    autocmd!
+    " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
+    autocmd CursorHold * rshada|wshada
+  augroup END
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
