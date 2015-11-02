@@ -1199,7 +1199,7 @@ func! ReadExCommandOutput(newbuf, cmd)
   if a:newbuf | wincmd n | endif
   silent put=l:message
 endf
-command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>1, <q-args>)
+command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>0, <q-args>)
 inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
 func! s:get_visual_selection_list()
@@ -1359,7 +1359,7 @@ augroup vimrc_autocmd
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
-  autocmd BufNewFile,BufRead *.proj setf xml "msbuild project file
+  autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd FileType text setlocal tabstop=4 shiftwidth=4 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
 
