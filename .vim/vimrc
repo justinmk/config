@@ -1392,7 +1392,7 @@ augroup END
 nnoremap gl    :ls<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap \f    :edit **/
-nnoremap \t    :tag<space>
+nnoremap \t    :tjump<space>
 nnoremap \\\ mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
 nnoremap \\b mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
@@ -1558,7 +1558,7 @@ endif
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
-nnoremap <leader>vv   :e $MYVIMRC<cr>
+nnoremap <leader>vv   :exe 'e' resolve(expand('$MYVIMRC'))<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
