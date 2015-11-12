@@ -1174,14 +1174,6 @@ nnoremap <m-n> :normal n.<cr>
 "       \ qz
 "       \ :<c-u>autocmd vimrc_qompose TextChanged,InsertLeave * exe 'normal! q'<bar>call repeat#set(@z)<bar>let @z=g:qompose_orig_z<bar>autocmd! vimrc_qompose *<cr>
 
-"j,k move by screen line instead of file line
-nnoremap j gj
-nnoremap k gk
-xnoremap j gj
-xnoremap k gk
-inoremap <Down> <C-o>gj
-inoremap <Up>   <C-o>gk
-
 " disable F1 help key
 noremap! <F1> <nop>
 noremap <F1> <nop>
