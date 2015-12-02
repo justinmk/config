@@ -40,7 +40,7 @@
   ds = diff --stat --color
   #diff-highlight: perl script from git 'contrib'
   dh = "!f() { git diff --color=always \"$@\" | diff-highlight | less -R; }; f"
-  b  = branch
+  b  = branch -vv
   s  = !git status -sb && git stash list
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
@@ -55,6 +55,7 @@
   current   = bold white green
   local     = bold yellow
   remote    = bold magenta
+  upstream  = bold cyan
 [color "status"]
   # staged changes
   added     = bold green
