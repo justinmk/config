@@ -67,7 +67,7 @@ if has("nvim")
     echomsg "Missing .config/nvim/ or init.vim"
   endif
 
-  tnoremap <esc><esc> <c-\><c-n>
+  tnoremap <esc> <c-\><c-n>
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
   augroup nvimrc_aucmd
     autocmd!
@@ -135,7 +135,7 @@ else
 
 call plug#begin('~/.vim/bundle')
 
-Plug 'tomasr/molokai'
+Plug 'justinmk/molokai'
 
 Plug 'ludovicchabant/vim-gutentags'
 
