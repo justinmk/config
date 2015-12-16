@@ -15,8 +15,6 @@ inoremap z,p <c-r>"
 
 nnoremap \ ,
 nnoremap gj i<cr><esc>k$
-inoremap jk <esc>
-inoremap kj <esc>
 nnoremap s /
 nnoremap S ?
 nnoremap zy  zt5<c-y>
