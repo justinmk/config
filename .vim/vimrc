@@ -31,8 +31,8 @@
 
 " Tell vimball to get lost.
 let g:loaded_vimballPlugin = 1
-let g:loaded_getscriptPlugin = 1
 let g:loaded_rrhelper = 1
+let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
 let g:python_host_skip_check = 1
 let g:python3_host_skip_check = 1
@@ -50,9 +50,8 @@ let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_windows = has('win32') || has('win64')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
-let s:has_eclim = isdirectory(expand("~/.vim/eclim", 1))
 let s:plugins = filereadable(expand("~/.vim/autoload/plug.vim", 1))
-let s:plugins_fluff = !s:is_msys && s:plugins
+let s:plugins_fluff = !(s:is_msys || s:is_cygwin) && s:plugins
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -101,8 +100,8 @@ else
 
   set ttyfast
 
-  " avoid sourcing stupid menu.vim (saves ~100ms)
-  let g:did_install_default_menus = 1
+  " avoid bloat
+  let g:loaded_getscriptPlugin = 1
 
   if s:is_cygwin || !empty($TMUX)
     " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
@@ -299,7 +298,7 @@ if s:plugins_fluff
 
   Plug 'junegunn/vader.vim'
 
-  if !s:is_windows && !s:is_msys
+  if !(s:is_windows || s:is_msys || s:is_cygwin)
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
     Plug 'junegunn/fzf.vim'
     let g:fzf_command_prefix = 'Fzf'
@@ -836,6 +835,7 @@ nnoremap Ul :Gllog<cr>
 nnoremap Ug :Ggrep<space>
 nnoremap UB :Gblame<cr>
 nnoremap Ue :Gedit<cr>
+nnoremap Uf :Gedit <C-R><C-W><cr>
 nnoremap Up :Gpedit <c-r><c-w><cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
 nnoremap UR :Gread<cr>
@@ -1253,7 +1253,7 @@ augroup END
 augroup vimrc_java
   autocmd!
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
-  if s:has_eclim
+  if isdirectory(expand("~/.vim/eclim", 1))
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
           \| nnoremap <buffer> <silent> gI :<c-u>JavaSearch -x implementors -s workspace<cr>
           \| nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
@@ -1550,7 +1550,7 @@ endif
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
-nnoremap <leader>vv   :exe 'e' resolve(expand('$MYVIMRC'))<cr>
+nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
