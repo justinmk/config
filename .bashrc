@@ -260,13 +260,6 @@ if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
     _fzfprog=fzf
   fi
 
-  fg() { # full-text search
-    if [ "$MSYSTEM" = MINGW32 ]; then
-      grep -n -r -v "^[[:space:]]*$" * | $_fzfprog
-    else
-      grep --line-buffered --color=never -n -r -v "^[[:space:]]*$" * | $_fzfprog
-    fi
-  }
   f() { # includes hidden directories (except .git)
     find . -name .git -prune -o $1 -print 2> /dev/null | sed s/^..// | $_fzfprog
   }
