@@ -122,7 +122,35 @@
   ;; "The end user almost never has to use defadvice despite what the wiki tells you"
   ;;    http://stackoverflow.com/questions/14606037/advising-an-emacs-interactive-function-before
   ;; (define-key evil-normal-state-map (kbd "cow") 'toggle-truncate-lines)
-  
+  ;;
+  ;; Based on the approach used by evil-surround (note the use of
+  ;; evil-inhibit-operator):
+  ;;   (evil-define-command my-thing ()
+  ;;     (interactive)
+  ;;     (setq evil-inhibit-operator t)
+  ;;     (cond
+  ;;      ((eq 'evil-change evil-this-operator)
+  ;;       (message "cow was typed!"))
+  ;;      ((eq 'evil-delete evil-this-operator)
+  ;;       (message "dow was typed!"))
+  ;;      ;; ...
+  ;;     ))
+  ;;   (define-key evil-operator-state-map "ow" 'my-thing)
+  ;;
+  ;; This may not be exhaustive but here is a list of standard operators:
+  ;;    evil-change (c)
+  ;;    evil-delete (d)
+  ;;    evil-yank (y)
+  ;;    evil-shift-right (>)
+  ;;    evil-shift-left (<)
+  ;;    evil-downcase (gu)
+  ;;    evil-upcase (gU)
+  ;;    evil-invert-case (g~)
+  ;;    evil-shell-command (!)
+  ;;    evil-indent (=)
+  ;;    evil-fill-and-move (gq)
+  ;;    evil-rot13 (g?)
+
   (define-key evil-normal-state-map (kbd "gof")
     (bind (call-process-shell-command (concat "start explorer /select,"
             (shell-quote-argument (replace-regexp-in-string "/" "\\\\" (buffer-file-name)))))))
