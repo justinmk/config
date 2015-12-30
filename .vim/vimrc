@@ -121,6 +121,13 @@ else
     noremap  <Esc>O[ <Esc>
     noremap! <Esc>O[ <C-c>
   endif
+
+  "transient dirs
+  let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
+  let &directory = expand(s:dir, 1).'/swap//,'.&directory
+  if has("persistent_undo")
+    let &undodir = expand(s:dir, 1).'/undo//,'.&undodir
+  endif
 endif
 
 if !s:plugins "{{{
@@ -436,29 +443,6 @@ endif "}}}
 
 filetype plugin indent on
 
-
-func! EnsureDir(path)
-  "trim
-  let l:path = expand(substitute(a:path,  '\s\+', '', 'g'), 1)
-
-  if empty(l:path)
-    echom "EnsureDir(): invalid path: ".a:path
-    return 0 "path is empty/blank.
-  endif
-
-  if !isdirectory(l:path)
-    call mkdir(l:path, 'p')
-  endif
-  return isdirectory(l:path)
-endfun
-
-func! EnsureFile(path)
-  let l:path = expand(a:path, 1)
-  if !filereadable(l:path) && -1 == writefile([''], l:path)
-    echoerr "failed to create file: ".l:path
-  endif
-endf
-
 command! LoadSession if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
       \ | else | Obsession ~/.vim/session.vim | endif
 set sessionoptions-=blank
@@ -516,6 +500,7 @@ let g:mapleader = "z,"
 
 try | lang en_US | catch | endtry
 
+set undofile
 set list
 
 set cursorline
@@ -1364,7 +1349,7 @@ augroup vimrc_autocmd
   endif
 
   if exists("*mkdir") "auto-create directories for new files
-    au BufWritePre,FileWritePre * call EnsureDir('<afile>:p:h')
+    au BufWritePre,FileWritePre * call mkdir(expand('<afile>:p:h'), 'p')
   endif
 
   "when Vim starts in diff-mode (vim -d, git mergetool):
@@ -1529,24 +1514,6 @@ endf
 set title
 set titlestring=%{getcwd()}
 set titleold=?
-
-" =============================================================================
-"ensure transient dirs
-let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
-
-if isdirectory(expand(s:dir, 1))
-  call EnsureDir(s:dir . '/swap/')
-  call EnsureDir(s:dir . '/undo/')
-
-  if &directory =~# '^\.,'
-    let &directory = expand(s:dir, 1) . '/swap//,' . &directory
-  endif
-
-  set undofile
-  if has("persistent_undo") && &undodir =~# '^\.\%(,\|$\)'
-    let &undodir = expand(s:dir, 1) . '/undo//,' . &undodir
-  endif
-endif
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
