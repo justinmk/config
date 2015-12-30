@@ -138,6 +138,7 @@ fun! InstallPlug() "bootstrap plug.vim on new systems
 endfun
 
 else
+let g:plug_window = 'enew'
 
 call plug#begin('~/.vim/bundle')
 
@@ -1349,7 +1350,7 @@ augroup vimrc_autocmd
   endif
 
   if exists("*mkdir") "auto-create directories for new files
-    au BufWritePre,FileWritePre * call mkdir(expand('<afile>:p:h'), 'p')
+    au BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
   endif
 
   "when Vim starts in diff-mode (vim -d, git mergetool):
