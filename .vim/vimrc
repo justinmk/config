@@ -71,7 +71,7 @@ if has("nvim")
   augroup nvimrc_aucmd
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
-    autocmd CursorHold * rshada|wshada
+    autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
   augroup END
 else
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
@@ -150,7 +150,7 @@ Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
 
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
-Plug 'https://github.com/justinmk/vim-dirvish.git'
+Plug 'git@github.com:justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 
 Plug 'https://github.com/justinmk/vim-sneak.git'
@@ -176,7 +176,6 @@ Plug 'https://github.com/justinmk/vim-matchparenalways.git'
 if executable("tmux")
 Plug 'tpope/vim-tbone'
 Plug 'wellle/tmux-complete.vim'
-let g:tmuxcomplete#trigger = ''
 endif
 
 Plug 'tpope/vim-characterize'
