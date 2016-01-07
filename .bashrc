@@ -127,8 +127,6 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias ls='ls -C --color=auto'
-alias l='ls -lrt'
-alias gitk='gitk --all'
 
 # change to parent directory matching partial string, eg:
 # in directory /home/foo/bar/baz, 'bd f' changes to /home/foo
@@ -164,8 +162,6 @@ fi
 #some old systems (msysgit) do not support grep --color.
 if grep --color "a" <<< "a" &> /dev/null ; then
     alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
 fi
 
 #MacOS
@@ -244,10 +240,6 @@ if [[ "$(uname)" == Darwin ]]; then
       defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^$0041' $(echo -e "\033[65;5u")
     }
 fi
-
-# Add an "alert" alias for long running commands. eg:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # fzf (https://github.com/junegunn/fzf)
 if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
