@@ -111,17 +111,6 @@ else
     let &t_te.="\e[0 q"
   endif
 
-  if s:is_cygwin && !s:is_msys
-    " use separate viminfo to avoid weird permissions issues
-    set viminfo+=n~/.viminfo_cygwin
-
-    " set escape key to an unambiguous keycode, to avoid escape timeout delay.
-    let &t_ti.="\e[?7727h"
-    let &t_te.="\e[?7727l"
-    noremap  <Esc>O[ <Esc>
-    noremap! <Esc>O[ <C-c>
-  endif
-
   "transient dirs
   let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
   let &directory = expand(s:dir, 1).'/swap//,'.&directory
