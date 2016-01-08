@@ -172,6 +172,9 @@ Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+Plug 'shumphrey/fugitive-gitlab.vim'
+let g:fugitive_gitlab_domains = ['http://cwsrc2']
 
 Plug 'tpope/vim-surround'
 let g:surround_indent = 1
@@ -870,64 +873,7 @@ function! s:git_blame_line(filepath, line) abort
 endfunction
 
 nmap     Ub :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
-"                                            ^^
-" Get the repo-relative path with fugitive's CTRL-R_CTRL-G
-
-func! Fugitive_browse_cwsrc2(o) "https://github.com/tommcdo/vim-fubitive/blob/master/plugin/fubitive.vim
-  if a:0 || type(a:o) != type({})
-    return ''
-  endif
-  let path = a:o.path
-  let domain_pattern = 'cwsrc2'
-  let repo = matchstr(a:o.remote,'^\%(https\=://\|git://\|\(ssh://\)\=git@\)\zs\('.domain_pattern.'\)[/:].\{-\}\ze\%(\.git\)\=$')
-  let repo = substitute(repo, '^cwsrc2:', '', '')
-  if repo ==# ''
-    return ''
-  endif
-  let root = 'http://cwsrc2/' . repo
-  if path =~# '^\.git/refs/heads/'
-    let branch = a:o.repo.git_chomp('config','branch.'.path[16:-1].'.merge')[11:-1]
-    if branch ==# ''
-      return root . '/commits/' . path[16:-1]
-    else
-      return root . '/commits/' . branch
-    endif
-  elseif path =~# '^\.git/refs/.'
-    return root . '/commits/' . matchstr(path,'[^/]\+$')
-  elseif path =~# '.git/\%(config$\|hooks\>\)'
-    return root . '/admin'
-  elseif path =~# '^\.git\>'
-    return root
-  endif
-  if a:o.revision =~# '^[[:alnum:]._-]\+:'
-    let commit = matchstr(a:o.revision,'^[^:]*')
-  elseif a:o.commit =~# '^\d\=$'
-    let local = matchstr(a:o.repo.head_ref(),'\<refs/heads/\zs.*')
-    let commit = a:o.repo.git_chomp('config','branch.'.local.'.merge')[11:-1]
-    if commit ==# ''
-      let commit = local
-    endif
-  else
-    let commit = a:o.commit
-  endif
-  if a:o.type == 'tree'
-    let url = s:sub(root . '/tree/' . commit . '/' . path,'/$','')
-  elseif a:o.type == 'blob'
-    let url = root . '/blob/' . commit . '/' . path
-    if get(a:o, 'line1')
-      let url .= '#cl-' . a:o.line1
-    endif
-  elseif a:o.type == 'tag'
-    let commit = matchstr(getline(3),'^tag \zs.*')
-    let url = root . '/tree/' . commit
-  else
-    let url = root . '/commit/' . commit
-  endif
-  return url
-endf
-let g:fugitive_browse_handlers = [ function('Fugitive_browse_cwsrc2') ]
-
-
+"                                            ^ Get repo-relative path with fugitive
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
@@ -1476,7 +1422,7 @@ func! StartSlides()
   set noshelltemp
 endf
 func! EditSlides()
-  cd ~/Desktop/git_slides/
+  cd ~/Desktop/github/notes/git_slides/
 
   silent! let &statusline = g:oldstatusline
   silent! let &guifont = g:oldguifont
@@ -1489,7 +1435,7 @@ func! EditSlides()
     autocmd TextChanged,TextChangedI * exe 'sign unplace *'
           \ |exe 'sign place 123 line=14 name=limit buffer='.bufnr('%')
           \ |exe 'sign place 124 line=17 name=limit buffer='.bufnr('%')
-    autocmd User DirvishEnter map <buffer> <down> jpp<c-w>p|map <buffer> <up> kpp<c-w>p
+    autocmd FileType dirvish map <buffer> <down> jpp<c-w>p|map <buffer> <up> kpp<c-w>p
   augroup END
 
   hi ColorColumn guibg=#555555 guifg=#ffffff
