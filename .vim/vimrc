@@ -395,7 +395,7 @@ endif
 "   - redraw
 "   - clear the highlighting of :set hlsearch
 "   - update the current diff (if any)
-nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><Bar>syntax sync fromstart<CR><C-L>
 
 set showcmd
 
