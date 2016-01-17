@@ -265,7 +265,7 @@ if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
   }
 fi
 
-ghrebasepr() {
+ghmergepr() {
   local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
   local PR=${1}
   local REPO_SLUG="$(git config --get remote.upstream.url \
@@ -278,12 +278,10 @@ ghrebasepr() {
   [ -z "$PR_TITLE" ] && { echo error; return 1; }
 
   git fetch --all \
-    && git checkout --quiet refs/pull/upstream/${PR} \
-    && git rebase upstream/master \
     && git checkout master \
     && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
     && git reset --hard upstream/master \
-    && git merge -m "Merge #${PR} '${PR_TITLE}'." --no-ff - \
+    && git merge -m "Merge #${PR} '${PR_TITLE}'." --no-ff refs/pull/upstream/${PR} \
     && git log --oneline --graph --decorate -n 5
 }
 
