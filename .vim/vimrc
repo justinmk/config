@@ -1177,6 +1177,7 @@ augroup END
 "   https://github.com/luciano-fiandesio/dotfiles/blob/master/.vim/compiler/gradle.vim
 augroup vimrc_java
   autocmd!
+  autocmd FileType groovy setlocal commentstring=//%s
   autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
   if isdirectory(expand("~/.vim/eclim", 1))
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
@@ -1306,7 +1307,7 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap gl    :ls<cr>:buffer<space>
+nnoremap gl    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap \f    :edit **/
 nnoremap \t    :tjump<space>
