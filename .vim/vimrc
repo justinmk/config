@@ -994,9 +994,6 @@ func! s:buf_kill(mercy)
   endif
 endf
 
-nnoremap <silent> <c-^> :<c-u>if !<sid>buf_switch_to_altbuff()
-      \<bar>echohl WarningMsg<bar>echo "No other buffers"<bar>echohl None<bar>endif<cr>
-
 "move to last character 
 nnoremap - $
 xnoremap - $
