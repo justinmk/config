@@ -256,8 +256,6 @@ if s:plugins_fluff
   let g:dbext_default_history_max_entry = 10*1024
   let g:dbext_default_usermaps = 0
 
-  Plug 'majutsushi/tagbar'
-
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
   let g:clojure_fold = 1
@@ -268,14 +266,13 @@ if s:plugins_fluff
   Plug 'tpope/vim-fireplace'
 
   Plug 'chrisbra/vim-diff-enhanced'
-  Plug 'zhaocai/DirDiff.vim'
 
   Plug 'PProvost/vim-ps1'
   Plug 'pangloss/vim-javascript'
   Plug 'leafo/moonscript-vim'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
   " Plug 'chrisbra/Recover.vim'
-  Plug 'osyo-manga/vim-over'
+  " Plug 'osyo-manga/vim-over'
 
   Plug 'inside/vim-search-pulse'
   let g:vim_search_pulse_mode = 'pattern'
@@ -287,24 +284,15 @@ if s:plugins_fluff
   Plug 'junegunn/vim-github-dashboard'
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim'
-  "Plug 'jaxbot/github-issues.vim'
-  "Plug 'codegram/vim-codereview'
   Plug 'gcavallanti/vim-noscrollbar'
 
-  Plug 'junegunn/vim-easy-align'
-  vmap z; <Plug>(EasyAlign)
-  nmap z; <Plug>(EasyAlign)
-
-  Plug 'junegunn/vader.vim'
+  " Plug 'junegunn/vim-easy-align'
+  " Plug 'junegunn/vader.vim'
 
   if !(s:is_windows || s:is_msys || s:is_cygwin)
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
     Plug 'junegunn/fzf.vim'
     let g:fzf_command_prefix = 'Fzf'
-  endif
-
-  if exists("$GOPATH")
-    Plug 'Blackrush/vim-gocode'
   endif
 
   Plug 'tpope/vim-projectionist'
@@ -331,12 +319,6 @@ if s:plugins_fluff
   let g:localvimrc_persistent = 1
 
   Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
-  Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-  " if s:is_windows && has('python') && !s:is_msysgit
-  " Plug 'nosami/Omnisharp'
-  " endif
-
-  Plug 'thinca/vim-quickrun'
 endif
 
 call plug#end()
@@ -886,8 +868,8 @@ command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis |
 nnoremap <silent> co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
 " execute/evaluate
-nmap yxa.    <Plug>(quickrun)
-xmap <enter> <Plug>(quickrun)
+nmap yxa.    :<C-U>call eval(join(getline(1, '$'), "\n"))<CR>
+xmap <enter> :<C-U>call eval(join(getline("'<", "'>"), "\n"))<CR>
 
 " filter
 " TODO: https://github.com/Chiel92/vim-autoformat
