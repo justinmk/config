@@ -868,8 +868,9 @@ command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis |
 nnoremap <silent> co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
 " execute/evaluate
-nmap yxa.    :<C-U>call eval(join(getline(1, '$'), "\n"))<CR>
-xmap <enter> :<C-U>call eval(join(getline("'<", "'>"), "\n"))<CR>
+nnoremap yxal             :keeppatterns           g/^/exe getline('.')<CR>
+nnoremap <silent> yxx     :keeppatterns          .g/^/exe getline('.')<CR>
+xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 
 " filter
 " TODO: https://github.com/Chiel92/vim-autoformat
