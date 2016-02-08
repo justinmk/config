@@ -139,7 +139,7 @@ Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
 
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
-Plug 'git@github.com:justinmk/vim-dirvish.git'
+Plug 'https://github.com/justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 
 Plug 'https://github.com/justinmk/vim-sneak.git'
