@@ -172,6 +172,7 @@ Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-scriptease'
 
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
 Plug 'tpope/vim-rhubarb'
 Plug 'shumphrey/fugitive-gitlab.vim'
 let g:fugitive_gitlab_domains = ['http://cwsrc2']
@@ -229,11 +230,6 @@ Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
-
-" TODO: https://github.com/vheon/home/blob/master/.vim/plugin/text-object-entire.vim
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-line'
-Plug 'gaving/vim-textobj-argument'
 
 Plug 'tpope/vim-commentary'
 
@@ -1036,6 +1032,35 @@ endf
 nnoremap <silent> dr  :<C-u>call <sid>set_reg(v:register)<bar>set opfunc=<sid>replace_without_yank<CR>g@
 nnoremap <silent> drr :<C-u>call <sid>set_reg(v:register)<cr>0:<C-u>set opfunc=<sid>replace_without_yank<CR>g@$
 
+" text-object: entire buffer
+" Elegant text-object pattern hacked out of jdaddy.vim.
+function! s:line_outer_movement(count) abort
+  if empty(getline(1)) && 1 == line('$')
+    return "\<Esc>"
+  endif
+  let [lopen, copen, lclose, cclose] = [1, 1, line('$'), 1]
+  call setpos("'[", [0, lopen, copen, 0])
+  call setpos("']", [0, lclose, cclose, 0])
+  return "'[o']"
+endfunction
+xnoremap <expr>   al <SID>line_outer_movement(v:count1)
+onoremap <silent> al :normal Val<CR>
+
+" text-object: line
+" Elegant text-object pattern hacked out of jdaddy.vim.
+function! s:line_inner_movement(count) abort
+  "TODO: handle count
+  if empty(getline('.'))
+    return "\<Esc>"
+  endif
+  let [lopen, copen, lclose, cclose] = [line('.'), 1, line('.'), col('$')-1]
+  call setpos("'[", [0, lopen, copen, 0])
+  call setpos("']", [0, lclose, cclose, 0])
+  return "`[o`]"
+endfunction
+xnoremap <expr>   il <SID>line_inner_movement(v:count1)
+onoremap <silent> il :normal vil<CR>
+
 " from tpope vimrc
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
@@ -1442,9 +1467,9 @@ nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
-command! FindLibUV      tabnew<bar>exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
-command! FindNvimDeps   tabnew<bar>exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
-command! FindVim        tabnew<bar>exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdLibUV      tabnew<bar>exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdNvimDeps   tabnew<bar>exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdVim        tabnew<bar>exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimCtags      call jobstart("ctags", 'ctags',
       \ ['-R'
