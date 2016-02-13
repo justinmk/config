@@ -1328,8 +1328,8 @@ nnoremap \%   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
 nnoremap gsal ms:<c-u>%s/
 xnoremap gs   ms:s/\%V
 " recursively search for word under cursor (:noau speeds up vimgrep)
-nnoremap \\*  mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
-xnoremap \\*  mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
+nnoremap \*  mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
+xnoremap \*  mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
 
 " show :ilist or ]I results in the quickfix window
 function! s:ilist_qf(start_at_cursor)

@@ -5,8 +5,6 @@
 " External tool to open in Vim server:
 "     gvim.exe --servername vsvim --remote-silent $(ItemPath)
 "
-" TODO: F# interactive
-"   nnoremap q;  :vsc View.F#Interactive<cr>
 "   nnoremap yx<bs>  :vsc OtherContextMenus.FSIConsoleContext.ResetInteractiveSession<cr>
 "   nnoremap !m  :vsc OtherContextMenus.FSIConsoleContext.ResetInteractiveSession<bar>vsc Build.BuildSelection<cr>
 
@@ -98,6 +96,7 @@ nnoremap gr :vsc Edit.FindAllReferences<cr>
 " go to the type of the current symbol
 nnoremap gD :vsc ReSharper.ReSharper_GotoTypeDeclaration<cr>
 nnoremap gI :vsc ReSharper.ReSharper_GotoImplementation<cr>
+nnoremap gI :vsc Edit.GoToImplementation<cr>
 " go to class member ("outline")
 nnoremap <M-o> :vsc ReSharper.ReSharper_GotoFileMember<cr>
 
@@ -149,6 +148,7 @@ nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
 
 nnoremap @T :vsc TestExplorer.RepeatLastRun<cr>
 
+nnoremap q; :vsc View.C#Interactive<cr>
 nnoremap q: :vsc View.CommandWindow<cr>
 nnoremap q[ :vsc TestExplorer.ShowTestExplorer<cr>
 nnoremap q] :vsc View.ErrorList<cr>
