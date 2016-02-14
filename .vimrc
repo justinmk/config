@@ -29,6 +29,10 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
+if !has('nvim') && has('vim_starting') && has('win32')
+  set runtimepath+=~/.vim/
+endif
+
 " Tell vimball to get lost.
 let g:loaded_vimballPlugin = 1
 let g:loaded_rrhelper = 1
@@ -47,7 +51,6 @@ if exists('&guioptions')
 endif
 
 let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
-let s:is_windows = has('win32') || has('win64')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
 let s:plugins = filereadable(expand("~/.vim/autoload/plug.vim", 1))
@@ -60,64 +63,6 @@ let s:plugins_fluff = !(s:is_msys || s:is_cygwin) && s:plugins
 "   &term  = builtin_gui //*after* vimrc but *before* gvimrc
 "   &shell = C:\Windows\system32\cmd.exe , /bin/bash
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
-
-if has("nvim")
-  if (!filereadable(expand("~/.config/nvim/init.vim", 1)) || (!isdirectory(expand("~/.config/nvim/", 1))))
-    echomsg "Missing .config/nvim/ or init.vim"
-  endif
-
-  tnoremap <esc> <c-\><c-n>
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-  augroup nvimrc_aucmd
-    autocmd!
-    " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
-    autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
-  augroup END
-else
-  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
-  set encoding=utf-8
-
-  " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
-  " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
-  " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
-  " http://stackoverflow.com/a/10633069/152142
-  if !s:is_msysgit && !s:is_gui
-      "avoid: m-b m-d m-f
-      set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
-            \ <m-n>=n <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
-            \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
-            \ <m-]>=]
-  endif
-
-  " may affect performance: https://github.com/tpope/vim-sensible/issues/57
-  " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-  " let &showbreak="\u21aa" " precedes line wrap
-  set listchars=tab:>\ ,trail:-,nbsp:+
-
-  if has('vim_starting') && s:is_windows
-    set runtimepath+=~/.vim/
-  endif
-
-  set ttyfast
-
-  " avoid bloat
-  let g:loaded_getscriptPlugin = 1
-
-  if s:is_cygwin || !empty($TMUX)
-    " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
-    let &t_ti.="\e[1 q"
-    let &t_SI.="\e[5 q"
-    let &t_EI.="\e[1 q"
-    let &t_te.="\e[0 q"
-  endif
-
-  "transient dirs
-  let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
-  let &directory = expand(s:dir, 1).'/swap//,'.&directory
-  if has("persistent_undo")
-    let &undodir = expand(s:dir, 1).'/undo//,'.&undodir
-  endif
-endif
 
 if !s:plugins "{{{
 
@@ -287,7 +232,7 @@ if s:plugins_fluff
   " Plug 'junegunn/vim-easy-align'
   " Plug 'junegunn/vader.vim'
 
-  if !(s:is_windows || s:is_msys || s:is_cygwin)
+  if !(has('win32') || s:is_msys || s:is_cygwin)
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
     Plug 'junegunn/fzf.vim'
     let g:fzf_command_prefix = 'Fzf'
@@ -323,13 +268,57 @@ call plug#end()
 
 " Eager-load these plugins so we can override their settings. {{{
 runtime! plugin/rsi.vim
-" https://github.com/tpope/vim-sleuth/issues/29#issuecomment-109807606
-runtime! plugin/sleuth.vim
 runtime! plugin/commentary.vim
 " }}}
 
 " sensible.vim {{{
-if !has("nvim")
+if has("nvim")
+  tnoremap <esc> <c-\><c-n>
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+  augroup nvimrc_aucmd
+    autocmd!
+    " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
+    autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
+  augroup END
+else
+  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
+  set encoding=utf-8
+
+  " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
+  " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
+  " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
+  " http://stackoverflow.com/a/10633069/152142
+  if !s:is_msysgit && !s:is_gui
+      "avoid: m-b m-d m-f
+      set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
+            \ <m-n>=n <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
+            \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
+            \ <m-]>=]
+  endif
+
+  " may affect performance: https://github.com/tpope/vim-sensible/issues/57
+  " let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
+  " let &showbreak="\u21aa" " precedes line wrap
+  set listchars=tab:>\ ,trail:-,nbsp:+
+
+  " avoid bloat
+  let g:loaded_getscriptPlugin = 1
+
+  if s:is_cygwin || !empty($TMUX)
+    " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
+    let &t_ti.="\e[1 q"
+    let &t_SI.="\e[5 q"
+    let &t_EI.="\e[1 q"
+    let &t_te.="\e[0 q"
+  endif
+
+  "transient dirs
+  let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
+  let &directory = expand(s:dir, 1).'/swap//,'.&directory
+  if has("persistent_undo")
+    let &undodir = expand(s:dir, 1).'/undo//,'.&undodir
+  endif
+
   set ttimeout
   set ttimeoutlen=100
   set backspace=eol,start,indent
@@ -365,10 +354,14 @@ if !has("nvim")
 
   set nrformats-=octal
   set laststatus=2
-endif
 
-if has('syntax') && !exists('g:syntax_on')
-  syntax enable
+  set showcmd
+  set history=10000
+
+  if has('syntax') && !exists('g:syntax_on')
+    syntax enable
+  endif
+  filetype plugin indent on
 endif
 
 " Use <C-L> to:
@@ -379,10 +372,6 @@ endif
 "   - `syntax sync fromstart` for the current buffer
 nnoremap <silent><expr> <C-L> v:count > 0 ? ':<C-U>syntax sync fromstart<CR>'
       \ : ':nohlsearch'.(has('diff')?'\|diffupdate':'').'<CR><C-L>'
-
-set showcmd
-
-set history=10000
 
 inoremap <C-U> <C-G>u<C-U>
 " }}}
@@ -415,8 +404,6 @@ cnoremap        <C-Y> <C-R>-
 "}}}
 
 endif "}}}
-
-filetype plugin indent on
 
 command! LoadSession if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
       \ | else | Obsession ~/.vim/session.vim | endif
@@ -485,6 +472,7 @@ set path+=/usr/lib/gcc/**/include
 set path+=.deps/build/src/*/include,src
 
 let g:sh_noisk = 1
+set ttyfast
 set hidden      " Allow buffer switching even if unsaved 
 set lazyredraw  " no redraws in macros
 set cmdheight=2
@@ -526,7 +514,7 @@ if &startofline
 endif
 
 " platform-specific settings
-if s:is_windows
+if has('win32')
     set winaltkeys=no
     set guifont=Consolas:h11
     if has("directx")
@@ -1309,7 +1297,7 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
 
-  if s:is_windows
+  if has('win32')
     " always maximize initial GUI window size
     autocmd GUIEnter * simalt ~x
   endif
