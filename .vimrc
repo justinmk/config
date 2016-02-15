@@ -29,8 +29,12 @@
 " @="C:\\opt\\vim\\gvim.exe \"%L\""
 "==============================================================================
 
-if !has('nvim') && has('vim_starting') && has('win32')
-  set runtimepath+=~/.vim/
+if !has('nvim') && has('vim_starting')
+  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
+  set encoding=utf-8
+endif
+if &rtp !~? '\v(('.escape(expand('~'), '/\').')|\~)[/\\]\.vim'
+  set runtimepath+=~/.vim
 endif
 
 " Tell vimball to get lost.
@@ -281,9 +285,6 @@ if has("nvim")
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
   augroup END
 else
-  " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
-  set encoding=utf-8
-
   " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
   " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
   " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
