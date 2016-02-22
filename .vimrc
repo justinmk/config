@@ -134,7 +134,7 @@ Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
 nnoremap !] :<c-u>Start! ctags -R *<cr>
 " ways to run external commands in vim: https://gist.github.com/sjl/b9e3d9f821e57c9f96b3
-nnoremap !t :<c-u>Trun TEST_FILE=<c-r>% make functionaltest<cr>
+nnoremap !t :<c-u>Trun TEST_FILE=<c-r>% make functionaltest<Bar>grep --line-buffered -vE '(^\s*$)<Bar>(^make.*(Leaving<Bar>Entering))'<cr>
 nnoremap !T :<c-u>Make unittest<cr>
 
 nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
@@ -176,6 +176,7 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-jdaddy'
 Plug 'AndrewRadev/linediff.vim'
+Plug 'AndrewRadev/splitjoin.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
