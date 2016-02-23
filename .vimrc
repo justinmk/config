@@ -337,7 +337,7 @@ else
   setglobal tags-=./tags tags-=./tags; tags^=./tags;
 
   set autoindent  " Note: 'smartindent' is superseded by 'cindent' and 'indentexpr'.
-  set complete-=i
+  set complete-=i " Don't scan includes (tags file is more performant).
   set smarttab    " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
 
   set incsearch
@@ -1077,8 +1077,6 @@ nnoremap <m-]> <c-t>
 " select last inserted text
 nnoremap gV `[v`]
 
-nnoremap cg* *``cgn
-
 " replay macro for each line of a visual selection
 xnoremap @q :normal @q<CR>
 xnoremap @@ :normal @@<CR>
@@ -1349,12 +1347,8 @@ nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
 " =============================================================================
 " autocomplete / omnicomplete / tags
 " =============================================================================
-" Don't scan includes (tags file is more performant).
-set complete-=i
 set completeopt-=preview
-
 set wildignore+=tags,*/gwt-unitCache/*
-
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.o,.obj,.dll,.class,.pyc,.so,.swp,.zip,.exe,.jar
 
