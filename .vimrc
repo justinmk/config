@@ -241,7 +241,8 @@ if s:plugins_fluff
   if !(has('win32') || s:is_msys || s:is_cygwin)
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
     Plug 'junegunn/fzf.vim'
-    let g:fzf_command_prefix = 'Fzf'
+    let g:fzf_command_prefix = 'Fz'
+    let g:fzf_layout = {} "tab layout
   endif
 
   Plug 'tpope/vim-projectionist'
@@ -1363,7 +1364,7 @@ function! s:fzf_open_file_at_line(e)
 endfunction
 
 " search current working directory
-nnoremap <silent> <m-/> :FZF<cr>
+nnoremap <silent> <m-/> :FzFiles<cr>
 " full-text search
 nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
       \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
