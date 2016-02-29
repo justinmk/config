@@ -695,8 +695,7 @@ nnoremap <m-j> <c-w>j
 nnoremap <m-k> <c-w>k
 nnoremap <m-l> <c-w>l
 nnoremap <c-w>N :vnew<cr>
-nnoremap <silent> c<tab> <c-w>s
-nnoremap <silent> d<tab> <c-w>c
+nnoremap <silent> c<Space> <c-w>v
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
@@ -1373,8 +1372,8 @@ else
   " nnoremap <silent> g/W :Unite tmuxcomplete<CR>
 endif
 nnoremap <silent> g/v   :Scriptnames<cr>
-nnoremap <silent> <m-o> :call fzf#vim#buffer_tags(g:fzf#vim#default_layout)<cr>
-nnoremap <silent> g/t   :call fzf#vim#tags(g:fzf#vim#default_layout)<cr>
+nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('', g:fzf#vim#default_layout)<cr>
+nnoremap <silent> g/t   :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
 
 " statusline  ░▒▓█ ============================================================
