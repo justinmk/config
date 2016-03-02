@@ -69,12 +69,10 @@ let s:plugins_fluff = !(s:is_msys || s:is_cygwin) && s:plugins
 let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
 
 if !s:plugins "{{{
-
-fun! InstallPlug() "bootstrap plug.vim on new systems
+  fun! InstallPlug() "bootstrap plug.vim on new systems
     silent call mkdir(expand("~/.vim/autoload", 1), 'p')
     exe '!curl -fLo '.expand("~/.vim/autoload/plug.vim", 1).' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-endfun
-
+  endfun
 else
 let g:plug_window = 'enew'
 
@@ -358,14 +356,14 @@ else
 
   set nrformats-=octal
   set laststatus=2
-
-  set showcmd
   set history=10000
 
-  if has('syntax') && !exists('g:syntax_on')
-    syntax enable
+  if !s:plugins
+    if has('syntax') && !exists('g:syntax_on')
+      syntax enable
+    endif
+    filetype plugin indent on
   endif
-  filetype plugin indent on
 endif
 
 " Use <C-L> to:
@@ -466,6 +464,7 @@ let g:mapleader = "z,"
 
 try | lang en_US | catch | endtry
 
+set showcmd
 set undofile
 set list
 
