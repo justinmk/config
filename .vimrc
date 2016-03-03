@@ -1,25 +1,5 @@
 " windows builds: http://files.kaoriya.net/vim/
 "                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
-" neovim:
-"   msys:
-"       http://sourceforge.net/projects/msys2/files/Alpha-versions/
-"       Synchronize package databases
-"         $ pacman -Sy
-"       Install packages/groups:
-"         $ pacman -S openssh
-"         $ pacman -S base-devel
-"         $ pacman -S msys2-devel
-"   mingw:
-"       http://mingw-w64.sourceforge.net/download.php#mingw-builds
-"       http://nuwen.net/mingw.html
-"   julia build moving to msys2:
-"       https://github.com/JuliaLang/julia/issues/3640
-"   julia msys2 build instructions:
-"       https://github.com/JuliaLang/julia/pull/5982
-"
-" If this .vimrc is not in $HOME, add these lines to $HOME/.vimrc :
-"    set runtimepath+=/path/to/.vim
-"    source /path/to/.vimrc
 "==============================================================================
 " Windows Registry Editor Version 5.00
 "
@@ -80,7 +60,9 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'justinmk/molokai'
 
+if v:version > 703
 Plug 'ludovicchabant/vim-gutentags'
+endif
 
 Plug 'tommcdo/vim-exchange'
 Plug 'kopischke/vim-fetch'
@@ -209,10 +191,6 @@ if s:plugins_fluff
   Plug 'tpope/vim-salve'
   let g:salve_auto_start_repl = 1
   Plug 'tpope/vim-fireplace'
-
-  if v:version > 703
-    Plug 'chrisbra/vim-diff-enhanced'
-  endif
 
   Plug 'PProvost/vim-ps1'
   Plug 'pangloss/vim-javascript'
@@ -791,9 +769,7 @@ nnoremap Uf :Gedit <C-R><C-W><cr>
 nnoremap Up :Gpedit <c-r><c-w><cr>
 nnoremap Uh :SignifyToggleHighlight<cr>
 nnoremap UR :Gread<cr>
-nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))
-      \ <bar>endif<bar>Gwrite<bar>call <sid>reload_without_jank()<cr>
-"                                 ^reload buffer to kick signify.vim
+nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<bar>SignifyRefresh<cr>
 nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 "linewise partial staging in visual-mode.
@@ -1060,14 +1036,7 @@ inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M
 
 nnoremap z. :w<cr>
 nnoremap z<space> :enew<cr>
-xnoremap z<space> :enew<cr>
-
-func! s:reload_without_jank()
-  let w=winsaveview()
-  e
-  call winrestview(w)
-endf
-nnoremap r<bs> :call <sid>reload_without_jank()<cr>
+nnoremap r<bs> :e<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
@@ -1453,10 +1422,10 @@ nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
-command! CdNotes        tabnew<bar>exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
-command! CdLibUV      tabnew<bar>exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
-command! CdNvimDeps   tabnew<bar>exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
-command! CdVim        tabnew<bar>exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
+command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimCtags      call jobstart("ctags", 'ctags',
       \ ['-R'
