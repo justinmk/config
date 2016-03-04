@@ -38,7 +38,7 @@ let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
 let s:plugins = filereadable(expand("~/.vim/autoload/plug.vim", 1))
-let s:plugins_fluff = !(s:is_msys || s:is_cygwin) && s:plugins
+let s:plugins_extra = !(s:is_msys || s:is_cygwin) && s:plugins
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -167,7 +167,7 @@ Plug 'tpope/vim-commentary'
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
 
-if s:plugins_fluff
+if s:plugins_extra
   "TODO: dbext bugs:
   "   - dbext BufRead handler adds `gg` to jumplist. steps:
   "       :h h
@@ -244,7 +244,7 @@ if s:plugins_fluff
   " let g:localvimrc_whitelist = escape(expand('~'), '\').'\.lvimrc'
   let g:localvimrc_persistent = 1
 
-  Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
+  " Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
 endif
 
 call plug#end()
@@ -1346,7 +1346,7 @@ nnoremap <silent> g/t   :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
 " statusline  ░▒▓█ ============================================================
 " show winnr iff there are >2 windows
-if s:plugins_fluff
+if s:plugins_extra
   hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
   set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
 else

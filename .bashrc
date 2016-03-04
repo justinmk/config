@@ -56,21 +56,28 @@ fi
 HISTCONTROL=erasedups:ignoreboth
 HISTSIZE=20000
 HISTFILESIZE=20000
-HISTIGNORE='cd:ls:bg:fg:history:f:fd'
+HISTIGNORE='exit:cd:ls:bg:fg:history:f:fd'
 HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
 # write history file after each command
 PROMPT_COMMAND='history -a'
+# truncate long paths to ".../foo/bar/baz"
+PROMPT_DIRTRIM=3
 
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
-
 # (bash 4+) enable recursive glob for grep, rsync, ls, ...
 shopt -s globstar &> /dev/null
+# Correct spelling errors during tab-completion and `cd`.
+shopt -s dirspell
+shopt -s cdspell
 
 #disable ctrl-s (scroll-lock) and ctrl-q
 command -v stty > /dev/null 2>&1 && stty -ixon -ixoff
+
+# Display matches for ambiguous patterns at first tab press
+bind "set show-all-if-ambiguous on"
 
 SSHAGENT=/usr/bin/ssh-agent
 SSHAGENTARGS="-s"
