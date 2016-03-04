@@ -218,7 +218,7 @@ if s:plugins_extra
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
     Plug 'junegunn/fzf.vim'
     let g:fzf_command_prefix = 'Fz'
-    let g:fzf_layout = {} "tab layout
+    let g:fzf_layout = { 'window': 'execute (tabpagenr()-1)."tabnew"' }
   endif
 
   Plug 'tpope/vim-projectionist'
@@ -700,8 +700,8 @@ xnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win
 func! s:switch_to_alt_win()
   let currwin = winnr()
   wincmd p
-  if winnr() == currwin "window didn't change, so there was no 'previous' window.
-    wincmd W
+  if winnr() == currwin "window didn't change; no previous window.
+    wincmd w
   endif
 endf
 
@@ -714,7 +714,7 @@ endf
 
 " manage tabs
 "       gwT (built-in) breaks out window into new Tab.
-nnoremap cgt      :tabnew<cr>
+nnoremap cgt      :exe (tabpagenr()-1).'tabnew'<bar>call fugitive#detect(getcwd())<cr>
 nnoremap dgt      :tabclose<cr>
 nnoremap ]gt      :tabmove +1<cr>
 nnoremap [gt      :tabmove -1<cr>
@@ -732,7 +732,7 @@ nnoremap <silent><c-q> :silent! botright copen<cr>
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 
-nnoremap <silent> ^ :Dirvish %:p:h<cr>
+nnoremap <silent> - :Dirvish %:p:h<cr>
 " set working directory to the current buffer's directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
@@ -925,9 +925,8 @@ func! s:buf_kill(mercy)
 
   if !s:buf_switch_to_altbuff()
     "No alternate buffer found; create a new, blank buffer.
-    "Note: :bwipe will still close any window that displays the buffer being
-    "      wiped. To preven this, those windows would each need to be switched
-    "      to a new or alt buffer.
+    "Note: :bd will still close any window displaying the buffer. To prevent
+    "      that the windows would each need to be switched to another buffer.
     enew
   endif
 
@@ -941,14 +940,9 @@ func! s:buf_kill(mercy)
   endif
 endf
 
-"move to last character 
-nnoremap - $
-xnoremap - $
-onoremap - $
-
-nnoremap <c-cr> -
-xnoremap <c-cr> -
-onoremap <c-cr> -
+nnoremap <m-cr> -
+xnoremap <m-cr> -
+onoremap <m-cr> -
 
 " un-join (split) the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
