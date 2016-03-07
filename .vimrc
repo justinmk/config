@@ -263,6 +263,11 @@ if has("nvim")
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
   augroup END
+
+  tnoremap <M-h> <C-\><C-n><C-w>h
+  tnoremap <M-j> <C-\><C-n><C-w>j
+  tnoremap <M-k> <C-\><C-n><C-w>k
+  tnoremap <M-l> <C-\><C-n><C-w>l
 else
   " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
   " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
@@ -616,7 +621,7 @@ nnoremap Y y$
 " copy selection to gui-clipboard
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
-nnoremap yY :let b:winview=winsaveview()<bar>exe 'norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
+nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 inoremap <insert> <C-r>+
 
 " delete the 'head' of a path on the command line
