@@ -262,13 +262,9 @@ if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
   f() { # includes hidden directories (except .git)
     find . -name .git -prune -o $1 -print 2> /dev/null | sed s/^..// | $_fzfprog
   }
-  fd() { # change to directory
+  d() { # change to directory
     local path="$(f '-type d')"
     [ -z "$path" ] || cd $path
-  }
-  fv() { # open file in Vim
-    local path="$(f '-type f')"
-    [ -z "$path" ] || $EDITOR $path
   }
 fi
 
