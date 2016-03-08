@@ -356,7 +356,9 @@ endif
 " Use {count}<C-L> to:
 "   - `syntax sync fromstart` for the current buffer
 nnoremap <silent><expr> <C-L> v:count > 0 ? ':<C-U>syntax sync fromstart<CR>'
-      \ : ':nohlsearch'.(has('diff')?'\|diffupdate':'').'<CR><C-L>'
+      \ : ':nohlsearch'.(has('diff')?'\|diffupdate':'')
+      \   .(exists('SignifyRefresh')?'\|SignifyRefresh':'')
+      \   .'<CR><C-L>'
 
 inoremap <C-U> <C-G>u<C-U>
 " }}}
@@ -439,9 +441,6 @@ xnoremap <silent> 1k <esc>:<c-u>call <sid>vjump(virtcol('.'), 1)<cr>``gv``
 onoremap <silent> 1j      :<c-u>call <sid>vjump(virtcol('.'), 0)<cr>
 onoremap <silent> 1k      :<c-u>call <sid>vjump(virtcol('.'), 1)<cr>
 
-let g:EclimBufferTabTracking = 0 "legacy version
-let g:EclimBuffersTabTracking = 0
-
 let mapleader = "z,"
 let g:mapleader = "z,"
 
@@ -450,6 +449,7 @@ try | lang en_US | catch | endtry
 set showcmd
 set undofile
 set list
+set fileformats=unix,dos
 
 set cursorline
 
@@ -458,7 +458,6 @@ set path+=/usr/lib/gcc/**/include
 set path+=.deps/build/src/*/include,src
 
 let g:sh_noisk = 1
-set ttyfast
 set hidden      " Allow buffer switching even if unsaved 
 set lazyredraw  " no redraws in macros
 set cmdheight=2
@@ -562,10 +561,10 @@ set formatoptions+=rno1l
 set synmaxcol=1000
 
 set expandtab
+set tabstop=2 shiftwidth=0 textwidth=80
 if (v:version > 703)
   set softtabstop=-1 "use value of 'shiftwidth'
 endif
-set shiftwidth=2
 
 set linebreak
 set nowrap
