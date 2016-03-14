@@ -60,18 +60,14 @@ HISTIGNORE='exit:cd:ls:bg:fg:history:f:fd'
 HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
-# write history file after each command
-PROMPT_COMMAND='history -a'
+PROMPT_COMMAND='history -a' # append history file after each command
 # truncate long paths to ".../foo/bar/baz"
-PROMPT_DIRTRIM=3
+PROMPT_DIRTRIM=4
 
 # update $LINES and $COLUMNS after each command.
 shopt -s checkwinsize
 # (bash 4+) enable recursive glob for grep, rsync, ls, ...
 shopt -s globstar &> /dev/null
-# Correct spelling errors during tab-completion and `cd`.
-shopt -s dirspell
-shopt -s cdspell
 
 #disable ctrl-s (scroll-lock) and ctrl-q
 command -v stty > /dev/null 2>&1 && stty -ixon -ixoff
@@ -106,12 +102,15 @@ if ! type -t __git_ps1 > /dev/null 2>&1 ; then
     [ -f "$gitprompt_home" ] && source "$gitprompt_home"
 fi
 
-#bash completion; this also provides __git_ps1 on some systems
+if [ -n "$TMUX" ]; then
+# bash completion (also provides __git_ps1 on some systems)
+# Slow as dirt.
 if [ -f /usr/local/etc/bash_completion ]; then
   # `brew --prefix` is horribly expensive, do not use it!
   source /usr/local/etc/bash_completion
 elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   . /etc/bash_completion
+fi
 fi
 
 PS1='\[\033[1;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]'

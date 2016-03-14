@@ -764,19 +764,16 @@ nmap     <c-p>    [c
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
 nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
-nmap     Uc :exe 'Gsplit '.matchstr('<c-r><c-g>', '[^:]*')<cr>
-nnoremap Us :Gstatus<cr>
-nnoremap Ul :Gllog<cr>
-nnoremap Ug :Ggrep<space>
-nnoremap UB :Gblame<cr>
-nnoremap Ue :Gedit<cr>
-nnoremap Uf :Gedit <C-R><C-W><cr>
-nnoremap Up :Gpedit <c-r><c-w><cr>
-nnoremap Uh :SignifyToggleHighlight<cr>
-nnoremap UR :Gread<cr>
+nnoremap Us             :Gstatus<cr>
+nnoremap <silent> Ul :GV! -100<cr>
+nnoremap <silent> UL :GV  -300<CR>
+nnoremap UB             :Gblame<cr>
+nnoremap Ue             :Gedit<cr>
+nnoremap Ugf            :Gedit <C-R><C-W><cr>
+nnoremap Up             :Gpedit <C-R><C-W><cr>
+nnoremap Uh             :SignifyToggleHighlight<cr>
+nnoremap UR             :Gread<cr>
 nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<bar>SignifyRefresh<cr>
-nnoremap <silent> UG :cd %:p:h<bar>silent exec '!git gui '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
-nnoremap <silent> UL :cd %:p:h<bar>silent exec '!gitk --all '.(has('win32')<bar><bar>has('win64') ? '' : '&')<bar>cd -<bar>if !has('gui_running')<bar>redraw!<bar>endif<cr>
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
@@ -1275,6 +1272,7 @@ nnoremap gl    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap \f    :edit **/
 nnoremap \t    :tjump<space>
+nnoremap \g    :Ggrep<space>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
 nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
