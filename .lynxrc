@@ -1,0 +1,81 @@
+accept_all_cookies=on
+force_ssl_cookies_secure=on
+
+case_sensitive_searching=off
+character_set=UNICODE (UTF-8)
+# If emacs_keys is to "on" then the normal EMACS movement keys:
+#   ^N = down    ^P = up
+#   ^B = left    ^F = right
+# will be enabled.
+emacs_keys=on
+
+file_editor=nvim
+
+# lineedit_mode specifies the key binding used for inputting strings in
+# prompts and forms. Current lineedit modes are:
+#    Default Binding
+#    Alternate Bindings
+#    Bash-like Bindings
+lineedit_mode=Bash-like Bindings
+
+# preferred_charset specifies the character set in MIME notation (e.g.,
+# ISO-8859-2, ISO-8859-5) which Lynx will indicate you prefer in requests
+# to http servers using an Accept-Charset header.  The value should NOT
+# include ISO-8859-1 or US-ASCII, since those values are always assumed
+# by default.  May be a comma-separated list.
+# If a file in that character set is available, the server will send it.
+# If no Accept-Charset header is present, the default is that any
+# character set is acceptable.  If an Accept-Charset header is present,
+# and if the server cannot send a response which is acceptable
+# according to the Accept-Charset header, then the server SHOULD send
+# an error response, though the sending of an unacceptable response
+# is also allowed.
+preferred_charset=
+
+# preferred_language specifies the language in MIME notation (e.g., en,
+# fr, may be a comma-separated list in decreasing preference)
+# which Lynx will indicate you prefer in requests to http servers.
+# If a file in that language is available, the server will send it.
+# Otherwise, the server will send the file in its default language.
+preferred_language=en
+
+# select_popups specifies whether the OPTIONs in a SELECT block which
+# lacks a MULTIPLE attribute are presented as a vertical list of radio
+# buttons or via a popup menu.  Note that if the MULTIPLE attribute is
+# present in the SELECT start tag, Lynx always will create a vertical list
+# of checkboxes for the OPTIONs.  A value of "on" will set popup menus
+# as the default while a value of "off" will set use of radio boxes.
+# The default can be overridden via the -popup command line toggle.
+select_popups=on
+
+# show_color specifies how to set the color mode at startup.  A value of
+# "never" will force color mode off (treat the terminal as monochrome)
+# at startup even if the terminal appears to be color capable.  A value of
+# "always" will force color mode on even if the terminal appears to be
+# monochrome, if this is supported by the library used to build lynx.
+# A value of "default" will yield the behavior of assuming
+# a monochrome terminal unless color capability is inferred at startup
+# based on the terminal type, or the -color command line switch is used, or
+# the COLORTERM environment variable is set.  The default behavior always is
+# used in anonymous accounts or if the "option_save" restriction is set.
+show_color=default
+
+show_cursor=on
+
+# user_mode specifies the users level of knowledge with Lynx.  The
+# default is "NOVICE" which displays two extra lines of help at the
+# bottom of the screen to aid the user in learning the basic Lynx
+# commands.  Set user_mode to "INTERMEDIATE" to turn off the extra info.
+# Use "ADVANCED" to see the URL of the currently selected link at the
+# bottom of the screen.
+user_mode=ADVANCED
+
+# If verbose_images is "on", lynx will print the name of the image
+# source file in place of [INLINE], [LINK] or [IMAGE]
+# See also VERBOSE_IMAGES in lynx.cfg
+verbose_images=on
+
+vi_keys=on
+
+visited_links=LAST_REVERSED
+

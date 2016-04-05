@@ -86,6 +86,7 @@ xmap t <Plug>Sneak_t
 xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
+nmap <M-;> <Plug>SneakPrevious
 let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
@@ -278,7 +279,7 @@ else
       set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
             \ <m-n>=n <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
             \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
-            \ <m-]>=]
+            \ <m-]>=] <m-;>=;
   endif
 
   " may affect performance: https://github.com/tpope/vim-sensible/issues/57
@@ -569,9 +570,6 @@ endif
 set linebreak
 set nowrap
 
-" =============================================================================
-" util functions
-
 " http://www.vim.org/scripts/script.php?script_id=1714
 " - uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
 " - only updates if the buffer is visible.
@@ -736,7 +734,6 @@ nnoremap <silent><c-q> :silent! botright copen<cr>
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 
-nnoremap <silent> - :Dirvish %:p:h<cr>
 " set working directory to the current buffer's directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
@@ -1440,6 +1437,8 @@ command! NvimCtags      call jobstart("ctags", 'ctags',
       \ , '.'])
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
+
+command! -nargs=1 Websearch vnew|call termopen('lynx https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|tnoremap <buffer> <C-c> <C-g>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 

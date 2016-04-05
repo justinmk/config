@@ -28,8 +28,7 @@ if !exists("g:OmniSharp_loaded")
   " mod  N:System.IO      |w3m -T text/html
   " mod 'M:System.Collections.ArrayList.ToArray(System.Type)'|w3m -T text/html
   if executable('mod')
-    nnoremap <buffer> K :exe 'keepalt '.(tabpagenr()-1).'tabedit\|:te mod T:'
-      \ .matchstr(expand('<cWORD>'), '\v(\k\|\.)+').'\|w3m -T text/html'
+    nnoremap <buffer> K :Websearch c# <C-R><C-W><CR>
   endif
 else " TODO: gD OmniSharpFindType
   setlocal omnifunc=OmniSharp#Complete
