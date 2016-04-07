@@ -8,17 +8,6 @@
 # Environment variables (non-bash-specific)
 # =============================================================================
 
-if [[ "$MSYSTEM" != MINGW* && "$TERM" != cygwin && $OSTYPE != 'msys' ]] ; then
-  umask 0077
-
-  sudo() {
-    local old=$(umask)
-    umask 0022
-    command sudo $@
-    umask $old
-  }
-fi
-
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 
 # golang root
@@ -178,7 +167,6 @@ if [[ "$(uname)" == Darwin ]]; then
 
     #BSD-style aliases 
     alias ls='ls -GC'
-    alias su='echo "***REMINDER: verify umask" && su -l'
 
     if ! [ 0 -eq `defaults read -g KeyRepeat` ] ; then
       #MacVim: ensure Core Text renderer (improves performance)
