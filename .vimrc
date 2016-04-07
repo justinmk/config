@@ -60,7 +60,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'justinmk/molokai'
 
-if v:version > 703
+if v:version > 703 && !(has('win32') || has('win32unix'))
 Plug 'ludovicchabant/vim-gutentags'
 endif
 
@@ -318,9 +318,9 @@ else
   endif
   setglobal tags-=./tags tags-=./tags; tags^=./tags;
 
-  set autoindent  " Note: 'smartindent' is superseded by 'cindent' and 'indentexpr'.
+  set autoindent  " Note: 'smartindent' is deprecated by 'cindent' and 'indentexpr'.
   set complete-=i " Don't scan includes (tags file is more performant).
-  set smarttab    " Use 'shiftwidth' when using <Tab> in front of a line. By default it's used only for shift commands ("<", ">").
+  set smarttab    " Use 'shiftwidth' when using <Tab> in front of a line.
 
   set incsearch
   set mouse=a     " Enable mouse usage (all modes)
@@ -358,7 +358,7 @@ endif
 "   - `syntax sync fromstart` for the current buffer
 nnoremap <silent><expr> <C-L> v:count > 0 ? ':<C-U>syntax sync fromstart<CR>'
       \ : ':nohlsearch'.(has('diff')?'\|diffupdate':'')
-      \   .(exists('SignifyRefresh')?'\|SignifyRefresh':'')
+      \   .(exists(':SignifyRefresh')?'\|SignifyRefresh':'')
       \   .'<CR><C-L>'
 
 inoremap <C-U> <C-G>u<C-U>
@@ -560,12 +560,6 @@ endf
 set formatoptions+=rno1l
 " don't syntax-highlight long lines
 set synmaxcol=1000
-
-set expandtab
-set tabstop=2 shiftwidth=0 textwidth=80
-if (v:version > 703)
-  set softtabstop=-1 "use value of 'shiftwidth'
-endif
 
 set linebreak
 set nowrap
@@ -1134,7 +1128,7 @@ augroup END
 augroup vimrc_java
   autocmd!
   autocmd FileType groovy setlocal commentstring=//%s
-  autocmd FileType java setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
+  autocmd FileType java setlocal tabstop=4 shiftwidth=4 copyindent nolist
   if isdirectory(expand("~/.vim/eclim", 1))
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
           \| nnoremap <buffer> <silent> gI :<c-u>JavaSearch -x implementors -s workspace<cr>
@@ -1153,8 +1147,8 @@ augroup END
 "   https://github.com/AndrewRadev/go-oracle.vim
 augroup vimrc_golang
   autocmd!
-  autocmd FileType go iabbrev <buffer> err- if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
-  autocmd FileType go setlocal tabstop=4 shiftwidth=4 noexpandtab copyindent softtabstop=0 nolist
+  autocmd FileType go inoremap <buffer> <leader>err if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
+  autocmd FileType go setlocal tabstop=4 shiftwidth=4 copyindent nolist
 
   if exists("$GOPATH")
     let s:gopaths = split($GOPATH, ':')
@@ -1234,7 +1228,7 @@ augroup vimrc_autocmd
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
-  autocmd FileType text setlocal tabstop=4 shiftwidth=4 textwidth=80
+  autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=2 softtabstop=2 tabstop=4 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   autocmd FileType dirvish call fugitive#detect(@%)
 
