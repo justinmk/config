@@ -1310,6 +1310,9 @@ function! s:fzf_open_file_at_line(e)
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
   execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
 endfunction
+function! s:fzf_insert_at_point(s)
+  execute "put ='".a:s."'"
+endfunction
 
 " search current working directory
 nnoremap <silent> <m-/> :FzFiles<cr>
@@ -1322,8 +1325,14 @@ nnoremap <silent> g/l   :call fzf#vim#buffer_lines(g:fzf#vim#default_layout)<cr>
 if findfile('plugin/tmuxcomplete.vim', &rtp) ==# ''
   nnoremap <silent> g/L mS:call fzf#vim#lines(g:fzf#vim#default_layout)<cr>
 else
-  " TODO
-  " nnoremap <silent> g/L mS:Unite line:buffers tmuxcomplete/lines<CR>
+  inoremap <expr> <C-l> fzf#complete(tmuxcomplete#list('lines', 0))
+  inoremap <expr> <M-l> fzf#complete(tmuxcomplete#list('lines', 0))
+  inoremap <expr> <M-w> fzf#complete(tmuxcomplete#list('words', 0))
+
+  nnoremap <silent> g/L :call fzf#run({'source':tmuxcomplete#list('lines', 0),
+        \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
+  nnoremap <silent> g/W :call fzf#run({'source':tmuxcomplete#list('words', 0),
+        \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
   " nnoremap <silent> g/W :Unite tmuxcomplete<CR>
 endif
 nnoremap <silent> g/v   :Scriptnames<cr>
