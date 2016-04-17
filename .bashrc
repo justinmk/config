@@ -8,6 +8,9 @@
 # Environment variables (non-bash-specific)
 # =============================================================================
 
+# TODO: Nice for performance/explicitness, but doesn't play well with fugitive.
+#export GIT_CEILING_DIRECTORIES=~
+
 [ -d "$HOME/opt/gwt" ] && export GWT_HOME=$HOME/opt/gwt && PATH=$PATH:$GWT_HOME
 
 # golang root
