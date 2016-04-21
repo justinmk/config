@@ -604,8 +604,8 @@ command! -bang -nargs=? -complete=file Tail call Tail(<q-args>)
 " =============================================================================
 " normal mode
 
-nnoremap & :&&<CR>
-xnoremap & :&&<CR>
+nnoremap & n:&&<CR>
+xnoremap & n:&&<CR>
 
 " Make Y consistent with C and D.
 nnoremap Y y$
@@ -672,6 +672,8 @@ nnoremap <silent> c<Space> <c-w>v
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
+" inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
+" nnoremap y@%   :<c-u>let @"=@%<cr>
 
 func! s:win_motion_resize(type)
   let sel_save = &selection
@@ -1188,7 +1190,7 @@ augroup vimrc_savecommitmsg
   func! s:store_commit_msg()
     let [w,r]=[winsaveview(),getreg('"', 1)]
     let @c=''
-    silent! 1;/^#/-1 g/.*/y C
+    silent! keepmarks keepjumps keeppatterns 1;/^#/-1 g/.*/y C
     if 0 <= match(@c, '[^ \t\n\r]')
       let g:LAST_COMMIT_MSG=@c
     endif
