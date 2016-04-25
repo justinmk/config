@@ -712,7 +712,7 @@ endf
 
 " manage tabs
 "       gwT (built-in) breaks out window into new Tab.
-nnoremap cgt      :exe (tabpagenr()-1).'tabnew'<bar>call fugitive#detect(getcwd())<cr>
+nnoremap cgt      :exe 'tabnew'<bar>call fugitive#detect(getcwd())<cr>
 nnoremap dgt      :tabclose<cr>
 nnoremap ]gt      :tabmove +1<cr>
 nnoremap [gt      :tabmove -1<cr>
