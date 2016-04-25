@@ -1130,7 +1130,7 @@ augroup END
 augroup vimrc_java
   autocmd!
   autocmd FileType groovy setlocal commentstring=//%s
-  autocmd FileType java setlocal tabstop=4 shiftwidth=4 copyindent nolist
+  autocmd FileType java setlocal tabstop=4 copyindent nolist
   if isdirectory(expand("~/.vim/eclim", 1))
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
           \| nnoremap <buffer> <silent> gI :<c-u>JavaSearch -x implementors -s workspace<cr>
@@ -1150,7 +1150,7 @@ augroup END
 augroup vimrc_golang
   autocmd!
   autocmd FileType go inoremap <buffer> <leader>err if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
-  autocmd FileType go setlocal tabstop=4 shiftwidth=4 copyindent nolist
+  autocmd FileType go setlocal tabstop=4 copyindent nolist
 
   if exists("$GOPATH")
     let s:gopaths = split($GOPATH, ':')
@@ -1230,7 +1230,8 @@ augroup vimrc_autocmd
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
-  autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=2 softtabstop=2 tabstop=4 textwidth=80
+  autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=0
+        \ softtabstop=2 tabstop=4 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   autocmd FileType dirvish call fugitive#detect(@%)
 
@@ -1252,7 +1253,7 @@ augroup vimrc_autocmd
   autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | call <sid>set_CursorLine() | endif
   autocmd WinEnter * call <sid>set_CursorLine()
 
-  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 shiftwidth=4 copyindent
+  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 copyindent
 
   if has('win32')
     " always maximize initial GUI window size
