@@ -263,6 +263,7 @@ call plug#end()
 runtime! plugin/rsi.vim
 runtime! plugin/commentary.vim
 " }}}
+endif "}}}
 
 " sensible.vim {{{
 if has("nvim")
@@ -308,7 +309,7 @@ else
   endif
 
   "transient dirs
-  let s:dir = empty($XDG_DATA_HOME) ? '~/.local/share/'.(has('nvim')?'n':'').'vim' : $XDG_DATA_HOME.'/vim'
+  let s:dir = '~/.local/share/vim'
   let &directory = expand(s:dir, 1).'/swap//,'.&directory
   if has("persistent_undo")
     let &undodir = expand(s:dir, 1).'/undo//,'.&undodir
@@ -400,7 +401,6 @@ cnoremap        <C-Y> <C-R>-
 
 "}}}
 
-endif "}}}
 
 command! LoadSession if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
       \ | else | Obsession ~/.vim/session.vim | endif
