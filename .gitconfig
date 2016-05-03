@@ -40,7 +40,7 @@
   #diff-highlight: perl script from git 'contrib'
   dh = "!f() { git diff --color=always \"$@\" | diff-highlight | less -R; }; f"
   b  = branch -vv
-  s  = !git status -sb && git stash list
+  s  = !git status -sb
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
   #script-consumable list of modified files (does NOT include deleted/added/staged)
