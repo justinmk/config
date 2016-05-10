@@ -1287,29 +1287,6 @@ xnoremap gs   ms:s/\%V
 nnoremap \*  mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
 xnoremap \*  mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
 
-" show :ilist or ]I results in the quickfix window
-function! s:ilist_qf(start_at_cursor)
-  redir => output
-    silent! exec 'normal! '.(a:start_at_cursor ? ']I' : '[I')
-  redir END
-  let lines = split(output, '\n')
-  if lines[0] =~? '^Error detected'
-    echomsg "Could not find the word in file"
-    return
-  endif
-  let [filename, line_info] = [lines[0], lines[1:-1]]
-  "turn the :ilist output into a quickfix dictionary
-  let qf_entries = map(line_info, "{
-        \ 'filename': filename,
-        \ 'lnum': split(v:val)[1],
-        \ 'text': getline(split(v:val)[1])
-        \ }")
-  call setqflist(qf_entries)
-  cwindow
-endfunction
-nnoremap <silent> [I :call <sid>ilist_qf(0)<CR>
-nnoremap <silent> ]I :call <sid>ilist_qf(1)<CR>
-
 " =============================================================================
 " autocomplete / omnicomplete / tags
 " =============================================================================
