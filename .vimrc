@@ -676,10 +676,14 @@ nnoremap <silent> N :<C-U>call <SID>norm_n('N')<CR>
 "       <c-w>eip
 " available:
 "       <c-w><space>{motion}
-nnoremap <m-h> <c-w>h
-nnoremap <m-j> <c-w>j
-nnoremap <m-k> <c-w>k
-nnoremap <m-l> <c-w>l
+nnoremap <M-h> <C-w>h
+nnoremap <M-j> <C-w>j
+nnoremap <M-k> <C-w>k
+nnoremap <M-l> <C-w>l
+nnoremap <M-H> :leftabove vsplit<CR>
+nnoremap <M-J> :belowright split<CR>
+nnoremap <M-K> :aboveleft split<CR>
+nnoremap <M-L> :rightbelow vsplit<CR>
 nnoremap <C-w>gt :tab sp<CR>
 nnoremap <C-w>N :vnew<CR>
 nnoremap <silent> c<Space> <c-w>v
