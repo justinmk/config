@@ -164,7 +164,10 @@ inoremap [; [<CR>];<Esc>O
 inoremap [, [<CR>],<Esc>O
 
 Plug 'tpope/vim-obsession'
+
 Plug 'tpope/vim-markdown'
+let g:markdown_syntax_conceal = 0
+
 Plug 'tpope/vim-jdaddy'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -221,6 +224,7 @@ if s:plugins_extra
   Plug 'mattn/gist-vim'
   Plug 'gcavallanti/vim-noscrollbar'
 
+  Plug 'tommcdo/vim-lion'
   " Plug 'junegunn/vim-easy-align'
   " Plug 'junegunn/vader.vim'
 
@@ -676,7 +680,8 @@ nnoremap <m-h> <c-w>h
 nnoremap <m-j> <c-w>j
 nnoremap <m-k> <c-w>k
 nnoremap <m-l> <c-w>l
-nnoremap <c-w>N :vnew<cr>
+nnoremap <C-w>gt :tab sp<CR>
+nnoremap <C-w>N :vnew<CR>
 nnoremap <silent> c<Space> <c-w>v
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
 xmap     <silent>       <tab> <esc><tab>
@@ -1270,14 +1275,14 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap gl    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
+nnoremap \b    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap \f    :edit **/
 nnoremap \t    :tjump<space>
 nnoremap \g    :Ggrep<space>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
-nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
+nnoremap \B  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
 " search current buffer and open results in loclist
 nnoremap \%   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
 " search-replace
