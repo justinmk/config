@@ -38,7 +38,7 @@ let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
 let s:plugins = filereadable(expand("~/.vim/autoload/plug.vim", 1))
-let s:plugins_extra = !(s:is_msys || s:is_cygwin) && s:plugins
+let s:plugins_extra = s:plugins && !s:is_msys && !s:is_cygwin
 
 " 'is GUI' means vim is _not_ running within the terminal.
 " sample values:
@@ -62,6 +62,8 @@ Plug 'justinmk/molokai'
 
 if v:version > 703 && !(has('win32') || has('win32unix'))
 Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_ctags_executable = '~/bin/ctags/bin/ctags'
+let g:gutentags_exclude = ['.vim-src']
 endif
 
 Plug 'tommcdo/vim-exchange'
@@ -112,9 +114,8 @@ let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
 nnoremap !m :<c-u>Make<cr>
-nnoremap !] :<c-u>Start! ctags -R *<cr>
 " ways to run external commands in vim: https://gist.github.com/sjl/b9e3d9f821e57c9f96b3
-nnoremap !t :<c-u>Trun TEST_FILE=<c-r>% make functionaltest<Bar>grep --line-buffered -vE '(^\s*$)<Bar>(^make.*(Leaving<Bar>Entering))'<cr>
+nnoremap !t :<c-u>Trun TEST_FILE=<c-r>% make functionaltest<cr>
 nnoremap !T :<c-u>Make unittest<cr>
 
 nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
@@ -224,15 +225,11 @@ if s:plugins_extra
   Plug 'gcavallanti/vim-noscrollbar'
 
   Plug 'tommcdo/vim-lion'
-  " Plug 'junegunn/vim-easy-align'
-  " Plug 'junegunn/vader.vim'
 
-  if !(has('win32') || s:is_msys || s:is_cygwin)
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
-    Plug 'junegunn/fzf.vim'
-    let g:fzf_command_prefix = 'Fz'
-    let g:fzf_layout = { 'window': 'execute (tabpagenr()-1)."tabnew"' }
-  endif
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
+  Plug 'junegunn/fzf.vim'
+  let g:fzf_command_prefix = 'Fz'
+  let g:fzf_layout = { 'window': 'execute (tabpagenr()-1)."tabnew"' }
 
   Plug 'tpope/vim-projectionist'
   " look at derekwyatt/vim-fswitch for more C combos.
@@ -1111,57 +1108,9 @@ nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
 
 " }}} mappings
 
-" python ======================================================================
-augroup vimrc_python
-  autocmd!
-  autocmd FileType python syn keyword pythonDecorator True None False self | setlocal nosmartindent tabstop=4
-  let g:jedi#force_py_version = 3
-  let g:jedi#auto_vim_configuration = 0
-  let g:jedi#goto_assignments_command = 'gd'
-  let g:jedi#goto_definitions_command = 'gD'
-  let g:jedi#rename_command = 'crn'
-  let g:jedi#usages_command = 'gr'
-augroup END
-
-" java ========================================================================
-" gradle makeprg/quickfix settings:
-"   https://github.com/luciano-fiandesio/dotfiles/blob/master/.vim/compiler/gradle.vim
-augroup vimrc_java
+augroup vimrc_groovy
   autocmd!
   autocmd FileType groovy setlocal commentstring=//%s
-  autocmd FileType java setlocal tabstop=4 copyindent nolist
-  if isdirectory(expand("~/.vim/eclim", 1))
-    autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
-          \| nnoremap <buffer> <silent> gI :<c-u>JavaSearch -x implementors -s workspace<cr>
-          \| nnoremap <buffer> <c-t> :<c-u>JavaHierarchy<cr>
-          \| nnoremap <buffer> cri   :<c-u>JavaImportOrganize<cr>
-          \| nnoremap <buffer> K     :<c-u>JavaDocPreview<cr>
-          \| nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>
-  endif
-augroup END
-
-
-" golang ======================================================================
-" code search:
-"    https://sourcegraph.com/code.google.com/p/go/tree
-" code navigation/inspection(!!!):
-"   https://github.com/AndrewRadev/go-oracle.vim
-augroup vimrc_golang
-  autocmd!
-  autocmd FileType go inoremap <buffer> <leader>err if err != nil {<C-j>log.Fatal(err)<C-j>}<C-j>
-  autocmd FileType go setlocal tabstop=4 copyindent nolist
-
-  if exists("$GOPATH")
-    let s:gopaths = split($GOPATH, ':')
-    for s:gopath in s:gopaths
-      "set up Golint    https://github.com/golang/lint
-      if isdirectory(s:gopath."/src/github.com/golang/lint/misc/vim")
-        exe 'set runtimepath+='.s:gopath.'/src/github.com/golang/lint/misc/vim'
-        autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
-        break
-      endif
-    endfor
-  endif
 augroup END
 
 
@@ -1185,19 +1134,21 @@ endif
 
 augroup vimrc_savecommitmsg
   autocmd!
-  " Remember last commit message for fugitive commit editor
+  " Remember last git commit message
   func! s:store_commit_msg()
     let [w,r]=[winsaveview(),getreg('"', 1)]
+    let save_c = @c
     let @c=''
-    silent! keepmarks keepjumps keeppatterns 1;/^#/-1 g/.*/y C
-    if 0 <= match(@c, '[^ \t\n\r]')
-      let g:LAST_COMMIT_MSG=@c
-    endif
+    silent! keepmarks keepjumps keeppatterns g/\v(^$)|^([^#].*$)/y C
+    let g:removed_whitespace = substitute(@c, '\_[[:space:]]*', '', 'g')
+    let @c = len(g:removed_whitespace) < 10
+           \ ? save_c : @c[1:]  " remove first (empty) line
     call winrestview(w)
     call setreg('"', r)
   endf
   autocmd BufEnter COMMIT_EDITMSG
-        \ exe 'au! vimrc_savecommitmsg * <buffer>' | autocmd vimrc_savecommitmsg TextChanged,TextChangedI <buffer> silent call <sid>store_commit_msg()
+        \ autocmd! vimrc_savecommitmsg TextChanged,TextChangedI <buffer> silent call <SID>store_commit_msg()
+  autocmd BufWritePost COMMIT_EDITMSG let g:LAST_COMMIT_MSG = @c
 augroup END
 
 augroup vimrc_autocmd
@@ -1320,7 +1271,6 @@ nnoremap <silent> g/t   :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
 
 " statusline  ░▒▓█ ============================================================
-" show winnr iff there are >2 windows
 if s:plugins_extra
   hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
   set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
@@ -1395,28 +1345,13 @@ set titleold=?
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
-command! DateInsert           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
-command! DateInsertYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
+command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
+command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
 command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
-command! NvimCtags      call jobstart("ctags", 'ctags',
-      \ ['-R'
-      \ , '-I', 'FUNC_ATTR_MALLOC'
-      \ , '-I', 'FUNC_ATTR_ALLOC_SIZE+'
-      \ , '-I', 'FUNC_ATTR_ALLOC_SIZE_PROD+'
-      \ , '-I', 'FUNC_ATTR_ALLOC_ALIGN+'
-      \ , '-I', 'FUNC_ATTR_PURE'
-      \ , '-I', 'FUNC_ATTR_CONST'
-      \ , '-I', 'FUNC_ATTR_WARN_UNUSED_RESULT'
-      \ , '-I', 'FUNC_ATTR_ALWAYS_INLINE'
-      \ , '-I', 'FUNC_ATTR_UNUSED'
-      \ , '-I', 'FUNC_ATTR_NONNULL_ALL'
-      \ , '-I', 'FUNC_ATTR_NONNULL_ARG+'
-      \ , '-I', 'FUNC_ATTR_NONNULL_RET'
-      \ , '.'])
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 
