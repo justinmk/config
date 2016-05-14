@@ -1,2 +1,1 @@
-syn keyword pythonDecorator True None False self
-setlocal nosmartindent tabstop=4
+setlocal tabstop=4
