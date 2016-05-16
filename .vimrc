@@ -619,8 +619,6 @@ endfunc
 
 xnoremap / <Esc>/\%V
 
-nnoremap <C-]> g<C-]>
-
 " word-wise i_CTRL-Y
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
 
@@ -668,13 +666,8 @@ nnoremap <M-L> :rightbelow vsplit<CR>
 nnoremap <C-w>gt :tab sp<CR>
 nnoremap <C-w>N :vnew<CR>
 nnoremap <silent> c<Space> <c-w>v
-nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
-nnoremap <silent> <C-tab> :exe "tabnext ".get(g:,'lasttab',1)<CR>
-nnoremap <BS> <C-^>
-augroup vimrc_lasttab
-  autocmd!
-  autocmd TabLeave * let g:lasttab = tabpagenr()
-augroup END
+nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : <SID>alt_wintabbuf())
+nnoremap <silent> <C-tab> :exe "tabnext ".get(g:,'lasttab',[0,1])[1]<CR>
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
@@ -708,6 +701,36 @@ func! s:switch_to_alt_win()
   endif
 endf
 
+" go to the previous thing
+func! s:alt_wintabbuf()
+  let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
+  if (b[0] - w[0]) > 0.2 && (b[0] - t[0]) > 0.2 && bufexists(b[1])
+    return "\<C-^>"
+  endif
+  if w[0] >= b[0] && w[0] >= t[0] && w[1] <= winnr('$') && w[1] != winnr()
+    return "\<C-w>p"
+  endif
+  if t[0] >= b[0] && t[0] >= w[0] && t[1] <= tabpagenr('$')
+    return t[1].'gt'
+  endif
+  if winnr('$') > 1
+    return "\<C-w>w"
+  endif
+  if tabpagenr('$') > 1
+    return "gt"
+  endif
+  if bufexists(bufnr('#'))
+    return "\<C-^>"
+  endif
+endf
+augroup vimrc_last_wintabbuf
+  autocmd!
+  let [g:lastbuf,g:lastwin,g:lasttab] = [[0,1],[0,1],[0,1]]
+  autocmd BufLeave * let g:lastbuf = [reltimefloat(reltime()),bufnr('%')]
+  autocmd WinLeave * let g:lastwin = [reltimefloat(reltime()),winnr()]
+  autocmd TabLeave * let g:lasttab = [reltimefloat(reltime()),tabpagenr()]
+augroup END
+
 func! s:get_alt_winnr()
   call s:switch_to_alt_win()
   let n = winnr()
@@ -719,6 +742,7 @@ endf
 "       gwT (built-in) breaks out window into new Tab.
 nnoremap cgt      :exe 'tabnew'<bar>call fugitive#detect(getcwd())<cr>
 nnoremap dgt      :tabclose<cr>
+nnoremap ZT       :tabclose<cr>
 nnoremap ]gt      :tabmove +1<cr>
 nnoremap [gt      :tabmove -1<cr>
 " move tab to Nth tab position
@@ -1222,7 +1246,7 @@ augroup END
 nnoremap \b    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap \f    :edit **/
-nnoremap \t    :tjump<space>
+nnoremap \t    :tag<space>
 nnoremap \g    :Ggrep<space>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).

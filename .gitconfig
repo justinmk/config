@@ -36,7 +36,6 @@
   l  = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
   ll = log --stat --decorate --source -p
   d  = diff
-  ds = diff --stat --color
   #diff-highlight: perl script from git 'contrib'
   dh = "!f() { git diff --color=always \"$@\" | diff-highlight | less -R; }; f"
   b  = branch -vv
