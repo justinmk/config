@@ -617,6 +617,8 @@ endfunc
 
 " key mappings/bindings =================================================== {{{
 
+xnoremap / <Esc>/\%V
+
 nnoremap <C-]> g<C-]>
 
 " word-wise i_CTRL-Y
@@ -667,6 +669,12 @@ nnoremap <C-w>gt :tab sp<CR>
 nnoremap <C-w>N :vnew<CR>
 nnoremap <silent> c<Space> <c-w>v
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
+nnoremap <silent> <C-tab> :exe "tabnext ".get(g:,'lasttab',1)<CR>
+nnoremap <BS> <C-^>
+augroup vimrc_lasttab
+  autocmd!
+  autocmd TabLeave * let g:lasttab = tabpagenr()
+augroup END
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
@@ -1181,7 +1189,7 @@ augroup vimrc_autocmd
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=0
-        \ softtabstop=2 tabstop=4 textwidth=80
+        \ softtabstop=2 tabstop=2 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   autocmd FileType dirvish call fugitive#detect(@%)
 
