@@ -633,20 +633,20 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " mark position before search
 nnoremap / ms/
 
-func! s:norm_n(n)
-  let topline = winsaveview().topline
+func! s:maybe_zz(cmd)
+  let topline = line('w0')
   try
-    exe 'norm! ' a:n
+    exe a:cmd
   catch /E486:/
     echohl ErrorMsg | echom matchstr(v:exception, 'E486:.*') | echohl None
   endtry
-  if topline != winsaveview().topline
+  if topline != line('w0')
     normal! zz
     call feedkeys("\<Plug>Pulse", 'm')
   endif
 endf
-nnoremap <silent> n :<C-U>call <SID>norm_n('n')<CR>
-nnoremap <silent> N :<C-U>call <SID>norm_n('N')<CR>
+nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! n')<CR>
+nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! N')<CR>
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
@@ -781,8 +781,8 @@ endif
 nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
       \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
 
-nmap     <c-n>    ]c
-nmap     <c-p>    [c
+nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz('norm ]c]n')<CR>
+nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz('norm [c[n')<CR>
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
