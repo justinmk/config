@@ -701,6 +701,8 @@ func! s:switch_to_alt_win()
   endif
 endf
 
+nnoremap <expr><silent> \| !v:count ? '<C-w>\|' : '\|'
+
 " go to the previous thing
 func! s:alt_wintabbuf()
   let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
@@ -710,25 +712,27 @@ func! s:alt_wintabbuf()
   if w[0] >= b[0] && w[0] >= t[0] && w[1] <= winnr('$') && w[1] != winnr()
     return "\<C-w>p"
   endif
-  if t[0] >= b[0] && t[0] >= w[0] && t[1] <= tabpagenr('$')
+  if t[0] > b[0] && t[0] > w[0] && t[1] <= tabpagenr('$')
     return t[1].'gt'
   endif
   if winnr('$') > 1
     return "\<C-w>w"
   endif
-  if tabpagenr('$') > 1
-    return "gt"
-  endif
   if bufexists(bufnr('#'))
     return "\<C-^>"
+  endif
+  if tabpagenr('$') > 1
+    return "gt"
   endif
 endf
 augroup vimrc_last_wintabbuf
   autocmd!
   let [g:lastbuf,g:lastwin,g:lasttab] = [[0,1],[0,1],[0,1]]
-  autocmd BufLeave * let g:lastbuf = [reltimefloat(reltime()),bufnr('%')]
-  autocmd WinLeave * let g:lastwin = [reltimefloat(reltime()),winnr()]
-  autocmd TabLeave * let g:lasttab = [reltimefloat(reltime()),tabpagenr()]
+  if exists('*reltimefloat')
+    autocmd BufLeave * let g:lastbuf = [reltimefloat(reltime()),bufnr('%')]
+    autocmd WinLeave * let g:lastwin = [reltimefloat(reltime()),winnr()]
+    autocmd TabLeave * let g:lasttab = [reltimefloat(reltime()),tabpagenr()]
+  endif
 augroup END
 
 func! s:get_alt_winnr()
@@ -743,10 +747,9 @@ endf
 nnoremap cgt      :exe 'tabnew'<bar>call fugitive#detect(getcwd())<cr>
 nnoremap dgt      :tabclose<cr>
 nnoremap ZT       :tabclose<cr>
-nnoremap ]gt      :tabmove +1<cr>
-nnoremap [gt      :tabmove -1<cr>
-" move tab to Nth tab position
-nnoremap <expr> gT (v:count > 0 ? ':<c-u>tabmove '.(v:count - 1).'<cr>' : 'gT')
+" move tab to Nth position
+nnoremap <expr> ]gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
+nnoremap <expr> [gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
 
 " manage buffers
 nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
@@ -865,8 +868,8 @@ xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 " nnoremap z<cr>jj    :%!python -m json.tool<cr>
 " nnoremap c<space>jj :%!python -m json.tool<cr>
 " nnoremap g<bar>jj   :%!python -m json.tool<cr>
-nnoremap <bar>jj :%!python -m json.tool<cr>
-xnoremap <bar>jj :!python -m json.tool<cr>
+" nnoremap <bar>jj :%!python -m json.tool<cr>
+" xnoremap <bar>jj :!python -m json.tool<cr>
 " windows binary: http://tidybatchfiles.info
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
