@@ -63,7 +63,7 @@ Plug 'justinmk/molokai'
 if v:version > 703 && !(has('win32') || has('win32unix'))
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_ctags_executable = expand('~/bin/ctags/bin/ctags',1)
-let g:gutentags_exclude = ['.vim-src']
+let g:gutentags_exclude = ['.vim-src', 'build']
 endif
 
 Plug 'tommcdo/vim-exchange'
@@ -1226,6 +1226,7 @@ augroup vimrc_autocmd
   autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=0
         \ softtabstop=2 tabstop=2 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
+  autocmd FileType gitcommit nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
   autocmd FileType dirvish call fugitive#detect(@%)
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
