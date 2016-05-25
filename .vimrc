@@ -62,7 +62,7 @@ Plug 'justinmk/molokai'
 
 if v:version > 703 && !(has('win32') || has('win32unix'))
 Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_ctags_executable = '~/bin/ctags/bin/ctags'
+let g:gutentags_ctags_executable = expand('~/bin/ctags/bin/ctags',1)
 let g:gutentags_exclude = ['.vim-src']
 endif
 
@@ -659,10 +659,16 @@ nnoremap <M-h> <C-w>h
 nnoremap <M-j> <C-w>j
 nnoremap <M-k> <C-w>k
 nnoremap <M-l> <C-w>l
-nnoremap <M-H> :leftabove vsplit<CR>
-nnoremap <M-J> :belowright split<CR>
-nnoremap <M-K> :aboveleft split<CR>
-nnoremap <M-L> :rightbelow vsplit<CR>
+
+nnoremap Zh     :leftabove vsplit<CR>
+nnoremap Zj     :belowright split<CR>
+nnoremap Zk     :aboveleft split<CR>
+nnoremap Zl     :rightbelow vsplit<CR>
+nmap     ZH     Zh
+nmap     ZJ     Zj
+nmap     ZK     Zk
+nmap     ZL     Zl
+
 nnoremap <C-w>gt :tab sp<CR>
 nnoremap <C-w>N :vnew<CR>
 nnoremap <silent> c<Space> <c-w>v
@@ -976,6 +982,8 @@ nnoremap vd "_d
 xnoremap x  "_d
 nnoremap vD "_D
 xnoremap P  "0p
+
+nnoremap v <C-v>
 
 func! s:trimws_ml(s) "trim whitespace across multiple lines
   return substitute(a:s, '^\_s*\(.\{-}\)\_s*$', '\1', '')
