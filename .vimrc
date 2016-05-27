@@ -1249,6 +1249,11 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 copyindent
 
+  if exists('#TextYankPost')
+    autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])
+      \|call add(g:yankring, deepcopy(v:event))|if len(g:yankring)>50|call remove(g:yankring, 0, 1)|endif
+  endif
+
   if has('win32')
     " always maximize initial GUI window size
     autocmd GUIEnter * simalt ~x
