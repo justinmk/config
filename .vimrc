@@ -362,14 +362,14 @@ endif
 
 " Use <C-L> to:
 "   - redraw
-"   - clear the highlighting of :set hlsearch
+"   - clear 'hlsearch'
 "   - update the current diff (if any)
 " Use {count}<C-L> to:
-"   - `syntax sync fromstart` for the current buffer
-nnoremap <silent><expr> <C-L> v:count > 0 ? ':<C-U>syntax sync fromstart<CR>'
-      \ : ':nohlsearch'.(has('diff')?'\|diffupdate':'')
-      \   .(exists(':SignifyRefresh')?'\|SignifyRefresh':'')
-      \   .'<CR><C-L>'
+"   - reload (:edit) the current buffer
+nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:edit<CR>' : '')
+      \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
+      \ . (exists(':SignifyRefresh')?'\|SignifyRefresh':'')
+      \ . '<CR><C-L>'
 
 inoremap <C-U> <C-G>u<C-U>
 " }}}
@@ -670,10 +670,9 @@ nmap     ZK     Zk
 nmap     ZL     Zl
 
 nnoremap <C-w>gt :tab sp<CR>
-nnoremap <C-w>N :vnew<CR>
+nnoremap <C-w>N <C-W>v:<C-u>enew<CR>
 nnoremap <silent> c<Space> <c-w>v
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : <SID>alt_wintabbuf())
-nnoremap <silent> <C-tab> :exe "tabnext ".get(g:,'lasttab',[1,0])[1]<CR>
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
@@ -749,10 +748,8 @@ func! s:get_alt_winnr()
 endf
 
 " manage tabs
-"       gwT (built-in) breaks out window into new Tab.
-nnoremap cgt      :exe 'tabnew'<bar>call fugitive#detect(getcwd())<cr>
-nnoremap dgt      :tabclose<cr>
-nnoremap ZT       :tabclose<cr>
+nnoremap <silent> cgt :exe 'tabnew'<bar>call fugitive#detect(getcwd())<cr>
+nnoremap <silent> ZT       :tabclose<cr>
 " move tab to Nth position
 nnoremap <expr> ]gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
 nnoremap <expr> [gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
@@ -1063,7 +1060,6 @@ inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M
 
 nnoremap z. :w<cr>
 nnoremap z<space> :enew<cr>
-nnoremap r<bs> :e<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
@@ -1077,8 +1073,8 @@ xnoremap @@ :normal @@<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
 " disable Ex mode key and map it to something awesome
-nnoremap Q @@
-xnoremap Q :normal @@<CR>
+nnoremap Q @q
+xnoremap Q :normal @q<CR>
 " repeat the last edit on the next [count] matches.
 nnoremap <m-n> :normal n.<cr>
 
