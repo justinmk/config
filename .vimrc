@@ -673,7 +673,7 @@ nnoremap <C-w>gt :tab sp<CR>
 nnoremap <C-w>N :vnew<CR>
 nnoremap <silent> c<Space> <c-w>v
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : <SID>alt_wintabbuf())
-nnoremap <silent> <C-tab> :exe "tabnext ".get(g:,'lasttab',[0,1])[1]<CR>
+nnoremap <silent> <C-tab> :exe "tabnext ".get(g:,'lasttab',[1,0])[1]<CR>
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
@@ -712,14 +712,14 @@ nnoremap <expr><silent> \| !v:count ? '<C-w>\|' : '\|'
 " go to the previous thing
 func! s:alt_wintabbuf()
   let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
-  if (b[0] - w[0]) > 0.2 && (b[0] - t[0]) > 0.2 && bufexists(b[1])
+  if (b[1] - w[1]) > 0.2 && (b[1] - t[1]) > 0.2 && bufexists(b[0])
     return "\<C-^>"
   endif
-  if w[0] >= b[0] && w[0] >= t[0] && w[1] <= winnr('$') && w[1] != winnr()
+  if w[1] >= b[1] && w[1] >= t[1] && w[0] <= winnr('$') && w[0] != winnr()
     return "\<C-w>p"
   endif
-  if t[0] > b[0] && t[0] > w[0] && t[1] <= tabpagenr('$')
-    return t[1].'gt'
+  if t[1] > b[1] && t[1] > w[1] && t[0] <= tabpagenr('$')
+    return t[0].'gt'
   endif
   if winnr('$') > 1
     return "\<C-w>w"
@@ -733,11 +733,11 @@ func! s:alt_wintabbuf()
 endf
 augroup vimrc_last_wintabbuf
   autocmd!
-  let [g:lastbuf,g:lastwin,g:lasttab] = [[0,1],[0,1],[0,1]]
+  let [g:lastbuf,g:lastwin,g:lasttab] = [[1,0],[1,0],[1,0]]
   if exists('*reltimefloat')
-    autocmd BufLeave * let g:lastbuf = [reltimefloat(reltime()),bufnr('%')]
-    autocmd WinLeave * let g:lastwin = [reltimefloat(reltime()),winnr()]
-    autocmd TabLeave * let g:lasttab = [reltimefloat(reltime()),tabpagenr()]
+    autocmd BufLeave * let g:lastbuf = [bufnr('%'), reltimefloat(reltime())]
+    autocmd WinLeave * let g:lastwin = [winnr(),    reltimefloat(reltime())]
+    autocmd TabLeave * let g:lasttab = [tabpagenr(),reltimefloat(reltime())]
   endif
 augroup END
 
