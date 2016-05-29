@@ -1404,7 +1404,40 @@ command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vim
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 
-command! -nargs=1 Websearch vnew|call termopen('lynx https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|tnoremap <buffer> <C-c> <C-g>
+function! s:init_lynx()
+  nnoremap <buffer> <C-F> i<PageDown><C-\><C-N>
+  tnoremap <buffer> <C-F> <PageDown>
+
+  nnoremap <buffer> <C-B> i<PageUp><C-\><C-N>
+  tnoremap <buffer> <C-B> <PageUp>
+
+  nnoremap <buffer> <C-D> i:DOWN_HALF<CR><C-\><C-N>
+  tnoremap <buffer> <C-D> :DOWN_HALF<CR>
+
+  nnoremap <buffer> <C-U> i:UP_HALF<CR><C-\><C-N>
+  tnoremap <buffer> <C-U> :UP_HALF<CR>
+
+  nnoremap <buffer> <C-N> i<Delete><C-\><C-N>
+  tnoremap <buffer> <C-N> <Delete>
+
+  nnoremap <buffer> <C-P> i<Insert><C-\><C-N>
+  tnoremap <buffer> <C-P> <Insert>
+
+  nnoremap <nowait><buffer> u i<Left><C-\><C-N>
+  nnoremap <nowait><buffer> U i<C-U><C-\><C-N>
+  nnoremap <buffer> <CR>  i<CR><C-\><C-N>
+  nnoremap <buffer> zl    i:SHIFT_LEFT<CR><C-\><C-N>
+  nnoremap <buffer> zL    i:SHIFT_LEFT<CR><C-\><C-N>
+  nnoremap <buffer> zr    i:SHIFT_RIGHT<CR><C-\><C-N>
+  nnoremap <buffer> zR    i:SHIFT_RIGHT<CR><C-\><C-N>
+  nnoremap <buffer> gh    i:HELP<CR><C-\><C-N>
+  nnoremap <buffer> cow   i:LINEWRAP_TOGGLE<CR><C-\><C-N>
+
+  tnoremap <buffer> <C-C> <C-G><C-\><C-N>
+  nnoremap <buffer> <C-C> i<C-G><C-\><C-N>
+endfunction
+command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar -display_charset=utf8 '.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+command! -nargs=1 Websearch vnew|call termopen('lynx -scrollbar -display_charset=utf8 https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
