@@ -102,6 +102,7 @@ Plug 'tpope/vim-characterize'
 " Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
 
+Plug 'zhaocai/DirDiff.vim', { 'on': ['DirDiff'] }
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'tpope/vim-rhubarb'
@@ -209,8 +210,6 @@ if s:plugins_extra
   Plug 'pangloss/vim-javascript'
   Plug 'leafo/moonscript-vim'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
-  " Plug 'chrisbra/Recover.vim'
-  " Plug 'osyo-manga/vim-over'
 
   Plug 'inside/vim-search-pulse'
   let g:vim_search_pulse_mode = 'pattern'
