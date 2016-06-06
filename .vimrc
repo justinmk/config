@@ -62,7 +62,6 @@ Plug 'justinmk/molokai'
 
 if v:version > 703 && !(has('win32') || has('win32unix'))
 Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_ctags_executable = expand('~/bin/ctags/bin/ctags',1)
 let g:gutentags_exclude = ['.vim-src', 'build']
 endif
 
