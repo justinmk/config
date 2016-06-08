@@ -11,6 +11,7 @@
   # set tab width for pager (affects 'git diff')
   pager = less -x1,5
   trustctime = false
+  askPass =
 [gui]
   gcwarning = false
 [branch]

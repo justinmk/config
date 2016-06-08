@@ -491,13 +491,33 @@ endif
 
 " platform-specific settings
 if has('win32')
-    set winaltkeys=no
-    set guifont=Consolas:h11
-    if has("directx")
-      set renderoptions=type:directx
+  let g:sh_defaults = { 'shell':&shell, 'shellcmdflag':&shellcmdflag,
+                      \ 'shellquote':&shellquote, 'shellxquote':&shellxquote,
+                      \ 'shellpipe':&shellpipe, 'shellredir':&shellredir }
+  function! s:toggle_powershell()
+    if &shell ==# 'powershell'
+      let s = g:sh_defaults
+      let &shell=s.shell
+      let &shellquote=s.shellquote
+      let &shellpipe=s.shellpipe
+      let &shellredir=s.shellredir
+      let &shellcmdflag=s.shellcmdflag
+      let &shellxquote=s.shellxquote
+    else
+      set shell=powershell shellquote=\" shellpipe=\| shellredir=>
+      set shellcmdflag=\ -ExecutionPolicy\ RemoteSigned\ -Command
+      let &shellxquote=' '
     endif
+  endfunction
+  nnoremap co! :call <SID>toggle_powershell()<CR>
+
+  set winaltkeys=no
+  set guifont=Consolas:h11
+  if has("directx")
+    set renderoptions=type:directx
+  endif
 elseif s:is_gui "linux or other
-    set guifont=Monospace\ 10
+  set guifont=Monospace\ 10
 endif
 
 "colorscheme {{{

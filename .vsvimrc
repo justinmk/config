@@ -145,6 +145,9 @@ nnoremap [l  :vsc Edit.PreviousHighlightedReference<cr>
 nnoremap <space> :vsc Window.QuickLaunch<cr>
 
 nnoremap <insert> :vsc Debug.ToggleBreakpoint<cr>
+nnoremap [o<insert> :vsc Debug.EnableAllBreakpoints<cr>
+nnoremap ]o<insert> :vsc Debug.DisableAllBreakpoints<cr>
+nnoremap da<insert> :vsc Debug.DeleteAllBreakpoints<cr>
 
 nnoremap @T :vsc TestExplorer.RepeatLastRun<cr>
 
