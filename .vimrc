@@ -421,10 +421,6 @@ function! s:vjump(dir)
   return a:dir ? (line('.') - (bot > top ? bot : top)).'k'
     \        : ((bot < top ? bot : top) - line('.')).'j'
 endfunction
-function! s:vjump_up()
-  let c = '%'.virtcol('.').'v'
-  return (line('.') - search('\v^(.*'.c.'.)@!.*$\n.*\zs'.c, 'bnW')).'k'
-endfunction
 nnoremap <expr> + <SID>vjump(0)
 nnoremap <expr> _ <SID>vjump(1)
 xnoremap <expr> + <SID>vjump(0)
@@ -1275,8 +1271,9 @@ augroup vimrc_autocmd
 augroup END
 
 nnoremap \b    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
+nmap     <C-b> \b
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
-nnoremap \f    :edit **/
+nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
 nnoremap \g    :Ggrep<space>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
