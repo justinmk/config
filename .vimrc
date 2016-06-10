@@ -528,16 +528,12 @@ endif
     let s:color_override_dark = '
           \ if &background == "dark"
           \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
-          \ | hi CursorLine    guibg=#293739 ctermbg=236
-          \ | hi PmenuSel      guibg=#0a9dff guifg=white   gui=NONE  ctermbg=39 ctermfg=white  cterm=NONE
-          \ | hi PmenuSbar     guibg=#857f78
-          \ | hi PmenuThumb    guifg=#242321
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
           \ | hi DiffAdd       guifg=#ffffff guibg=#006600 gui=NONE  ctermfg=231  ctermbg=22   cterm=NONE 
           \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
           \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
           \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
-          \ | hi MatchParen    guifg=NONE   guibg=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline
+          \ | hi MatchParen    guifg=black   guibg=white   gui=NONE  ctermfg=NONE ctermbg=241  cterm=NONE
           \ | endif
           \'
 
@@ -1276,6 +1272,7 @@ nmap     <C-b> \b
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
 nnoremap \g    :Ggrep<space>
+nnoremap <silent> \v   :Scriptnames<cr>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
 nnoremap \B  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
@@ -1295,6 +1292,8 @@ set completeopt-=preview
 set wildignore+=tags,*/gwt-unitCache/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.o,.obj,.dll,.class,.pyc,.so,.swp,.zip,.exe,.jar
+" Better `gf`
+set suffixesadd=.java,.cs
 
 function! s:fzf_open_file_at_line(e)
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
@@ -1325,7 +1324,7 @@ else
         \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
   " nnoremap <silent> g/W :Unite tmuxcomplete<CR>
 endif
-nnoremap <silent> g/v   :Scriptnames<cr>
+nnoremap <silent> g/b   :FzBuffers<cr>
 nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('', g:fzf#vim#default_layout)<cr>
 nnoremap <silent> g/t   :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
@@ -1416,39 +1415,41 @@ command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpa
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 
 function! s:init_lynx()
-  nnoremap <buffer> <C-F> i<PageDown><C-\><C-N>
-  tnoremap <buffer> <C-F> <PageDown>
+  nnoremap <nowait><buffer> <C-F> i<PageDown><C-\><C-N>
+  tnoremap <nowait><buffer> <C-F> <PageDown>
 
-  nnoremap <buffer> <C-B> i<PageUp><C-\><C-N>
-  tnoremap <buffer> <C-B> <PageUp>
+  nnoremap <nowait><buffer> <C-B> i<PageUp><C-\><C-N>
+  tnoremap <nowait><buffer> <C-B> <PageUp>
 
-  nnoremap <buffer> <C-D> i:DOWN_HALF<CR><C-\><C-N>
-  tnoremap <buffer> <C-D> :DOWN_HALF<CR>
+  nnoremap <nowait><buffer> <C-D> i:DOWN_HALF<CR><C-\><C-N>
+  tnoremap <nowait><buffer> <C-D> :DOWN_HALF<CR>
 
-  nnoremap <buffer> <C-U> i:UP_HALF<CR><C-\><C-N>
-  tnoremap <buffer> <C-U> :UP_HALF<CR>
+  nnoremap <nowait><buffer> <C-U> i:UP_HALF<CR><C-\><C-N>
+  tnoremap <nowait><buffer> <C-U> :UP_HALF<CR>
 
-  nnoremap <buffer> <C-N> i<Delete><C-\><C-N>
-  tnoremap <buffer> <C-N> <Delete>
+  nnoremap <nowait><buffer> <C-N> i<Delete><C-\><C-N>
+  tnoremap <nowait><buffer> <C-N> <Delete>
 
-  nnoremap <buffer> <C-P> i<Insert><C-\><C-N>
-  tnoremap <buffer> <C-P> <Insert>
+  nnoremap <nowait><buffer> <C-P> i<Insert><C-\><C-N>
+  tnoremap <nowait><buffer> <C-P> <Insert>
 
-  nnoremap <nowait><buffer> u i<Left><C-\><C-N>
-  nnoremap <nowait><buffer> U i<C-U><C-\><C-N>
-  nnoremap <buffer> <CR>  i<CR><C-\><C-N>
-  nnoremap <buffer> zl    i:SHIFT_LEFT<CR><C-\><C-N>
-  nnoremap <buffer> zL    i:SHIFT_LEFT<CR><C-\><C-N>
-  nnoremap <buffer> zr    i:SHIFT_RIGHT<CR><C-\><C-N>
-  nnoremap <buffer> zR    i:SHIFT_RIGHT<CR><C-\><C-N>
-  nnoremap <buffer> gh    i:HELP<CR><C-\><C-N>
-  nnoremap <buffer> cow   i:LINEWRAP_TOGGLE<CR><C-\><C-N>
+  nnoremap <nowait><buffer> u     i<Left><C-\><C-N>
+  nnoremap <nowait><buffer> U     i<C-U><C-\><C-N>
+  nnoremap <nowait><buffer> <CR>  i<CR><C-\><C-N>
+  nnoremap <nowait><buffer> gg    i:HOME<CR><C-\><C-N>
+  nnoremap <nowait><buffer> G     i:END<CR><C-\><C-N>
+  nnoremap <nowait><buffer> zl    i:SHIFT_LEFT<CR><C-\><C-N>
+  nnoremap <nowait><buffer> zL    i:SHIFT_LEFT<CR><C-\><C-N>
+  nnoremap <nowait><buffer> zr    i:SHIFT_RIGHT<CR><C-\><C-N>
+  nnoremap <nowait><buffer> zR    i:SHIFT_RIGHT<CR><C-\><C-N>
+  nnoremap <nowait><buffer> gh    i:HELP<CR><C-\><C-N>
+  nnoremap <nowait><buffer> cow   i:LINEWRAP_TOGGLE<CR><C-\><C-N>
 
   tnoremap <buffer> <C-C> <C-G><C-\><C-N>
   nnoremap <buffer> <C-C> i<C-G><C-\><C-N>
 endfunction
-command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar -display_charset=utf8 '.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
-command! -nargs=1 Websearch vnew|call termopen('lynx -scrollbar -display_charset=utf8 https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar '.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+command! -nargs=1 Websearch vnew|call termopen('lynx -scrollbar https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 

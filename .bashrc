@@ -236,7 +236,7 @@ if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
   }
 fi
 
-ghmergepr() {
+ghpr() {
   local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
   local PR=${1}
   local REPO_SLUG="$(git config --get remote.upstream.url \
@@ -248,12 +248,11 @@ ghmergepr() {
 
   [ -z "$PR_TITLE" ] && { echo error; return 1; }
 
-  git fetch --all \
+  git fetch --all --prune \
     && git checkout master \
     && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
     && git reset --hard upstream/master \
-    && git merge -m "Merge #${PR} '${PR_TITLE}'." --no-ff refs/pull/upstream/${PR} \
-    && git log --oneline --graph --decorate -n 5
+    && git merge --no-commit --no-ff -m "Merge #${PR} '${PR_TITLE}'." refs/pull/upstream/${PR}
 }
 
 ghrebase1() {
@@ -261,7 +260,7 @@ ghrebase1() {
   local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
 
   #FOO=bar nvim -c 'au VimEnter * Gcommit --amend' -s <(echo 'Afoo')
-  git fetch --all \
+  git fetch --all --prune \
     && git checkout --quiet refs/pull/upstream/${PR} \
     && git rebase upstream/master \
     && git checkout master \
