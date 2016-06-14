@@ -218,7 +218,7 @@ fi
 
 # fzf (https://github.com/junegunn/fzf)
 if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
-  export FZF_DEFAULT_OPTS='--multi --black -x --inline-info --no-color'
+  export FZF_DEFAULT_OPTS="--multi --black -x --inline-info --no-color --preview='head -99 {}' --preview-window=right:'30%'"
 
   if command -v peco >/dev/null 2>&1 ; then
     _fzfprog=peco

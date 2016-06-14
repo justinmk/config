@@ -799,18 +799,23 @@ nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz('norm [c[n')<CR>
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
-nnoremap UU :if &diff<bar>diffupdate<bar>else<bar>diffthis<bar>endif<cr>
-nnoremap Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
-nnoremap Us             :Gstatus<cr>
+nnoremap <silent> Ub             :Gblame<cr>
+nnoremap <silent> Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
+nnoremap <silent> Ue             :Gedit<cr>
+nnoremap <silent> Ugf            :Gedit <C-R><C-W><cr>
 nnoremap <silent> Ul :GV! -100<cr>
-nnoremap <silent> UL :GV  -300<CR>
-nnoremap UB             :Gblame<cr>
-nnoremap Ue             :Gedit<cr>
-nnoremap Ugf            :Gedit <C-R><C-W><cr>
-nnoremap Up             :Gpedit <C-R><C-W><cr>
-nnoremap Uh             :SignifyToggleHighlight<cr>
-nnoremap UR             :Gread<cr>
-nnoremap UW :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<bar>SignifyRefresh<cr>
+nnoremap <silent> Ur             :Gread<cr>
+nnoremap <silent> Us             :Gstatus<cr>
+nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<bar>SignifyRefresh<cr>
+
+nmap UB Ub
+nmap UD Ud
+nmap UE Ue
+nmap UL Ul
+nmap UR Ur
+nmap US Us
+nmap UW Uw
+
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
@@ -862,8 +867,9 @@ function! s:git_blame_line(filepath, line) abort
   exe 'Gpedit '.commit_id
 endfunction
 
-nmap     Ub :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
-"                                            ^ Get repo-relative path with fugitive
+nmap UP Up
+nmap Up :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
+"                                        ^ Get repo-relative path via fugitive
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
