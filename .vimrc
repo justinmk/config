@@ -529,11 +529,7 @@ endif
           \ if &background == "dark"
           \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
-          \ | hi DiffAdd       guifg=#ffffff guibg=#006600 gui=NONE  ctermfg=231  ctermbg=22   cterm=NONE 
-          \ | hi DiffChange    guifg=#ffffff guibg=#007878 gui=NONE  ctermfg=231  ctermbg=30   cterm=NONE 
-          \ | hi DiffDelete    guifg=#ff0101 guibg=#9a0000 gui=NONE  ctermfg=196  ctermbg=88   cterm=NONE 
-          \ | hi DiffText      guifg=#000000 guibg=#ffb733 gui=NONE  ctermfg=000  ctermbg=214  cterm=NONE 
-          \ | hi MatchParen    guifg=black   guibg=white   gui=NONE  ctermfg=NONE ctermbg=241  cterm=NONE
+          \ | hi MatchParen    guifg=red     guibg=NONE    gui=bold  ctermfg=red  ctermbg=none cterm=bold
           \ | endif
           \'
 
@@ -655,8 +651,8 @@ func! s:maybe_zz(cmd)
     call feedkeys("\<Plug>Pulse", 'm')
   endif
 endf
-nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! n')<CR>
-nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! N')<CR>
+nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.'Nn'[v:searchforward])<CR>
+nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.'nN'[v:searchforward])<CR>
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
@@ -1238,7 +1234,12 @@ augroup vimrc_autocmd
   autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=0
         \ softtabstop=2 tabstop=2 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
-  autocmd FileType gitcommit nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
+  function! s:setup_gitstatus() abort
+    nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
+    nmap <M-n> <c-n>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
+    nmap <M-p> <c-p>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
+  endfunction
+  autocmd FileType gitcommit call <SID>setup_gitstatus()
   autocmd FileType dirvish call fugitive#detect(@%)
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
@@ -1454,7 +1455,7 @@ function! s:init_lynx()
   tnoremap <buffer> <C-C> <C-G><C-\><C-N>
   nnoremap <buffer> <C-C> i<C-G><C-\><C-N>
 endfunction
-command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar '.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -scrollbar https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
