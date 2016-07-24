@@ -1087,6 +1087,8 @@ xnoremap . :normal .<CR>
 " disable Ex mode key and map it to something awesome
 nnoremap Q @q
 xnoremap Q :normal @q<CR>
+nnoremap <Space> @q
+xnoremap <Space> :normal @q<CR>
 " repeat the last edit on the next [count] matches.
 nnoremap <m-n> :normal n.<cr>
 
@@ -1312,6 +1314,8 @@ endfunction
 
 " search current working directory
 nnoremap <silent> <m-/> :FzFiles<cr>
+" search MRU files
+nnoremap <silent> <M-\> :FzHistory<cr>
 " full-text search
 nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
       \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>

@@ -272,5 +272,11 @@ ghrebase1() {
     && git log --oneline --graph --decorate -n 5
 }
 
+upload-video() {
+  [ -z "$1" ] && { echo "missing arg 1"; return 1; }
+  ~/bin/upload_video.py --file="$HOME/Downloads/$1.mov" \
+    --title="$(date +%Y-%m-%d-%H:%M)" --privacyStatus="unlisted"
+}
+
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
 
