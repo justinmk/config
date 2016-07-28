@@ -272,11 +272,6 @@ if has("nvim")
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
   augroup END
-
-  tnoremap <M-h> <C-\><C-n><C-w>h
-  tnoremap <M-j> <C-\><C-n><C-w>j
-  tnoremap <M-k> <C-\><C-n><C-w>k
-  tnoremap <M-l> <C-\><C-n><C-w>l
 else
   " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
   " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
@@ -661,10 +656,31 @@ nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.'nN'[v:searchforward])<CR>
 "       <c-w>eip
 " available:
 "       <c-w><space>{motion}
-nnoremap <M-h> <C-w>h
-nnoremap <M-j> <C-w>j
-nnoremap <M-k> <C-w>k
-nnoremap <M-l> <C-w>l
+
+" vim+tmux window navigation (credit: mhinz)
+function! s:vim_tmux_nav(direction) abort
+  if empty($TMUX)
+    execute 'wincmd' a:direction
+  else
+    let oldwin = winnr()
+    execute 'wincmd' a:direction
+    if winnr() == oldwin
+      let sock = split($TMUX, ',')[0]
+      let direction = tr(a:direction, 'hjkl', 'LDUR')
+      silent execute printf('!tmux -S %s select-pane -%s', sock, direction)
+    endif
+  endif
+endfunction
+nnoremap <silent><M-h> :<c-u>call <SID>vim_tmux_nav('h')<cr>
+nnoremap <silent><M-j> :<c-u>call <SID>vim_tmux_nav('j')<cr>
+nnoremap <silent><M-k> :<c-u>call <SID>vim_tmux_nav('k')<cr>
+nnoremap <silent><M-l> :<c-u>call <SID>vim_tmux_nav('l')<cr>
+if has('nvim')
+  tnoremap <silent><M-h> <C-\><C-n>:call <SID>vim_tmux_nav('h')<cr>
+  tnoremap <silent><M-j> <C-\><C-n>:call <SID>vim_tmux_nav('j')<cr>
+  tnoremap <silent><M-k> <C-\><C-n>:call <SID>vim_tmux_nav('k')<cr>
+  tnoremap <silent><M-l> <C-\><C-n>:call <SID>vim_tmux_nav('l')<cr>
+endif
 
 nnoremap Zh     :leftabove vsplit<CR>
 nnoremap Zj     :belowright split<CR>
