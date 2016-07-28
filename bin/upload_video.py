@@ -6,6 +6,7 @@ import httplib
 import httplib2
 import os
 import random
+import datetime
 import time
 
 from apiclient.discovery import build
@@ -21,7 +22,7 @@ from oauth2client.tools import argparser, run_flow
 httplib2.RETRIES = 1
 
 # Maximum number of times to retry before giving up.
-MAX_RETRIES = 10
+MAX_RETRIES = 20
 
 # Always retry when these exceptions are raised.
 RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
@@ -120,9 +121,10 @@ def initialize_upload(youtube, options):
     # practice, but if you're using Python older than 2.6 or if you're
     # running on App Engine, you should set the chunksize to something like
     # 1024 * 1024 (1 megabyte).
-    media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
+    media_body=MediaFileUpload(options.file, chunksize=1024*1024, resumable=True)
   )
 
+  print("Uploading '{}'...".format(options.title))
   resumable_upload(insert_request)
 
 # This method implements an exponential backoff strategy to resume a
@@ -133,10 +135,15 @@ def resumable_upload(insert_request):
   retry = 0
   while response is None:
     try:
-      print "Uploading file..."
       status, response = insert_request.next_chunk()
-      if 'id' in response:
-        print "Video id '%s' was successfully uploaded." % response['id']
+      if response is None:
+        if status is None:
+          print("error: unexpected: status is None")
+        else:
+          print("{} {:d}%".format(datetime.datetime.now(),
+                                  int(status.progress() * 100)))
+      elif 'id' in response:
+        print("Video uploaded: https://www.youtube.com/watch?v={}".format(response['id']))
       else:
         exit("The upload failed with an unexpected response: %s" % response)
     except HttpError, e:
