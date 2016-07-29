@@ -17,13 +17,8 @@ if &rtp !~? '\v(('.escape(expand('~'), '/\').')|\~)[/\\]\.vim'
   set runtimepath+=~/.vim
 endif
 
-" Tell vimball to get lost.
-let g:loaded_vimballPlugin = 1
 let g:loaded_rrhelper = 1
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
-
-let g:python_host_skip_check = 1
-let g:python3_host_skip_check = 1
 
 if exists('&guioptions')
     "use console dialogs instead of popup dialogs; disable all other GUI options.
@@ -217,7 +212,7 @@ if s:plugins_extra
   let g:vim_search_pulse_duration = 200
 
   Plug 'ryanss/vim-hackernews', { 'on': ['HackerNews'] }
-  Plug 'junegunn/vim-github-dashboard'
+  Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard'] }
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim'
   Plug 'gcavallanti/vim-noscrollbar'
@@ -273,6 +268,8 @@ if has("nvim")
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
   augroup END
 else
+  let g:loaded_vimballPlugin = 1 " Tell vimball to get lost.
+
   " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
   " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
   " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
@@ -524,7 +521,7 @@ endif
           \ if &background == "dark"
           \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
-          \ | hi MatchParen    guifg=red     guibg=NONE    gui=bold  ctermfg=red  ctermbg=none cterm=bold
+          \ | hi MatchParen    gui=NONE cterm=NONE guifg=red     guibg=NONE    ctermfg=red ctermbg=NONE
           \ | endif
           \'
 
@@ -733,7 +730,7 @@ nnoremap <expr><silent> \| !v:count ? '<C-w>\|' : '\|'
 " go to the previous thing
 func! s:alt_wintabbuf()
   let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
-  if (b[1] - w[1]) > 0.2 && (b[1] - t[1]) > 0.2 && bufexists(b[0])
+  if (b[1] - w[1]) > 0.2 && (b[1] - t[1]) > 0.2 && buflisted(b[0])
     return "\<C-^>"
   endif
   if w[1] >= b[1] && w[1] >= t[1] && w[0] <= winnr('$') && w[0] != winnr()
@@ -745,7 +742,7 @@ func! s:alt_wintabbuf()
   if winnr('$') > 1
     return "\<C-w>w"
   endif
-  if bufexists(bufnr('#'))
+  if buflisted(bufnr('#'))
     return "\<C-^>"
   endif
   if tabpagenr('$') > 1
@@ -814,6 +811,7 @@ xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :Gblame<cr>
 nnoremap <silent> Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
 nnoremap <silent> Ue             :Gedit<cr>
+nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ugf            :Gedit <C-R><C-W><cr>
 nnoremap <silent> Ul :GV! -100<cr>
 nnoremap <silent> Ur             :Gread<cr>
@@ -823,6 +821,7 @@ nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p
 nmap UB Ub
 nmap UD Ud
 nmap UE Ue
+nmap UF Uf
 nmap UL Ul
 nmap UR Ur
 nmap US Us
@@ -1086,7 +1085,15 @@ inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y"],'strftime(v:val)')+[localtime()]),0)<CR>
 
-nnoremap z. :w<cr>
+"do not clobber '[ '] on :write
+function! s:save_change_marks()
+  let s:change_marks = [getpos("'["), getpos("']")]
+endfunction
+function! s:restore_change_marks()
+  call setpos("'[", s:change_marks[0])
+  call setpos("']", s:change_marks[1])
+endfunction
+nnoremap z. :call <SID>save_change_marks()<Bar>w<Bar>call <SID>restore_change_marks()<cr>
 nnoremap z<space> :enew<cr>
 
 " map m-] to be the inverse of c-]
@@ -1296,7 +1303,7 @@ nmap     <C-b> \b
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
-nnoremap \g    :Ggrep<space>
+nnoremap \g  mS:Ggrep -E '<C-R>=fnameescape(expand('<cword>'))<CR>'<Left>
 nnoremap <silent> \v   :Scriptnames<cr>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
@@ -1425,7 +1432,7 @@ endf
 " }}}
 
 set title
-set titlestring=%{getcwd()}
+set titlestring=%{getpid().':'.getcwd()}
 set titleold=?
 
 " special-purpose mappings/commands ===========================================
@@ -1461,7 +1468,7 @@ function! s:init_lynx()
   tnoremap <nowait><buffer> <C-P> <Insert>
 
   nnoremap <nowait><buffer> u     i<Left><C-\><C-N>
-  nnoremap <nowait><buffer> U     i<C-U><C-\><C-N>
+  nnoremap <nowait><buffer> <C-R> i<C-U><C-\><C-N>
   nnoremap <nowait><buffer> <CR>  i<CR><C-\><C-N>
   nnoremap <nowait><buffer> gg    i:HOME<CR><C-\><C-N>
   nnoremap <nowait><buffer> G     i:END<CR><C-\><C-N>
