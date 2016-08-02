@@ -1303,7 +1303,7 @@ nmap     <C-b> \b
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
-nnoremap \g  mS:Ggrep -E '<C-R>=fnameescape(expand('<cword>'))<CR>'<Left>
+nnoremap \g  mS:Ggrep -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR><Left>
 nnoremap <silent> \v   :Scriptnames<cr>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).

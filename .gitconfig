@@ -4,6 +4,8 @@
   ignorecase = false
   autocrlf = false
   excludesfile = ~/.gitexcludes
+  # recommended SHA minimum length  https://lkml.org/lkml/2013/9/30/365
+  abbrev = 12
   # Enable parallel index preload for some operations (diff, status).
   preloadindex = true
   # improve performance (requires msysgit 1.9.4+)
