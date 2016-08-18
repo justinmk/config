@@ -449,7 +449,6 @@ set noerrorbells novisualbell t_vb=
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
-set noequalalways
 set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
 set shortmess+=I
