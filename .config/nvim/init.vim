@@ -128,6 +128,8 @@ inoremap {<CR> {<CR>}<Esc>O
 inoremap {; {<CR>};<Esc>O
 inoremap {, {<CR>},<Esc>O
 inoremap [<CR> [<CR>]<Esc>O
+inoremap ([[ ([[<CR>]])<Esc>O
+inoremap ([=[ ([=[<CR>]])<Esc>O
 inoremap [; [<CR>];<Esc>O
 inoremap [, [<CR>],<Esc>O
 
@@ -248,7 +250,7 @@ endif
 "   - update the current diff (if any)
 " Use {count}<C-L> to:
 "   - reload (:edit) the current buffer
-nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:edit<CR>' : '')
+nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|edit\|call <SID>restore_change_marks()<CR>' : '')
       \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
       \ . (exists(':SignifyRefresh')?'\|SignifyRefresh':'')
       \ . '<CR><C-L>'
@@ -1165,7 +1167,7 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 copyindent
 
-  if exists('#TextYankPost')
+  if exists('##TextYankPost')
     autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])
       \|call add(g:yankring, deepcopy(v:event))|if len(g:yankring)>50|call remove(g:yankring, 0, 1)|endif
   endif
