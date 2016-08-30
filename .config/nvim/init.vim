@@ -1092,15 +1092,22 @@ augroup vimrc_savecommitmsg
   autocmd!
   " Remember last git commit message
   func! s:store_commit_msg()
+    " save
     let [w,r]=[winsaveview(),getreg('"', 1)]
-    let save_c = @c
+    let [_reg_c,_cmark1,_cmark2] = [@c,getpos("'["),getpos("']")]
+
     let @c=''
     silent! keepmarks keepjumps keeppatterns g/\v(^$)|^([^#].*$)/y C
-    let g:removed_whitespace = substitute(@c, '\_[[:space:]]*', '', 'g')
+    keepmarks keepjumps let g:removed_whitespace =
+           \ substitute(@c, '\_[[:space:]]*', '', 'g')
     let @c = len(g:removed_whitespace) < 10
-           \ ? save_c : @c[1:]  " remove first (empty) line
+           \ ? _reg_c : @c[1:]  " remove first (empty) line
+
+    " restore
     call winrestview(w)
     call setreg('"', r)
+    call setpos("'[", _cmark1)
+    call setpos("']", _cmark2)
   endf
   autocmd BufEnter COMMIT_EDITMSG
         \ autocmd! vimrc_savecommitmsg TextChanged,TextChangedI <buffer> silent call <SID>store_commit_msg()
