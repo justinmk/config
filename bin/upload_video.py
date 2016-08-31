@@ -121,7 +121,7 @@ def initialize_upload(youtube, options):
     # practice, but if you're using Python older than 2.6 or if you're
     # running on App Engine, you should set the chunksize to something like
     # 1024 * 1024 (1 megabyte).
-    media_body=MediaFileUpload(options.file, chunksize=1024*1024, resumable=True)
+    media_body=MediaFileUpload(options.file, chunksize=1024*256, resumable=True)
   )
 
   print("Uploading '{}'...".format(options.title))

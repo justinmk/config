@@ -16,6 +16,9 @@
 # do not continue if we are not running interactively
 [ -z "$PS1" ] && return
 
+GPG_TTY=$(tty)
+export GPG_TTY
+
 # =============================================================================
 # Bash-specific commands
 # =============================================================================
