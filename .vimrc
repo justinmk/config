@@ -4,8 +4,8 @@ if has('vim_starting')
 endif
 
 " win32 gvim
-if &rtp !~? '\v(('.escape(expand('~'), '/\').')|\~)[/\\]\.vim'
-  set runtimepath+=~/.vim
+if &rtp !~? '\v(('.escape(expand('~'), '/\').')|\~)[/\\]\.nvim'
+  set runtimepath+=~/.config/nvim
 endif
 
 if exists('&guioptions')

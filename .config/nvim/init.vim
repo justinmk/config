@@ -1060,7 +1060,28 @@ endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
 nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
 
-nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
+highlight Halo guibg=#F92672 ctermbg=197
+let g:halo = {}
+function! s:halo_clear(id) abort
+  silent! call timer_stop(g:halo['timer_id'])
+  silent! call matchdelete(g:halo['hl_id'])
+endfunction
+function! s:halo() abort
+  call s:halo_clear(-1)
+  let g:halo['hl_id'] = matchaddpos('Halo',
+        \[[line('.'),   col('.')-10, 20],
+        \ [line('.')-1, col('.')-10, 20],
+        \ [line('.')-2, col('.')-10, 20],
+        \ [line('.')+1, col('.')-10, 20],
+        \ [line('.')+2, col('.')-10, 20]]
+        \)
+  let g:halo['timer_id'] = timer_start(1000, function('s:halo_clear'))
+endfunction
+augroup halo_plugin
+  autocmd!
+  autocmd WinLeave * call <SID>halo_clear(-1)
+augroup END
+nnoremap <Esc> :call <SID>halo()<CR>
 
 " }}} mappings
 
@@ -1366,6 +1387,7 @@ function! s:init_lynx()
 endfunction
 command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -scrollbar https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
