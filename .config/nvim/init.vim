@@ -197,7 +197,6 @@ if s:plugins_extra
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
   Plug 'junegunn/fzf.vim'
   let g:fzf_command_prefix = 'Fz'
-  let g:fzf_layout = { 'window': 'execute (tabpagenr()-1)."tabnew"' }
 
   Plug 'tpope/vim-projectionist'
   " look at derekwyatt/vim-fswitch for more C combos.
@@ -605,8 +604,6 @@ func! s:switch_to_alt_win() abort
   endif
 endf
 
-nnoremap <expr><silent> \| !v:count ? '<C-w>\|' : '\|'
-
 " go to the previous thing
 func! s:alt_wintabbuf() abort
   let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
@@ -647,7 +644,7 @@ func! s:get_alt_winnr() abort
 endf
 
 " manage tabs
-nnoremap <silent> cgt :exe 'tabnew'<bar>call fugitive#detect(getcwd())<cr>
+nnoremap <silent> <M-t>    :tabnew<cr>
 nnoremap <silent> ZT       :tabclose<cr>
 " move tab to Nth position
 nnoremap <expr> ]gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
@@ -1013,6 +1010,30 @@ nnoremap <expr> ZZ          (v:count ? ':<c-u>xa!<cr>' : '@_ZZ')
 nnoremap <expr> ZQ          (v:count ? ':<c-u>qa!<cr>' : '@_ZQ')
 nnoremap <expr> <c-w>=      (v:count ? ':<c-u>windo set nowinfixheight nowinfixwidth<cr><c-w>=' : '@_<c-w>=')
 
+func! s:zoom_toggle() abort
+  if 1 == winnr('$')
+    return
+  endif
+  let restore_cmd = winrestcmd()
+  wincmd |
+  wincmd _
+  " If the layout did not change, it's a toggle (un-zoom).
+  if restore_cmd ==# winrestcmd()
+    exe t:zoom_restore
+  else
+    let t:zoom_restore = restore_cmd
+  endif
+  return '<Nop>'
+endfunc
+func! s:zoom_or_goto_column(cnt) abort
+  if a:cnt
+    exe 'norm! '.v:count.'|'
+  else
+    call s:zoom_toggle()
+  endif
+endfunc
+nnoremap <Bar> :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
+
 func! ReadExCommandOutput(newbuf, cmd) abort
   redir => l:message
   silent! execute a:cmd
@@ -1238,31 +1259,25 @@ endfunction
 function! s:fzf_insert_at_point(s) abort
   execute "put ='".a:s."'"
 endfunction
+function! s:fzf_search_fulltext() abort
+  call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
+        \ 'sink':function('<sid>fzf_open_file_at_line')})
+endfunction
 
-" search current working directory
-nnoremap <silent> <m-/> :FzFiles<cr>
-" search MRU files
-nnoremap <silent> <M-\> :FzHistory<cr>
-" full-text search
-nnoremap <silent> g/g   :call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
-      \ 'sink':function('<sid>fzf_open_file_at_line')})<cr>
-nnoremap <silent> g/x   :call fzf#vim#command_history(g:fzf#vim#default_layout)<cr>
-nmap     <silent> <m-x> g/x
-nnoremap <silent> g/l   :call fzf#vim#buffer_lines(g:fzf#vim#default_layout)<cr>
-if findfile('plugin/tmuxcomplete.vim', &rtp) ==# ''
-  nnoremap <silent> g/L mS:call fzf#vim#lines(g:fzf#vim#default_layout)<cr>
-else
+" Search current-working-directory _or_ current-file-directory
+nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>FzFiles<CR>'
+" Search MRU files
+nnoremap <silent>       <M-\> :FzHistory<cr>
+nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzLines<CR>' : ':<C-U>FzBuffers<CR>'
+
+if !empty(findfile('plugin/tmuxcomplete.vim', &rtp))
   inoremap <expr> <C-l> fzf#complete(tmuxcomplete#list('lines', 0))
   inoremap <expr> <M-l> fzf#complete(tmuxcomplete#list('lines', 0))
   inoremap <expr> <M-w> fzf#complete(tmuxcomplete#list('words', 0))
-
-  nnoremap <silent> g/L :call fzf#run({'source':tmuxcomplete#list('lines', 0),
+  nnoremap <silent> g/w :call fzf#run({'source':tmuxcomplete#list('words', 0),
         \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
-  nnoremap <silent> g/W :call fzf#run({'source':tmuxcomplete#list('words', 0),
-        \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
-  " nnoremap <silent> g/W :Unite tmuxcomplete<CR>
 endif
-nnoremap <silent> g/b   :FzBuffers<cr>
+
 nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('', g:fzf#vim#default_layout)<cr>
 nnoremap <silent> g/t   :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
@@ -1351,6 +1366,7 @@ command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".e
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
+command! ConvertBlockComment .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
 
 function! s:init_lynx() abort
   nnoremap <nowait><buffer> <C-F> i<PageDown><C-\><C-N>
@@ -1386,8 +1402,8 @@ function! s:init_lynx() abort
   tnoremap <buffer> <C-C> <C-G><C-\><C-N>
   nnoremap <buffer> <C-C> i<C-G><C-\><C-N>
 endfunction
-command! -nargs=1 Web       vnew|call termopen('lynx -scrollbar '.shellescape(<q-args>))|call <SID>init_lynx()
-command! -nargs=1 Websearch vnew|call termopen('lynx -scrollbar https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse -scrollbar '.shellescape(<q-args>))|call <SID>init_lynx()
+command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse -scrollbar https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
