@@ -19,6 +19,8 @@
 GPG_TTY=$(tty)
 export GPG_TTY
 
+command -v nvim > /dev/null 2>&1 && export MANPAGER="nvim '+set ft=man' -"
+
 # =============================================================================
 # Bash-specific commands
 # =============================================================================
@@ -221,7 +223,7 @@ fi
 
 # fzf (https://github.com/junegunn/fzf)
 if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
-  export FZF_DEFAULT_OPTS="--multi --black -x --inline-info --no-color --preview='head -99 {}' --preview-window=right:'30%'"
+  export FZF_DEFAULT_OPTS="--multi --black -x --inline-info --no-color"
 
   if command -v peco >/dev/null 2>&1 ; then
     _fzfprog=peco
