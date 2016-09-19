@@ -89,7 +89,7 @@ nnoremap !T :<c-u>Make unittest<cr>
 nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 nnoremap <silent> yrr V:<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
-func! s:tmux_run_operator(type, ...)
+func! s:tmux_run_operator(type, ...) abort
   let sel_save = &selection
   let &selection = "inclusive"
   let isvisual = a:0
@@ -258,19 +258,19 @@ nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|
 inoremap <C-U> <C-G>u<C-U>
 " }}}
 
-function! s:ctrl_u() "{{{ rsi ctrl-u, ctrl-w
+function! s:ctrl_u() abort "{{{ rsi ctrl-u, ctrl-w
   if getcmdpos() > 1
     let @- = getcmdline()[:getcmdpos()-2]
   endif
   return "\<C-U>"
 endfunction
 
-function! s:ctrl_w_before()
+function! s:ctrl_w_before() abort
   let s:cmdline = getcmdpos() > 1 ? getcmdline() : ""
   return "\<C-W>"
 endfunction
 
-function! s:ctrl_w_after()
+function! s:ctrl_w_after() abort
   if strlen(s:cmdline) > 0
     let @- = s:cmdline[(getcmdpos()-1) : (getcmdpos()-2)+(strlen(s:cmdline)-strlen(getcmdline()))]
   endif
@@ -296,7 +296,7 @@ set sessionoptions-=blank
 
 " vim-vertical-move replacement
 " credit: cherryberryterry: https://www.reddit.com/r/vim/comments/4j4duz/a/d33s213
-function! s:vjump(dir)
+function! s:vjump(dir) abort
   let c = '%'.virtcol('.').'v'
   let flags = a:dir ? 'bnW' : 'nW'
   let bot = search('\v'.c.'.*\n^(.*'.c.'.)@!.*$', flags)
@@ -414,7 +414,7 @@ endif
     endif
   endif
 
-func! s:set_CursorLine()
+func! s:set_CursorLine() abort
   hi clear CursorLine
   if &diff
     hi CursorLine gui=underline cterm=underline
@@ -444,7 +444,7 @@ set nowrap
 "     - set 'updatetime' lower if you want faster updates
 "     - b:tail_follow only works if the tailed file is the current buffer
 let s:tail_orig_updtime = &updatetime
-func! Tail(filename) "TODO: disable undo for buffer?
+func! Tail(filename) abort "TODO: disable undo for buffer?
   let filename = escape(dispatch#expand(a:filename), '#%')
   if strlen(filename) > 0
     exec 'split '.filename
@@ -488,7 +488,7 @@ inoremap <insert> <C-r>+
 " delete the 'head' of a path on the command line
 cnoremap <silent> <c-x> <C-\>e<sid>delete_until()<cr>
 
-func! s:delete_until()
+func! s:delete_until() abort
   let c = nr2char(getchar())
   return substitute(getcmdline(), '\(.*['.escape(c, '\').']\).*', '\1', '')
 endfunc
@@ -511,7 +511,7 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " mark position before search
 nnoremap / ms/
 
-func! s:maybe_zz(cmd)
+func! s:maybe_zz(cmd) abort
   let topline = line('w0')
   try
     exe a:cmd
@@ -577,7 +577,7 @@ nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
 " nnoremap y@%   :<c-u>let @"=@%<cr>
 
-func! s:win_motion_resize(type)
+func! s:win_motion_resize(type) abort
   let sel_save = &selection
   let &selection = "inclusive"
 
@@ -597,7 +597,7 @@ endf
 xnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
 
 " go to the previous window (or any other window if there is no 'previous' window).
-func! s:switch_to_alt_win()
+func! s:switch_to_alt_win() abort
   let currwin = winnr()
   wincmd p
   if winnr() == currwin "window didn't change; no previous window.
@@ -608,7 +608,7 @@ endf
 nnoremap <expr><silent> \| !v:count ? '<C-w>\|' : '\|'
 
 " go to the previous thing
-func! s:alt_wintabbuf()
+func! s:alt_wintabbuf() abort
   let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
   if (b[1] - w[1]) > 0.2 && (b[1] - t[1]) > 0.2 && buflisted(b[0])
     return "\<C-^>"
@@ -639,7 +639,7 @@ augroup vimrc_last_wintabbuf
   endif
 augroup END
 
-func! s:get_alt_winnr()
+func! s:get_alt_winnr() abort
   call s:switch_to_alt_win()
   let n = winnr()
   call s:switch_to_alt_win()
@@ -791,7 +791,7 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 "           c<space> --> easyalign
 "           !@       --> async run
 
-func! s:buf_compare(b1, b2)
+func! s:buf_compare(b1, b2) abort
   let b1_visible = -1 == index(tabpagebuflist(), a:b1)
   let b2_visible = -1 == index(tabpagebuflist(), a:b2)
   "prefer loaded and NON-visible buffers
@@ -804,7 +804,7 @@ func! s:buf_compare(b1, b2)
   return !bufloaded(a:b2) ? 0 : 1
 endf
 
-func! s:buf_find_displayed_bufs() " find all buffers displayed in any window, any tab.
+func! s:buf_find_displayed_bufs() abort " find all buffers displayed in any window, any tab.
   let l:bufs = []
   for i in range(1, tabpagenr('$'))
     call extend(l:bufs, tabpagebuflist(i))
@@ -812,7 +812,7 @@ func! s:buf_find_displayed_bufs() " find all buffers displayed in any window, an
   return l:bufs
 endf
 
-func! s:buf_find_valid_next_bufs()
+func! s:buf_find_valid_next_bufs() abort
   "valid 'next' buffers
   "   EXCLUDE:
   "     - current
@@ -830,7 +830,7 @@ func! s:buf_find_valid_next_bufs()
   return l:valid_buffers
 endf
 
-func! s:buf_switch_to_altbuff()
+func! s:buf_switch_to_altbuff() abort
   " change to the 'alternate' buffer if:
   "   - it exists, and 
   "   - it is not the current buffer (yes, this really happens, eg with netrw)
@@ -850,7 +850,7 @@ endf
 
 " close the current buffer with a vengeance
 " BDSN: Buffer DiScipliNe
-func! s:buf_kill(mercy)
+func! s:buf_kill(mercy) abort
   let l:origbuf = bufnr("%")
   let l:origbufname = bufname(l:origbuf)
   if a:mercy && &modified
@@ -889,7 +889,7 @@ xnoremap P  "0p
 
 nnoremap v <C-v>
 
-func! s:trimws_ml(s) "trim whitespace across multiple lines
+func! s:trimws_ml(s) abort "trim whitespace across multiple lines
   return substitute(a:s, '^\_s*\(.\{-}\)\_s*$', '\1', '')
 endf
 "why?
@@ -898,10 +898,10 @@ endf
 " - does not modify ' mark
 " - DWIM behavior for linewise => characterwise
 let s:rr_reg = '"'
-func! s:set_reg(reg_name)
+func! s:set_reg(reg_name) abort
   let s:rr_reg = a:reg_name
 endf
-func! s:replace_without_yank(type)
+func! s:replace_without_yank(type) abort
   let rr_orig = getreg(s:rr_reg, 1) "save registers and types to restore later.
   let rr_type = getregtype(s:rr_reg)
   let ur_orig = getreg('"', 1)
@@ -966,10 +966,10 @@ inoremap <M-O> <C-O>O
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y"],'strftime(v:val)')+[localtime()]),0)<CR>
 
 "do not clobber '[ '] on :write
-function! s:save_change_marks()
+function! s:save_change_marks() abort
   let s:change_marks = [getpos("'["), getpos("']")]
 endfunction
-function! s:restore_change_marks()
+function! s:restore_change_marks() abort
   call setpos("'[", s:change_marks[0])
   call setpos("']", s:change_marks[1])
 endfunction
@@ -1013,7 +1013,7 @@ nnoremap <expr> ZZ          (v:count ? ':<c-u>xa!<cr>' : '@_ZZ')
 nnoremap <expr> ZQ          (v:count ? ':<c-u>qa!<cr>' : '@_ZQ')
 nnoremap <expr> <c-w>=      (v:count ? ':<c-u>windo set nowinfixheight nowinfixwidth<cr><c-w>=' : '@_<c-w>=')
 
-func! ReadExCommandOutput(newbuf, cmd)
+func! ReadExCommandOutput(newbuf, cmd) abort
   redir => l:message
   silent! execute a:cmd
   redir END
@@ -1023,7 +1023,7 @@ endf
 command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>0, <q-args>)
 inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
-func! s:get_visual_selection_list()
+func! s:get_visual_selection_list() abort
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
   let lines = getline(lnum1, lnum2)
@@ -1032,7 +1032,7 @@ func! s:get_visual_selection_list()
   return lines
 endf
 
-func! s:get_visual_selection_searchpattern()
+func! s:get_visual_selection_searchpattern() abort
   let lines = s:get_visual_selection_list()
   let lines = map(lines, 'escape(v:val, ''/\'')')
   " Join with a _literal_ \n to make a valid search pattern.
@@ -1051,7 +1051,7 @@ nmap <silent> *  :<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>se
 nmap <silent> g* :<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr>
 
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
-func! s:markline()
+func! s:markline() abort
   let b:vimrc_markedlines = get(b:, "vimrc_markedlines", {})
   "TODO: This will get stale if the line moves.
   "      :sign is a solution, but need to create a way to get un-used sign {id}s.
@@ -1081,7 +1081,7 @@ augroup halo_plugin
   autocmd!
   autocmd WinLeave * call <SID>halo_clear(-1)
 augroup END
-nnoremap <Esc> :call <SID>halo()<CR>
+nnoremap <Esc> :<C-U>call <SID>halo()<CR>
 
 " }}} mappings
 
@@ -1092,7 +1092,7 @@ augroup END
 
 
 " A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
-func! s:matchparen_cursorcolumn_setup()
+func! s:matchparen_cursorcolumn_setup() abort
   augroup matchparen_cursorcolumn
     autocmd!
     autocmd CursorMoved * if get(w:, "paren_hl_on", 0) | set cursorcolumn | else | set nocursorcolumn | endif
@@ -1174,6 +1174,7 @@ augroup vimrc_autocmd
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
   autocmd FileType dirvish call fugitive#detect(@%)
+  autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
@@ -1230,11 +1231,11 @@ set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.o
 " Better `gf`
 set suffixesadd=.java,.cs
 
-function! s:fzf_open_file_at_line(e)
+function! s:fzf_open_file_at_line(e) abort
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
   execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
 endfunction
-function! s:fzf_insert_at_point(s)
+function! s:fzf_insert_at_point(s) abort
   execute "put ='".a:s."'"
 endfunction
 
@@ -1275,7 +1276,7 @@ else
 endif
 
 " Slides plugin {{{
-func! SlidesStatusline()
+func! SlidesStatusline() abort
   " echo substitute(substitute(expand('%:p:t:r'), '\v(\d+-)|_', ' ', 'g'), '\v(\W)(\w)', '\=submatch(1).toupper(submatch(2))', 'g')
   let section_dot_subsection = substitute(expand('%:p:t:r'), '\v(\d+)-(\d+).*', '\=(0+submatch(1)).".".(0+submatch(2))', '')
   let title  = substitute(expand('%:p:t:r'), '\v(\d+-)|_', ' ', 'g')
@@ -1286,7 +1287,7 @@ func! SlidesStatusline()
   endif
   return section_dot_subsection.'        '.title
 endf
-func! StartSlides()
+func! StartSlides() abort
   let g:oldstatusline = get(g:, 'oldstatusline', &statusline)
   let g:oldguifont = get(g:, 'oldguifont', &guifont)
   set statusline=%{SlidesStatusline()}
@@ -1309,7 +1310,7 @@ func! StartSlides()
   "faster ]f [f
   set noshelltemp
 endf
-func! EditSlides()
+func! EditSlides() abort
   cd ~/Desktop/github/notes/git_slides/
 
   silent! let &statusline = g:oldstatusline
@@ -1351,7 +1352,7 @@ command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vim
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 
-function! s:init_lynx()
+function! s:init_lynx() abort
   nnoremap <nowait><buffer> <C-F> i<PageDown><C-\><C-N>
   tnoremap <nowait><buffer> <C-F> <PageDown>
 
