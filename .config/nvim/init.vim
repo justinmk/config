@@ -1292,53 +1292,55 @@ endif
 
 " Slides plugin {{{
 func! SlidesStatusline() abort
-  " echo substitute(substitute(expand('%:p:t:r'), '\v(\d+-)|_', ' ', 'g'), '\v(\W)(\w)', '\=submatch(1).toupper(submatch(2))', 'g')
-  let section_dot_subsection = substitute(expand('%:p:t:r'), '\v(\d+)-(\d+).*', '\=(0+submatch(1)).".".(0+submatch(2))', '')
-  let title  = substitute(expand('%:p:t:r'), '\v(\d+-)|_', ' ', 'g')
-  if len(section_dot_subsection) < 6
-    "pad with leading spaces
-    let section_dot_subsection = repeat(' ', 7 - len(section_dot_subsection))
-          \ . section_dot_subsection
+  let st = get(b:, 'slides',
+        \ {'topline':0,'nr_tot':0,'nr_cur':0,'title':''})
+  if winsaveview().topline == st.topline
+    return (st.nr_cur) . '/' . (st.nr_tot)
   endif
-  return section_dot_subsection.'        '.title
+  let st.topline = winsaveview().topline
+  let st.nr_tot  = len(filter(getline(1, '$'), "v:val =~# '^=============='"))
+  let st.nr_cur  = len(filter(getline(1, '.'), "v:val =~# '^=============='"))
+  let b:slides   = st
+  return (st.nr_cur).'/'.(st.nr_tot)
 endf
 func! StartSlides() abort
+  silent! autocmd! slides_plugin_edit
+  silent! autocmd! BufReadPost
+
   let g:oldstatusline = get(g:, 'oldstatusline', &statusline)
   let g:oldguifont = get(g:, 'oldguifont', &guifont)
   set statusline=%{SlidesStatusline()}
   set guifont=Consolas:h32 cmdheight=1 nocursorline background=light
 
-  autocmd! BufReadPost
-
-  hi Normal guibg=white guifg=black
+  hi markdownError ctermbg=NONE ctermfg=NONE guifg=NONE guibg=NONE
+  hi Normal ctermbg=white ctermfg=black guifg=black guibg=white
   hi StatusLine guibg=#000000 guifg=#ffffff
 
-  nmap <right> ]f:echo ''<bar>redraw<cr>
-  nmap <left>  [f:echo ''<bar>redraw<cr>
-  sign unplace *
-  augroup vimrc_slides
+  augroup slides_plugin_show
     autocmd!
-    autocmd BufEnter,WinEnter * set colorcolumn=54,67 textwidth=66 | silent! call sy#stop(bufnr('%'))
-    autocmd SwapExists * let v:swapchoice='e'
+    autocmd BufEnter,WinEnter <buffer> setlocal nocursorline
+          \ nocursorcolumn colorcolumn=
+    autocmd BufEnter,WinEnter * silent! call sy#stop(bufnr('%'))
   augroup END
+
+  nnoremap <Down> /^======<CR>:nohls<CR>zt<C-Y>
+  nnoremap <Up>   ?^======<CR>:nohls<CR>zt<C-Y>
+  sign unplace *
 
   "faster ]f [f
   set noshelltemp
 endf
 func! EditSlides() abort
-  cd ~/Desktop/github/notes/git_slides/
+  silent! autocmd! slides_plugin_show
 
   silent! let &statusline = g:oldstatusline
   silent! let &guifont = g:oldguifont
   hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
   sign define limit  text== texthl=SlidesSign
 
-  augroup vimrc_slides
+  augroup slides_plugin_edit
     autocmd!
     autocmd BufEnter,WinEnter * set colorcolumn=54,67 textwidth=53
-    autocmd TextChanged,TextChangedI * exe 'sign unplace *'
-          \ |exe 'sign place 123 line=14 name=limit buffer='.bufnr('%')
-          \ |exe 'sign place 124 line=17 name=limit buffer='.bufnr('%')
     autocmd FileType dirvish map <buffer> <down> jpp<c-w>p|map <buffer> <up> kpp<c-w>p
   augroup END
 
