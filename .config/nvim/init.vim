@@ -55,6 +55,8 @@ xmap t <Plug>Sneak_t
 xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
+map <M-;> <Plug>SneakPrevious
+map <M-;> <Plug>SneakPrevious
 let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
@@ -140,7 +142,6 @@ let g:markdown_syntax_conceal = 0
 
 Plug 'tpope/vim-jdaddy'
 Plug 'AndrewRadev/linediff.vim'
-Plug 'AndrewRadev/splitjoin.vim'
 let g:linediff_buffer_type = 'scratch'
 " Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
@@ -292,6 +293,7 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
+set expandtab shiftwidth=0 softtabstop=2 tabstop=2 textwidth=80
 
 " vim-vertical-move replacement
 " credit: cherryberryterry: https://www.reddit.com/r/vim/comments/4j4duz/a/d33s213
@@ -306,12 +308,12 @@ function! s:vjump(dir) abort
   return a:dir ? (line('.') - (bot > top ? bot : top)).'k'
     \        : ((bot < top ? bot : top) - line('.')).'j'
 endfunction
-nnoremap <expr> + <SID>vjump(0)
-nnoremap <expr> _ <SID>vjump(1)
-xnoremap <expr> + <SID>vjump(0)
-xnoremap <expr> _ <SID>vjump(1)
-onoremap <expr> + <SID>vjump(0)
-onoremap <expr> _ <SID>vjump(1)
+nnoremap <expr> <C-j> <SID>vjump(0)
+nnoremap <expr> <C-k> <SID>vjump(1)
+xnoremap <expr> <C-j> <SID>vjump(0)
+xnoremap <expr> <C-k> <SID>vjump(1)
+onoremap <expr> <C-j> <SID>vjump(0)
+onoremap <expr> <C-k> <SID>vjump(1)
 
 let mapleader = "z,"
 let g:mapleader = "z,"
@@ -346,7 +348,8 @@ set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
 set shortmess+=I
 
-nnoremap <silent> coz :<c-u>if &foldenable && &foldmethod==#'indent' <bar> set nofoldenable foldmethod=manual <bar> else <bar> set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable <bar> endif<cr>
+nnoremap <silent> coz :<c-u>if &foldenable\|set nofoldenable\|
+      \ else\|set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 nnoremap <silent> coM :<c-u>if '' ==# synIDattr(synIDtrans(hlID("MatchParen")),"bg") 
       \ <bar> hi MatchParen guifg=NONE guibg=orange gui=underline ctermfg=NONE ctermbg=cyan cterm=underline 
       \ <bar> else <bar> hi MatchParen guifg=NONE guibg=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline<bar> endif<cr>
@@ -568,8 +571,11 @@ nmap     ZK     Zk
 nmap     ZL     Zl
 
 nnoremap <C-w>gt :tab sp<CR>
-nnoremap <C-w>N <C-W>v:<C-u>enew<CR>
-nnoremap <silent> c<Space> <c-w>v
+nnoremap <M-H> :aboveleft vsplit<CR>
+nnoremap <M-J> :belowright split<CR>
+nnoremap <M-K> <C-W>s
+nnoremap <M-L> <C-W>v
+nnoremap <M-N> :enew<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : <SID>alt_wintabbuf())
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
@@ -654,9 +660,7 @@ nnoremap <expr> [gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
 nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 
 " quickfix window
-nnoremap <silent><c-q> :silent! botright copen<cr>
-" location window
-" nnoremap q] :botright lopen<cr>
+nnoremap <expr>   Q '@_:botright '.(v:count ? 'l' : 'c').'open<CR>'
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
@@ -971,7 +975,6 @@ function! s:restore_change_marks() abort
   call setpos("']", s:change_marks[1])
 endfunction
 nnoremap z. :call <SID>save_change_marks()<Bar>w<Bar>call <SID>restore_change_marks()<cr>
-nnoremap z<space> :enew<cr>
 
 " map m-] to be the inverse of c-]
 nnoremap <m-]> <c-t>
@@ -980,25 +983,12 @@ nnoremap <m-]> <c-t>
 nnoremap gV `[v`]
 
 " replay macro for each line of a visual selection
-xnoremap @q :normal @q<CR>
-xnoremap @@ :normal @@<CR>
+nnoremap , @q
+xnoremap , :normal @q<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
-" disable Ex mode key and map it to something awesome
-nnoremap Q @q
-xnoremap Q :normal @q<CR>
-nnoremap <Space> @q
-xnoremap <Space> :normal @q<CR>
 " repeat the last edit on the next [count] matches.
-nnoremap <m-n> :normal n.<cr>
-
-" augroup vimrc_qompose
-"   autocmd!
-" augroup END
-" nnoremap ,
-"       \ :<c-u>let g:qompose_orig_z=@z<cr>
-"       \ qz
-"       \ :<c-u>autocmd vimrc_qompose TextChanged,InsertLeave * exe 'normal! q'<bar>call repeat#set(@z)<bar>let @z=g:qompose_orig_z<bar>autocmd! vimrc_qompose *<cr>
+nnoremap <M-n> :normal n.<cr>
 
 " disable F1 help key
 noremap! <F1> <nop>
@@ -1008,7 +998,7 @@ nnoremap <expr> <c-w><c-q>  (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> <c-w>q      (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> ZZ          (v:count ? ':<c-u>xa!<cr>' : '@_ZZ')
 nnoremap <expr> ZQ          (v:count ? ':<c-u>qa!<cr>' : '@_ZQ')
-nnoremap <expr> <c-w>=      (v:count ? ':<c-u>windo set nowinfixheight nowinfixwidth<cr><c-w>=' : '@_<c-w>=')
+nnoremap <expr> <c-w>=      (v:count ? ':<c-u>windo setlocal nowinfixheight nowinfixwidth<cr><c-w>=' : '@_<c-w>=')
 
 func! s:zoom_toggle() abort
   if 1 == winnr('$')
@@ -1032,6 +1022,7 @@ func! s:zoom_or_goto_column(cnt) abort
     call s:zoom_toggle()
   endif
 endfunc
+nnoremap +     :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
 nnoremap <Bar> :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
 
 func! ReadExCommandOutput(newbuf, cmd) abort
@@ -1081,28 +1072,34 @@ endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
 nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
 
-highlight Halo guibg=#F92672 ctermbg=197
+highlight Halo guifg=white guibg=#F92672 ctermfg=white ctermbg=197
 let g:halo = {}
 function! s:halo_clear(id) abort
-  silent! call timer_stop(g:halo['timer_id'])
   silent! call matchdelete(g:halo['hl_id'])
 endfunction
 function! s:halo() abort
+  call s:halo_show(-1)
+  call timer_start(100, function('s:halo_show'))
+  call timer_start(200, function('s:halo_show'))
+endfunction
+function! s:halo_show(id) abort
   call s:halo_clear(-1)
+  let lcol = col('.') > 10 ? col('.') - 10 : 1
   let g:halo['hl_id'] = matchaddpos('Halo',
-        \[[line('.'),   col('.')-10, 20],
-        \ [line('.')-1, col('.')-10, 20],
-        \ [line('.')-2, col('.')-10, 20],
-        \ [line('.')+1, col('.')-10, 20],
-        \ [line('.')+2, col('.')-10, 20]]
+        \[[line('.'),   lcol, 20],
+        \ [line('.')-1, lcol, 20],
+        \ [line('.')-2, lcol, 20],
+        \ [line('.')+1, lcol, 20],
+        \ [line('.')+2, lcol, 20]]
         \)
-  let g:halo['timer_id'] = timer_start(1000, function('s:halo_clear'))
+  call timer_start(50, function('s:halo_clear'))
 endfunction
 augroup halo_plugin
   autocmd!
   autocmd WinLeave * call <SID>halo_clear(-1)
 augroup END
-nnoremap <Esc> :<C-U>call <SID>halo()<CR>
+nnoremap <silent> <Esc> :<C-U>call <SID>halo()<CR>
+nnoremap <silent> <C-c> :<C-U>call <SID>halo()<CR><C-c>
 
 " }}} mappings
 
@@ -1185,13 +1182,11 @@ augroup vimrc_autocmd
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
-  autocmd VimEnter,BufNewFile,BufReadPost * setlocal expandtab shiftwidth=0
-        \ softtabstop=2 tabstop=2 textwidth=80
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   function! s:setup_gitstatus() abort
     nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
-    nmap <M-n> <c-n>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
-    nmap <M-p> <c-p>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
+    nmap <buffer> <M-n> <c-n>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
+    nmap <buffer> <M-p> <c-p>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
   autocmd FileType dirvish call fugitive#detect(@%)
