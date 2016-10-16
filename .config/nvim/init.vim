@@ -1208,6 +1208,11 @@ augroup vimrc_autocmd
   "  - do/dp should not auto-fold
   "  - tweak CursorLine to be less broken
   autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | call <sid>set_CursorLine() | endif
+  autocmd VimEnter * if !empty($NVIM_LISTEN_ADDRESS) && $NVIM_LISTEN_ADDRESS !=# v:servername
+        \ |let g:r=jobstart(['nc', '-U', $NVIM_LISTEN_ADDRESS],{'rpc':v:true})
+        \ |let g:f=fnameescape(expand('%:p'))
+        \ |noau bwipe
+        \ |call rpcrequest(g:r, "nvim_command", "tabedit ".g:f)|qa|endif
   autocmd WinEnter * call <sid>set_CursorLine()
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 copyindent
