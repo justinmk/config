@@ -293,6 +293,7 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
+set updatetime=2000
 set expandtab shiftwidth=0 softtabstop=2 tabstop=2 textwidth=80
 
 " vim-vertical-move replacement
@@ -888,6 +889,7 @@ xnoremap x  "_d
 nnoremap vD "_D
 xnoremap P  "0p
 
+nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
 nnoremap v <C-v>
 
 func! s:trimws_ml(s) abort "trim whitespace across multiple lines
@@ -1364,6 +1366,7 @@ command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
 command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
+command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/neovim/.deps/usr/share/lua/**,".expand("~")."/neovim/.deps/usr/share/lua/**")<bar>lcd %
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())

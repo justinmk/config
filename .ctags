@@ -1,3 +1,5 @@
+-I EXTERN
+-I INIT
 --exclude=.git
 --exclude=.svn
 --exclude=.hg
