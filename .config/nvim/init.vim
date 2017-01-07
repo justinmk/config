@@ -27,6 +27,11 @@ let g:plug_window = 'enew'
 call plug#begin('~/.local/share/nvim/bundle')
 
 Plug 'justinmk/molokai'
+Plug 'mptre/vim-printf'
+Plug 'Chiel92/vim-autoformat'
+Plug 'majutsushi/tagbar'
+Plug 'https://gitlab.com/HiPhish/info.vim.git'
+Plug 'machakann/vim-highlightedyank'
 
 if v:version > 703 && !has('win32') && !has('win32unix')
 Plug 'ludovicchabant/vim-gutentags'
@@ -55,8 +60,7 @@ xmap t <Plug>Sneak_t
 xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T <Plug>Sneak_T
-map <M-;> <Plug>SneakPrevious
-map <M-;> <Plug>SneakPrevious
+map <M-;> <Plug>Sneak_,
 let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
 Plug 'https://github.com/justinmk/vim-syntax-extra.git'
@@ -346,14 +350,11 @@ set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
 set splitright
+set inccommand=split
 if has('patch-7.4.314') | set shortmess+=c | endif
-set shortmess+=I
 
 nnoremap <silent> coz :<c-u>if &foldenable\|set nofoldenable\|
-      \ else\|set foldmethod=indent foldnestmax=3 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
-nnoremap <silent> coM :<c-u>if '' ==# synIDattr(synIDtrans(hlID("MatchParen")),"bg") 
-      \ <bar> hi MatchParen guifg=NONE guibg=orange gui=underline ctermfg=NONE ctermbg=cyan cterm=underline 
-      \ <bar> else <bar> hi MatchParen guifg=NONE guibg=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline<bar> endif<cr>
+      \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
 
 set nojoinspaces
@@ -406,7 +407,7 @@ endif
           \ if &background == "dark"
           \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
-          \ | hi MatchParen    gui=NONE cterm=NONE guifg=red     guibg=NONE    ctermfg=red ctermbg=NONE
+          \ | hi Visual        gui=NONE cterm=NONE guifg=black   guibg=white   ctermfg=0   ctermbg=255
           \ | endif
           \'
 
@@ -506,9 +507,6 @@ inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '
 " current-file directory
 noremap! <silent> <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
 
-inoremap z,   <c-o>
-inoremap z,p  <c-r>"
-
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
 " mark position before search
@@ -576,7 +574,7 @@ nnoremap <M-H> :aboveleft vsplit<CR>
 nnoremap <M-J> :belowright split<CR>
 nnoremap <M-K> <C-W>s
 nnoremap <M-L> <C-W>v
-nnoremap <M-N> :enew<CR>
+nnoremap <M-n> :enew<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : <SID>alt_wintabbuf())
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
@@ -651,7 +649,7 @@ func! s:get_alt_winnr() abort
 endf
 
 " manage tabs
-nnoremap <silent> <M-t>    :tabnew<cr>
+nnoremap <silent> <M-t>    :tab split<cr>
 nnoremap <silent> ZT       :tabclose<cr>
 " move tab to Nth position
 nnoremap <expr> ]gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
@@ -669,8 +667,6 @@ nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 " set working directory to the current buffer's directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
-nnoremap cD :cd %:p:h<bar>pwd<cr>
-nnoremap cU :cd ..<bar>pwd<cr>
 
 if findfile('plugin/fugitive.vim', &rtp) !=# ''
   " show git branch with ctrl-g info
@@ -767,7 +763,7 @@ nmap Up :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
-nnoremap <silent> co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
+nnoremap co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
 " execute/evaluate
 nnoremap yxal             :keeppatterns           g/^/exe getline('.')<CR>
@@ -775,7 +771,6 @@ nnoremap <silent> yxx     :keeppatterns          .g/^/exe getline('.')<CR>
 xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 
 " filter
-" TODO: https://github.com/Chiel92/vim-autoformat
 " nnoremap c<cr>jj    :%!python -m json.tool<cr>
 " nnoremap z<cr>jj    :%!python -m json.tool<cr>
 " nnoremap c<space>jj :%!python -m json.tool<cr>
@@ -785,6 +780,7 @@ xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 " windows binary: http://tidybatchfiles.info
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
+xnoremap gqac    :Autoformat
 
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
@@ -890,7 +886,6 @@ nnoremap vD "_D
 xnoremap P  "0p
 
 nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
-nnoremap v <C-v>
 
 func! s:trimws_ml(s) abort "trim whitespace across multiple lines
   return substitute(a:s, '^\_s*\(.\{-}\)\_s*$', '\1', '')
@@ -985,12 +980,16 @@ nnoremap <m-]> <c-t>
 nnoremap gV `[v`]
 
 " replay macro for each line of a visual selection
-nnoremap , @q
-xnoremap , :normal @q<CR>
+nnoremap <Space> @q
+xnoremap <Space> :normal @q<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
+" XXX: fix this
 " repeat the last edit on the next [count] matches.
-nnoremap <M-n> :normal n.<cr>
+nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
+nnoremap <M-q> qq
+
+nnoremap c<Space> :nnoremap <lt>Space> 
 
 " disable F1 help key
 noremap! <F1> <nop>
@@ -1250,7 +1249,8 @@ xnoremap \*  mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpatte
 set completeopt-=preview
 set wildignore+=tags,*/gwt-unitCache/*
 " Files with these suffixes get a lower priority when matching a wildcard
-set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.o,.obj,.dll,.class,.pyc,.so,.swp,.zip,.exe,.jar
+set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
+      \,.o,.obj,.dll,.class,.pyc,.so,.swp,.zip,.exe,.jar,.gz
 " Better `gf`
 set suffixesadd=.java,.cs
 
@@ -1359,7 +1359,7 @@ set titlestring=%{getpid().':'.getcwd()}
 set titleold=?
 
 " special-purpose mappings/commands ===========================================
-nnoremap <leader>vft  :e ~/.vim/ftplugin<cr>
+nnoremap <leader>vft  :e ~/.config/nvim/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
