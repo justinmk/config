@@ -28,7 +28,8 @@ call plug#begin('~/.local/share/nvim/bundle')
 
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
-Plug 'Chiel92/vim-autoformat'
+Plug 'sbdchd/neoformat'
+Plug 'w0rp/ale'
 Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
 Plug 'machakann/vim-highlightedyank'
@@ -48,6 +49,7 @@ Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-sneak.git'
 let g:sneak#streak = 1
 let g:sneak#use_ic_scs = 1
+let g:sneak#absolute_dir = 1
 nmap f <Plug>Sneak_f
 nmap F <Plug>Sneak_F
 xmap f <Plug>Sneak_f
@@ -179,6 +181,8 @@ if s:plugins_extra
   Plug 'tpope/vim-salve'
   let g:salve_auto_start_repl = 1
   Plug 'tpope/vim-fireplace'
+
+  Plug 'metakirby5/codi.vim'
 
   Plug 'PProvost/vim-ps1'
   Plug 'pangloss/vim-javascript'
@@ -688,7 +692,7 @@ nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz('norm [c[n')<CR>
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :Gblame<cr>
 nnoremap <silent> Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
-nnoremap <silent> Ue             :Gedit<cr>
+nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
 nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ugf            :Gedit <C-R><C-W><cr>
 nnoremap <silent> Ul :GV! -100<cr>
@@ -1229,7 +1233,7 @@ nmap     <C-b> \b
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
-nnoremap \g  mS:Ggrep -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR><Left>
+nnoremap \g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR><Left>
 nnoremap <silent> \v   :Scriptnames<cr>
 nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
