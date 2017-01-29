@@ -29,7 +29,6 @@ call plug#begin('~/.local/share/nvim/bundle')
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
 Plug 'sbdchd/neoformat'
-Plug 'w0rp/ale'
 Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
 Plug 'machakann/vim-highlightedyank'
@@ -260,7 +259,6 @@ endif
 "   - reload (:edit) the current buffer
 nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|edit\|call <SID>restore_change_marks()<CR>' : '')
       \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
-      \ . (exists(':SignifyRefresh')?'\|SignifyRefresh':'')
       \ . '<CR><C-L>'
 
 inoremap <C-U> <C-G>u<C-U>
@@ -562,6 +560,7 @@ if has('nvim')
   tnoremap <silent><M-j> <C-\><C-n>:call <SID>vim_tmux_nav('j')<cr>
   tnoremap <silent><M-k> <C-\><C-n>:call <SID>vim_tmux_nav('k')<cr>
   tnoremap <silent><M-l> <C-\><C-n>:call <SID>vim_tmux_nav('l')<cr>
+  tnoremap <silent><C-^> <C-\><C-n><C-^>
 endif
 
 nnoremap Zh     :leftabove vsplit<CR>
@@ -1411,8 +1410,8 @@ function! s:init_lynx() abort
   tnoremap <buffer> <C-C> <C-G><C-\><C-N>
   nnoremap <buffer> <C-C> i<C-G><C-\><C-N>
 endfunction
-command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse -scrollbar '.shellescape(<q-args>))|call <SID>init_lynx()
-command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse -scrollbar https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q-args>))|call <SID>init_lynx()
+command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
