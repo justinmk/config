@@ -1,12 +1,9 @@
-" windows builds: http://files.kaoriya.net/vim/
-"                 64-bit: http://solar-blogg.blogspot.ca/p/vim-build.html
-"==============================================================================
 " Windows Registry Editor Version 5.00
 "
 " [HKEY_CLASSES_ROOT\*\shell\Edit with Vim]
 "
 " [HKEY_CLASSES_ROOT\*\shell\Edit with Vim\command]
-" @="C:\\opt\\vim\\gvim.exe \"%L\""
+" @="nvim-qt.exe \"%L\""
 "==============================================================================
 
 let g:loaded_rrhelper = 1
@@ -46,7 +43,7 @@ Plug 'https://github.com/justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
 
 Plug 'https://github.com/justinmk/vim-sneak.git'
-let g:sneak#streak = 1
+let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#absolute_dir = 1
 nmap f <Plug>Sneak_f
@@ -148,13 +145,14 @@ let g:markdown_syntax_conceal = 0
 Plug 'tpope/vim-jdaddy'
 Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
-" Plug 'mbbill/undotree'
+Plug 'mbbill/undotree'
 Plug 'kana/vim-niceblock'
 
 Plug 'tpope/vim-commentary'
 
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
+let g:signify_realtime = 1
 
 if s:plugins_extra
   "TODO: dbext bugs:
@@ -181,7 +179,7 @@ if s:plugins_extra
   let g:salve_auto_start_repl = 1
   Plug 'tpope/vim-fireplace'
 
-  Plug 'metakirby5/codi.vim'
+  Plug 'jalvesaq/vimcmdline'
 
   Plug 'PProvost/vim-ps1'
   Plug 'pangloss/vim-javascript'
@@ -309,7 +307,6 @@ function! s:vjump(dir) abort
   let flags = a:dir ? 'bnW' : 'nW'
   let bot = search('\v'.c.'.*\n^(.*'.c.'.)@!.*$', flags)
   let top = search('\v^(.*'.c.'.)@!.*$\n.*\zs'.c, flags)
-  echom string(bot) string(top)
 
   " norm! m`
   return a:dir ? (line('.') - (bot > top ? bot : top)).'k'
@@ -327,7 +324,6 @@ let g:mapleader = "z,"
 
 try | lang en_US | catch | endtry
 
-set showcmd
 set undofile
 set list
 set fileformats=unix,dos
@@ -344,9 +340,6 @@ set lazyredraw  " no redraws in macros
 set cmdheight=2
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
-
-"audible bell persists unless visualbell is enabled.
-set noerrorbells novisualbell t_vb=
 
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
