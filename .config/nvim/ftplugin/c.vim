@@ -9,6 +9,9 @@ else
   setlocal formatprg=clang-format-3.6\ -style=file
 endif
 
+if fnamemodify(@%, ':p') =~# 'neovim'
+  let b:printf_pattern = 'ILOG("%d", %s);'
+endif
 
 if exists(":YcmCompleter")
   nnoremap <buffer> gd    :<c-u>YcmCompleter GoToDefinition<cr>

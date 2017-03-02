@@ -25,6 +25,7 @@ call plug#begin('~/.local/share/nvim/bundle')
 
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
+nnoremap crp :Printf<CR>
 Plug 'sbdchd/neoformat'
 Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
@@ -32,7 +33,7 @@ Plug 'machakann/vim-highlightedyank'
 
 if v:version > 703 && !has('win32') && !has('win32unix')
 Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_exclude = ['.vim-src', 'build']
+let g:gutentags_ctags_exclude = ['.vim-src', 'build']
 endif
 
 Plug 'tommcdo/vim-exchange'
@@ -139,13 +140,11 @@ inoremap [, [<CR>],<Esc>O
 
 Plug 'tpope/vim-obsession'
 
-Plug 'tpope/vim-markdown'
 let g:markdown_syntax_conceal = 0
 
-Plug 'tpope/vim-jdaddy'
 Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', { 'on': ['UndotreeToggle'] }
 Plug 'kana/vim-niceblock'
 
 Plug 'tpope/vim-commentary'
@@ -155,21 +154,6 @@ let g:signify_vcs_list = [ 'git' ]
 let g:signify_realtime = 1
 
 if s:plugins_extra
-  "TODO: dbext bugs:
-  "   - dbext BufRead handler adds `gg` to jumplist. steps:
-  "       :h h
-  "       :h a
-  "       <c-o>
-  "   - does not honor g:dbext_default_usermaps
-  Plug 'dbext.vim', { 'on': [ 'DBExecRangeSQL', 'DBExecVisualSQL'  ] }
-  " dbext profile example:
-  "   let g:dbext_default_profile = 'default'
-  "   let g:dbext_default_profile_default = 'type=SQLSRV:integratedlogin=1:dbname=foo:host=localhost:srvname=localhost\sqlexpress:bin_path=C:\Program Files\Microsoft SQL Server\120\Tools\Binn'
-  let g:dbext_default_history_file = expand('~/.dbext_sql_history', 1)
-  let g:dbext_default_history_size = 1000
-  let g:dbext_default_history_max_entry = 10*1024
-  let g:dbext_default_usermaps = 0
-
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
   let g:clojure_fold = 1
@@ -182,8 +166,6 @@ if s:plugins_extra
   Plug 'jalvesaq/vimcmdline'
 
   Plug 'PProvost/vim-ps1'
-  Plug 'pangloss/vim-javascript'
-  Plug 'leafo/moonscript-vim'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
 
   Plug 'inside/vim-search-pulse'
@@ -195,7 +177,7 @@ if s:plugins_extra
   Plug 'ryanss/vim-hackernews', { 'on': ['HackerNews'] }
   Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard'] }
   Plug 'mattn/webapi-vim'
-  Plug 'mattn/gist-vim'
+  Plug 'mattn/gist-vim', { 'on': ['Gist'] }
   Plug 'gcavallanti/vim-noscrollbar'
 
   Plug 'tommcdo/vim-lion'
