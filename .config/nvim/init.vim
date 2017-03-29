@@ -152,6 +152,8 @@ Plug 'tpope/vim-commentary'
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = [ 'git' ]
 let g:signify_realtime = 1
+let g:signify_cursorhold_normal = 0
+let g:signify_cursorhold_insert = 0
 
 if s:plugins_extra
   Plug 'guns/vim-sexp'
@@ -202,12 +204,6 @@ if s:plugins_extra
         \    '*CMakeLists.txt': {'alternate': '{dirname}Makefile'},
         \  },
         \}
-
-  Plug 'embear/vim-localvimrc'
-  let g:localvimrc_sandbox = 0
-  let g:localvimrc_name = [".lvimrc", "contrib/localvimrc/lvimrc"]
-  " let g:localvimrc_whitelist = escape(expand('~'), '\').'\.lvimrc'
-  let g:localvimrc_persistent = 1
 
   " Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
 endif
@@ -279,8 +275,11 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
+if has('nvim-0.2')
+  set cpoptions-=_
+endif
 set updatetime=2000
-set expandtab shiftwidth=0 softtabstop=2 tabstop=2 textwidth=80
+set expandtab shiftwidth=0 softtabstop=2 tabstop=2
 
 " vim-vertical-move replacement
 " credit: cherryberryterry: https://www.reddit.com/r/vim/comments/4j4duz/a/d33s213
@@ -333,6 +332,7 @@ if has('patch-7.4.314') | set shortmess+=c | endif
 nnoremap <silent> coz :<c-u>if &foldenable\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
+nnoremap cot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
 
 set nojoinspaces
 
@@ -475,6 +475,7 @@ func! s:delete_until() abort
 endfunc
 
 " key mappings/bindings =================================================== {{{
+nnoremap g> :set nomore<bar>40messages<bar>set more<CR>
 
 xnoremap / <Esc>/\%V
 
@@ -553,7 +554,8 @@ nnoremap <M-J> :belowright split<CR>
 nnoremap <M-K> <C-W>s
 nnoremap <M-L> <C-W>v
 nnoremap <M-n> :enew<CR>
-nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : <SID>alt_wintabbuf())
+nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : '<C-w>p')
+nnoremap <silent>       <bs>  <C-^>
 xmap     <silent>       <tab> <esc><tab>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
@@ -749,22 +751,14 @@ nnoremap <silent> yxx     :keeppatterns          .g/^/exe getline('.')<CR>
 xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 
 " filter
-" nnoremap c<cr>jj    :%!python -m json.tool<cr>
-" nnoremap z<cr>jj    :%!python -m json.tool<cr>
-" nnoremap c<space>jj :%!python -m json.tool<cr>
-" nnoremap g<bar>jj   :%!python -m json.tool<cr>
-" nnoremap <bar>jj :%!python -m json.tool<cr>
-" xnoremap <bar>jj :!python -m json.tool<cr>
-" windows binary: http://tidybatchfiles.info
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
-xnoremap gqac    :Autoformat
 
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
 "   insert: c-\ c-g
-"   normal: c-f c-t c-b c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> <del> <pageup/down> q<special>
-"           c<space> --> easyalign
+"   normal: gy c-f c-t c-b c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> q<special>
+"           c<space>
 "           !@       --> async run
 
 func! s:buf_compare(b1, b2) abort
@@ -958,8 +952,8 @@ nnoremap <m-]> <c-t>
 nnoremap gV `[v`]
 
 " replay macro for each line of a visual selection
-nnoremap <Space> @q
-xnoremap <Space> :normal @q<CR>
+nnoremap <M-.> @q
+xnoremap <M-.> :normal @q<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
 " XXX: fix this
@@ -967,6 +961,7 @@ xnoremap . :normal .<CR>
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
 nnoremap <M-q> qq
 
+nnoremap c<Space> :nnoremap <lt>Space> 
 nnoremap c<Space> :nnoremap <lt>Space> 
 
 " disable F1 help key
@@ -1135,6 +1130,8 @@ augroup END
 augroup vimrc_autocmd
   autocmd!
 
+  autocmd FileType text setlocal textwidth=80
+
   " Closes the current quickfix list and returns to the alternate window.
   func! s:close_qflist()
     let altwin = s:get_alt_winnr()
@@ -1166,6 +1163,7 @@ augroup vimrc_autocmd
     nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
     nmap <buffer> <M-n> <c-n>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
     nmap <buffer> <M-p> <c-p>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
+    nmap <buffer><nowait> <M-u> U<Esc>
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
   autocmd FileType dirvish call fugitive#detect(@%)
@@ -1350,6 +1348,23 @@ command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vim
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
+
+function! Cxn_py() abort
+  vsplit
+  terminal
+  call jobsend(b:terminal_job_id, "python3\nimport neovim\n")
+  call jobsend(b:terminal_job_id, "n = neovim.attach('socket', path='".g:cxn."')\n")
+endfunction
+function! Cxn() abort
+  silent! unlet g:cxn
+  tabnew
+  terminal
+  call jobsend(b:terminal_job_id, "NVIM_LISTEN_ADDRESS= ./build/bin/nvim -u NORC\n")
+  call jobsend(b:terminal_job_id, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
+  call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
+  call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
+endfunction
+command! NvimCxn call Cxn()
 
 function! s:init_lynx() abort
   nnoremap <nowait><buffer> <C-F> i<PageDown><C-\><C-N>
