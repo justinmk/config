@@ -62,8 +62,7 @@ omap T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
 let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
-Plug 'https://github.com/justinmk/vim-syntax-extra.git'
-Plug 'https://github.com/justinmk/vim-matchparenalways.git'
+" Plug 'https://github.com/justinmk/vim-matchparenalways.git'
 
 if executable("tmux")
 Plug 'tpope/vim-tbone'
@@ -219,7 +218,6 @@ endif "}}}
 " sensible.vim {{{
 if has("nvim")
   tnoremap <esc> <c-\><c-n>
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
   augroup nvimrc_aucmd
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
@@ -351,31 +349,6 @@ if &startofline
   augroup END
 endif
 
-" platform-specific settings
-if has('win32')
-  let g:sh_defaults = { 'shell':&shell, 'shellcmdflag':&shellcmdflag,
-                      \ 'shellquote':&shellquote, 'shellxquote':&shellxquote,
-                      \ 'shellpipe':&shellpipe, 'shellredir':&shellredir }
-  function! s:toggle_powershell()
-    if &shell ==# 'powershell'
-      let s = g:sh_defaults
-      let &shell=s.shell
-      let &shellquote=s.shellquote
-      let &shellpipe=s.shellpipe
-      let &shellredir=s.shellredir
-      let &shellcmdflag=s.shellcmdflag
-      let &shellxquote=s.shellxquote
-    else
-      set shell=powershell shellquote=\" shellpipe=\| shellredir=>
-      set shellcmdflag=\ -ExecutionPolicy\ RemoteSigned\ -Command
-      let &shellxquote=' '
-    endif
-  endfunction
-  nnoremap co! :call <SID>toggle_powershell()<CR>
-
-  set winaltkeys=no
-endif
-
 "colorscheme {{{
   if (!empty(&t_Co) && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
     silent! colorscheme ron
@@ -414,43 +387,6 @@ set synmaxcol=1000
 
 set linebreak
 set nowrap
-
-" http://www.vim.org/scripts/script.php?script_id=1714
-" - uses FileChangedShell and :checktime to avoid re-loading an un-changed file.
-" - only updates if the buffer is visible.
-" - autocmds are torn down after buffer is closed or hidden.
-" - let b:tail_follow=1 to auto-scroll
-" - Vim:
-"     - depends on CursorHold, so tailed buffers won't update while you are moving the cursor.
-"     - set 'updatetime' lower if you want faster updates
-"     - b:tail_follow only works if the tailed file is the current buffer
-let s:tail_orig_updtime = &updatetime
-func! Tail(filename) abort "TODO: disable undo for buffer?
-  let filename = escape(dispatch#expand(a:filename), '#%')
-  if strlen(filename) > 0
-    exec 'split '.filename
-  endif "else: tail the current buffer.
-
-  let &updatetime=1000
-  setlocal autoread
-
-  let aubuff = '<buffer='.bufnr("%").'>'
-  "buffer-local
-  augroup TailSmurf
-    exec 'au! * '.aubuff
-    exec 'autocmd BufEnter,WinEnter '.aubuff.' let &updatetime=1000'
-    exec 'autocmd BufLeave,BufHidden,WinLeave '.aubuff.' let &updatetime='.s:tail_orig_updtime
-    "Follow only the current buffer (anything more sophisticated is a pain in the ass).
-    exec 'autocmd FileChangedShellPost '.aubuff.' if get(b:, "tail_follow", 0) && bufnr("%")=='.bufnr("%").'|exec "norm! G"|endif'
-  augroup END
-
-  call feedkeys("f\e", "n") "force cursor activity to kick CursorHold
-
-  "global
-  au! TailSmurf CursorHold
-  autocmd TailSmurf CursorHold * checktime | call feedkeys("f\e", "n")
-endf
-command! -bang -nargs=? -complete=file Tail call Tail(<q-args>)
 
 " =============================================================================
 " normal mode
@@ -554,9 +490,9 @@ nnoremap <M-J> :belowright split<CR>
 nnoremap <M-K> <C-W>s
 nnoremap <M-L> <C-W>v
 nnoremap <M-n> :enew<CR>
-nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : '<C-w>p')
-nnoremap <silent>       <bs>  <C-^>
-xmap     <silent>       <tab> <esc><tab>
+nnoremap <silent><expr> <bs> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
+nnoremap <silent>      g<bs>  <C-^>
+xmap     <silent>       <bs> <esc><bs>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
 " nnoremap y@%   :<c-u>let @"=@%<cr>
@@ -589,38 +525,6 @@ func! s:switch_to_alt_win() abort
   endif
 endf
 
-" go to the previous thing
-func! s:alt_wintabbuf() abort
-  let [b,w,t] = [g:lastbuf,g:lastwin,g:lasttab]
-  if (b[1] - w[1]) > 0.2 && (b[1] - t[1]) > 0.2 && buflisted(b[0])
-    return "\<C-^>"
-  endif
-  if w[1] >= b[1] && w[1] >= t[1] && w[0] <= winnr('$') && w[0] != winnr()
-    return "\<C-w>p"
-  endif
-  if t[1] > b[1] && t[1] > w[1] && t[0] <= tabpagenr('$')
-    return t[0].'gt'
-  endif
-  if winnr('$') > 1
-    return "\<C-w>w"
-  endif
-  if buflisted(bufnr('#'))
-    return "\<C-^>"
-  endif
-  if tabpagenr('$') > 1
-    return "gt"
-  endif
-endf
-augroup vimrc_last_wintabbuf
-  autocmd!
-  let [g:lastbuf,g:lastwin,g:lasttab] = [[1,0],[1,0],[1,0]]
-  if exists('*reltimefloat')
-    autocmd BufLeave * let g:lastbuf = [bufnr('%'), reltimefloat(reltime())]
-    autocmd WinLeave * let g:lastwin = [winnr(),    reltimefloat(reltime())]
-    autocmd TabLeave * let g:lasttab = [tabpagenr(),reltimefloat(reltime())]
-  endif
-augroup END
-
 func! s:get_alt_winnr() abort
   call s:switch_to_alt_win()
   let n = winnr()
@@ -638,8 +542,8 @@ nnoremap <expr> [gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
 " manage buffers
 nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 
-" quickfix window
-nnoremap <expr>   Q '@_:botright '.(v:count ? 'l' : 'c').'open<CR>'
+" quickfix window (in quickfix: toggles between qf & loc list)
+nnoremap <silent><expr>   Q '@_:botright '.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>copen':'cclose<bar>lopen').'<CR>'
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
@@ -753,6 +657,7 @@ xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 " filter
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
+nnoremap gqaj    :%!python -m json.tool<cr>
 
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
@@ -952,14 +857,15 @@ nnoremap <m-]> <c-t>
 nnoremap gV `[v`]
 
 " replay macro for each line of a visual selection
-nnoremap <M-.> @q
-xnoremap <M-.> :normal @q<CR>
+nnoremap , @q
+xnoremap , :normal @q<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
 " XXX: fix this
 " repeat the last edit on the next [count] matches.
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
 nnoremap <M-q> qq
+nnoremap cqq :let @q='<C-R><C-R>q'
 
 nnoremap c<Space> :nnoremap <lt>Space> 
 nnoremap c<Space> :nnoremap <lt>Space> 
@@ -1185,12 +1091,13 @@ augroup vimrc_autocmd
   "  - do/dp should not auto-fold
   "  - tweak CursorLine to be less broken
   autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | call <sid>set_CursorLine() | endif
-  autocmd VimEnter * if !empty($NVIM_LISTEN_ADDRESS) && $NVIM_LISTEN_ADDRESS !=# v:servername
-        \ |let g:r=jobstart(['nc', '-U', $NVIM_LISTEN_ADDRESS],{'rpc':v:true})
-        \ |let g:f=fnameescape(expand('%:p'))
-        \ |noau bwipe
-        \ |call rpcrequest(g:r, "nvim_command", "tabedit ".g:f)|qa|endif
-  autocmd WinEnter * call <sid>set_CursorLine()
+  autocmd BufWinEnter,WinEnter * call <sid>set_CursorLine()
+
+  " autocmd VimEnter * if !empty($NVIM_LISTEN_ADDRESS) && $NVIM_LISTEN_ADDRESS !=# v:servername
+  "       \ |let g:r=jobstart(['nc', '-U', $NVIM_LISTEN_ADDRESS],{'rpc':v:true})
+  "       \ |let g:f=fnameescape(expand('%:p'))
+  "       \ |noau bwipe
+  "       \ |call rpcrequest(g:r, "nvim_command", "tabedit ".g:f)|qa|endif
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 copyindent
 
@@ -1205,19 +1112,15 @@ nmap     <C-b> \b
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
-nnoremap \g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR><Left>
-nnoremap <silent> \v   :Scriptnames<cr>
-nnoremap \\  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
+nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR><Left>
+nnoremap >v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
-nnoremap \B  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
+nnoremap >b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
 " search current buffer and open results in loclist
-nnoremap \%   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
+nnoremap >%   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
 " search-replace
 nnoremap gsal ms:<c-u>%s/
 xnoremap gs   ms:s/\%V
-" recursively search for word under cursor (:noau speeds up vimgrep)
-nnoremap \*  mS:<c-u>noau vimgrep /\C\V<c-r><c-w>/j **<cr>
-xnoremap \*  mS:<c-u>noau vimgrep /\C<c-r>=<SID>get_visual_selection_searchpattern()<cr>/j **<cr>
 
 " =============================================================================
 " autocomplete / omnicomplete / tags
@@ -1247,17 +1150,17 @@ nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<C
 " Search MRU files
 nnoremap <silent>       <M-\> :FzHistory<cr>
 nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzLines<CR>' : ':<C-U>FzBuffers<CR>'
-
+nmap                    g/    <M-/>
 if !empty(findfile('plugin/tmuxcomplete.vim', &rtp))
   inoremap <expr> <C-l> fzf#complete(tmuxcomplete#list('lines', 0))
   inoremap <expr> <M-l> fzf#complete(tmuxcomplete#list('lines', 0))
   inoremap <expr> <M-w> fzf#complete(tmuxcomplete#list('words', 0))
-  nnoremap <silent> g/w :call fzf#run({'source':tmuxcomplete#list('words', 0),
+  nnoremap <silent> <M-w> :call fzf#run({'source':tmuxcomplete#list('words', 0),
         \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
 endif
 
 nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('', g:fzf#vim#default_layout)<cr>
-nnoremap <silent> g/t   :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
+nnoremap <silent> z/    :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
 
 " statusline  ░▒▓█ ============================================================
@@ -1337,6 +1240,7 @@ set titleold=?
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.config/nvim/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
+nnoremap <silent> <leader>vs :Scriptnames<cr>
 command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
