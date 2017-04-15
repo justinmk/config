@@ -467,6 +467,10 @@ nnoremap <silent><M-h> :<c-u>call <SID>vim_tmux_nav('h')<cr>
 nnoremap <silent><M-j> :<c-u>call <SID>vim_tmux_nav('j')<cr>
 nnoremap <silent><M-k> :<c-u>call <SID>vim_tmux_nav('k')<cr>
 nnoremap <silent><M-l> :<c-u>call <SID>vim_tmux_nav('l')<cr>
+imap     <silent><M-h> <C-\><C-N><M-h>
+imap     <silent><M-j> <C-\><C-N><M-j>
+imap     <silent><M-k> <C-\><C-N><M-k>
+imap     <silent><M-l> <C-\><C-N><M-l>
 if has('nvim')
   tnoremap <silent><M-h> <C-\><C-n>:call <SID>vim_tmux_nav('h')<cr>
   tnoremap <silent><M-j> <C-\><C-n>:call <SID>vim_tmux_nav('j')<cr>
@@ -490,9 +494,8 @@ nnoremap <M-J> :belowright split<CR>
 nnoremap <M-K> <C-W>s
 nnoremap <M-L> <C-W>v
 nnoremap <M-n> :enew<CR>
-nnoremap <silent><expr> <bs> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
-nnoremap <silent>      g<bs>  <C-^>
-xmap     <silent>       <bs> <esc><bs>
+nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
+nnoremap <silent>      '<tab>  <C-^>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
 " nnoremap y@%   :<c-u>let @"=@%<cr>
@@ -571,7 +574,7 @@ nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz('norm [c[n')<CR>
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :Gblame<cr>
-nnoremap <silent> Ud :if &diff<bar>diffupdate<bar>else<bar>Gdiff<bar>endif<cr>
+nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>else<bar>exe 'Gdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>endif<cr>
 nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
 nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ugf            :Gedit <C-R><C-W><cr>
@@ -660,7 +663,7 @@ nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 nnoremap gqaj    :%!python -m json.tool<cr>
 
 " available mappings:
-"   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs>
+"   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs><tab>
 "   insert: c-\ c-g
 "   normal: gy c-f c-t c-b c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> q<special>
 "           c<space>
@@ -979,7 +982,7 @@ augroup halo_plugin
   autocmd WinLeave * call <SID>halo_clear(-1)
 augroup END
 nnoremap <silent> <Esc> :<C-U>call <SID>halo()<CR>
-nnoremap <silent> <C-c> :<C-U>call <SID>halo()<CR><C-c>
+"nnoremap <silent> <C-c> :<C-U>call <SID>halo()<CR><C-c>
 
 " }}} mappings
 
@@ -1107,11 +1110,10 @@ augroup vimrc_autocmd
   endif
 augroup END
 
-nnoremap \b    :set nomore<bar>ls<bar>set more<cr>:buffer<space>
-nmap     <C-b> \b
+nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
-nnoremap \t    :tag<space>
+nnoremap >t    :tag<space>
 nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR><Left>
 nnoremap >v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
@@ -1153,7 +1155,6 @@ nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzLines<CR>' : ':<C-U>FzBuffers
 nmap                    g/    <M-/>
 if !empty(findfile('plugin/tmuxcomplete.vim', &rtp))
   inoremap <expr> <C-l> fzf#complete(tmuxcomplete#list('lines', 0))
-  inoremap <expr> <M-l> fzf#complete(tmuxcomplete#list('lines', 0))
   inoremap <expr> <M-w> fzf#complete(tmuxcomplete#list('words', 0))
   nnoremap <silent> <M-w> :call fzf#run({'source':tmuxcomplete#list('words', 0),
         \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
