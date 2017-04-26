@@ -215,13 +215,13 @@ runtime! plugin/commentary.vim
 " }}}
 endif "}}}
 
-" sensible.vim {{{
 if has("nvim")
   tnoremap <esc> <c-\><c-n>
   augroup nvimrc_aucmd
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
+    autocmd FocusGained * call <SID>halo()
   augroup END
 endif
 
@@ -236,7 +236,6 @@ nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|
       \ . '<CR><C-L>'
 
 inoremap <C-U> <C-G>u<C-U>
-" }}}
 
 function! s:ctrl_u() abort "{{{ rsi ctrl-u, ctrl-w
   if getcmdpos() > 1
@@ -955,27 +954,27 @@ endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
 nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
 
-highlight Halo guifg=white guibg=#F92672 ctermfg=white ctermbg=197
+highlight Halo  guifg=black guibg=white   ctermfg=black ctermbg=white
+highlight Halo2 guifg=white guibg=#F92672 ctermfg=white ctermbg=197
 let g:halo = {}
 function! s:halo_clear(id) abort
   silent! call matchdelete(g:halo['hl_id'])
 endfunction
 function! s:halo() abort
-  call s:halo_show(-1)
-  call timer_start(100, function('s:halo_show'))
-  call timer_start(200, function('s:halo_show'))
+  call s:halo_show('Halo', -1)
+  call timer_start(200, function('s:halo_show', ['Halo2']))
+  call timer_start(500, function('s:halo_clear'))
 endfunction
-function! s:halo_show(id) abort
+function! s:halo_show(hl, id) abort
   call s:halo_clear(-1)
   let lcol = col('.') > 10 ? col('.') - 10 : 1
-  let g:halo['hl_id'] = matchaddpos('Halo',
+  let g:halo['hl_id'] = matchaddpos(a:hl,
         \[[line('.'),   lcol, 20],
         \ [line('.')-1, lcol, 20],
         \ [line('.')-2, lcol, 20],
         \ [line('.')+1, lcol, 20],
         \ [line('.')+2, lcol, 20]]
         \)
-  call timer_start(50, function('s:halo_clear'))
 endfunction
 augroup halo_plugin
   autocmd!
