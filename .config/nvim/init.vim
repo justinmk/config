@@ -494,7 +494,7 @@ nnoremap <M-K> <C-W>s
 nnoremap <M-L> <C-W>v
 nnoremap <M-n> :enew<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
-nnoremap <silent>      '<tab>  <C-^>
+nnoremap <silent>      <s-tab>  <C-^>
 nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
 " nnoremap y@%   :<c-u>let @"=@%<cr>
@@ -668,58 +668,73 @@ nnoremap gqaj    :%!python -m json.tool<cr>
 "           c<space>
 "           !@       --> async run
 
-func! s:buf_compare(b1, b2) abort
-  let b1_visible = -1 == index(tabpagebuflist(), a:b1)
-  let b2_visible = -1 == index(tabpagebuflist(), a:b2)
-  "prefer loaded and NON-visible buffers
+func! s:compare_numbers(n1, n2) abort
+  return a:n1 == a:n2 ? 0 : a:n1 > a:n2 ? 1 : -1
+endfunc
+
+func! s:compare_bufs(b1, b2) abort
+  let b1_visible = index(tabpagebuflist(), a:b1) >= 0
+  let b2_visible = index(tabpagebuflist(), a:b2) >= 0
+  " - sort by buffer number (descending)
+  " - prefer loaded, NON-visible buffers
   if bufloaded(a:b1)
     if bufloaded(a:b2)
-      return b2_visible ? !b1_visible : -1
+      if b1_visible == b2_visible
+        return s:compare_numbers(a:b1, a:b2)
+      endif
+      return s:compare_numbers(b2_visible, b1_visible)
     endif
-    return 0
+    return 1
   endif
-  return !bufloaded(a:b2) ? 0 : 1
+  return !bufloaded(a:b2) ? s:compare_numbers(a:b1, a:b2) : 1
 endf
 
 func! s:buf_find_displayed_bufs() abort " find all buffers displayed in any window, any tab.
-  let l:bufs = []
+  let bufs = []
   for i in range(1, tabpagenr('$'))
-    call extend(l:bufs, tabpagebuflist(i))
+    call extend(bufs, tabpagebuflist(i))
   endfor
-  return l:bufs
+  return bufs
 endf
 
+func! s:buf_is_valid(bnr) abort
+  " Exclude:
+  "   - current
+  "   - unlisted
+  "   - buffers marked as 'readonly' AND 'modified' (netrw brain-damage)
+  " Include: normal buffers; 'help' buffers
+  return buflisted(a:bnr)
+    \  && ("" ==# getbufvar(a:bnr, "&buftype") || "help" ==# getbufvar(a:bnr, "&buftype"))
+    \  && a:bnr != bufnr("%")
+    \  && -1 == index(tabpagebuflist(), a:bnr)
+    \  && !(getbufvar(a:bnr, "&modified") && getbufvar(a:bnr, "&readonly"))
+endfunc
+
 func! s:buf_find_valid_next_bufs() abort
-  "valid 'next' buffers
-  "   EXCLUDE:
-  "     - current
-  "     - unlisted
-  "     - directory buffers marked as 'readonly' and 'modified' (netrw sometimes leaves a _listed_ buffer in this weird state)
-  "   INCLUDE: normal buffers; 'help' buffers
-  let l:valid_buffers = filter(range(1, bufnr('$')), 
-              \ 'buflisted(v:val) 
-              \  && ("" ==# getbufvar(v:val, "&buftype") || "help" ==# getbufvar(v:val, "&buftype")) 
-              \  && v:val != bufnr("%") 
-              \  && -1 == index(tabpagebuflist(), v:val) 
-              \  && !(isdirectory(bufname(v:val)) && getbufvar(v:val, "&modified") && getbufvar(v:val, "&readonly"))
-              \ ')
-  call sort(l:valid_buffers, '<sid>buf_compare')
-  return l:valid_buffers
+  let validbufs = filter(range(1, bufnr('$')), '<SID>buf_is_valid(v:val)')
+  call sort(validbufs, '<SID>compare_bufs')
+  return validbufs
 endf
 
 func! s:buf_switch_to_altbuff() abort
-  " change to the 'alternate' buffer if:
-  "   - it exists, and 
-  "   - it is not the current buffer (yes, this really happens, eg with netrw)
+  " change to alternate buffer if it is not the current buffer (yes, that can happen)
   if -1 != bufnr("#") && bufnr("#") != bufnr("%")
     buffer #
     return 1
-  else " change to first 'valid' buffer
-    let l:valid_buffers = s:buf_find_valid_next_bufs()
-    if len(l:valid_buffers) > 0
-      exe 'buffer '.l:valid_buffers[0]
-      return 1
-    endif
+  endif
+
+  " change to newest valid buffer
+  let lastbnr = bufnr('$')
+  if s:buf_is_valid(lastbnr)
+    exe 'buffer '.lastbnr
+    return 1
+  endif
+
+  " change to any valid buffer
+  let validbufs = s:buf_find_valid_next_bufs()
+  if len(validbufs) > 0
+    exe 'buffer '.validbufs[0]
+    return 1
   endif
 
   return 0
@@ -728,8 +743,8 @@ endf
 " close the current buffer with a vengeance
 " BDSN: Buffer DiScipliNe
 func! s:buf_kill(mercy) abort
-  let l:origbuf = bufnr("%")
-  let l:origbufname = bufname(l:origbuf)
+  let origbuf = bufnr("%")
+  let origbufname = bufname(origbuf)
   if a:mercy && &modified
     echom 'buffer has unsaved changes (use "[count]ZB" to discard changes)'
     return
@@ -743,12 +758,12 @@ func! s:buf_kill(mercy) abort
   endif
 
   " remove the buffer filename (if any) from the args list, else it might come back in the next session.
-  if !empty(l:origbufname)
-    silent! exe 'argdelete '.l:origbufname
+  if !empty(origbufname)
+    silent! exe 'argdelete '.origbufname
   endif
   " obliterate the buffer and all of its related state (marks, local options, ...), 
-  if bufexists(l:origbuf) "some other mechanism may have deleted the buffer already.
-    exe 'bwipeout! '.l:origbuf
+  if bufexists(origbuf) "some other mechanism may have deleted the buffer already.
+    exe 'bwipeout! '.origbuf
   endif
 endf
 
