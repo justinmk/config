@@ -33,7 +33,7 @@ Plug 'machakann/vim-highlightedyank'
 
 if v:version > 703 && !has('win32') && !has('win32unix')
 Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_ctags_exclude = ['.vim-src', 'build']
+let g:gutentags_ctags_exclude = ['.vim-src']
 endif
 
 Plug 'tommcdo/vim-exchange'
@@ -310,7 +310,7 @@ set cursorline
 
 set path+=/usr/lib/gcc/**/include
 " neovim
-set path+=.deps/build/src/*/include,src
+set path+=build/src/nvim/auto/**,.deps/build/src/*/include,src
 
 let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
@@ -555,10 +555,14 @@ nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
 
 if findfile('plugin/fugitive.vim', &rtp) !=# ''
-  " show git branch with ctrl-g info
   func! s:ctrl_g(cnt) abort
+    redraw
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
+    " Show git branch.
     echo fugitive#head(7) msg[2:] (a:cnt?strftime('%Y-%m-%d %H:%M',getftime(expand('%:p'))):'')
+    " Show current context.
+    " https://git.savannah.gnu.org/cgit/diffutils.git/tree/src/diff.c?id=eaa2a24#n464
+    echo getline(search('\v^[[:alpha:]$_]', "bn", 1, 100))
   endf
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
@@ -995,16 +999,8 @@ augroup halo_plugin
   autocmd!
   autocmd WinLeave * call <SID>halo_clear(-1)
 augroup END
-nnoremap <silent> <Esc> :<C-U>call <SID>halo()<CR>
-"nnoremap <silent> <C-c> :<C-U>call <SID>halo()<CR><C-c>
 
 " }}} mappings
-
-augroup vimrc_groovy
-  autocmd!
-  autocmd FileType groovy setlocal commentstring=//%s
-augroup END
-
 
 " A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
 func! s:matchparen_cursorcolumn_setup() abort
@@ -1054,6 +1050,7 @@ augroup vimrc_autocmd
   autocmd!
 
   autocmd FileType text setlocal textwidth=80
+  autocmd BufReadPost *.i setlocal filetype=c
 
   " Closes the current quickfix list and returns to the alternate window.
   func! s:close_qflist()
@@ -1237,7 +1234,6 @@ func! EditSlides() abort
   augroup slides_plugin_edit
     autocmd!
     autocmd BufEnter,WinEnter * set colorcolumn=54,67 textwidth=53
-    autocmd FileType dirvish map <buffer> <down> jpp<c-w>p|map <buffer> <up> kpp<c-w>p
   augroup END
 
   hi ColorColumn guibg=#555555 guifg=#ffffff
