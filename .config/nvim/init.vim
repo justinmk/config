@@ -47,20 +47,11 @@ Plug 'https://github.com/justinmk/vim-sneak.git'
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#absolute_dir = 1
-nmap f <Plug>Sneak_f
-nmap F <Plug>Sneak_F
-xmap f <Plug>Sneak_f
-xmap F <Plug>Sneak_F
-omap f <Plug>Sneak_f
-omap F <Plug>Sneak_F
-nmap t <Plug>Sneak_t
-nmap T <Plug>Sneak_T
-xmap t <Plug>Sneak_t
-xmap T <Plug>Sneak_T
-omap t <Plug>Sneak_t
-omap T <Plug>Sneak_T
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
-let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
 
 " Plug 'https://github.com/justinmk/vim-matchparenalways.git'
 
@@ -412,7 +403,9 @@ endfunc
 " key mappings/bindings =================================================== {{{
 nnoremap g> :set nomore<bar>40messages<bar>set more<CR>
 
-xnoremap / <Esc>/\%V
+xnoremap g/ <Esc>/\%V
+" inverse-search: line NOT containing pattern
+nnoremap g? /\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
 " word-wise i_CTRL-Y
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
@@ -476,6 +469,8 @@ if has('nvim')
   tnoremap <silent><M-k> <C-\><C-n>:call <SID>vim_tmux_nav('k')<cr>
   tnoremap <silent><M-l> <C-\><C-n>:call <SID>vim_tmux_nav('l')<cr>
   tnoremap <silent><C-^> <C-\><C-n><C-^>
+
+  "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 endif
 
 nnoremap Zh     :leftabove vsplit<CR>
@@ -562,7 +557,9 @@ if findfile('plugin/fugitive.vim', &rtp) !=# ''
     echo fugitive#head(7) msg[2:] (a:cnt?strftime('%Y-%m-%d %H:%M',getftime(expand('%:p'))):'')
     " Show current context.
     " https://git.savannah.gnu.org/cgit/diffutils.git/tree/src/diff.c?id=eaa2a24#n464
+    echohl ModeMsg
     echo getline(search('\v^[[:alpha:]$_]', "bn", 1, 100))
+    echohl None
   endf
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
