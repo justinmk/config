@@ -180,20 +180,24 @@ if s:plugins_extra
 
   Plug 'tpope/vim-projectionist'
   " look at derekwyatt/vim-fswitch for more C combos.
-  let g:projectionist_heuristics = {
-        \  '*.sln': {
-        \    '*.cs': {'alternate': ['{}.designer.cs']},
-        \    '*.designer.cs': {'alternate': ['{}.cs']},
-        \  },
-        \  '/*.c|src/*.c': {
-        \    '*.c': {'alternate': ['../include/{}.h', '{}.h']},
-        \    '*.h': {'alternate': '{}.c'},
-        \  },
-        \  'Makefile': {
-        \    '*Makefile': {'alternate': '{dirname}CMakeLists.txt'},
-        \    '*CMakeLists.txt': {'alternate': '{dirname}Makefile'},
-        \  },
-        \}
+if has("nvim")
+lua << EOF
+  vim.api.nvim_set_var('projectionist_heuristics', {
+      ['*.sln'] = {
+        ['*.cs'] = {['alternate'] = {'{}.designer.cs'}},
+        ['*.designer.cs'] = {['alternate'] = {'{}.cs'}},
+      },
+      ['/*.c|src/*.c'] = {
+        ['*.c'] = {['alternate'] = {'../include/{}.h', '{}.h'}},
+        ['*.h'] = {['alternate'] = '{}.c'},
+      },
+      ['Makefile'] = {
+        ['*Makefile'] = {['alternate'] = '{dirname}CMakeLists.txt'},
+        ['*CMakeLists.txt'] = {['alternate'] = '{dirname}Makefile'},
+      },
+    })
+EOF
+endif
 
   " Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
 endif
