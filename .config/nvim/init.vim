@@ -288,7 +288,6 @@ xnoremap <expr> <C-k> <SID>vjump(1)
 onoremap <expr> <C-j> <SID>vjump(0)
 onoremap <expr> <C-k> <SID>vjump(1)
 
-let mapleader = "z,"
 let g:mapleader = "z,"
 
 try | lang en_US | catch | endtry
@@ -342,6 +341,8 @@ endif
 "colorscheme {{{
   if (!empty(&t_Co) && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
     silent! colorscheme ron
+    hi Comment guifg=#7E8E91 ctermfg=244
+    hi SpecialKey ctermfg=239
   else
     let s:color_override_dark = '
           \ if &background == "dark"
@@ -874,19 +875,29 @@ nnoremap <m-]> <c-t>
 " select last inserted text
 nnoremap gV `[v`]
 
-" replay macro for each line of a visual selection
-nnoremap , @q
-xnoremap , :normal @q<CR>
 " repeat last command for each line of a visual selection
 xnoremap . :normal .<CR>
 " XXX: fix this
 " repeat the last edit on the next [count] matches.
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
 nnoremap <M-q> qq
-nnoremap cqq :let @q='<C-R><C-R>q'
 
-nnoremap c<Space> :nnoremap <lt>Space> 
-nnoremap c<Space> :nnoremap <lt>Space> 
+let g:SPACE = ''
+nnoremap <expr> <Space> g:SPACE
+" Replay macro for each line of the visual selection.
+xnoremap <expr> <Space> ':normal '.g:SPACE.'<CR>'
+nnoremap <expr> <Space> (v:register==#'"' ? g:SPACE : ":let g:SPACE='<C-R><C-R>".v:register."'<CR><CR>")
+nnoremap c<Space> :let g:SPACE=@q<CR>
+
+" Edit the contents of a register.
+func! s:edit_reg() abort
+  let c = nr2char(getchar())
+  call feedkeys(":let @".c."='".c."'\<C-F>")
+endfunc
+nnoremap <silent> c" :call <SID>edit_reg()<CR>
+
+" manage args
+" manage list, queue
 
 " disable F1 help key
 noremap! <F1> <nop>
@@ -1083,8 +1094,8 @@ augroup vimrc_autocmd
     nmap <buffer><nowait> <M-u> U<Esc>
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
-  autocmd FileType dirvish call fugitive#detect(@%)
-  autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
+  autocmd FileType dirvish if exists("*fugitive#detect")|call fugitive#detect(@%)|endif
+  autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
@@ -1171,14 +1182,6 @@ endif
 nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('', g:fzf#vim#default_layout)<cr>
 nnoremap <silent> z/    :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
 
-
-" statusline  ░▒▓█ ============================================================
-if s:plugins_extra
-  hi NoScrollBar  guibg=black guifg=darkgrey ctermbg=0 ctermfg=darkgrey gui=NONE cterm=NONE
-  set statusline=%{winnr('$')>2?winnr():''}\ %<%f\ %h%m%*%r\ %=%#NoScrollBar2#%P%*%#NoScrollBar#%{noscrollbar#statusline(20,'\ ','▒',['▐'],['▌'])}%*\ %{strlen(&fenc)?&fenc:&enc}\ %{(&ff==#'unix')?'':(&ff==#'dos')?'CRLF':&ff}\ %y\ %-10.(%l,%c%V%)
-else
-  set statusline=
-endif
 
 " Slides plugin {{{
 func! SlidesStatusline() abort
@@ -1267,16 +1270,16 @@ function! Cxn_py() abort
   call jobsend(b:terminal_job_id, "python3\nimport neovim\n")
   call jobsend(b:terminal_job_id, "n = neovim.attach('socket', path='".g:cxn."')\n")
 endfunction
-function! Cxn() abort
+function! Cxn(args) abort
   silent! unlet g:cxn
   tabnew
   terminal
-  call jobsend(b:terminal_job_id, "NVIM_LISTEN_ADDRESS= ./build/bin/nvim -u NORC\n")
+  call jobsend(b:terminal_job_id, "NVIM_LISTEN_ADDRESS= build/bin/nvim -u NORC ".a:args."\n")
   call jobsend(b:terminal_job_id, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
   call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
   call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
 endfunction
-command! NvimCxn call Cxn()
+command! -nargs=* NvimCxn call Cxn(<q-args>)
 
 function! s:init_lynx() abort
   nnoremap <nowait><buffer> <C-F> i<PageDown><C-\><C-N>
