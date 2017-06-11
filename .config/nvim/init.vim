@@ -180,7 +180,7 @@ if s:plugins_extra
 
   Plug 'tpope/vim-projectionist'
   " look at derekwyatt/vim-fswitch for more C combos.
-if has("nvim")
+if has("nvim") && exists('*luaeval')
 lua << EOF
   vim.api.nvim_set_var('projectionist_heuristics', {
       ['*.sln'] = {
