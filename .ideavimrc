@@ -1,0 +1,15 @@
+" https://github.com/JetBrains/ideavim#executing-ide-actions
+" Find IDE actions by name pattern:
+"     :actionlist [pattern]
+
+set ignorecase
+set smartcase
+set hlsearch
+
+nnoremap z,al :actionlist 
+
+nnoremap gqal :action ReformatCode<CR>
+nnoremap [q :action GotoPreviousError<CR>
+nnoremap ]q :action GotoNextError<CR>
+nnoremap g; :action JumpToLastChange<CR>
+nnoremap g, :action JumpToNextChange<CR>
