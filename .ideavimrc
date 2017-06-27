@@ -13,3 +13,21 @@ nnoremap [q :action GotoPreviousError<CR>
 nnoremap ]q :action GotoNextError<CR>
 nnoremap g; :action JumpToLastChange<CR>
 nnoremap g, :action JumpToNextChange<CR>
+nnoremap + :action ToggleDistractionFreeMode<CR>
+
+" navigation
+" <M-?> find actions...
+" SHIFT-SHIFT find anything
+nnoremap <A-o>    :action FileStructurePopup<CR>
+nnoremap gr       :action ShowUsages<CR>
+
+" build/test
+nnoremap !t       :action ShowRecentTests<CR>
+
+" debugger
+nnoremap <Delete> :action ToggleLineBreakpoint<CR>
+nnoremap <Left> :action Debugger.PopFrame<CR>
+nnoremap <Right> :action StepOver<CR>
+nnoremap <Up> :action StepOut<CR>
+nnoremap <Down> :action StepInto<CR>
+nnoremap <A-Down> :action SmartStepInto<CR>
