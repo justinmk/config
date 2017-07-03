@@ -155,7 +155,11 @@ if s:plugins_extra
   let g:salve_auto_start_repl = 1
   Plug 'tpope/vim-fireplace'
 
-  Plug 'jalvesaq/vimcmdline'
+  " Plug 'jalvesaq/vimcmdline'
+  Plug 'https://gitlab.com/HiPhish/repl.nvim.git'
+    nmap yx       <Plug>(ReplSend)
+    nmap yxx      <Plug>(ReplSendLine)
+    xmap <Enter>  <Plug>(ReplSend)
 
   Plug 'PProvost/vim-ps1'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
@@ -216,6 +220,7 @@ if has("nvim")
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
+    autocmd CursorHold,FocusGained * silent! checktime
     autocmd FocusGained * call <SID>halo()
   augroup END
 endif
@@ -378,7 +383,7 @@ endf
 
 set formatoptions+=rno1l
 " don't syntax-highlight long lines
-set synmaxcol=1000
+set synmaxcol=200
 
 set linebreak
 set nowrap
@@ -1151,6 +1156,7 @@ xnoremap gs   ms:s/\%V
 " autocomplete / omnicomplete / tags
 " =============================================================================
 set completeopt-=preview
+set complete+=kspell
 set wildignore+=tags,*/gwt-unitCache/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
