@@ -4,9 +4,9 @@ nnoremap <buffer> [[    [[3<c-y>
 let b:undo_ftplugin = 'setlocal formatprg='
 
 if '' ==# findfile('.clang-format', ';')
-  setlocal formatprg=clang-format-3.6\ -style=LLVM
+  setlocal formatprg=clang-format\ -style=LLVM
 else
-  setlocal formatprg=clang-format-3.6\ -style=file
+  setlocal formatprg=clang-format\ -style=file
 endif
 
 if fnamemodify(@%, ':p') =~# 'neovim'

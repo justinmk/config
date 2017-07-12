@@ -889,7 +889,7 @@ xnoremap . :normal .<CR>
 " XXX: fix this
 " repeat the last edit on the next [count] matches.
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
-nnoremap <M-q> qq
+nnoremap <M-q> q
 
 let g:SPACE = ''
 nnoremap <expr> <Space> g:SPACE
@@ -1189,8 +1189,8 @@ if !empty(findfile('plugin/tmuxcomplete.vim', &rtp))
         \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
 endif
 
-nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('', g:fzf#vim#default_layout)<cr>
-nnoremap <silent> z/    :call fzf#vim#tags('', g:fzf#vim#default_layout)<cr>
+nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('')<cr>
+nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
 
 
 " Slides plugin {{{
