@@ -550,7 +550,7 @@ nnoremap <expr> [gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
 nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 
 " quickfix window (in quickfix: toggles between qf & loc list)
-nnoremap <silent><expr>   Q '@_:botright '.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>copen':'cclose<bar>lopen').'<CR>'
+nnoremap <silent><expr>   Q '@_:'.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>botright copen':'cclose<bar>botright lopen').'<CR>'
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
@@ -1156,7 +1156,7 @@ xnoremap gs   ms:s/\%V
 " autocomplete / omnicomplete / tags
 " =============================================================================
 set completeopt-=preview
-set complete+=kspell
+set complete+=U,kspell
 set wildignore+=tags,*/gwt-unitCache/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
