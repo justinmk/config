@@ -976,9 +976,9 @@ inoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
 "read the current line into command line
 cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 
-xmap * <esc>/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr><Plug>Pulse
-nmap <silent> *  :<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr>
-nmap <silent> g* :<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr>
+xnoremap * <esc>ms/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr><Plug>Pulse
+nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr>
+nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr>
 
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
 func! s:markline() abort
@@ -1147,10 +1147,10 @@ nnoremap >v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
 nnoremap >b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
 " search current buffer and open results in loclist
-nnoremap >%   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
+nnoremap >.   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
 " search-replace
-nnoremap gsal ms:<c-u>%s/
-xnoremap gs   ms:s/\%V
+nnoremap gsal mr:%s/
+xnoremap gs   mr:s/\%V
 
 " =============================================================================
 " autocomplete / omnicomplete / tags
