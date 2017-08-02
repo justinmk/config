@@ -25,7 +25,6 @@ call plug#begin('~/.local/share/nvim/bundle')
 
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
-nnoremap crp :Printf<CR>
 Plug 'sbdchd/neoformat'
 Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
@@ -603,7 +602,7 @@ nmap UW Uw
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
-nnoremap <expr> dp &diff ? 'dp' : ':pclose<cr>'
+nnoremap <expr> dp &diff ? 'dp' : ':Printf<cr>'
 
 " Executes git cmd in the context of b:git_dir.
 function! s:git_do(cmd) abort
@@ -875,9 +874,6 @@ function! s:restore_change_marks() abort
   call setpos("']", s:change_marks[1])
 endfunction
 nnoremap z. :call <SID>save_change_marks()<Bar>w<Bar>call <SID>restore_change_marks()<cr>
-
-" map m-] to be the inverse of c-]
-nnoremap <m-]> <c-t>
 
 " select last inserted text
 nnoremap gV `[v`]

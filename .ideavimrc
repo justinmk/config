@@ -20,14 +20,18 @@ nnoremap + :action ToggleDistractionFreeMode<CR>
 " SHIFT-SHIFT find anything
 nnoremap <A-o>    :action FileStructurePopup<CR>
 nnoremap gr       :action ShowUsages<CR>
+nnoremap gD       :action GotoImplementation<CR>
 
 " build/test
 nnoremap !t       :action ShowRecentTests<CR>
 
 " debugger
 nnoremap <Delete> :action ToggleLineBreakpoint<CR>
-nnoremap <Left> :action Debugger.PopFrame<CR>
+nnoremap <Left> :action StepOut<CR>
 nnoremap <Right> :action StepOver<CR>
-nnoremap <Up> :action StepOut<CR>
+nnoremap <A-Right> :action Resume<CR>
+nnoremap <F5> :action Resume<CR>
+nnoremap <Up> :action Debugger.FramePanelPopup<CR>
 nnoremap <Down> :action StepInto<CR>
 nnoremap <A-Down> :action SmartStepInto<CR>
+nnoremap <A-d> :action JavaDebuggerActions<CR>
