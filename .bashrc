@@ -257,7 +257,7 @@ ghpr() {
     && git checkout master \
     && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
     && git reset --hard upstream/master \
-    && git merge --no-commit --no-ff -m "Merge #${PR} '${PR_TITLE}'." refs/pull/upstream/${PR}
+    && git merge --no-commit --no-ff -m "Merge #${PR} '${PR_TITLE}'" refs/pull/upstream/${PR}
 }
 
 ghrebase1() {
