@@ -438,8 +438,8 @@ func! s:maybe_zz(cmd) abort
     call feedkeys("\<Plug>Pulse", 'm')
   endif
 endf
-nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.'Nn'[v:searchforward])<CR>
-nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.'nN'[v:searchforward])<CR>
+nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward])<CR>
+nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforward])<CR>
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
@@ -1271,7 +1271,7 @@ command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".e
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
-command! ConvertBlockComment .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
+command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
 
 function! Cxn_py() abort
   vsplit
