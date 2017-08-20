@@ -219,7 +219,8 @@ if has("nvim")
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
     autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
-    autocmd CursorHold,FocusGained * silent! checktime
+    " :checktime is SLOW
+    " autocmd CursorHold,FocusGained * silent! checktime
     autocmd FocusGained * call <SID>halo()
   augroup END
 endif
