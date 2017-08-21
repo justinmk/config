@@ -1,1 +1,0 @@
-setlocal tabstop=4

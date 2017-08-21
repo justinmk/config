@@ -276,7 +276,10 @@ if has('nvim-0.2')
   set cpoptions-=_
 endif
 set updatetime=2000
-set expandtab shiftwidth=0 softtabstop=2 tabstop=2
+
+" Don't mess with 'tabstop', with 'expandtab' it isn't used.
+" Instead set softtabstop=-1, then 'shiftwidth' is used.
+set expandtab shiftwidth=2 softtabstop=-1
 
 " vim-vertical-move replacement
 " credit: cherryberryterry: https://www.reddit.com/r/vim/comments/4j4duz/a/d33s213
@@ -1125,7 +1128,7 @@ augroup vimrc_autocmd
   "       \ |noau bwipe
   "       \ |call rpcrequest(g:r, "nvim_command", "tabedit ".g:f)|qa|endif
 
-  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal tabstop=4 copyindent
+  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal shiftwidth=2 copyindent
 
   if exists('##TextYankPost')
     autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])

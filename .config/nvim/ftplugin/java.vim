@@ -1,4 +1,4 @@
-  autocmd FileType java setlocal tabstop=4 copyindent nolist
+  autocmd FileType java setlocal tabstop=4 shiftwidth=4 copyindent nolist
   if isdirectory(expand("~/.vim/eclim", 1))
     autocmd FileType java nnoremap <buffer> gd :<c-u>JavaSearchContext<cr>
           \| nnoremap <buffer> <silent> gI :<c-u>JavaSearch -x implementors -s workspace<cr>
