@@ -218,7 +218,7 @@ if has("nvim")
   augroup nvimrc_aucmd
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
-    autocmd CursorHold,FocusGained,FocusLost * rshada|wshada
+    " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
     " :checktime is SLOW
     " autocmd CursorHold,FocusGained * silent! checktime
     autocmd FocusGained * call <SID>halo()
@@ -306,8 +306,6 @@ set undofile
 set list
 set fileformats=unix,dos
 
-set cursorline
-
 set path+=/usr/lib/gcc/**/include
 " neovim
 set path+=build/src/nvim/auto/**,.deps/build/src/*/include,src
@@ -368,15 +366,6 @@ endif
       silent! colorscheme molokai
     endif
   endif
-
-func! s:set_CursorLine() abort
-  hi clear CursorLine
-  if &diff
-    hi CursorLine gui=underline cterm=underline
-  else
-    hi CursorLine guibg=#293739 ctermbg=236
-  endif
-endf
 "}}}
 
 "==============================================================================
@@ -1061,6 +1050,14 @@ augroup vimrc_savecommitmsg
   autocmd BufWritePost COMMIT_EDITMSG let g:LAST_COMMIT_MSG = @c
 augroup END
 
+augroup vimrc_cursorline
+  autocmd!
+  autocmd CursorHold * setlocal cursorline
+        \|autocmd  vimrc_cursorline CursorMoved * setlocal nocursorline
+        \|autocmd! vimrc_cursorline CursorMoved
+  autocmd InsertEnter * if &cursorline|setlocal nocursorline|endif
+augroup END
+
 augroup vimrc_autocmd
   autocmd!
 
@@ -1112,15 +1109,11 @@ augroup vimrc_autocmd
     autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   endif
 
-  if exists("*mkdir") "auto-create directories for new files
-    au BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
-  endif
+  au BufWritePre,FileWritePre * call mkdir(expand('<afile>:p:h'), 'p')
 
   "when Vim starts in diff-mode (vim -d, git mergetool):
   "  - do/dp should not auto-fold
-  "  - tweak CursorLine to be less broken
-  autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | call <sid>set_CursorLine() | endif
-  autocmd BufWinEnter,WinEnter * call <sid>set_CursorLine()
+  autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | endif
 
   " autocmd VimEnter * if !empty($NVIM_LISTEN_ADDRESS) && $NVIM_LISTEN_ADDRESS !=# v:servername
   "       \ |let g:r=jobstart(['nc', '-U', $NVIM_LISTEN_ADDRESS],{'rpc':v:true})
@@ -1159,7 +1152,7 @@ set complete+=U,kspell
 set wildignore+=tags,*/gwt-unitCache/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
-      \,.o,.obj,.dll,.class,.pyc,.so,.swp,.zip,.exe,.jar,.gz
+      \,.o,.obj,.dll,.class,.pyc,.ipynb,.so,.swp,.zip,.exe,.jar,.gz
 " Better `gf`
 set suffixesadd=.java,.cs
 
