@@ -138,12 +138,6 @@ Plug 'kana/vim-niceblock'
 
 Plug 'tpope/vim-commentary'
 
-Plug 'mhinz/vim-signify'
-let g:signify_vcs_list = [ 'git' ]
-let g:signify_realtime = 1
-let g:signify_cursorhold_normal = 0
-let g:signify_cursorhold_insert = 0
-
 if s:plugins_extra
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
@@ -568,8 +562,8 @@ endif
 nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
       \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
 
-nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz('norm ]c]n')<CR>
-nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz('norm [c[n')<CR>
+nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz(&diff ? 'norm ]c]n' : 'norm ]n')<CR>
+nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n')<CR>
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
@@ -581,7 +575,7 @@ nnoremap <silent> Ugf            :Gedit <C-R><C-W><cr>
 nnoremap <silent> Ul :GV! -100<cr>
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :Gstatus<cr>
-nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<bar>SignifyRefresh<cr>
+nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
 
 nmap UB Ub
 nmap UD Ud
