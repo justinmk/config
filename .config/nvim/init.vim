@@ -71,7 +71,7 @@ Plug 'shumphrey/fugitive-gitlab.vim'
 let g:fugitive_gitlab_domains = ['http://cwsrc2']
 
 Plug 'tpope/vim-surround'
-let g:surround_indent = 1
+let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
@@ -208,6 +208,7 @@ runtime! plugin/commentary.vim
 endif "}}}
 
 if has("nvim")
+  set inccommand=split
   tnoremap <esc> <c-\><c-n>
   augroup nvimrc_aucmd
     autocmd!
@@ -315,7 +316,6 @@ set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
 set splitright
-set inccommand=split
 if has('patch-7.4.314') | set shortmess+=c | endif
 
 nnoremap <silent> coz :<c-u>if &foldenable\|set nofoldenable\|
