@@ -148,8 +148,7 @@ if s:plugins_extra
   let g:salve_auto_start_repl = 1
   Plug 'tpope/vim-fireplace'
 
-  " Plug 'jalvesaq/vimcmdline'
-  Plug 'https://gitlab.com/HiPhish/repl.nvim.git'
+  Plug 'justinmk/nvim-repl'
     nmap yx       <Plug>(ReplSend)
     nmap yxx      <Plug>(ReplSendLine)
     xmap <Enter>  <Plug>(ReplSend)
@@ -476,11 +475,6 @@ nmap     ZJ     Zj
 nmap     ZK     Zk
 nmap     ZL     Zl
 
-nnoremap <C-w>gt :tab sp<CR>
-nnoremap <M-H> :aboveleft vsplit<CR>
-nnoremap <M-J> :belowright split<CR>
-nnoremap <M-K> <C-W>s
-nnoremap <M-L> <C-W>v
 nnoremap <M-n> :enew<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
 nnoremap <silent>      <s-tab>  <C-^>
@@ -527,8 +521,8 @@ endf
 nnoremap <silent> <M-t>    :tab split<cr>
 nnoremap <silent> ZT       :tabclose<cr>
 " move tab to Nth position
-nnoremap <expr> ]gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
-nnoremap <expr> [gt ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
+nnoremap <expr> <M-L> ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
+nnoremap <expr> <M-H> ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
 
 " manage buffers
 nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
@@ -872,11 +866,10 @@ xnoremap . :normal .<CR>
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
 nnoremap <M-q> q
 
-let g:SPACE = ''
-nnoremap <expr> <Space> g:SPACE
+let g:SPACE = '@q'
 " Replay macro for each line of the visual selection.
-xnoremap <expr> <Space> ':normal '.g:SPACE.'<CR>'
-nnoremap <expr> <Space> (v:register==#'"' ? g:SPACE : ":let g:SPACE='<C-R><C-R>".v:register."'<CR><CR>")
+xnoremap <Space> :exe 'normal '.g:SPACE<CR>
+nnoremap <expr> <Space> (v:register==#'"')?(':call feedkeys(g:SPACE)<CR>'):(":let g:SPACE='<C-R><C-R>".v:register."'<Left>")
 nnoremap c<Space> :let g:SPACE=@q<CR>
 
 " Edit the contents of a register.
@@ -1248,6 +1241,8 @@ set titleold=?
 nnoremap <leader>vft  :e ~/.config/nvim/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <silent> <leader>vs :Scriptnames<cr>
+xnoremap <leader>{ <esc>'<A {`>o}==`<
+
 command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
 command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
@@ -1314,8 +1309,6 @@ endfunction
 command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
-
-xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 silent! source ~/.vimrc.local
 
