@@ -345,16 +345,19 @@ endif
     hi Comment guifg=#7E8E91 ctermfg=244
     hi SpecialKey ctermfg=239
   else
-    let s:color_override_dark = '
+    let s:color_override = '
           \ if &background == "dark"
-          \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15     cterm=NONE
+          \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15 cterm=NONE
           \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
           \ | hi Visual        gui=NONE cterm=NONE guifg=black   guibg=white   ctermfg=0   ctermbg=255
+          \ | else
+          \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15 cterm=NONE
+          \ | hi Visual        gui=NONE cterm=NONE guifg=white guibg=magenta ctermfg=255 ctermbg=magenta
           \ | endif
           \'
 
     if has('vim_starting') "only on startup
-      exe 'autocmd ColorScheme * '.s:color_override_dark
+      exe 'autocmd ColorScheme * '.s:color_override
       " expects &runtimepath/colors/{name}.vim.
       silent! colorscheme molokai
     endif
@@ -1173,63 +1176,33 @@ nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
 
 
 " Slides plugin {{{
-func! SlidesStatusline() abort
-  let st = get(b:, 'slides',
-        \ {'topline':0,'nr_tot':0,'nr_cur':0,'title':''})
-  if winsaveview().topline == st.topline
-    return (st.nr_cur) . '/' . (st.nr_tot)
+func! s:slides_hl() abort
+  if hlID('SlidesHide') == 0
+    " use folds instead of highlight
+  else
+    exe 'match SlidesHide /\%>'.(line('w0')-1).'l\n=\{20}=*\n\_.\{-}\zs\n.*\n=\{20}=\_.*/'
   endif
-  let st.topline = winsaveview().topline
-  let st.nr_tot  = len(filter(getline(1, '$'), "v:val =~# '^=============='"))
-  let st.nr_cur  = len(filter(getline(1, '.'), "v:val =~# '^=============='"))
-  let b:slides   = st
-  return (st.nr_cur).'/'.(st.nr_tot)
-endf
-func! StartSlides() abort
-  silent! autocmd! slides_plugin_edit
-  silent! autocmd! BufReadPost
+endfunc
+func! Slides() abort
+  set cmdheight=1
 
-  let g:oldstatusline = get(g:, 'oldstatusline', &statusline)
-  let g:oldguifont = get(g:, 'oldguifont', &guifont)
-  set statusline=%{SlidesStatusline()}
-  set guifont=Consolas:h32 cmdheight=1 nocursorline background=light
-
+  try
+    hi SlidesHide ctermbg=bg ctermfg=bg guibg=bg guifg=bg
+  catch /E420/
+  endtry
   hi markdownError ctermbg=NONE ctermfg=NONE guifg=NONE guibg=NONE
-  hi Normal ctermbg=white ctermfg=black guifg=black guibg=white
-  hi StatusLine guibg=#000000 guifg=#ffffff
+  au! vimrc_cursorline
 
-  augroup slides_plugin_show
-    autocmd!
-    autocmd BufEnter,WinEnter <buffer> setlocal nocursorline
-          \ nocursorcolumn colorcolumn=
-    autocmd BufEnter,WinEnter * silent! call sy#stop(bufnr('%'))
-  augroup END
-
-  nnoremap <Down> /^======<CR>:nohls<CR>zt<C-Y>
-  nnoremap <Up>   ?^======<CR>:nohls<CR>zt<C-Y>
-  sign unplace *
-
-  "faster ]f [f
-  set noshelltemp
-endf
-func! EditSlides() abort
-  silent! autocmd! slides_plugin_show
-
-  silent! let &statusline = g:oldstatusline
-  silent! let &guifont = g:oldguifont
-  hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
-  sign define limit  text== texthl=SlidesSign
-
-  augroup slides_plugin_edit
-    autocmd!
-    autocmd BufEnter,WinEnter * set colorcolumn=54,67 textwidth=53
-  augroup END
-
+  nnoremap <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  setlocal colorcolumn=54,67 textwidth=53
   hi ColorColumn guibg=#555555 guifg=#ffffff
-  set cmdheight=2
-
-  "faster ]f [f
-  set noshelltemp
+  " hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
+  " sign define limit  text== texthl=SlidesSign
+  " sign unplace
+endf
+func! SlidesEnd() abort
+  call clearmatches()
 endf
 " }}}
 
