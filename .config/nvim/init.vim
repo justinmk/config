@@ -1185,6 +1185,8 @@ func! s:slides_hl() abort
 endfunc
 func! Slides() abort
   set cmdheight=1
+  set nowrapscan
+  set nohlsearch
 
   try
     hi SlidesHide ctermbg=bg ctermfg=bg guibg=bg guifg=bg
@@ -1193,8 +1195,8 @@ func! Slides() abort
   hi markdownError ctermbg=NONE ctermfg=NONE guifg=NONE guibg=NONE
   au! vimrc_cursorline
 
-  nnoremap <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
-  nnoremap <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <silent> <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <silent> <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
   setlocal colorcolumn=54,67 textwidth=53
   hi ColorColumn guibg=#555555 guifg=#ffffff
   " hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
