@@ -28,7 +28,7 @@ Plug 'mptre/vim-printf'
 Plug 'sbdchd/neoformat'
 Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
-Plug 'machakann/vim-highlightedyank'
+Plug 'justinmk/vim-highlightedyank'
 
 if v:version > 703 && !has('win32') && !has('win32unix')
 Plug 'ludovicchabant/vim-gutentags'
@@ -531,7 +531,7 @@ nnoremap <expr> <M-H> ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
 nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 
 " quickfix window (in quickfix: toggles between qf & loc list)
-nnoremap <silent><expr>   Q '@_:'.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>botright copen':'cclose<bar>botright lopen').'<CR>'
+nnoremap <silent><expr> <M-q> '@_:'.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>botright copen':'cclose<bar>botright lopen').'<CR>'
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
@@ -1240,7 +1240,8 @@ function! Cxn(args) abort
   silent! unlet g:cxn
   tabnew
   terminal
-  call jobsend(b:terminal_job_id, "NVIM_LISTEN_ADDRESS= build/bin/nvim -u NORC ".a:args."\n")
+  let nvim_path = executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
+  call jobsend(b:terminal_job_id, "NVIM_LISTEN_ADDRESS= ".nvim_path." -u NORC ".a:args."\n")
   call jobsend(b:terminal_job_id, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
   call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
   call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
