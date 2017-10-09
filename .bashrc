@@ -246,12 +246,13 @@ ghpr() {
   local PR=${1}
   local REPO_SLUG="$(git config --get remote.upstream.url \
     | sed 's/^.*github.com[\/:]\(.*\)\.git/\1/')"
-  local PR_TITLE="$(curl -Ss "https://api.github.com/repos/${REPO_SLUG}/pulls/${PR}" \
+  local req_url="https://api.github.com/repos/${REPO_SLUG}/pulls/${PR}"
+  local PR_TITLE="$(curl -Ss "$req_url" \
     | grep '"title"' \
     | $sed_cmd 's/.*(\[(RFC|RDY)\]) *(.*)../\3/')"
   #                                         ^ Trailing ", in JSON response.
 
-  [ -z "$PR_TITLE" ] && { echo error; return 1; }
+  [ -z "$PR_TITLE" ] && { printf "error. request: $req_url\n       response: $(curl -Ss $req_url)\n"; return 1; }
 
   git fetch --all --prune \
     && git checkout master \
