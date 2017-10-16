@@ -36,7 +36,6 @@ let g:gutentags_ctags_exclude = ['.vim-src']
 endif
 
 Plug 'tommcdo/vim-exchange'
-Plug 'kopischke/vim-fetch'
 
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
 Plug 'https://github.com/justinmk/vim-dirvish.git'
@@ -156,17 +155,9 @@ if s:plugins_extra
   Plug 'PProvost/vim-ps1'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
 
-  Plug 'inside/vim-search-pulse'
-  let g:vim_search_pulse_mode = 'pattern'
-  let g:vim_search_pulse_disable_auto_mappings = 1
-  let g:vim_search_pulse_color_list = ["red", "white"]
-  let g:vim_search_pulse_duration = 200
-
-  Plug 'ryanss/vim-hackernews', { 'on': ['HackerNews'] }
   Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard'] }
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim', { 'on': ['Gist'] }
-  Plug 'gcavallanti/vim-noscrollbar'
 
   Plug 'tommcdo/vim-lion'
 
@@ -423,7 +414,7 @@ func! s:maybe_zz(cmd) abort
   endtry
   if topline != line('w0')
     normal! zz
-    call feedkeys("\<Plug>Pulse", 'm')
+    call s:halo()
   endif
 endf
 nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward])<CR>
@@ -953,7 +944,7 @@ inoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
 "read the current line into command line
 cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
 
-xnoremap * <esc>ms/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr><Plug>Pulse
+xnoremap * <esc>ms/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr>
 nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr>
 nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr>
 
