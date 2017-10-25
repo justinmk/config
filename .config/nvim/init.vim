@@ -293,7 +293,7 @@ set fileformats=unix,dos
 
 set path+=/usr/lib/gcc/**/include
 " neovim
-set path+=build/src/nvim/auto/**,.deps/build/src/*/include,src
+set path+=build/src/nvim/auto/**,.deps/build/src/*/include,src,src/nvim
 
 let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
@@ -469,7 +469,7 @@ nmap     ZJ     Zj
 nmap     ZK     Zk
 nmap     ZL     Zl
 
-nnoremap <M-n> :enew<CR>
+nnoremap <M-n> :call <SID>buf_new()<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
 nnoremap <silent>      <s-tab>  <C-^>
 nnoremap <m-i> <c-i>
@@ -693,6 +693,31 @@ func! s:buf_is_valid(bnr) abort
     \  && !(getbufvar(a:bnr, "&modified") && getbufvar(a:bnr, "&readonly"))
 endfunc
 
+" Gets the first empty, unchanged buffer not in the current tabpage.
+func! s:buf_find_unused() abort
+  for i in range(1, bufnr('$'))
+    if bufexists(i)
+          \&& -1 == index(tabpagebuflist(), i)
+          \&& nvim_buf_get_changedtick(i) <= 2
+          \&& buflisted(i)
+          \&& bufname(i) ==# ''
+          \&& getbufvar(i, '&buftype') ==# ''
+      return i
+    endif
+  endfor
+  return 0
+endf
+
+" Switches to a new (empty, unchanged) buffer or creates a new one.
+func! s:buf_new() abort
+  let newbuf = s:buf_find_unused()
+  if newbuf == 0
+    enew
+  else
+    exe 'buffer' newbuf
+  endif
+endf
+
 func! s:buf_find_valid_next_bufs() abort
   let validbufs = filter(range(1, bufnr('$')), '<SID>buf_is_valid(v:val)')
   call sort(validbufs, '<SID>compare_bufs')
@@ -858,7 +883,7 @@ xnoremap . :normal .<CR>
 " XXX: fix this
 " repeat the last edit on the next [count] matches.
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
-nnoremap <M-q> q
+nnoremap <C-q> q
 
 let g:SPACE = '@q'
 " Replay macro for each line of the visual selection.
@@ -1110,6 +1135,8 @@ augroup vimrc_autocmd
   endif
 augroup END
 
+set wildcharm=<C-Z>
+nnoremap <BS>  :set nomore<bar>ls<bar>set more<cr>:buffer term://<C-Z><CR><CR>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
@@ -1162,7 +1189,7 @@ if !empty(findfile('plugin/tmuxcomplete.vim', &rtp))
         \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
 endif
 
-nnoremap <silent> <m-o> :call fzf#vim#buffer_tags('')<cr>
+nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
 nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
 
 
