@@ -57,8 +57,8 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
 fi
 
 # Set PATH so it includes user bin if it exists.
-[ -d "${HOME}/bin" ] && PATH=${HOME}/bin:${PATH}
-[ -d "${HOME}/bin/ctags/bin" ] && PATH=${HOME}/bin/ctags/bin:${PATH}
+[ -d "${HOME}/bin" ] && PATH="${HOME}/bin:${PATH}"
+[ -d "${HOME}/bin/ctags/bin" ] && PATH="${HOME}/bin/ctags/bin:${PATH}"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

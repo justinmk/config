@@ -1,6 +1,7 @@
 set history save on
 set trace-commands on
 set logging on
+# homebrew caveat
 set startup-with-shell off
 
 define r0
