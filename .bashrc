@@ -151,13 +151,10 @@ fi
 if [[ "$(uname)" == Darwin ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
 
-    #BSD-style aliases 
+    #BSD-style aliases
     alias ls='ls -GC'
 
     if ! [ 0 -eq `defaults read -g KeyRepeat` ] ; then
-      #MacVim: ensure Core Text renderer (improves performance)
-      defaults write org.vim.MacVim MMRenderer 2
-
       # Display ASCII control characters using caret notation in standard text views
       # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
       defaults write -g NSTextShowsControlCharacters -bool true
@@ -174,51 +171,6 @@ if [[ "$(uname)" == Darwin ]]; then
       defaults write -g KeyRepeat -int 0
       defaults write -g InitialKeyRepeat -int 15
     fi
-
-    function __setterminalcsikeys() {
-      # From https://github.com/boochtek/mac_config/blob/d7a873089fba2291e09841da19be54df9b60c98c/key_codes.sh#L67
-      #     Apple documentation:
-      #         https://developer.apple.com/library/mac/documentation/cocoa/conceptual/eventoverview/TextDefaultsBindings/TextDefaultsBindings.html.
-      #     Better documentation:
-      #         http://heisencoder.net/2008/04/fixing-up-mac-key-bindings-for-windows.html
-      #     Also see:
-      #         http://xahlee.info/kbd/osx_keybinding_key_syntax.html
-      #         /Applications/Utilities/Terminal.app/Contents/Resources/English.lproj/modifierDescriptions.strings
-      #     NOTE: mappings in Terminal.app don't support command (and probably not numpad).
-      #     NOTE: the order below is the order that must be used within a shortcut definition.
-      #     MODIFIERS=(
-      #       'command=@'
-      #       'apple=@'
-      #       'option=~'
-      #       'alt=~'
-      #       'control=^'
-      #       'shift=$'
-      #       'numpad=#'
-      #       'num=#'
-      #       'keypad=#'
-      #       )
-
-      profile=Basic
-      # clear existing values
-      defaults+ delete com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys'
-
-      # tab
-      #defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.0009' '?'
-      # ctrl-tab (ASCII 9 0x9)
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^0009'  $(echo -e "\033[9;5u")
-      # shift-tab
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.$0009'  $(echo -e "\033[Z")
-      # ctrl-shift-tab
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^$0009'  $(echo -e "\033[1;5Z")
-      # ctrl-i (ASCII 105 0x69)
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^0069'  $(echo -e "\033[105;5u")
-      # ctrl-s-I (ASCII 73 0x49)
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^$0049' $(echo -e "\033[73;5u")
-      # ctrl-a (ASCII 97 0x61) back-compat: don't bind ctrl-{lowercase} chords (except ctrl-i).
-      # defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^0061'  $(echo -e "\033[97;5u")
-      # ctrl-s-A (ASCII 65 0x41)
-      defaults+ write com.apple.Terminal 'Window Settings.Basic.keyMapBoundKeys.^$0041' $(echo -e "\033[65;5u")
-    }
 fi
 
 # fzf (https://github.com/junegunn/fzf)
