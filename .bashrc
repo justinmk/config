@@ -236,5 +236,9 @@ upload-video() {
     --title="$(date +%Y-%m-%d-%H:%M)" --privacyStatus="unlisted"
 }
 
+p() {
+  ps -e -o pidns,pid,command
+}
+
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
 
