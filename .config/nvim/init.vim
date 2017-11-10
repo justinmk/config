@@ -1135,8 +1135,46 @@ augroup vimrc_autocmd
   endif
 augroup END
 
+" :shell
+func! s:ctrl_s() abort
+  let g:term_shell = get(g:, 'term_shell', { 'termbuf': -1,  'prevwid': win_getid() })
+  let d = g:term_shell
+  let b = d.termbuf
+
+  if bufexists(b)
+    if bufnr('%') == b
+      let new_prevwid = win_getid()
+      if !win_gotoid(d.prevwid)
+        wincmd p
+      endif
+      let d.prevwid = new_prevwid
+      return
+    else
+      let d.prevwid = win_getid()
+      let w = bufwinid(b)
+      if w > 0  " buffer exists in current tabpage
+        call win_gotoid(w)
+      else  " not in current tabpage; go to first found
+        let ws = win_findbuf(b)
+        if !empty(ws)
+          call win_gotoid(ws[0])
+        else
+          tabnew
+          exe 'buffer' b
+        endif
+      endif
+    endif
+  else  " create the terminal
+    tabnew
+    terminal
+    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s()<CR>
+    let d.termbuf = bufnr('%')
+  endif
+  startinsert  " enter terminal-mode
+endfunc
+nnoremap <C-s> :call <SID>ctrl_s()<CR>
+
 set wildcharm=<C-Z>
-nnoremap <BS>  :set nomore<bar>ls<bar>set more<cr>:buffer term://<C-Z><CR><CR>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
