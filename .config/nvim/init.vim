@@ -1141,35 +1141,40 @@ func! s:ctrl_s() abort
   let d = g:term_shell
   let b = d.termbuf
 
-  if bufexists(b)
-    if bufnr('%') == b
-      let new_prevwid = win_getid()
-      if !win_gotoid(d.prevwid)
-        wincmd p
-      endif
+  " Return to previous window.
+  if bufnr('%') == b
+    let new_prevwid = win_getid()
+    if !win_gotoid(d.prevwid)
+      wincmd p
       let d.prevwid = new_prevwid
-      return
-    else
-      let d.prevwid = win_getid()
-      let w = bufwinid(b)
-      if w > 0  " buffer exists in current tabpage
-        call win_gotoid(w)
-      else  " not in current tabpage; go to first found
-        let ws = win_findbuf(b)
-        if !empty(ws)
-          call win_gotoid(ws[0])
-        else
-          tabnew
-          exe 'buffer' b
-        endif
+    endif
+    return
+  endif
+
+  " Go to existing :shell or create new.
+  if bufexists(b)
+    let d.prevwid = win_getid()
+    let w = bufwinid(b)
+    if w > 0  " buffer exists in current tabpage
+      call win_gotoid(w)
+    else  " not in current tabpage; go to first found
+      let ws = win_findbuf(b)
+      if !empty(ws)
+        call win_gotoid(ws[0])
+      else
+        tabnew
+        exe 'buffer' b
       endif
     endif
-  else  " create the terminal
+  else
+    let d.prevwid = win_getid()
     tabnew
     terminal
+    file :shell
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s()<CR>
     let d.termbuf = bufnr('%')
   endif
+
   startinsert  " enter terminal-mode
 endfunc
 nnoremap <C-s> :call <SID>ctrl_s()<CR>
