@@ -887,9 +887,9 @@ nnoremap <C-q> q
 
 let g:SPACE = '@q'
 " Replay macro for each line of the visual selection.
-xnoremap <Space> :exe 'normal '.g:SPACE<CR>
+xnoremap <Space> :call feedkeys(g:SPACE)<CR>
 nnoremap <expr> <Space> (v:register==#'"')?(':call feedkeys(g:SPACE)<CR>'):(":let g:SPACE='<C-R><C-R>".v:register."'<Left>")
-nnoremap c<Space> :let g:SPACE=@q<CR>
+nnoremap c<Space> :let g:SPACE='<C-R>=g:SPACE<CR>'
 
 " Edit the contents of a register.
 func! s:edit_reg() abort
