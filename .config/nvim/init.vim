@@ -138,6 +138,8 @@ Plug 'kana/vim-niceblock'
 Plug 'tpope/vim-commentary'
 
 if s:plugins_extra
+  Plug 'roxma/nvim-completion-manager'
+
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
   let g:clojure_fold = 1
@@ -633,11 +635,6 @@ nmap Up :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
 nnoremap co<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
-
-" execute/evaluate
-nnoremap yxal             :keeppatterns           g/^/exe getline('.')<CR>
-nnoremap <silent> yxx     :keeppatterns          .g/^/exe getline('.')<CR>
-xnoremap <silent> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 
 " filter
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
@@ -1143,17 +1140,33 @@ func! s:ctrl_s() abort
 
   " Return to previous window.
   if bufnr('%') == b
-    let new_prevwid = win_getid()
+    let term_prevwid = win_getid()
+    if winnr('$') == 1
+      tabclose
+    endif
     if !win_gotoid(d.prevwid)
       wincmd p
-      let d.prevwid = new_prevwid
     endif
+    if bufnr('%') == b
+      " Edge-case: :shell buffer showing in multiple windows in curtab.
+      " Find a non-:shell window in curtab.
+      let bufs = filter(tabpagebuflist(), 'v:val != '.b)
+      if len(bufs) > 0
+        exe bufwinnr(bufs[0]).'wincmd w'
+      else
+        " Last resort: WTF, just go to previous tab.
+        tabprevious
+      endif
+    endif
+    let d.prevwid = term_prevwid
     return
   endif
 
   " Go to existing :shell or create new.
-  if bufexists(b)
-    let d.prevwid = win_getid()
+  let curwinid = win_getid()
+  if bufexists(b) && winbufnr(d.prevwid) == b
+    call win_gotoid(d.prevwid)
+  elseif bufexists(b)
     let w = bufwinid(b)
     if w > 0  " buffer exists in current tabpage
       call win_gotoid(w)
@@ -1167,14 +1180,13 @@ func! s:ctrl_s() abort
       endif
     endif
   else
-    let d.prevwid = win_getid()
     tabnew
     terminal
     file :shell
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s()<CR>
     let d.termbuf = bufnr('%')
   endif
-
+  let d.prevwid = curwinid
   startinsert  " enter terminal-mode
 endfunc
 nnoremap <C-s> :call <SID>ctrl_s()<CR>
