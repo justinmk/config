@@ -88,11 +88,11 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 fi
 
-PS1='\[\033[1;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]'
+PS1='\[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]'
 
 # set git prompt iff function exists.
 if type -t __git_ps1 &> /dev/null ; then
-    PS1=$PS1'\[\033[1;33m$(__git_ps1)\033[0m\]'
+    PS1=$PS1'\[\033[0;33m$(__git_ps1)\033[0m\]'
     GIT_PS1_STATESEPARATOR=""
     GIT_PS1_SHOWUPSTREAM="verbose"
     GIT_PS1_SHOWCOLORHINTS=1
