@@ -561,8 +561,9 @@ nnoremap <silent> Ub             :Gblame<cr>
 nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>else<bar>exe 'Gdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>endif<cr>
 nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
 nnoremap          Uf             :Gcommit --fixup=
-nnoremap <silent> Ugf            :Gedit <C-R><C-W><cr>
-nnoremap <silent> Ul :GV! -100<cr>
+nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
+nnoremap <silent> Ul :GV!<cr>
+nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :Gstatus<cr>
 nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
@@ -571,7 +572,9 @@ nmap UB Ub
 nmap UD Ud
 nmap UE Ue
 nmap UF Uf
+nmap UG Ug
 nmap UL Ul
+nmap UM Um
 nmap UR Ur
 nmap US Us
 nmap UW Uw
@@ -1101,7 +1104,6 @@ augroup vimrc_autocmd
     nmap <buffer><nowait> <M-u> U<Esc>
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
-  autocmd FileType dirvish if exists("*fugitive#detect")|call fugitive#detect(@%)|endif
   autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
