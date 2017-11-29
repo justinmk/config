@@ -1,1 +1,1 @@
-let b:printf_pattern = "logger.info('%s'.format(%s))"
+let b:printf_pattern = "logging.info('%s'.format(%s))"

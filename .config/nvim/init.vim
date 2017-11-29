@@ -558,7 +558,8 @@ nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n'
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :Gblame<cr>
-nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>else<bar>exe 'Gdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>endif<cr>
+nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>else<bar>exe 'Gvdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>endif<cr>
+                    "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
 nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
 nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
@@ -1143,9 +1144,9 @@ func! s:ctrl_s() abort
   " Return to previous window.
   if bufnr('%') == b
     let term_prevwid = win_getid()
-    if winnr('$') == 1
-      tabclose
-    endif
+    " if winnr('$') == 1
+    "   tabclose
+    " endif
     if !win_gotoid(d.prevwid)
       wincmd p
     endif
@@ -1189,7 +1190,6 @@ func! s:ctrl_s() abort
     let d.termbuf = bufnr('%')
   endif
   let d.prevwid = curwinid
-  startinsert  " enter terminal-mode
 endfunc
 nnoremap <C-s> :call <SID>ctrl_s()<CR>
 
