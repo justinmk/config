@@ -1057,14 +1057,6 @@ augroup vimrc_savecommitmsg
   autocmd BufWritePost COMMIT_EDITMSG let g:LAST_COMMIT_MSG = @c
 augroup END
 
-augroup vimrc_cursorline
-  autocmd!
-  autocmd CursorHold * setlocal cursorline
-        \|autocmd  vimrc_cursorline CursorMoved * setlocal nocursorline
-        \|autocmd! vimrc_cursorline CursorMoved
-  autocmd InsertEnter * if &cursorline|setlocal nocursorline|endif
-augroup END
-
 augroup vimrc_autocmd
   autocmd!
 
@@ -1268,7 +1260,6 @@ func! Slides() abort
   catch /E420/
   endtry
   hi markdownError ctermbg=NONE ctermfg=NONE guifg=NONE guibg=NONE
-  au! vimrc_cursorline
 
   nnoremap <silent> <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
   nnoremap <silent> <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
