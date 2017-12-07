@@ -28,7 +28,9 @@ Plug 'mptre/vim-printf'
 Plug 'sbdchd/neoformat'
 Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
-Plug 'justinmk/vim-highlightedyank'
+if has('nvim')
+  Plug 'justinmk/vim-highlightedyank'
+endif
 
 if v:version > 703 && !has('win32') && !has('win32unix')
 Plug 'ludovicchabant/vim-gutentags'
@@ -153,6 +155,7 @@ if s:plugins_extra
     nmap yx       <Plug>(ReplSend)
     nmap yxx      <Plug>(ReplSendLine)
     xmap <Enter>  <Plug>(ReplSend)
+    nnoremap <c-q> :Repl<CR>
 
   Plug 'PProvost/vim-ps1'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
@@ -884,7 +887,7 @@ xnoremap . :normal .<CR>
 " XXX: fix this
 " repeat the last edit on the next [count] matches.
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
-nnoremap <C-q> q
+nnoremap <C-v>q q
 
 let g:SPACE = '@q'
 " Replay macro for each line of the visual selection.
@@ -1180,6 +1183,7 @@ func! s:ctrl_s() abort
     file :shell
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s()<CR>
     let d.termbuf = bufnr('%')
+    startinsert  " enter terminal-mode
   endif
   let d.prevwid = curwinid
 endfunc
