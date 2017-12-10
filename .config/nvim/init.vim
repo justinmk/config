@@ -124,7 +124,7 @@ inoremap {; {<CR>};<Esc>O
 inoremap {, {<CR>},<Esc>O
 inoremap [<CR> [<CR>]<Esc>O
 inoremap ([[ ([[<CR>]])<Esc>O
-inoremap ([=[ ([=[<CR>]])<Esc>O
+inoremap ([=[ ([=[<CR>]=])<Esc>O
 inoremap [; [<CR>];<Esc>O
 inoremap [, [<CR>],<Esc>O
 
@@ -1204,7 +1204,7 @@ nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap >t    :tag<space>
-nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.po' ':/!Notebooks'
+nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.po' ':/!Notebooks' ':/!*.md' ':/!*.mpack'
       \<Home><C-Right><C-Right><C-Right><left>
 nnoremap >v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
@@ -1219,7 +1219,7 @@ xnoremap gs   mr:s/\%V
 " autocomplete / omnicomplete / tags
 " =============================================================================
 set completeopt-=preview
-set complete+=U,kspell
+set complete+=kspell
 set wildignore+=tags,*/gwt-unitCache/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
