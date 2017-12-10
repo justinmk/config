@@ -1131,17 +1131,16 @@ augroup vimrc_autocmd
 augroup END
 
 " :shell
-func! s:ctrl_s() abort
-  let g:term_shell = get(g:, 'term_shell', { 'termbuf': -1,  'prevwid': win_getid() })
+" Creates a global default :shell with maximum 'scrollback'.
+func! s:ctrl_s(new) abort
+  let init = { 'termbuf': -1,  'prevwid': win_getid() }
+  let g:term_shell = a:new ? init : get(g:, 'term_shell', init)
   let d = g:term_shell
   let b = d.termbuf
 
   " Return to previous window.
   if bufnr('%') == b
     let term_prevwid = win_getid()
-    " if winnr('$') == 1
-    "   tabclose
-    " endif
     if !win_gotoid(d.prevwid)
       wincmd p
     endif
@@ -1173,21 +1172,32 @@ func! s:ctrl_s() abort
       if !empty(ws)
         call win_gotoid(ws[0])
       else
-        tabnew
+        tab split
         exe 'buffer' b
+        " augroup nvim_shell
+        "   autocmd!
+        "   autocmd TabLeave <buffer> if winnr('$') == 1 && bufnr('%') == g:term_shell.termbuf | tabclose | endif
+        " augroup END
       endif
     endif
   else
-    tabnew
+    tab split
     terminal
-    file :shell
-    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s()<CR>
+    " augroup nvim_shell
+    "   autocmd!
+    "   autocmd TabLeave <buffer> if winnr('$') == 1 && bufnr('%') == g:term_shell.termbuf | tabclose | endif
+    " augroup END
+    exe 'file :shell '.jobpid(b:terminal_job_id)
+    " XXX: original term:// buffer hangs around after :file ...
+    bwipeout! #
+    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(v:false)<CR>
     let d.termbuf = bufnr('%')
     startinsert  " enter terminal-mode
   endif
   let d.prevwid = curwinid
 endfunc
-nnoremap <C-s> :call <SID>ctrl_s()<CR>
+nnoremap <C-s> :call <SID>ctrl_s(v:false)<CR>
+nnoremap 1<C-s> :call <SID>ctrl_s(v:true)<CR>
 
 set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>

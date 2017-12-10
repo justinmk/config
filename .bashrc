@@ -239,7 +239,7 @@ upload-video() {
 }
 
 p() {
-  ps -e -o pidns,pid,command
+  ps -e -o pidns,pid,rss,vsz,command
 }
 
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
