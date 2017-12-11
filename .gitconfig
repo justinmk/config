@@ -79,28 +79,6 @@
   #NOTE: whitespace is highlighted only on new lines, not removed/old.
   #Use "git diff -R" to reverse the diff to see removed whitespace.
   whitespace = bold red white
-[guitool "delete"]
-  cmd = rm $FILENAME
-  needsfile = yes
-  noconsole = yes
-[guitool "bash"]
-  # try 'start' (Windows), else we are on some sort of unix
-  cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start bash --login &> /dev/null || open -a Terminal &> /dev/null 
-  needsfile = yes
-  noconsole = yes
-[guitool "filemanager"]
-  # try 'start' (Windows), else we are on some sort of unix
-  cmd = cd `echo $FILENAME | sed s/[^/]*$//g` && start . &> /dev/null || open . &> /dev/null || xdg-open .
-  needsfile = yes
-  noconsole = yes
-[guitool "edit"]
-  cmd = source $HOME/.bashrc && $EDITOR $FILENAME
-  noconsole = yes
-[tig "color"]
-  date = cyan default bold
-  # commit dot in the revision graph
-  graph-commit = cyan default bold
-  diff-stat = white default bold
 [github]
   user = justinmk
 
