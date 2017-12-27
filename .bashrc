@@ -56,9 +56,15 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
   trap "kill $SSH_AGENT_PID" 0
 fi
 
-# Set PATH so it includes user bin if it exists.
+# Include ~/bin in $PATH.
 [ -d "${HOME}/bin" ] && PATH="${HOME}/bin:${PATH}"
 [ -d "${HOME}/bin/ctags/bin" ] && PATH="${HOME}/bin/ctags/bin:${PATH}"
+
+# Include dasht in $PATH.
+[ -d "${HOME}/dasht/bin" ] && PATH="${PATH}:${HOME}/dasht/bin"
+
+# Include dasht in $MANPATH.
+[ -d "${HOME}/dasht/man" ] && MANPATH="${HOME}/dasht/man:$MANPATH"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
