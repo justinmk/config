@@ -1067,7 +1067,7 @@ augroup vimrc_savecommitmsg
     let [_reg_c,_cmark1,_cmark2] = [@c,getpos("'["),getpos("']")]
 
     let @c=''
-    silent! keepmarks keepjumps keeppatterns g/\v(^$)|^([^#].*$)/y C
+    silent! keepmarks keepjumps keeppatterns 1;/^#/g/\v(^$)|^([^#].*$)/y C
     keepmarks keepjumps let g:removed_whitespace =
            \ substitute(@c, '\_[[:space:]]*', '', 'g')
     let @c = len(g:removed_whitespace) < 10
