@@ -156,6 +156,12 @@ if s:plugins_extra
           \ 'whitelist': ['python'],
           \ })
   endif
+  augroup vimrc_K
+    autocmd!
+    autocmd FileType * if len(filter(lsp#get_whitelisted_servers(), 'lsp#capabilities#has_hover_provider(v:val)')) > 0
+          \|setlocal keywordprg=:LspHover|endif
+
+  augroup END
 
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
@@ -220,7 +226,7 @@ endif "}}}
 if has("nvim")
   set inccommand=split
   tnoremap <esc> <c-\><c-n>
-  augroup nvimrc_aucmd
+  augroup vimrc_nvim
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
     " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
