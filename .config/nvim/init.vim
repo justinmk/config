@@ -144,7 +144,16 @@ Plug 'kana/vim-niceblock'
 Plug 'tpope/vim-commentary'
 
 if s:plugins_extra
-  Plug 'roxma/nvim-completion-manager'
+  Plug 'prabirshrestha/async.vim'
+  Plug 'prabirshrestha/vim-lsp'
+  if executable('pyls')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+          \ 'name': 'pyls',
+          \ 'cmd': {server_info->['pyls']},
+          \ 'whitelist': ['python'],
+          \ })
+  endif
 
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
@@ -398,6 +407,8 @@ func! s:delete_until() abort
 endfunc
 
 " key mappings/bindings =================================================== {{{
+inoremap <C-space> <C-x><C-o>
+
 nnoremap g> :set nomore<bar>40messages<bar>set more<CR>
 
 xnoremap g/ <Esc>/\%V
@@ -992,6 +1003,8 @@ endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
 nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
 
+" }}} mappings
+
 highlight Halo  guifg=black guibg=white   ctermfg=black ctermbg=white
 highlight Halo2 guifg=white guibg=#F92672 ctermfg=white ctermbg=197
 let g:halo = {}
@@ -1018,8 +1031,6 @@ augroup halo_plugin
   autocmd!
   autocmd WinLeave * call <SID>halo_clear(-1)
 augroup END
-
-" }}} mappings
 
 " A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
 func! s:matchparen_cursorcolumn_setup() abort
@@ -1108,12 +1119,6 @@ augroup vimrc_autocmd
   autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-
-  " syntaxcomplete provides basic completion for filetypes that lack a custom one.
-  "   :h ft-syntax-omni
-  if has("autocmd") && exists("+omnifunc")
-    autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-  endif
 
   au BufWritePre,FileWritePre * call mkdir(expand('<afile>:p:h'), 'p')
 
