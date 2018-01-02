@@ -26,6 +26,8 @@ call plug#begin('~/.local/share/nvim/bundle')
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
 
+" git clone https://github.com/sunaku/dasht
+" dasht-docsets-install python
 Plug 'sunaku/vim-dasht'
 nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>
 
