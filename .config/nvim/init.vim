@@ -311,6 +311,7 @@ set cmdheight=2
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
 
+set foldopen-=search
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
@@ -1196,7 +1197,7 @@ func! s:ctrl_s(new) abort
     bwipeout! #
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(v:false)<CR>
     let d.termbuf = bufnr('%')
-    startinsert  " enter terminal-mode
+    " startinsert  " enter terminal-mode
   endif
   let d.prevwid = curwinid
 endfunc
