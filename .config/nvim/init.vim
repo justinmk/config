@@ -156,12 +156,6 @@ if s:plugins_extra
           \ 'whitelist': ['python'],
           \ })
   endif
-  augroup vimrc_K
-    autocmd!
-    autocmd FileType * if len(filter(lsp#get_whitelisted_servers(), 'lsp#capabilities#has_hover_provider(v:val)')) > 0
-          \|setlocal keywordprg=:LspHover|endif
-
-  augroup END
 
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
