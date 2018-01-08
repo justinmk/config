@@ -579,7 +579,7 @@ nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n'
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :Gblame<cr>
-nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>else<bar>exe 'Gvdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>endif<cr>
+nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>else<bar>exe 'Gvdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>endif<cr><C-l>
                     "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
 nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
 nnoremap          Uf             :Gcommit --fixup=
@@ -1113,8 +1113,8 @@ augroup vimrc_autocmd
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   function! s:setup_gitstatus() abort
     nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
-    nmap <buffer> <M-n> <c-n>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
-    nmap <buffer> <M-p> <c-p>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<cr>
+    nmap <buffer> <M-n> <c-n>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<bar>redraw!<cr>
+    nmap <buffer> <M-p> <c-p>dvgg<c-n>:call feedkeys("\<lt>c-w>P")<bar>redraw!<cr>
     nmap <buffer><nowait> <M-u> U<Esc>
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
