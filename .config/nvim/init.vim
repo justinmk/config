@@ -23,6 +23,13 @@ let g:plug_window = 'enew'
 
 call plug#begin('~/.local/share/nvim/bundle')
 
+if v:false  " Bring the circus to town!
+  " Plug 'terryma/vim-multiple-cursors'
+  Plug 'vim-airline/vim-airline'
+  " Plug 'lfv89/vim-interestingwords'
+  Plug 'majutsushi/tagbar'
+endif
+
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
 
@@ -32,7 +39,6 @@ Plug 'sunaku/vim-dasht'
 nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>
 
 Plug 'sbdchd/neoformat'
-Plug 'majutsushi/tagbar'
 Plug 'https://gitlab.com/HiPhish/info.vim.git'
 if has('nvim')
   Plug 'justinmk/vim-highlightedyank'
