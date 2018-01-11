@@ -378,6 +378,9 @@ endif
       exe 'autocmd ColorScheme * '.s:color_override
       " expects &runtimepath/colors/{name}.vim.
       silent! colorscheme molokai
+      " Clear `Normal` highlight, so terminal emulators won't treat negative
+      " space as extra whitespace (makes mouse-copy nicer).
+      hi Normal ctermfg=NONE ctermbg=NONE
     endif
   endif
 "}}}
