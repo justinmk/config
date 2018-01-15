@@ -19,7 +19,6 @@ if !s:plugins "{{{
       \ .' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   endfun
 else
-let g:plug_window = 'enew'
 
 call plug#begin('~/.local/share/nvim/bundle')
 
@@ -39,7 +38,6 @@ Plug 'sunaku/vim-dasht'
 nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>
 
 Plug 'sbdchd/neoformat'
-Plug 'https://gitlab.com/HiPhish/info.vim.git'
 if has('nvim')
   Plug 'justinmk/vim-highlightedyank'
 endif
@@ -65,8 +63,6 @@ map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
 
-" Plug 'https://github.com/justinmk/vim-matchparenalways.git'
-
 if executable("tmux")
 Plug 'tpope/vim-tbone'
 Plug 'wellle/tmux-complete.vim'
@@ -80,8 +76,6 @@ Plug 'zhaocai/DirDiff.vim', { 'on': ['DirDiff'] }
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'tpope/vim-rhubarb'
-Plug 'shumphrey/fugitive-gitlab.vim'
-let g:fugitive_gitlab_domains = ['http://cwsrc2']
 
 Plug 'tpope/vim-surround'
 let g:surround_indent = 0
@@ -276,7 +270,7 @@ cnoremap        <C-Y> <C-R>-
 "}}}
 
 
-command! LoadSession if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
+command! Session if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
       \ | else | Obsession ~/.vim/session.vim | endif
 set sessionoptions-=blank
 
@@ -285,6 +279,7 @@ set sessionoptions-=blank
 "==============================================================================
 if has('nvim-0.2')
   set cpoptions-=_
+  set guicursor+=n:blinkon175
 endif
 set updatetime=2000
 
