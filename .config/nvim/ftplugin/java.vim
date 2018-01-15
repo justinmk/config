@@ -8,3 +8,4 @@
           \| nnoremap <buffer> <bs>  :<c-u>JavaCorrect<cr>
   endif
 
+let b:printf_pattern = 'System.out.println(String.format("%s", %s));'
