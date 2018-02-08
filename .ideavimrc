@@ -18,7 +18,7 @@ nnoremap + :action ToggleDistractionFreeMode<CR>
 " navigation
 " <M-?> find actions...
 " SHIFT-SHIFT find anything
-nnoremap <A-o>    :action FileStructurePopup<CR>
+nnoremap gO       :action FileStructurePopup<CR>
 nnoremap gr       :action ShowUsages<CR>
 nnoremap gD       :action GotoImplementation<CR>
 
@@ -26,6 +26,7 @@ nnoremap gD       :action GotoImplementation<CR>
 nnoremap !t       :action ShowRecentTests<CR>
 
 " debugger
+nnoremap <C-q> :action EvaluateExpression<CR>
 nnoremap <Delete> :action ToggleLineBreakpoint<CR>
 nnoremap <Left> :action StepOut<CR>
 nnoremap <Right> :action StepOver<CR>

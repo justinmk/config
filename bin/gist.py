@@ -8,7 +8,7 @@ for line in stdin:
 
 gist_api_request_payload = {
   "description": "",
-  "public": True,
+  "public": False,
   "files": {
     "file.txt": {
       "content": inputstr
