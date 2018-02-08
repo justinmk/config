@@ -1325,6 +1325,8 @@ command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vim
 command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
+command! Vimsrc tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|edit src/eval.c
+command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|Gedit <args>
 
 function! Cxn_py() abort
   vsplit
