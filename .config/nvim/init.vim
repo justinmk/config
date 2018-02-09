@@ -1148,7 +1148,7 @@ augroup END
 
 " :shell
 " Creates a global default :shell with maximum 'scrollback'.
-func! s:ctrl_s(new) abort
+func! s:ctrl_s(cnt, new, enter) abort
   let init = { 'termbuf': -1,  'prevwid': win_getid() }
   let g:term_shell = a:new ? init : get(g:, 'term_shell', init)
   let d = g:term_shell
@@ -1177,18 +1177,18 @@ func! s:ctrl_s(new) abort
 
   " Go to existing :shell or create new.
   let curwinid = win_getid()
-  if bufexists(b) && winbufnr(d.prevwid) == b
+  if a:cnt == 0 && bufexists(b) && winbufnr(d.prevwid) == b
     call win_gotoid(d.prevwid)
   elseif bufexists(b)
     let w = bufwinid(b)
-    if w > 0  " buffer exists in current tabpage
+    if a:cnt == 0 && w > 0  " buffer exists in current tabpage
       call win_gotoid(w)
     else  " not in current tabpage; go to first found
       let ws = win_findbuf(b)
-      if !empty(ws)
+      if a:cnt == 0 && !empty(ws)
         call win_gotoid(ws[0])
       else
-        tab split
+        exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
         exe 'buffer' b
         " augroup nvim_shell
         "   autocmd!
@@ -1197,7 +1197,8 @@ func! s:ctrl_s(new) abort
       endif
     endif
   else
-    tab split
+    let origbuf = bufnr('%')
+    exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
     terminal
     " augroup nvim_shell
     "   autocmd!
@@ -1206,14 +1207,18 @@ func! s:ctrl_s(new) abort
     exe 'file :shell '.jobpid(b:terminal_job_id)
     " XXX: original term:// buffer hangs around after :file ...
     bwipeout! #
-    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(v:false)<CR>
+    " Set alternate buffer to something intuitive.
+    let @# = origbuf
+    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:true)<CR>
     let d.termbuf = bufnr('%')
-    " startinsert  " enter terminal-mode
+  endif
+  if a:enter
+    startinsert  " enter terminal-mode
   endif
   let d.prevwid = curwinid
 endfunc
-nnoremap <C-s> :call <SID>ctrl_s(v:false)<CR>
-nnoremap 1<C-s> :call <SID>ctrl_s(v:true)<CR>
+nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
+nnoremap g<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
 
 set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
