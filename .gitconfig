@@ -95,3 +95,8 @@
 #  #you can re-define existing aliases.
 #  em = !/c/opt/vim/vim `git df`
 
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
