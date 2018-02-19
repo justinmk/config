@@ -1078,6 +1078,9 @@ augroup END
 augroup vimrc_autocmd
   autocmd!
 
+  autocmd TabLeave * let g:lasttab=tabpagenr()
+  nnoremap <silent><expr> <c-tab> g:lasttab.'gt'
+
   autocmd FileType text setlocal textwidth=80
   autocmd BufReadPost *.i setlocal filetype=c
 
