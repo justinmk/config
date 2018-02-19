@@ -911,25 +911,10 @@ xnoremap . :normal .<CR>
 nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
 nnoremap <C-v>q q
 
-let g:SPACE = '@q'
-" Replay macro for each line of the visual selection.
-xnoremap <Space> :call feedkeys(g:SPACE)<CR>
-nnoremap <expr> <Space> (v:register==#'"')?(':call feedkeys(g:SPACE)<CR>'):(":let g:SPACE='<C-R><C-R>".v:register."'<Left>")
-nnoremap c<Space> :let g:SPACE='<C-R>=g:SPACE<CR>'
-
-" Edit the contents of a register.
-func! s:edit_reg() abort
-  let c = nr2char(getchar())
-  call feedkeys(":let @".c."='".c."'\<C-F>")
-endfunc
-nnoremap <silent> c" :call <SID>edit_reg()<CR>
-
-" manage args
-" manage list, queue
-
-" disable F1 help key
-noremap! <F1> <nop>
-noremap <F1> <nop>
+" Replay @q or set it from v:register.
+nnoremap <expr> <Space> (v:register==#'"')?'@q':(":let @q = '<C-R><C-R>".v:register."'<C-F>010l")
+" Replay @q for each line of the visual selection.
+xnoremap <Space> @q
 
 nnoremap <expr> <c-w><c-q>  (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> <c-w>q      (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
