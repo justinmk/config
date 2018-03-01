@@ -135,6 +135,7 @@ inoremap [; [<CR>];<Esc>O
 inoremap [, [<CR>],<Esc>O
 
 Plug 'tpope/vim-obsession'
+let g:obsession_no_bufenter = 1  " https://github.com/tpope/vim-obsession/issues/40
 
 let g:markdown_syntax_conceal = 0
 
