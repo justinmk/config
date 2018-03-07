@@ -52,8 +52,12 @@ endif
 Plug 'tommcdo/vim-exchange'
 
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
-Plug 'https://github.com/justinmk/vim-dirvish.git'
 Plug 'https://github.com/justinmk/vim-gtfo.git'
+Plug 'https://github.com/justinmk/vim-dirvish.git'
+" Disable netrw, but autoload it for `gx`.
+let g:loaded_netrwPlugin = 0
+nmap <unique> gx <Plug>NetrwBrowseX
+nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<CR>
 
 Plug 'https://github.com/justinmk/vim-sneak.git'
 let g:sneak#label = 1
