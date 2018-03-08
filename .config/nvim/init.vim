@@ -192,6 +192,8 @@ if s:plugins_extra
   Plug 'junegunn/fzf.vim'
   let g:fzf_command_prefix = 'Fz'
 
+  Plug 'tpope/vim-db'
+
   Plug 'tpope/vim-projectionist'
   " look at derekwyatt/vim-fswitch for more C combos.
 if has("nvim") && exists('*luaeval')
