@@ -245,7 +245,11 @@ upload-video() {
 }
 
 p() {
-  ps -e -o pidns,pid,rss,vsz,command
+  if [ "$(uname)" = Darwin ] ; then
+    ps -e -o pid,rss,vsz,command
+  else
+    ps -e -o pidns,pid,rss,vsz,command
+  fi
 }
 
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
