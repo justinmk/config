@@ -56,7 +56,7 @@ Plug 'https://github.com/justinmk/vim-gtfo.git'
 Plug 'https://github.com/justinmk/vim-dirvish.git'
 " Disable netrw, but autoload it for `gx`.
 let g:loaded_netrwPlugin = 0
-nmap <unique> gx <Plug>NetrwBrowseX
+nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<CR>
 
 Plug 'https://github.com/justinmk/vim-sneak.git'
@@ -1135,7 +1135,7 @@ augroup vimrc_autocmd
 
   if exists('##TextYankPost')
     autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])
-      \|call add(g:yankring, deepcopy(v:event))|if len(g:yankring)>50|call remove(g:yankring, 0, 1)|endif
+      \|call add(g:yankring, join(v:event.regcontents[:999], "\n"))|if len(g:yankring)>10|call remove(g:yankring, 0, 1)|endif
   endif
 augroup END
 
