@@ -221,6 +221,11 @@ ghpr() {
     && git merge --no-commit --no-ff -m "Merge #${PR} '${PR_TITLE}'" refs/pull/upstream/${PR}
 }
 
+ghco() {
+  git fetch --all --prune \
+    && git checkout refs/pull/upstream/${1}
+}
+
 ghrebase1() {
   local PR=${1}
   local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
