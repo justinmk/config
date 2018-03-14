@@ -192,7 +192,7 @@ if s:plugins_extra
   Plug 'junegunn/fzf.vim'
   let g:fzf_command_prefix = 'Fz'
 
-  Plug 'tpope/vim-db'
+  Plug 'tpope/vim-dadbod'
 
   Plug 'tpope/vim-projectionist'
   " look at derekwyatt/vim-fswitch for more C combos.
@@ -422,6 +422,7 @@ func! s:delete_until() abort
 endfunc
 
 " key mappings/bindings =================================================== {{{
+nnoremap z= :set spell<CR>z=
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
 
