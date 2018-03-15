@@ -29,8 +29,6 @@ if v:false  " Bring the circus to town!
   Plug 'majutsushi/tagbar'
 endif
 
-Plug 'andymass/vim-matchup'
-
 Plug 'justinmk/molokai'
 Plug 'mptre/vim-printf'
 
@@ -422,7 +420,7 @@ func! s:delete_until() abort
 endfunc
 
 " key mappings/bindings =================================================== {{{
-nnoremap z= :set spell<CR>z=
+nnoremap z= :setlocal spell<CR>z=
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
 
