@@ -68,7 +68,6 @@ map T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
 
 if executable("tmux")
-Plug 'tpope/vim-tbone'
 Plug 'wellle/tmux-complete.vim'
 endif
 
@@ -86,41 +85,11 @@ let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
-nnoremap !m :<c-u>Make<cr>
-" ways to run external commands in vim: https://gist.github.com/sjl/b9e3d9f821e57c9f96b3
-nnoremap !t :<c-u>Trun TEST_FILE=<c-r>% make functionaltest<cr>
-nnoremap !T :<c-u>Make unittest<cr>
-
-nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
-xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
-nnoremap <silent> yrr V:<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
-func! s:tmux_run_operator(type, ...) abort
-  let sel_save = &selection
-  let &selection = "inclusive"
-  let isvisual = a:0
-
-  let lines = isvisual ? getline("'<", "'>") : getline("'[", "']")
-  if a:type !=# 'line' && a:type !=# 'V'
-    let startcol  = isvisual ? col("'<") : col("'[")
-    let endcol    = isvisual ? col("'>")-2 : col("']")
-    let lines[0]  = lines[0][startcol-1 : ]
-    let lines[-1] = lines[-1][ : endcol-1]
-  endif
-
-  call s:tmux_run(join(lines))
-
-  let &selection = sel_save
-endf
-"Sends `cmd` to the bottom-right pane and optionally runs it.
-func! s:tmux_run(creatnew, run, cmd) abort
-  "Create a new pane if demanded or if we are _in_ the target pane.
-  if a:creatnew || tbone#pane_id(".") == tbone#pane_id("bottom-right")
-    Tmux split-window -d -p 33
-  endif
-  call tbone#send_keys("bottom-right",
-        \"\<c-e>\<c-u>".a:cmd.(a:run ? "\<cr>" : ""))
-endf
-command! -nargs=? -bang Trun call s:tmux_run(<bang>0, 1, <q-args>)
+nnoremap d<CR> :Dispatch<CR>
+nnoremap !t :FocusDispatch TEST_FILE=<c-r>% make functionaltest<cr>
+nnoremap !T :FocusDispatch make unittest<cr>
+" nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
+" xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch'
@@ -1001,7 +970,7 @@ func! s:markline() abort
   let b:vimrc_markedlines[line('.')] = matchaddpos("MarkLine", [line('.')])
 endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
-nnoremap <silent> m<space> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
+nnoremap <silent> m<bs> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
 
 " }}} mappings
 
@@ -1324,7 +1293,6 @@ command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expa
 command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/neovim/.deps/usr/share/lua/**,".expand("~")."/neovim/.deps/usr/share/lua/**")<bar>lcd %
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
-command! NvimGDB      call s:tmux_run(1, 1, 'sudo gdb -q -tui $(which '.v:progpath.') '.getpid())
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
 command! Vimsrc tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|edit src/eval.c
