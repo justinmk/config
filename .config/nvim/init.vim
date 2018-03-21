@@ -193,9 +193,26 @@ runtime! plugin/commentary.vim
 " }}}
 endif "}}}
 
+" Searches process tree for a process name. Limited breadth/depth.
+fun! s:find_proc_in_tree(rootpid, name, accum) abort
+  if a:accum > 9 || !exists('*nvim_get_proc')
+    return v:false
+  endif
+  let p = nvim_get_proc(a:rootpid)
+  if !empty(p) && p.name ==# a:name
+    return v:true
+  endif
+  for c in nvim_get_proc_children(a:rootpid)[:9]
+    if s:find_proc_in_tree(c, a:name, 1 + a:accum)
+      return v:true
+    endif
+  endfor
+  return v:false
+endfun
+
 if has("nvim")
   set inccommand=split
-  tnoremap <esc> <c-\><c-n>
+  tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, 'nvim', 0) ? '<esc>' : '<c-\><c-n>'
   augroup vimrc_nvim
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
