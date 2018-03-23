@@ -1183,8 +1183,8 @@ func! s:ctrl_s(cnt, new, enter) abort
   endif
   let d.prevwid = curwinid
 endfunc
-nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
-nnoremap g<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
+nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
+nnoremap g<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
 
 set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
