@@ -87,21 +87,7 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 fi
 
-#try to find git-prompt.sh if __git_ps1 was not automatically provided.
-if ! type -t __git_ps1 > /dev/null 2>&1 ; then
-    #cygwin (non-msysgit): try to find git-prompt.sh
-    gitprompt_home="`which git`/../../etc/git-prompt.sh" 
-    [ -f "$gitprompt_home" ] && source "$gitprompt_home"
-fi
-
-
-# set git prompt iff function exists.
-if type -t __git_ps1 &> /dev/null ; then
-    PS1=$PS1'\[\033[0;33m$(__git_ps1)\033[0m\]'
-    GIT_PS1_STATESEPARATOR=""
-    GIT_PS1_SHOWUPSTREAM="verbose"
-    GIT_PS1_SHOWCOLORHINTS=1
-fi
+PS1='$(date +%m%d.%H%M) \[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]'
 
 PS1=$PS1'
 $ '
