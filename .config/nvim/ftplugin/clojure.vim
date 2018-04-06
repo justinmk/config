@@ -1,5 +1,5 @@
 nnoremap <buffer> yxx     :.,.Eval<cr>
-nnoremap <buffer> yx.     :%Eval<cr>
+nnoremap <buffer> yxal    :%Eval<cr>
 nnoremap <buffer> yxiw    :Eval <c-r><c-w><cr>
 xnoremap <buffer> <enter> :Eval<cr>
 " eval-last-sexp
@@ -30,12 +30,12 @@ omap <silent><buffer> (       <Plug>(sexp_move_to_prev_bracket)
 nmap <silent><buffer> )       <Plug>(sexp_move_to_next_bracket)
 xmap <silent><buffer> )       <Plug>(sexp_move_to_next_bracket)
 omap <silent><buffer> )       <Plug>(sexp_move_to_next_bracket)
-nmap <silent><buffer> <M-k>   <Plug>(sexp_move_to_prev_element_head)
-xmap <silent><buffer> <M-k>   <Plug>(sexp_move_to_prev_element_head)
-omap <silent><buffer> <M-k>   <Plug>(sexp_move_to_prev_element_head)
-nmap <silent><buffer> <M-j>   <Plug>(sexp_move_to_next_element_head)
-xmap <silent><buffer> <M-j>   <Plug>(sexp_move_to_next_element_head)
-omap <silent><buffer> <M-j>   <Plug>(sexp_move_to_next_element_head)
+nmap <silent><buffer> <C-k>   <Plug>(sexp_move_to_prev_element_head)
+xmap <silent><buffer> <C-k>   <Plug>(sexp_move_to_prev_element_head)
+omap <silent><buffer> <C-k>   <Plug>(sexp_move_to_prev_element_head)
+nmap <silent><buffer> <C-j>   <Plug>(sexp_move_to_next_element_head)
+xmap <silent><buffer> <C-j>   <Plug>(sexp_move_to_next_element_head)
+omap <silent><buffer> <C-j>   <Plug>(sexp_move_to_next_element_head)
 nmap <silent><buffer> [[      <Plug>(sexp_move_to_prev_top_element)
 xmap <silent><buffer> [[      <Plug>(sexp_move_to_prev_top_element)
 omap <silent><buffer> [[      <Plug>(sexp_move_to_prev_top_element)

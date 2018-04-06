@@ -100,7 +100,6 @@ set complete-=i " Don't scan includes (tags file is more performant).
 set smarttab    " Use 'shiftwidth' when using <Tab> in front of a line.
 
 set incsearch
-set mouse=a     " Enable mouse usage (all modes)
 set hlsearch    " highlight search matches
 
 set autoread

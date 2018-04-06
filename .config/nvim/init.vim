@@ -86,8 +86,8 @@ let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
 nnoremap d<CR> :Dispatch<CR>
-nnoremap !t :FocusDispatch TEST_FILE=<c-r>% make functionaltest<cr>
-nnoremap !T :FocusDispatch make unittest<cr>
+nnoremap !t :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% make functionaltest<cr>
+nnoremap !T :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_TAG=x make functionaltest<cr>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
@@ -278,7 +278,6 @@ if has('nvim-0.2')
   set cpoptions-=_
   set guicursor+=n:blinkon175
 endif
-set updatetime=2000
 
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
 " Instead set softtabstop=-1, then 'shiftwidth' is used.
