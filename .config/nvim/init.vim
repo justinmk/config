@@ -94,7 +94,11 @@ nnoremap !T :FocusDispatch make unittest<cr>
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-rsi'
+
 Plug 'tpope/vim-unimpaired'
+let g:nremap = {"=": "c"}
+let g:xremap = {"=": "c"}
+let g:oremap = {"=": "c"}
 
 Plug 'tpope/vim-endwise'
 inoremap (<CR> (<CR>)<Esc>O
