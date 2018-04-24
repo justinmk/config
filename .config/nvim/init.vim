@@ -85,7 +85,6 @@ let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
-nnoremap d<CR> :Dispatch<CR>
 nnoremap !t :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% make functionaltest<cr>
 nnoremap !T :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_TAG=x make functionaltest<cr>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
@@ -349,24 +348,77 @@ if &startofline
 endif
 
 "colorscheme {{{
-  if (!empty(&t_Co) && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
-    silent! colorscheme ron
+  if 1 || (!empty(&t_Co) && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
+    hi Cursor guifg=#000000 guibg=#F8F8F0 ctermfg=16 ctermbg=253
+    hi SpecialKey ctermfg=241
+    hi! link NonText Comment
+    hi Special ctermfg=cyan
+    hi Whitespace ctermfg=darkgrey
     hi Comment guifg=#7E8E91 ctermfg=244
-    hi SpecialKey ctermfg=239
-  else
-    let s:color_override = '
-          \ if &background == "dark"
-          \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15 cterm=NONE
-          \ | hi WildMenu      gui=NONE cterm=NONE guifg=#f8f6f2 guibg=#0a9dff ctermfg=255 ctermbg=39
-          \ | hi Visual        gui=NONE cterm=NONE guifg=black   guibg=white   ctermfg=0   ctermbg=255
-          \ | else
-          \ | hi StatusLine    guifg=#000000 guibg=#ffffff gui=NONE  ctermfg=16 ctermbg=15 cterm=NONE
-          \ | hi Visual        gui=NONE cterm=NONE guifg=white guibg=magenta ctermfg=255 ctermbg=magenta
-          \ | endif
-          \'
+    " hi Comment ctermfg=darkgray
+    hi! link Title Comment
+    hi Constant ctermfg=white
+    hi Statement ctermfg=white
+    hi Identifier ctermfg=cyan
+    hi! link Exception Identifier
+    " affects NONE in 'hi Normal ctermfg=NONE …'
+    hi PreProc ctermfg=white
 
+    " hi Type ctermfg=NONE
+    hi! link Type Identifier
+    " hi String guifg=#FFE792 guibg=NONE gui=NONE ctermfg=222 ctermbg=NONE cterm=NONE
+    hi MoreMsg guifg=LightGreen guibg=NONE gui=NONE ctermfg=LightGreen ctermbg=NONE cterm=NONE
+    hi! link String MoreMsg
+    hi! link Question MoreMsg
+
+    hi Todo ctermfg=black ctermbg=lightgreen
+    " hi! link WildMenu Todo
+    hi WildMenu ctermbg=cyan ctermfg=black
+
+    " completion/popup menu
+    hi Pmenu guifg=#FFFFFF guibg=#0a9dff gui=NONE ctermfg=255 ctermbg=240 cterm=NONE
+    hi! link PmenuSel Todo
+    hi PmenuThumb guifg=#242321 ctermbg=203
+    hi PmenuSbar ctermbg=lightgreen ctermfg=lightgreen
+
+    " diff (unified)
+    hi diffAdded       guifg=#2BFF2B gui=NONE      ctermfg=46  cterm=NONE
+    hi diffRemoved     guifg=#FF2B2B gui=NONE      ctermfg=203 cterm=NONE
+    hi link diffSubname Normal
+
+    " diff (side-by-side)
+    hi DiffAdd         guifg=#000000 guibg=#2BFF2B ctermfg=0   ctermbg=47  gui=NONE cterm=NONE
+    hi DiffChange      guifg=#FFFFFF guibg=#4C4745 ctermfg=255 ctermbg=239 gui=NONE cterm=NONE
+    hi DiffDelete      guifg=#E06C75 guibg=NONE    ctermfg=203 ctermbg=NONE gui=NONE cterm=NONE
+    hi DiffText ctermfg=16 ctermbg=203
+
+    "If 242 is too dark, keep incrementing...
+    hi FoldColumn      guifg=#465457 guibg=#000000 ctermfg=242 ctermbg=16
+    hi Folded          guifg=#465457 guibg=NONE    ctermfg=242 ctermbg=NONE
+
+    hi Error           ctermbg=NONE ctermfg=255 guibg=#e27878 guifg=white
+    hi Error           guifg=#FFFFFF   guibg=Red   ctermfg=15 ctermbg=9
+    hi ErrorMsg        ctermfg=203 ctermbg=NONE guifg=#e27878 guibg=#161821
+
+    hi Search guifg=#000000 guibg=#FFE792 ctermfg=0 ctermbg=222 cterm=NONE
+    hi! link IncSearch Todo
+    hi! link QuickFixLine Todo
+
+    hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=0 ctermbg=255
+    hi StatusLine guifg=#000000 guibg=#ffffff gui=NONE ctermfg=16 ctermbg=15 cterm=NONE
+    hi StatusLineNC guifg=bg guibg=fg ctermfg=242 ctermbg=232
+    hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
+
+    hi! link Directory Identifier
+    hi CursorLine guifg=#FFFFFF guibg=#293739 ctermfg=255 ctermbg=236 cterm=none
+    hi! link LineNr CursorLine
+    hi! link SignColumn StatusLineNC
+    hi! link CursorLineNr Normal
+
+    " help
+    hi helpHyperTextJump cterm=underline ctermfg=cyan
+  else
     if has('vim_starting') "only on startup
-      exe 'autocmd ColorScheme * '.s:color_override
       " expects &runtimepath/colors/{name}.vim.
       silent! colorscheme molokai
       " Clear `Normal` highlight, so terminal emulators won't treat negative
