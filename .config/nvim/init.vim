@@ -106,9 +106,7 @@ Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-rsi'
 
 Plug 'tpope/vim-unimpaired'
-let g:nremap = {"=": "c"}
-let g:xremap = {"=": "c"}
-let g:oremap = {"=": "c"}
+nmap co =o
 
 Plug 'tpope/vim-endwise'
 inoremap (<CR> (<CR>)<Esc>O
@@ -321,6 +319,8 @@ set fileformats=unix,dos
 set path+=/usr/lib/gcc/**/include
 " neovim
 set path+=build/src/nvim/auto/**,.deps/build/src/*/include,src,src/nvim
+" DWIM 'includeexpr': make gf work on filenames like "a/…" (in diffs, etc.).
+set includeexpr=substitute(v:fname,'^[^\/]*/','','')
 
 let g:sh_noisk = 1
 set hidden      " Allow buffer switching even if unsaved 
@@ -359,7 +359,7 @@ if &startofline
 endif
 
 "colorscheme {{{
-  if 1 || (!empty(&t_Co) && &t_Co <= 88) || findfile('colors/molokai.vim', &rtp) ==# ''
+  if 1 || (!empty(&t_Co) && &t_Co <= 88) || empty(findfile('colors/molokai.vim',&rtp))
     hi Cursor guifg=#000000 guibg=#F8F8F0 ctermfg=16 ctermbg=253
     hi SpecialKey ctermfg=241
     hi! link NonText Comment
