@@ -426,6 +426,12 @@ endif
     hi! link SignColumn StatusLineNC
     hi! link CursorLineNr Normal
 
+    hi SpellBad ctermbg=darkred ctermfg=white cterm=undercurl gui=undercurl guisp=Red
+    hi SpellCap ctermbg=81 ctermfg=9 cterm=undercurl gui=undercurl guisp=Blue
+    hi SpellRare ctermbg=225 ctermfg=9 cterm=undercurl gui=undercurl guisp=Magenta
+
+    hi Underlined ctermfg=NONE cterm=underline gui=underline guifg=NONE
+
     " help
     hi helpHyperTextJump cterm=underline ctermfg=cyan
   else
