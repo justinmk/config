@@ -98,6 +98,7 @@ let g:surround_no_insert_mappings = 1
 Plug 'tpope/vim-dispatch'
 nnoremap !t :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% make functionaltest<cr>
 nnoremap !T :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_TAG=x make functionaltest<cr>
+nnoremap !F :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER="<C-R><C-W>" make functionaltest<S-Left><S-Left><Left><Left>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
@@ -363,14 +364,18 @@ endif
     hi Cursor guifg=#000000 guibg=#F8F8F0 ctermfg=16 ctermbg=253
     hi SpecialKey ctermfg=241
     hi! link NonText Comment
-    hi Special ctermfg=cyan
     hi Whitespace ctermfg=darkgrey
     hi Comment guifg=#7E8E91 ctermfg=244
-    " hi Comment ctermfg=darkgray
     hi! link Title Comment
     hi Constant ctermfg=white
-    hi Statement ctermfg=white
+
+    " pink
+    hi QuickFixLine guifg=#FFFFFF guibg=#F92672 ctermfg=white ctermbg=197
+    hi Special guifg=#F92672 gui=bold ctermfg=197 cterm=NONE
+
+    " cyan
     hi Identifier ctermfg=cyan
+    hi! link Statement Identifier
     hi! link Exception Identifier
     " affects NONE in 'hi Normal ctermfg=NONE …'
     hi PreProc ctermfg=white
@@ -413,7 +418,6 @@ endif
 
     hi Search guifg=#000000 guibg=#FFE792 ctermfg=0 ctermbg=222 cterm=NONE
     hi! link IncSearch Todo
-    hi! link QuickFixLine Todo
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=0 ctermbg=255
     hi StatusLine guifg=#000000 guibg=#ffffff gui=NONE ctermfg=16 ctermbg=15 cterm=NONE
@@ -432,8 +436,9 @@ endif
 
     hi Underlined ctermfg=NONE cterm=underline gui=underline guifg=NONE
 
-    " help
+    " other
     hi helpHyperTextJump cterm=underline ctermfg=cyan
+    hi MatchParen ctermfg=0 guifg=0
   else
     if has('vim_starting') "only on startup
       " expects &runtimepath/colors/{name}.vim.
