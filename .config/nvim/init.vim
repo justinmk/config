@@ -143,6 +143,13 @@ if s:plugins_extra
           \ 'whitelist': ['python'],
           \ })
   endif
+  if executable(expand('~/neovim/.deps/usr/bin/lua-lsp'))
+    au User lsp_setup call lsp#register_server({
+          \ 'name': 'lua-lsp',
+          \ 'cmd': {server_info->[expand('~/neovim/.deps/usr/bin/lua-lsp')]},
+          \ 'whitelist': ['lua'],
+          \ })
+  endif
 
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
