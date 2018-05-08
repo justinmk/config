@@ -45,16 +45,16 @@ endif
 if v:version > 703 && !has('win32') && !has('win32unix')
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_ctags_exclude = [
-      \'.vim-src',
-      \'venv',
-      \'data',
-      \'dist',
-      \'notebooks',
-      \'Notebooks',
+      \'.vim-src/**',
+      \'venv/**',
+      \'data/**',
+      \'dist/**',
+      \'notebooks/**',
+      \'Notebooks/**',
       \'*graphhopper_data/*.json',
       \'*graphhopper/*.json',
       \'*.json',
-      \'qgis'
+      \'qgis/**'
       \]
 endif
 
