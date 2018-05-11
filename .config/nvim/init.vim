@@ -662,6 +662,8 @@ nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
 nnoremap <silent> Ul :GV!<cr>
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
+nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
+"                                        ^ Get repo-relative path via fugitive
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :Gstatus<cr>
 nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
@@ -673,6 +675,7 @@ nmap UF Uf
 nmap UG Ug
 nmap UL Ul
 nmap UM Um
+nmap UP Up
 nmap UR Ur
 nmap US Us
 nmap UW Uw
@@ -691,26 +694,41 @@ endfunction
 
 " Gets the git commit hash associated with the given file line.
 function! s:git_sha(filepath, line) abort
-  if "" ==# s:trimws_ml(a:filepath)
-    echoerr "invalid (empty) filepath"
+  if '' ==# s:trimws_ml(a:filepath)
+    throw 'invalid (empty) filepath'
   elseif !exists("b:git_dir")
-    echoerr "Missing b:git_dir"
+    throw 'Missing b:git_dir'
   elseif a:line <= 0
-    echoerr "Invalid a:line: ".a:line
+    throw 'Invalid a:line: '.a:line
   endif
 
   let cmd_out = join(s:git_do('blame --root -l -L'.a:line.','.a:line.' -- '.a:filepath))
   if cmd_out =~# '\v^0{40,}'
-    return ""
+    return ''
   endif
 
   return matchstr(cmd_out, '\w\+\ze\W\?', 0, 1)
 endfunction
 
 function! s:git_blame_line(filepath, line) abort
-  let commit_id = s:git_sha(a:filepath, a:line)
-  if commit_id ==# ""
+  if '' ==# s:trimws_ml(a:filepath)
+    echo 'cannot blame'
+    return
+  endif
+
+  if 'blob' ==# get(b:,'fugitive_type','')
+    " Use fugitive blame in fugitive buffers, instead of git directly.
+    let commit_id = substitute(execute('.Gblame'), '\v\_s*(\S+)\s+.*', '\1', '')
+  else
+    " Use git directly.
+    let commit_id = s:git_sha(a:filepath, a:line)
+  endif
+
+  if commit_id ==# ''
     echo 'not committed'
+    return
+  elseif commit_id ==# 'fatal'
+    echo 'cannot blame'
     return
   endif
 
@@ -727,10 +745,6 @@ function! s:git_blame_line(filepath, line) abort
 
   exe 'Gpedit '.commit_id
 endfunction
-
-nmap UP Up
-nmap Up :<c-u>call <sid>git_blame_line('<c-r><c-g>', line('.'))<cr>
-"                                        ^ Get repo-relative path via fugitive
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
@@ -1264,7 +1278,7 @@ func! s:ctrl_s(cnt, new, enter) abort
     "   autocmd!
     "   autocmd TabLeave <buffer> if winnr('$') == 1 && bufnr('%') == g:term_shell.termbuf | tabclose | endif
     " augroup END
-    exe 'file :shell '.jobpid(b:terminal_job_id)
+    exe 'file :shell '.jobpid(&channel)
     " XXX: original term:// buffer hangs around after :file ...
     bwipeout! #
     " Set alternate buffer to something intuitive.
@@ -1395,18 +1409,18 @@ command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|Gedit <args>
 function! Cxn_py() abort
   vsplit
   terminal
-  call jobsend(b:terminal_job_id, "python3\nimport neovim\n")
-  call jobsend(b:terminal_job_id, "n = neovim.attach('socket', path='".g:cxn."')\n")
+  call chansend(&channel, "python3\nimport neovim\n")
+  call chansend(&channel, "n = neovim.attach('socket', path='".g:cxn."')\n")
 endfunction
 function! Cxn(args) abort
   silent! unlet g:cxn
   tabnew
   terminal
   let nvim_path = executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
-  call jobsend(b:terminal_job_id, "NVIM_LISTEN_ADDRESS= ".nvim_path." -u NORC ".a:args."\n")
-  call jobsend(b:terminal_job_id, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
-  call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
-  call jobsend(b:terminal_job_id, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
+  call chansend(&channel, "NVIM_LISTEN_ADDRESS= ".nvim_path." -u NORC ".a:args."\n")
+  call chansend(&channel, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
+  call chansend(&channel, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
+  call chansend(&channel, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
 endfunction
 command! -nargs=* NvimCxn call Cxn(<q-args>)
 
