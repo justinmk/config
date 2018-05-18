@@ -1303,7 +1303,8 @@ nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap >t    :tag<space>
-nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.po' ':/!Notebooks' ':/!*.md' ':/!*.mpack'
+" See `man fnmatch`.
+nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.md' ':/!*.mpack' ':/!*.pbf' ':/!*.pdf' ':/!*.po' ':(top,exclude,icase)notebooks/' ':/!data/' ':/!work/' ':/!qgis/' ':/!graphhopper_data/'
       \<Home><C-Right><C-Right><C-Right><left>
 nnoremap >v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
