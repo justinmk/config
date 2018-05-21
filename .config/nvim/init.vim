@@ -85,6 +85,7 @@ endif
 Plug 'tpope/vim-characterize'
 " Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-scriptease'
+Plug 'tpope/vim-apathy'
 
 Plug 'zhaocai/DirDiff.vim', { 'on': ['DirDiff'] }
 Plug 'tpope/vim-fugitive'
@@ -168,10 +169,6 @@ if s:plugins_extra
 
   Plug 'PProvost/vim-ps1'
   Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
-
-  Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard'] }
-  Plug 'mattn/webapi-vim'
-  Plug 'mattn/gist-vim', { 'on': ['Gist'] }
 
   Plug 'tommcdo/vim-lion'
 
