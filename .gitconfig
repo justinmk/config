@@ -14,8 +14,6 @@
   pager = less -x1,5
   trustctime = false
   askPass =
-[commit]
-  verbose = true
 [gui]
   gcwarning = false
 [branch]

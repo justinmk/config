@@ -23,6 +23,7 @@ exports.deactivate = function(oni) {
   console.log("config deactivated")
 }
 exports.configuration = {
+  // "editor.renderer": "webgl",  // https://github.com/onivim/oni/pull/2120
   "oni.hideMenu": true,
   "oni.loadInitVim": true,
   "oni.useDefaultConfig": false,
