@@ -365,24 +365,26 @@ endif
 
 "colorscheme {{{
   if 1 || (!empty(&t_Co) && &t_Co <= 88) || empty(findfile('colors/molokai.vim',&rtp))
-    hi Cursor guifg=#000000 guibg=#F8F8F0 ctermfg=16 ctermbg=253
+    hi Normal guifg=white guibg=black
+    set background=dark
+    hi Cursor guifg=#00000 guibg=#F8F8F0 ctermfg=16 ctermbg=253
     hi SpecialKey ctermfg=241
     hi! link NonText Comment
     hi Whitespace ctermfg=darkgrey
     hi Comment guifg=#7E8E91 ctermfg=244
     hi! link Title Comment
-    hi Constant ctermfg=white
+    hi! link Constant Normal
 
     " pink
     hi QuickFixLine guifg=#FFFFFF guibg=#F92672 ctermfg=white ctermbg=197
     hi Special guifg=#F92672 gui=bold ctermfg=197 cterm=NONE
 
     " cyan
-    hi Identifier ctermfg=cyan
+    hi Identifier ctermfg=cyan guifg=cyan
     hi! link Statement Identifier
     hi! link Exception Identifier
-    " affects NONE in 'hi Normal ctermfg=NONE …'
-    hi PreProc ctermfg=white
+    " affects NONE string in 'hi Normal ctermfg=NONE …'
+    hi! link PreProc Normal
 
     " hi Type ctermfg=NONE
     hi! link Type Identifier
