@@ -229,6 +229,7 @@ endfun
 
 if has("nvim")
   set inccommand=split
+  "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
   tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, 'nvim', 0) ? '<esc>' : '<c-\><c-n>'
   augroup vimrc_nvim
     autocmd!
@@ -532,39 +533,18 @@ nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforw
 "       <c-w>eip
 " available:
 "       <c-w><space>{motion}
-
-" vim+tmux window navigation (credit: mhinz)
-function! s:vim_tmux_nav(direction) abort
-  if empty($TMUX)
-    execute 'wincmd' a:direction
-  else
-    let oldwin = winnr()
-    execute 'wincmd' a:direction
-    if winnr() == oldwin
-      let sock = split($TMUX, ',')[0]
-      let direction = tr(a:direction, 'hjkl', 'LDUR')
-      silent execute printf('!tmux -S %s select-pane -%s', sock, direction)
-    endif
-  endif
-endfunction
-nnoremap <silent><M-h> :<c-u>call <SID>vim_tmux_nav('h')<cr>
-nnoremap <silent><M-j> :<c-u>call <SID>vim_tmux_nav('j')<cr>
-nnoremap <silent><M-k> :<c-u>call <SID>vim_tmux_nav('k')<cr>
-nnoremap <silent><M-l> :<c-u>call <SID>vim_tmux_nav('l')<cr>
-imap     <silent><M-h> <C-\><C-N><M-h>
-imap     <silent><M-j> <C-\><C-N><M-j>
-imap     <silent><M-k> <C-\><C-N><M-k>
-imap     <silent><M-l> <C-\><C-N><M-l>
-if has('nvim')
-  tnoremap <silent><M-h> <C-\><C-n>:call <SID>vim_tmux_nav('h')<cr>
-  tnoremap <silent><M-j> <C-\><C-n>:call <SID>vim_tmux_nav('j')<cr>
-  tnoremap <silent><M-k> <C-\><C-n>:call <SID>vim_tmux_nav('k')<cr>
-  tnoremap <silent><M-l> <C-\><C-n>:call <SID>vim_tmux_nav('l')<cr>
-  tnoremap <silent><C-^> <C-\><C-n><C-^>
-
-  "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-endif
-
+nnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
+nnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
+nnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
+nnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
+inoremap <silent><M-h> <C-\><C-N><C-w><C-h>
+inoremap <silent><M-j> <C-\><C-N><C-w><C-j>
+inoremap <silent><M-k> <C-\><C-N><C-w><C-k>
+inoremap <silent><M-l> <C-\><C-N><C-w><C-l>
+tnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
+tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
+tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
+tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
 nnoremap Zh     :leftabove vsplit<CR>
 nnoremap Zj     :belowright split<CR>
 nnoremap Zk     :aboveleft split<CR>
@@ -573,7 +553,6 @@ nmap     ZH     Zh
 nmap     ZJ     Zj
 nmap     ZK     Zk
 nmap     ZL     Zl
-
 nnoremap <M-n> :call <SID>buf_new()<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
 nnoremap <silent>      <s-tab>  <C-^>
