@@ -511,7 +511,7 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " mark position before search
 nnoremap / ms/
 
-func! s:maybe_zz(cmd) abort
+func! s:maybe_zz(cmd,halo) abort
   let topline = line('w0')
   try
     exe a:cmd
@@ -520,11 +520,18 @@ func! s:maybe_zz(cmd) abort
   endtry
   if topline != line('w0')
     normal! zz
-    call s:halo()
+    if a:halo
+      call s:halo()
+    endif
   endif
 endf
-nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward])<CR>
-nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforward])<CR>
+" The 'incomplete mapping technique' to set cursorline temporarily.
+" ref: https://groups.google.com/d/msg/vim_use/10TU48n02xI/2Zp117G6BQAJ
+nnoremap <silent> <SID>_search__   :set nocursorline<CR>
+nnoremap <script><silent> n <SID>_search__n:set cursorline<CR><SID>_search__
+nnoremap <script><silent> N <SID>_search__N:set cursorline<CR><SID>_search__
+nnoremap <script> <SID>_search__n  :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward],0)<CR><SID>_search__
+nnoremap <script> <SID>_search__N  :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforward],0)<CR><SID>_search__
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
@@ -634,8 +641,8 @@ endif
 nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
       \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
 
-nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz(&diff ? 'norm ]c]n' : 'norm ]n')<CR>
-nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n')<CR>
+nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz(&diff ? 'norm ]c]n' : 'norm ]n',1)<CR>
+nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n',1)<CR>
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
