@@ -1,6 +1,8 @@
 [user]
   name = Justin M. Keyes
+  #email = foo@bar.com
 [core]
+  #editor = /foo/bar/nvim
   ignorecase = false
   autocrlf = false
   excludesfile = ~/.gitexcludes
@@ -79,16 +81,9 @@
   #NOTE: whitespace is highlighted only on new lines, not removed/old.
   #Use "git diff -R" to reverse the diff to see removed whitespace.
   whitespace = bold red white
-[github]
-  user = justinmk
 
 [include]
   path = ~/.gitconfig.local
-#[user]
-#  email = foo@bar.com
-#  name = foo
-#[core]
-#  editor = /foo/bar/nvim
 #[alias]
 #  #you can re-define existing aliases.
 #  em = !/c/opt/vim/vim `git df`
