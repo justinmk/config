@@ -97,9 +97,7 @@ let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
-nnoremap !t :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% make functionaltest<cr>
-nnoremap !T :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_TAG=x make functionaltest<cr>
-nnoremap !F :FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER="<C-R><C-W>" make functionaltest<S-Left><S-Left><Left><Left>
+nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><Left>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 

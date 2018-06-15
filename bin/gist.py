@@ -3,6 +3,8 @@ import json
 import requests
 import netrc
 
+DEBUG=False
+
 def main_():
     netrc_info = netrc.netrc()
     gist_api_cred = netrc_info.authenticators('gist.github.com')
@@ -22,13 +24,21 @@ def main_():
       }
     }
 
+    if DEBUG:
+        print(gist_api_request_payload)
+
     response = requests.post("https://api.github.com/gists",
                         data=json.dumps(gist_api_request_payload),
                         headers={
-                            'Authorization': 'token {}'.format(gist_api_token)
+                            'Authorization' : 'token {}'.format(gist_api_token),
+                            'Content-Type'  : 'application/json'
                         })
 
     j = response.json()
-    print('response: ' + str(response.json()['html_url']))
+    try:
+        print('URL: ' + str(response.json()['html_url']))
+    except KeyError:
+        print('response: ' + str(response.json()))
 
-main_()
+if __name__ == '__main__':
+    main_()
