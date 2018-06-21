@@ -47,6 +47,7 @@ Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_ctags_exclude = [
       \'.vim-src/**',
       \'venv/**',
+      \'**/site-packages/**',
       \'data/**',
       \'dist/**',
       \'notebooks/**',
