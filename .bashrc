@@ -167,18 +167,12 @@ if [ "$(uname)" = Darwin ] ; then
 fi
 
 # fzf (https://github.com/junegunn/fzf)
-if [ -f ~/.fzf.bash ] || command -v peco >/dev/null 2>&1 ; then
+if [ -f ~/.fzf.bash ] ; then
   export FZF_DEFAULT_OPTS="--multi --black -x --inline-info --no-color"
-
-  if command -v peco >/dev/null 2>&1 ; then
-    _fzfprog=peco
-  else
-    source ~/.fzf.bash
-    _fzfprog=fzf
-  fi
+  source ~/.fzf.bash
 
   f() { # includes hidden directories (except .git)
-    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/^..// | $_fzfprog
+    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/^..// | fzf
   }
   d() { # change to directory
     local path="$(f '-type d')"
@@ -200,9 +194,7 @@ ghpr() {
   [ -z "$PR_TITLE" ] && { printf "error. request: $req_url\n       response: $(curl -Ss $req_url)\n"; return 1; }
 
   git fetch --all --prune \
-    && git checkout master \
-    && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
-    && git reset --hard upstream/master \
+    && git checkout upstream/master \
     && git merge --no-commit --no-ff -m "Merge #${PR} '${PR_TITLE}'" refs/pull/upstream/${PR}
 }
 
@@ -219,9 +211,7 @@ ghrebase1() {
   git fetch --all --prune \
     && git checkout --quiet refs/pull/upstream/${PR} \
     && git rebase upstream/master \
-    && git checkout master \
-    && git stash save autosave-$(date +%Y%m%d_%H%M%S) \
-    && git reset --hard upstream/master \
+    && git checkout upstream/master \
     && git merge --ff-only - \
     && git commit --amend -m "$(git log -1 --pretty=format:"%B" \
       | $sed_cmd "1 s/^(.*)\$/\\1 #${PR}/g")" \
