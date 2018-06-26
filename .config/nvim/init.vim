@@ -400,8 +400,8 @@ endif
     " completion/popup menu
     hi Pmenu guifg=#FFFFFF guibg=#0a9dff gui=NONE ctermfg=255 ctermbg=240 cterm=NONE
     hi! link PmenuSel Todo
-    hi PmenuThumb guifg=#242321 ctermbg=203
-    hi PmenuSbar ctermbg=lightgreen ctermfg=lightgreen
+    hi PmenuSbar guibg=darkgray ctermbg=darkgray
+    hi PmenuThumb ctermbg=lightgreen ctermfg=lightgreen
 
     " diff (unified)
     hi diffAdded       guifg=#2BFF2B gui=NONE      ctermfg=46  cterm=NONE
@@ -412,7 +412,7 @@ endif
     hi DiffAdd         guifg=#000000 guibg=#2BFF2B ctermfg=0   ctermbg=47  gui=NONE cterm=NONE
     hi DiffChange      guifg=#FFFFFF guibg=#4C4745 ctermfg=255 ctermbg=239 gui=NONE cterm=NONE
     hi DiffDelete      guifg=#E06C75 guibg=NONE    ctermfg=203 ctermbg=NONE gui=NONE cterm=NONE
-    hi DiffText ctermfg=16 ctermbg=203
+    hi DiffText ctermfg=16 ctermbg=cyan
 
     "If 242 is too dark, keep incrementing...
     hi FoldColumn      guifg=#465457 guibg=#000000 ctermfg=242 ctermbg=16
@@ -1181,9 +1181,8 @@ augroup vimrc_autocmd
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   function! s:setup_gitstatus() abort
-    nnoremap <buffer> <silent> cF :<C-U>Gcommit --fixup=HEAD<CR>
-    nmap <buffer> <M-n> <c-n>dvgg<c-n>:call feedkeys('<c-v><c-w>P<c-v><c-l>')<cr>
-    nmap <buffer> <M-p> <c-p>dvgg<c-n>:call feedkeys('<c-v><c-w>P<c-v><c-l>')<cr>
+    nmap <buffer> <M-n> <c-n>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
+    nmap <buffer> <M-p> <c-p>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
     nmap <buffer><nowait> <M-u> U<Esc>
   endfunction
   autocmd FileType gitcommit call <SID>setup_gitstatus()
