@@ -346,21 +346,7 @@ nnoremap <silent> coz :<c-u>if &foldenable\|set nofoldenable\|
 nnoremap cot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
 
 set nojoinspaces
-
 set nostartofline
-" restore cursor position upon returning to a buffer, _without_ permanently 
-" setting 'nostartofline' (which affects many other behaviors).
-if &startofline
-  augroup vimrc_stayput
-    autocmd!
-      " 1. disable 'startofline' temporarily while switching buffers, 
-      " 2. then re-enable it on CursorMoved, 
-      " 3. then clear the CursorMoved autocmd to avoid spam
-      autocmd BufLeave * set nostartofline |
-            \ autocmd vimrc_stayput CursorMoved,CursorMovedI * set startofline |
-            \ autocmd! vimrc_stayput CursorMoved,CursorMovedI
-  augroup END
-endif
 
 "colorscheme {{{
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
