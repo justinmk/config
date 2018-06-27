@@ -128,7 +128,6 @@ let g:markdown_syntax_conceal = 0
 Plug 'AndrewRadev/linediff.vim'
 let g:linediff_buffer_type = 'scratch'
 Plug 'mbbill/undotree', { 'on': ['UndotreeToggle'] }
-Plug 'kana/vim-niceblock'
 
 Plug 'tpope/vim-commentary'
 
@@ -492,6 +491,11 @@ endfunc
 nnoremap z= :setlocal spell<CR>z=
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
+
+" niceblock
+xnoremap <expr> I (mode()=~#'[vV]'?'<C-v>^o^I':'I')
+xnoremap <expr> A (mode()=~#'[vV]'?'<C-v>0o$A':'A')
+
 
 nnoremap g> :set nomore<bar>40messages<bar>set more<CR>
 

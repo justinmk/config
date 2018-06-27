@@ -10,7 +10,6 @@ exports.activate = function(oni) {
   console.log("config activated")
 
   oni.input.bind("<c-enter>", () => console.log("Control+Enter was pressed"))
-  // oni.input.bind("<c-,>", "commands.show", isNormalMode);
 
   // oni.input.unbind("<c-p>");
   oni.input.unbind("<c-g>")
