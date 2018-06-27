@@ -366,7 +366,7 @@ endif
   if 1 || (!empty(&t_Co) && &t_Co <= 88) || empty(findfile('colors/molokai.vim',&rtp))
     hi Normal guifg=white guibg=black
     set background=dark
-    hi Cursor guifg=#00000 guibg=#F8F8F0 ctermfg=16 ctermbg=253
+    hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=197 ctermfg=white
     hi SpecialKey ctermfg=241
     hi! link NonText Comment
     hi Whitespace ctermfg=darkgrey
@@ -374,9 +374,10 @@ endif
     hi! link Title Comment
     hi! link Constant Normal
 
-    " pink
-    hi QuickFixLine guifg=#FFFFFF guibg=#F92672 ctermfg=white ctermbg=197
-    hi Special guifg=#F92672 gui=bold ctermfg=197 cterm=NONE
+    hi QuickFixLine guifg=black guibg=cyan ctermfg=black ctermbg=cyan
+    " Special should be (at least) slightly distinct from SpecialKey.
+    hi Special ctermfg=lightgrey guifg=lightgrey
+    " hi Special guifg=#F92672 gui=bold ctermfg=197 cterm=NONE
 
     " cyan
     hi Identifier ctermfg=cyan guifg=cyan
@@ -392,7 +393,7 @@ endif
     hi! link String MoreMsg
     hi! link Question MoreMsg
 
-    hi Todo ctermfg=black ctermbg=lightgreen
+    hi Todo guifg=black guibg=lightgreen ctermfg=black ctermbg=lightgreen
     " hi! link WildMenu Todo
     hi WildMenu ctermbg=cyan ctermfg=black
 
@@ -411,7 +412,7 @@ endif
     hi DiffAdd         guifg=#000000 guibg=#2BFF2B ctermfg=0   ctermbg=47  gui=NONE cterm=NONE
     hi DiffChange      guifg=#FFFFFF guibg=#4C4745 ctermfg=255 ctermbg=239 gui=NONE cterm=NONE
     hi DiffDelete      guifg=#E06C75 guibg=NONE    ctermfg=203 ctermbg=NONE gui=NONE cterm=NONE
-    hi DiffText ctermfg=16 ctermbg=cyan
+    hi DiffText        guifg=black   guibg=cyan    ctermfg=16  ctermbg=cyan gui=NONE cterm=NONE
 
     "If 242 is too dark, keep incrementing...
     hi FoldColumn      guifg=#465457 guibg=#000000 ctermfg=242 ctermbg=16
@@ -424,9 +425,9 @@ endif
     hi Search guifg=#000000 guibg=#FFE792 ctermfg=0 ctermbg=222 cterm=NONE
     hi! link IncSearch Todo
 
-    hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=0 ctermbg=255
-    hi StatusLine guifg=#000000 guibg=#ffffff gui=NONE ctermfg=16 ctermbg=15 cterm=NONE
-    hi StatusLineNC guifg=bg guibg=fg ctermfg=242 ctermbg=232
+    hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
+    hi StatusLine cterm=bold,reverse gui=bold,reverse
+    hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
     hi! link Directory Identifier
@@ -443,7 +444,7 @@ endif
 
     " other
     hi helpHyperTextJump cterm=underline ctermfg=cyan
-    hi MatchParen ctermfg=0 guifg=0
+    hi MatchParen cterm=bold ctermfg=black ctermbg=white guifg=black guibg=white
   else
     if has('vim_starting') "only on startup
       " expects &runtimepath/colors/{name}.vim.
