@@ -363,8 +363,9 @@ if &startofline
 endif
 
 "colorscheme {{{
-  if 1 || (!empty(&t_Co) && &t_Co <= 88) || empty(findfile('colors/molokai.vim',&rtp))
-    hi Normal guifg=white guibg=black
+    " Clear `Normal` cterm values, so terminal emulators won't treat negative
+    " space as extra whitespace (makes mouse-copy nicer).
+    hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
     set background=dark
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=197 ctermfg=white
     hi SpecialKey ctermfg=241
@@ -398,32 +399,33 @@ endif
     hi WildMenu ctermbg=cyan ctermfg=black
 
     " completion/popup menu
-    hi Pmenu guifg=#FFFFFF guibg=#0a9dff gui=NONE ctermfg=255 ctermbg=240 cterm=NONE
+    hi Pmenu guifg=#FFFFFF guibg=#585858 gui=NONE ctermfg=255 ctermbg=240 cterm=NONE
     hi! link PmenuSel Todo
     hi PmenuSbar guibg=darkgray ctermbg=darkgray
     hi PmenuThumb ctermbg=lightgreen ctermfg=lightgreen
 
     " diff (unified)
-    hi diffAdded       guifg=#2BFF2B gui=NONE      ctermfg=46  cterm=NONE
-    hi diffRemoved     guifg=#FF2B2B gui=NONE      ctermfg=203 cterm=NONE
+    hi diffAdded       guifg=#00ff5f gui=NONE      ctermfg=47  cterm=NONE
+    hi diffRemoved     guifg=#ff5f5f gui=NONE      ctermfg=203 cterm=NONE
     hi link diffSubname Normal
 
     " diff (side-by-side)
-    hi DiffAdd         guifg=#000000 guibg=#2BFF2B ctermfg=0   ctermbg=47  gui=NONE cterm=NONE
+    hi DiffAdd         guifg=#000000 guibg=#00ff5f ctermfg=0   ctermbg=47  gui=NONE cterm=NONE
     hi DiffChange      guifg=#FFFFFF guibg=#4C4745 ctermfg=255 ctermbg=239 gui=NONE cterm=NONE
-    hi DiffDelete      guifg=#E06C75 guibg=NONE    ctermfg=203 ctermbg=NONE gui=NONE cterm=NONE
+    hi DiffDelete      guifg=#ff5f5f guibg=NONE    ctermfg=203 ctermbg=NONE gui=NONE cterm=NONE
     hi DiffText        guifg=black   guibg=cyan    ctermfg=16  ctermbg=cyan gui=NONE cterm=NONE
 
     "If 242 is too dark, keep incrementing...
     hi FoldColumn      guifg=#465457 guibg=#000000 ctermfg=242 ctermbg=16
     hi Folded          guifg=#465457 guibg=NONE    ctermfg=242 ctermbg=NONE
 
-    hi Error           ctermbg=NONE ctermfg=255 guibg=#e27878 guifg=white
+    hi Error           ctermbg=NONE ctermfg=255 guibg=red guifg=white
     hi Error           guifg=#FFFFFF   guibg=Red   ctermfg=15 ctermbg=9
-    hi ErrorMsg        ctermfg=203 ctermbg=NONE guifg=#e27878 guibg=#161821
+    hi ErrorMsg        ctermfg=203 ctermbg=NONE guifg=#ff5f5f guibg=#161821
 
     hi Search guifg=#000000 guibg=#FFE792 ctermfg=0 ctermbg=222 cterm=NONE
     hi! link IncSearch Todo
+    hi! link Substitute Visual
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
@@ -431,29 +433,20 @@ endif
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
     hi! link Directory Identifier
-    hi CursorLine guifg=#FFFFFF guibg=#293739 ctermfg=255 ctermbg=236 cterm=none
+    hi CursorLine guifg=#FFFFFF guibg=#303030 ctermfg=255 ctermbg=236 cterm=none
     hi! link LineNr CursorLine
     hi! link SignColumn StatusLineNC
     hi! link CursorLineNr Normal
 
-    hi SpellBad ctermbg=darkred ctermfg=white cterm=undercurl gui=undercurl guisp=Red
-    hi SpellCap ctermbg=81 ctermfg=9 cterm=undercurl gui=undercurl guisp=Blue
-    hi SpellRare ctermbg=225 ctermfg=9 cterm=undercurl gui=undercurl guisp=Magenta
+    hi SpellBad ctermbg=NONE ctermfg=255 cterm=undercurl gui=undercurl guisp=Red
+    hi SpellCap ctermbg=lightgrey ctermfg=red cterm=undercurl gui=undercurl guisp=Blue
+    hi! link SpellRare SpellCap
 
     hi Underlined ctermfg=NONE cterm=underline gui=underline guifg=NONE
 
     " other
     hi helpHyperTextJump cterm=underline ctermfg=cyan
-    hi MatchParen cterm=bold ctermfg=black ctermbg=white guifg=black guibg=white
-  else
-    if has('vim_starting') "only on startup
-      " expects &runtimepath/colors/{name}.vim.
-      silent! colorscheme molokai
-      " Clear `Normal` highlight, so terminal emulators won't treat negative
-      " space as extra whitespace (makes mouse-copy nicer).
-      hi Normal ctermfg=NONE ctermbg=NONE
-    endif
-  endif
+    hi MatchParen ctermfg=black ctermbg=white guifg=black guibg=white
 "}}}
 
 "==============================================================================
