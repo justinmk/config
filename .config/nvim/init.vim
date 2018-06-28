@@ -405,7 +405,6 @@ set nostartofline
     hi FoldColumn      guifg=#465457 guibg=#000000 ctermfg=242 ctermbg=16
     hi Folded          guifg=#465457 guibg=NONE    ctermfg=242 ctermbg=NONE
 
-    hi Error           ctermbg=NONE ctermfg=255 guibg=red guifg=white
     hi Error           guifg=#FFFFFF   guibg=Red   ctermfg=15 ctermbg=9
     hi ErrorMsg        ctermfg=203 ctermbg=NONE guifg=#ff5f5f guibg=#161821
 
@@ -424,7 +423,7 @@ set nostartofline
     hi! link SignColumn StatusLineNC
     hi! link CursorLineNr Normal
 
-    hi SpellBad ctermbg=NONE ctermfg=255 cterm=undercurl gui=undercurl guisp=Red
+    hi SpellBad ctermbg=red ctermfg=255 cterm=undercurl gui=undercurl guisp=Red
     hi SpellCap ctermbg=lightgrey ctermfg=red cterm=undercurl gui=undercurl guisp=Blue
     hi! link SpellRare SpellCap
 
@@ -1387,12 +1386,18 @@ function! Cxn_py() abort
   call chansend(&channel, "python3\nimport neovim\n")
   call chansend(&channel, "n = neovim.attach('socket', path='".g:cxn."')\n")
 endfunction
-function! Cxn(args) abort
+function! Cxn(addr) abort
   silent! unlet g:cxn
   tabnew
+  if !empty(a:addr)  " Only start the client.
+    let g:cxn = a:addr
+    call Cxn_py()
+    return
+  endif
+
   terminal
   let nvim_path = executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
-  call chansend(&channel, "NVIM_LISTEN_ADDRESS= ".nvim_path." -u NORC ".a:args."\n")
+  call chansend(&channel, "NVIM_LISTEN_ADDRESS= ".nvim_path." -u NORC\n")
   call chansend(&channel, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
   call chansend(&channel, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
   call chansend(&channel, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
