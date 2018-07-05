@@ -237,6 +237,10 @@ if has("nvim")
     " autocmd CursorHold,FocusGained * silent! checktime
     autocmd FocusGained * call <SID>halo()
   augroup END
+
+  " Experimental
+  set fillchars+=msgsep:─
+  hi MsgSeparator ctermbg=black ctermfg=white
 endif
 
 " Use <C-L> to:
