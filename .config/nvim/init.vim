@@ -418,7 +418,7 @@ set nostartofline
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
     hi! link Directory Identifier
-    hi CursorLine guifg=#FFFFFF guibg=#303030 ctermfg=255 ctermbg=236 cterm=none
+    hi CursorLine guibg=#303030 ctermbg=236 cterm=NONE
     hi! link LineNr CursorLine
     hi! link SignColumn StatusLineNC
     hi! link CursorLineNr Normal
@@ -610,18 +610,18 @@ if findfile('plugin/fugitive.vim', &rtp) !=# ''
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
     " Show git branch.
     echo fugitive#head(7) msg[2:] (a:cnt?strftime('%Y-%m-%d %H:%M',getftime(expand('%:p'))):'')
+    " Show current directory.
+    echo 'dir:' fnamemodify(getcwd(), ':~')
+    " Show current session.
+    echo 'ses:' (strlen(v:this_session) ? fnamemodify(v:this_session, ':~') : '<none>')
     " Show current context.
     " https://git.savannah.gnu.org/cgit/diffutils.git/tree/src/diff.c?id=eaa2a24#n464
     echohl ModeMsg
-    echo getline(search('\v^[[:alpha:]$_]', "bn", 1, 100))
+    echo getline(search('\v^[[:alpha:]$_]', 'bn', 1, 100))
     echohl None
   endf
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
-
-" show the working directory and session
-nnoremap <M-g> :<C-u>echo fnamemodify(getcwd(), ":~")
-      \ (strlen(v:this_session) ? fnamemodify(v:this_session, ":~") : "[No session]")<cr>
 
 nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz(&diff ? 'norm ]c]n' : 'norm ]n',1)<CR>
 nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n',1)<CR>
