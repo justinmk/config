@@ -1369,10 +1369,12 @@ set titleold=?
 nnoremap <leader>vft  :e ~/.config/nvim/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <silent> <leader>vs :Scriptnames<cr>
+inoremap <silent> <leader>log ELOG("");<Left><Left><Left>
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
 command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
+command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
 command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
 command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
