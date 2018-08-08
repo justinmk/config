@@ -394,6 +394,9 @@ set nostartofline
     hi PmenuSbar guibg=darkgray ctermbg=darkgray
     hi PmenuThumb ctermbg=lightgreen ctermfg=lightgreen
 
+    " tabline
+    hi TabLineFill gui=underline cterm=underline ctermfg=white ctermbg=black
+
     " diff (unified)
     hi diffAdded       guifg=#00ff5f gui=NONE      ctermfg=47  cterm=NONE
     hi diffRemoved     guifg=#ff5f5f gui=NONE      ctermfg=203 cterm=NONE
