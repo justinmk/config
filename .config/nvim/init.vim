@@ -996,9 +996,9 @@ func! s:zoom_toggle() abort
   let restore_cmd = winrestcmd()
   wincmd |
   wincmd _
-  " If the layout did not change, it's a toggle (un-zoom).
-  if restore_cmd ==# winrestcmd()
+  if exists('t:zoom_restore')
     exe t:zoom_restore
+    unlet t:zoom_restore
   else
     let t:zoom_restore = restore_cmd
   endif
