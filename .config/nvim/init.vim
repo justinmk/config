@@ -374,8 +374,10 @@ set nostartofline
     hi Identifier ctermfg=cyan guifg=cyan
     hi! link Statement Identifier
     hi! link Exception Identifier
-    " affects NONE string in 'hi Normal ctermfg=NONE …'
-    hi! link PreProc Normal
+    " affects:
+    "   - NONE string in 'hi Normal ctermfg=NONE …'
+    "   - helpHeader
+    hi! link PreProc Identifier
 
     " hi Type ctermfg=NONE
     hi! link Type Identifier
