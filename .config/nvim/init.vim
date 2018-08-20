@@ -1046,9 +1046,6 @@ endf
 cnoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
 inoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
 
-"read the current line into command line
-cnoremap <c-r><c-l> <c-r>=getline('.')<cr>
-
 xnoremap * <esc>ms/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr>
 nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>set hlsearch<cr>
 nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>set hlsearch<cr>
