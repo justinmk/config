@@ -324,9 +324,10 @@ set undofile
 set list
 set fileformats=unix,dos
 
+" [i, [d
 set path+=/usr/lib/gcc/**/include
 " neovim
-set path+=build/src/nvim/auto/**,.deps/build/src/*/include,src,src/nvim
+set path+=build/src/nvim/auto/**,.deps/build/src/**/,src,src/nvim
 " DWIM 'includeexpr': make gf work on filenames like "a/…" (in diffs, etc.).
 set includeexpr=substitute(v:fname,'^[^\/]*/','','')
 
@@ -351,6 +352,7 @@ nnoremap cot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
 
 set nojoinspaces
 set nostartofline
+set cursorline
 
 "colorscheme {{{
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
@@ -516,13 +518,8 @@ func! s:maybe_zz(cmd,halo) abort
     endif
   endif
 endf
-" The 'incomplete mapping technique' to set cursorline temporarily.
-" ref: https://groups.google.com/d/msg/vim_use/10TU48n02xI/2Zp117G6BQAJ
-nnoremap <silent> <SID>_search__   :set nocursorline<CR>
-nnoremap <script><silent> n <SID>_search__n:set cursorline<CR><SID>_search__
-nnoremap <script><silent> N <SID>_search__N:set cursorline<CR><SID>_search__
-nnoremap <script> <SID>_search__n  :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward],0)<CR><SID>_search__
-nnoremap <script> <SID>_search__N  :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforward],0)<CR><SID>_search__
+nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward],1)<CR>
+nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforward],1)<CR>
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
