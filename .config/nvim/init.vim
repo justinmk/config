@@ -132,24 +132,6 @@ Plug 'mbbill/undotree', { 'on': ['UndotreeToggle'] }
 Plug 'tpope/vim-commentary'
 
 if s:plugins_extra
-  Plug 'prabirshrestha/async.vim'
-  Plug 'prabirshrestha/vim-lsp'
-  if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-          \ 'name': 'pyls',
-          \ 'cmd': {server_info->['pyls']},
-          \ 'whitelist': ['python'],
-          \ })
-  endif
-  if executable(expand('~/neovim/.deps/usr/bin/lua-lsp'))
-    au User lsp_setup call lsp#register_server({
-          \ 'name': 'lua-lsp',
-          \ 'cmd': {server_info->[expand('~/neovim/.deps/usr/bin/lua-lsp')]},
-          \ 'whitelist': ['lua'],
-          \ })
-  endif
-
   Plug 'guns/vim-sexp'
   Plug 'guns/vim-clojure-highlight'
   let g:clojure_fold = 1
