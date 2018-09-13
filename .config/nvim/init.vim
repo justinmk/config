@@ -1366,6 +1366,8 @@ command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.sc
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
 command! Vimsrc tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|edit src/eval.c
 command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|Gedit <args>
+command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
+                              \.'|tag <args>'
 
 function! Cxn_py() abort
   vsplit
