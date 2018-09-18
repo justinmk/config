@@ -381,7 +381,8 @@ set cursorline
     hi PmenuThumb ctermbg=lightgreen ctermfg=lightgreen
 
     " tabline
-    hi TabLineFill gui=underline cterm=underline ctermfg=white ctermbg=black
+    " hi default link TabLineFill TabLine
+    hi! link TabLineFill TabLine
 
     " diff (unified)
     hi diffAdded       guifg=#00ff5f gui=NONE      ctermfg=47  cterm=NONE
@@ -407,7 +408,7 @@ set cursorline
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
-    hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
+    hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=NONE ctermbg=NONE cterm=underline gui=NONE
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
     hi! link Directory Identifier
@@ -1368,6 +1369,7 @@ command! Vimsrc tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|edit src/eval.c
 command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|Gedit <args>
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
+command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
 
 function! Cxn_py() abort
   vsplit
