@@ -335,6 +335,7 @@ nnoremap cot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
 set nojoinspaces
 set nostartofline
 set cursorline
+set mouse=nvi
 
 "colorscheme {{{
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
