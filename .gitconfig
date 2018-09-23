@@ -49,7 +49,7 @@
   #diff-highlight: perl script from git 'contrib'
   dh = "!f() { git diff --color=always \"$@\" | diff-highlight | less -R; }; f"
   b  = branch -vv
-  recent = "!git branch --sort=-committerdate | head -n 10 ; git branch --sort=-committerdate -a | grep 'justinmk' | head -n 10"
+  recent = "!git branch --sort=-committerdate | head -n 10 ; git branch --sort=-committerdate -a | grep 'justinmk' | sed 's,remotes/,,' | head -n 10"
   s  = !git status -sb
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
