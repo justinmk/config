@@ -409,7 +409,7 @@ set mouse=nvi
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
-    hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=NONE ctermbg=NONE cterm=underline gui=NONE
+    hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
     hi! link Directory Identifier
