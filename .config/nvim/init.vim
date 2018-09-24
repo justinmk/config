@@ -98,7 +98,7 @@ let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
-nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><Left>
+nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
@@ -1367,7 +1367,7 @@ command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vim
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
 command! Vimsrc tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|edit src/eval.c
-command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|Gedit <args>
+command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}') ? '' : 'v').'<args>'
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
 command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
