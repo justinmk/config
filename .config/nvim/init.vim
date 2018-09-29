@@ -221,7 +221,7 @@ if has("nvim")
   augroup END
 
   " Experimental
-  set fillchars+=msgsep:─
+  set fillchars+=msgsep:‾
   hi MsgSeparator ctermbg=black ctermfg=white
 endif
 
