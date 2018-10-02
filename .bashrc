@@ -56,14 +56,23 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
   trap "kill $SSH_AGENT_PID" 0
 fi
 
-# Include ~/bin in $PATH.
-[ -d "${HOME}/bin" ] && PATH="${HOME}/bin:${PATH}"
-[ -d "${HOME}/bin/ctags/bin" ] && PATH="${HOME}/bin/ctags/bin:${PATH}"
+is_in_path() {
+  echo "${PATH}:" | 2>&1 >/dev/null grep -E "${HOME}/bin"'/?:'
+}
 
-# Include dasht in $PATH.
-[ -d "${HOME}/dasht/bin" ] && PATH="${PATH}:${HOME}/dasht/bin"
+path_prepend() {
+  [ -z "$1" ] && { echo 'path_prepend: missing/empty arg' ; exit 1 ; }
+  if ! is_in_path "$1" && [ -d "$1" ] ; then
+    PATH="${1}:${PATH}"
+  fi
+}
 
-# Include dasht in $MANPATH.
+# Add these dirs to $PATH.
+path_prepend "${HOME}/bin/ctags/bin"
+path_prepend "${HOME}/dasht/bin"
+path_prepend "${HOME}/bin"
+
+# Add these dirs to $MANPATH.
 [ -d "${HOME}/dasht/man" ] && MANPATH="${HOME}/dasht/man:$MANPATH"
 
 # make less more friendly for non-text input files, see lesspipe(1)
