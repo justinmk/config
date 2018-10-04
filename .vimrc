@@ -31,7 +31,7 @@ if s:is_msys
   let &t_Co = 256
 endif
 
-source ~/.config/nvim/init.vim
+exe 'source '.expand('<sfile>:p:h').'/.config/nvim/init.vim'
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
