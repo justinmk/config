@@ -265,8 +265,8 @@ cnoremap        <C-Y> <C-R>-
 "}}}
 
 
-command! Session if filereadable(expand("~/.vim/session.vim", 1)) | source ~/.vim/session.vim
-      \ | else | Obsession ~/.vim/session.vim | endif
+command! Session if filereadable(stdpath('config').'/session.vim') | exe 'source '.stdpath('config').'/session.vim'
+      \ | else | exe 'Obsession '.stdpath('config').'/session.vim' | endif
 set sessionoptions-=blank
 
 "==============================================================================
