@@ -220,9 +220,10 @@ if has("nvim")
     autocmd FocusGained * call <SID>halo()
   augroup END
 
-  " Experimental
-  set fillchars+=msgsep:‾
-  hi MsgSeparator ctermbg=black ctermfg=white
+  if has('nvim-0.3.1')
+    set fillchars+=msgsep:‾
+    hi MsgSeparator ctermbg=black ctermfg=white
+  endif
 endif
 
 " Use <C-L> to:
