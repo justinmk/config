@@ -836,10 +836,9 @@ func! s:buf_kill(mercy) abort
   endif
 
   if !s:buf_switch_to_altbuff()
-    "No alternate buffer found; create a new, blank buffer.
-    "Note: :bd will still close any window displaying the buffer. To prevent
-    "      that the windows would each need to be switched to another buffer.
-    enew
+    " No alternate buffer, create an empty buffer.
+    " :bdelete still closes other windows displaying the buffer...
+    call s:buf_new()
   endif
 
   " remove the buffer filename (if any) from the args list, else it might come back in the next session.
@@ -848,7 +847,7 @@ func! s:buf_kill(mercy) abort
   endif
   " obliterate the buffer and all of its related state (marks, local options, ...), 
   if bufexists(origbuf) "some other mechanism may have deleted the buffer already.
-    exe 'bwipeout! '.origbuf
+    exe 'bdelete! '.origbuf
   endif
 endf
 
