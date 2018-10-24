@@ -19,7 +19,7 @@
 GPG_TTY=$(tty)
 export GPG_TTY
 
-command -v nvim > /dev/null 2>&1 && export MANPAGER="nvim '+set ft=man' -"
+command -v nvim > /dev/null 2>&1 && export MANPAGER="nvim +Man!"
 
 # =============================================================================
 # Bash-specific commands
@@ -216,7 +216,6 @@ ghrebase1() {
   local PR=${1}
   local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
 
-  #FOO=bar nvim -c 'au VimEnter * Gcommit --amend' -s <(echo 'Afoo')
   git fetch --all --prune \
     && git checkout --quiet refs/pull/upstream/${PR} \
     && git rebase upstream/master \
