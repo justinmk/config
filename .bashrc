@@ -78,13 +78,6 @@ path_prepend "${HOME}/bin"
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# msysgit cygwin
-# if [[ $TERM == 'cygwin' && $OSTYPE == 'msys' ]] ; then
-if [ "$MSYSTEM" = MINGW32 ]; then
-    export LS_COLORS='di=01;36'
-    alias pt='pt --nocolor'
-fi
-
 if [ -n "$TMUX" ]; then
 # bash completion (also provides __git_ps1 on some systems)
 # Slow as dirt.
@@ -111,7 +104,7 @@ alias ls='ls -C --color=auto'
 
 # change to parent directory matching partial string, eg:
 # in directory /home/foo/bar/baz, 'bd f' changes to /home/foo
-function bd () {
+bd() {
   local old_dir=`pwd`
   local new_dir=`echo $old_dir | sed 's|\(.*/'$1'[^/]*/\).*|\1|'`
   index=`echo $new_dir | awk '{ print index($1,"/'$1'"); }'`
@@ -122,23 +115,6 @@ function bd () {
     cd "$new_dir"
   fi
 }
-
-# provide 'watch' for systems that do not have it.
-#   passive tail approach: http://stackoverflow.com/a/9574526/152142
-if ! command -v watch > /dev/null 2>&1 ; then
-  function watch() {
-    while sleep 1; do
-      # clear screen if possible
-      command -v clear > /dev/null 2>&1 && clear
-      $*
-    done
-  }
-fi
-
-#msysgit cygwin sets this, even over ssh; full cygwin sets this to 'xterm'.
-if [[ $TERM != 'cygwin' ]]; then
-    alias tmux='tmux -2'
-fi
 
 #some old systems (msysgit) do not support grep --color.
 if grep --color "a" <<< "a" &> /dev/null ; then
