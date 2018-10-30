@@ -145,6 +145,12 @@ if grep --color "a" <<< "a" &> /dev/null ; then
     alias grep='grep --color=auto'
 fi
 
+# Backup ~/.bash_history
+if ! [ -f "$HOME/.bash_history.bk" ] \
+   || [ $(wc -l "$HOME/.bash_history" | cut -d ' ' -f 1) -gt $(wc -l "$HOME/.bash_history.bk" | cut -d ' ' -f 1) ] ; then
+  cp "$HOME/.bash_history" "$HOME/.bash_history.bk"
+fi
+
 #MacOS
 # http://stackoverflow.com/q/394230/152142
 #   also: $OSTYPE
