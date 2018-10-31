@@ -403,6 +403,7 @@ set mouse=nvi
 
     hi Error           guifg=#FFFFFF   guibg=Red   ctermfg=15 ctermbg=9
     hi ErrorMsg        ctermfg=203 ctermbg=NONE guifg=#ff5f5f guibg=#161821
+    hi WarningMsg      guifg=#FFE792 ctermfg=222
 
     hi Search guifg=#000000 guibg=#FFE792 ctermfg=0 ctermbg=222 cterm=NONE
     hi! link IncSearch Todo
@@ -414,7 +415,7 @@ set mouse=nvi
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
     hi! link Directory Identifier
-    hi CursorLine guibg=#303030 ctermbg=236 cterm=NONE
+    hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE
     hi! link LineNr CursorLine
     hi! link SignColumn StatusLineNC
     hi! link CursorLineNr Normal
