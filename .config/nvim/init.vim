@@ -1182,11 +1182,16 @@ augroup END
 
 " :shell
 " Creates a global default :shell with maximum 'scrollback'.
-func! s:ctrl_s(cnt, new, enter) abort
+func! s:ctrl_s(cnt, new, here) abort
   let init = { 'termbuf': -1,  'prevwid': win_getid() }
   let g:term_shell = a:new ? init : get(g:, 'term_shell', init)
   let d = g:term_shell
   let b = d.termbuf
+
+  if a:here && bufexists(b)  " Edit the :shell buffer in this window.
+    exe 'buffer' b
+    return
+  endif
 
   " Return to previous window.
   if bufnr('%') == b
@@ -1246,9 +1251,9 @@ func! s:ctrl_s(cnt, new, enter) abort
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:true)<CR>
     let d.termbuf = bufnr('%')
   endif
-  if a:enter
-    startinsert  " enter terminal-mode
-  endif
+  " if a:enter
+  "   startinsert  " enter terminal-mode
+  " endif
   let d.prevwid = curwinid
 endfunc
 nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
