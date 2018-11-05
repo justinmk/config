@@ -1249,7 +1249,7 @@ func! s:ctrl_s(cnt, new, here) abort
     bwipeout! #
     " Set alternate buffer to something intuitive.
     let @# = origbuf
-    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:true)<CR>
+    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:false)<CR>
     let d.termbuf = bufnr('%')
   endif
   " if a:enter
