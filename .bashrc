@@ -186,22 +186,19 @@ ghpr() {
 
   [ -z "$PR_TITLE" ] && { printf "error. request: $req_url\n       response: $(curl -Ss $req_url)\n"; return 1; }
 
-  git fetch --all --prune \
-    && git checkout upstream/master \
+  git checkout upstream/master \
     && git merge --no-commit --no-ff -m "Merge #${PR} '${PR_TITLE}'" refs/pull/upstream/${PR}
 }
 
 ghco() {
-  git fetch --all --prune \
-    && git checkout refs/pull/upstream/${1}
+  git checkout refs/pull/upstream/${1}
 }
 
 ghrebase1() {
   local PR=${1}
   local sed_cmd=$( [ "$(uname)" = Darwin ] && echo 'sed -E' || echo 'sed -r' )
 
-  git fetch --all --prune \
-    && git checkout --quiet refs/pull/upstream/${PR} \
+  git checkout --quiet refs/pull/upstream/${PR} \
     && git rebase upstream/master \
     && git checkout upstream/master \
     && git merge --ff-only - \
