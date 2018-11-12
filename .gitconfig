@@ -42,11 +42,12 @@
 [i18n]
   filesEncoding = utf-8
 [alias]
+  fa = "!find . -maxdepth 3 -type d -name .git -exec echo 'repo: {}' \\; -exec git -C '{}' fetch --all --prune \\;"
   l  = log --graph --oneline --decorate
   ld = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
   ll = log --stat --decorate --source -p
   b  = branch -vv
-  recent = "!git branch --sort=-committerdate | head -n 10 ; git branch --sort=-committerdate -a | grep 'justinmk' | sed 's,remotes/,,' | head -n 10"
+  recent = "!git branch --sort=-committerdate | head -n 10 ; git branch --sort=-committerdate -a | grep -E 'justinmk|origin' | sed 's,remotes/,,' | head -n 10"
   s  = !git status -sb
   co = checkout
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
