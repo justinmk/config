@@ -342,6 +342,7 @@ set mouse=nvi
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
     " space as extra whitespace (makes mouse-copy nicer).
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
+    hi NormalNC ctermfg=NONE ctermbg=233
     set background=dark
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
     hi SpecialKey ctermfg=241
@@ -368,13 +369,12 @@ set mouse=nvi
     " hi Type ctermfg=NONE
     hi! link Type Identifier
     " hi String guifg=#FFE792 guibg=NONE gui=NONE ctermfg=222 ctermbg=NONE cterm=NONE
-    hi MoreMsg guifg=LightGreen guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
-    hi! link String MoreMsg
-    hi! link Question MoreMsg
+    hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
+    hi String guifg=LightGreen guibg=NONE gui=NONE ctermfg=LightGreen ctermbg=NONE cterm=NONE
+    hi! link Question String
 
     hi Todo guifg=black guibg=lightgreen ctermfg=black ctermbg=lightgreen
     hi! link WildMenu QuickFixLine
-    hi WildMenu ctermbg=cyan ctermfg=black
 
     " completion/popup menu
     hi Pmenu guifg=#FFFFFF guibg=#585858 gui=NONE ctermfg=255 ctermbg=240 cterm=NONE
@@ -431,7 +431,7 @@ set mouse=nvi
 
     " other
     hi helpHyperTextJump cterm=underline ctermfg=cyan
-    hi MatchParen ctermfg=white ctermbg=197 guifg=black guibg=white
+    hi MatchParen cterm=bold,underline ctermfg=lightgreen ctermbg=NONE guifg=black guibg=white
 "}}}
 
 "==============================================================================
