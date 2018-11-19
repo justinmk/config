@@ -45,9 +45,6 @@ shopt -s checkwinsize
 # (bash 4+) enable recursive glob for grep, rsync, ls, ...
 shopt -s globstar &> /dev/null
 
-#disable ctrl-s (scroll-lock) and ctrl-q
-command -v stty > /dev/null 2>&1 && stty -ixon -ixoff
-
 # Display matches for ambiguous patterns at first tab press
 bind "set show-all-if-ambiguous on"
 
