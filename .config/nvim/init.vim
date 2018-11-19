@@ -343,7 +343,7 @@ set mouse=nvi
     " space as extra whitespace (makes mouse-copy nicer).
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
     set background=dark
-    hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=197 ctermfg=white
+    hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
     hi SpecialKey ctermfg=241
     hi! link NonText Comment
     hi Whitespace ctermfg=darkgrey
@@ -368,12 +368,12 @@ set mouse=nvi
     " hi Type ctermfg=NONE
     hi! link Type Identifier
     " hi String guifg=#FFE792 guibg=NONE gui=NONE ctermfg=222 ctermbg=NONE cterm=NONE
-    hi MoreMsg guifg=LightGreen guibg=NONE gui=NONE ctermfg=LightGreen ctermbg=NONE cterm=NONE
+    hi MoreMsg guifg=LightGreen guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
     hi! link String MoreMsg
     hi! link Question MoreMsg
 
     hi Todo guifg=black guibg=lightgreen ctermfg=black ctermbg=lightgreen
-    " hi! link WildMenu Todo
+    hi! link WildMenu QuickFixLine
     hi WildMenu ctermbg=cyan ctermfg=black
 
     " completion/popup menu
@@ -387,12 +387,12 @@ set mouse=nvi
     hi! link TabLineFill TabLine
 
     " diff (unified)
-    hi diffAdded       guifg=#00ff5f gui=NONE      ctermfg=47  cterm=NONE
+    hi diffAdded       guifg=#00ff5f gui=NONE      ctermfg=lightgreen  cterm=NONE
     hi diffRemoved     guifg=#ff5f5f gui=NONE      ctermfg=203 cterm=NONE
     hi link diffSubname Normal
 
     " diff (side-by-side)
-    hi DiffAdd         guifg=#000000 guibg=#00ff5f ctermfg=0   ctermbg=47  gui=NONE cterm=NONE
+    hi DiffAdd         guifg=#000000 guibg=#00ff5f ctermfg=0   ctermbg=lightgreen  gui=NONE cterm=NONE
     hi DiffChange      guifg=#FFFFFF guibg=#4C4745 ctermfg=255 ctermbg=239 gui=NONE cterm=NONE
     hi DiffDelete      guifg=#ff5f5f guibg=NONE    ctermfg=203 ctermbg=NONE gui=NONE cterm=NONE
     hi DiffText        guifg=black   guibg=cyan    ctermfg=16  ctermbg=cyan gui=NONE cterm=NONE
@@ -403,11 +403,14 @@ set mouse=nvi
 
     hi Error           guifg=#FFFFFF   guibg=Red   ctermfg=15 ctermbg=9
     hi ErrorMsg        ctermfg=203 ctermbg=NONE guifg=#ff5f5f guibg=#161821
-    hi WarningMsg      guifg=#FFE792 ctermfg=222
+    " alternative: 227, 185, 191 (too green)
+    hi WarningMsg      guifg=#d7ff5f ctermfg=185
 
-    hi Search guifg=#000000 guibg=#FFE792 ctermfg=0 ctermbg=222 cterm=NONE
-    hi! link IncSearch Todo
-    hi! link Substitute Visual
+    " alternative: 227, 185, 191 (too green)
+    " hi Search guifg=#000000 guibg=#d7ff5f ctermfg=0 ctermbg=227 gui=NONE cterm=NONE
+    hi! link Search Visual
+    hi! link IncSearch QuickFixLine
+    hi! link Substitute QuickFixLine
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
@@ -421,14 +424,14 @@ set mouse=nvi
     hi! link CursorLineNr Normal
 
     hi SpellBad ctermbg=red ctermfg=255 cterm=undercurl gui=undercurl guisp=Red
-    hi SpellCap ctermbg=lightgrey ctermfg=red cterm=undercurl gui=undercurl guisp=Blue
+    hi SpellCap ctermbg=lightgrey ctermfg=red cterm=undercurl gui=undercurl guisp=white
     hi! link SpellRare SpellCap
 
     hi Underlined ctermfg=NONE cterm=underline gui=underline guifg=NONE
 
     " other
     hi helpHyperTextJump cterm=underline ctermfg=cyan
-    hi MatchParen ctermfg=black ctermbg=white guifg=black guibg=white
+    hi MatchParen ctermfg=white ctermbg=197 guifg=black guibg=white
 "}}}
 
 "==============================================================================
