@@ -369,9 +369,9 @@ set mouse=nvi
     " hi Type ctermfg=NONE
     hi! link Type Identifier
     " hi String guifg=#FFE792 guibg=NONE gui=NONE ctermfg=222 ctermbg=NONE cterm=NONE
-    hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
     hi String guifg=LightGreen guibg=NONE gui=NONE ctermfg=LightGreen ctermbg=NONE cterm=NONE
-    hi! link Question String
+    hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
+    hi! link Question MoreMsg
 
     hi Todo guifg=black guibg=lightgreen ctermfg=black ctermbg=lightgreen
     hi! link WildMenu QuickFixLine
