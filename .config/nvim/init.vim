@@ -342,33 +342,31 @@ set mouse=nvi
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
     " space as extra whitespace (makes mouse-copy nicer).
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
-    hi NormalNC ctermfg=NONE ctermbg=233
-    set background=dark
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
+    hi Whitespace ctermfg=LightGray
     hi SpecialKey ctermfg=241
+    hi! link SpecialChar Whitespace
     hi! link NonText Comment
-    hi Whitespace ctermfg=darkgrey
     hi Comment guifg=#7E8E91 ctermfg=244
-    hi! link Title Comment
     hi! link Constant Normal
 
     hi QuickFixLine guifg=black guibg=cyan ctermfg=black ctermbg=cyan
-    " Special should be (at least) slightly distinct from SpecialKey.
-    hi Special ctermfg=lightgrey guifg=lightgrey
+    " Special should be (at least slightly) distinct from SpecialKey.
+    hi Special ctermfg=LightCyan guifg=LightCyan
     " hi Special guifg=#F92672 gui=bold ctermfg=197 cterm=NONE
 
     " cyan
     hi Identifier ctermfg=cyan guifg=cyan
     hi! link Statement Identifier
     hi! link Exception Identifier
+    hi! link Title Identifier
     " affects:
     "   - NONE string in 'hi Normal ctermfg=NONE …'
     "   - helpHeader
-    hi! link PreProc Identifier
+    hi! link PreProc Special
 
     " hi Type ctermfg=NONE
     hi! link Type Identifier
-    " hi String guifg=#FFE792 guibg=NONE gui=NONE ctermfg=222 ctermbg=NONE cterm=NONE
     hi String guifg=LightGreen guibg=NONE gui=NONE ctermfg=LightGreen ctermbg=NONE cterm=NONE
     hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
     hi! link Question MoreMsg
