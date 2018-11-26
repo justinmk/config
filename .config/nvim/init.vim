@@ -726,7 +726,7 @@ nnoremap gqaj    :%!python -m json.tool<cr>
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs><tab>
 "   insert: c-\ c-g
-"   normal: gy c-f c-t c-b c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> q<special>
+"   normal: vd gy c-f c-t c-b c-j c-k + _ c-\ g= zu z/ m<enter> zy zi zp m<tab> q<special> y<special> q<special>
 "           c<space>
 "           !@       --> async run
 
@@ -859,10 +859,7 @@ onoremap <m-cr> -
 
 " un-join (split) the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
-" vaporize delete without overwriting the default register
-nnoremap vd "_d
 xnoremap x  "_d
-nnoremap vD "_D
 xnoremap P  "0p
 
 nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
