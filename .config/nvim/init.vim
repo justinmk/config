@@ -365,7 +365,6 @@ set mouse=nvi
     "   - helpHeader
     hi! link PreProc Special
 
-    " hi Type ctermfg=NONE
     hi! link Type Identifier
     hi String guifg=LightGreen guibg=NONE gui=NONE ctermfg=LightGreen ctermbg=NONE cterm=NONE
     hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
@@ -1032,13 +1031,10 @@ nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <
 
 hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
 func! s:markline() abort
-  let b:vimrc_markedlines = get(b:, "vimrc_markedlines", {})
-  "TODO: This will get stale if the line moves.
-  "      :sign is a solution, but need to create a way to get un-used sign {id}s.
-  let b:vimrc_markedlines[line('.')] = matchaddpos("MarkLine", [line('.')])
+  call nvim_buf_add_highlight(bufnr('%'), 0, 'MarkLine', (line('.')-1), 0, -1)
 endf
 nnoremap <silent> m.  :call <sid>markline()<cr>
-nnoremap <silent> m<bs> :call matchdelete(b:vimrc_markedlines[line('.')])<cr>
+nnoremap <silent> m<bs> :call nvim_buf_clear_highlight(bufnr('%'), -1, 0, -1)<cr>
 
 " }}} mappings
 
