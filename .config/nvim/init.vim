@@ -522,10 +522,12 @@ inoremap <silent><M-h> <C-\><C-N><C-w><C-h>
 inoremap <silent><M-j> <C-\><C-N><C-w><C-j>
 inoremap <silent><M-k> <C-\><C-N><C-w><C-k>
 inoremap <silent><M-l> <C-\><C-N><C-w><C-l>
-tnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
-tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
-tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
-tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
+if has('nvim')
+  tnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
+  tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
+  tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
+  tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
+endif
 nnoremap Zh     :leftabove vsplit<CR>
 nnoremap Zj     :belowright split<CR>
 nnoremap Zk     :aboveleft split<CR>
@@ -626,7 +628,7 @@ nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(
 nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
 nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
-nnoremap <silent> Ul :GV!<cr>
+nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
 nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
