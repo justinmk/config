@@ -1351,7 +1351,7 @@ set titlestring=%{getpid().':'.getcwd()}
 set titleold=?
 
 " special-purpose mappings/commands ===========================================
-nnoremap <leader>vft  :e ~/.config/nvim/ftplugin<cr>
+nnoremap <leader>vft  :e ~/.config/nvim/after/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <silent> <leader>vs :Scriptnames<cr>
 inoremap <silent> <leader>log ELOG("");<Left><Left><Left>
@@ -1377,8 +1377,8 @@ command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
 function! Cxn_py() abort
   vsplit
   terminal
-  call chansend(&channel, "python3\nimport neovim\n")
-  call chansend(&channel, "n = neovim.attach('socket', path='".g:cxn."')\n")
+  call chansend(&channel, "python3\nimport pynvim\n")
+  call chansend(&channel, "n = pynvim.attach('socket', path='".g:cxn."')\n")
 endfunction
 function! Cxn(addr) abort
   silent! unlet g:cxn
