@@ -1,7 +1,6 @@
 setlocal commentstring=//\ %s
 
 nnoremap <buffer> [[    [[3<c-y>
-let b:undo_ftplugin = 'setlocal formatprg= cinoptions<'
 
 " indent after parens, etc.
 setlocal cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l1,b0  " Control structures

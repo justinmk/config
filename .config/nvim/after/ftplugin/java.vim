@@ -1,5 +1,3 @@
-let b:undo_ftplugin = 'setlocal cinoptions<'
-
 autocmd FileType java setlocal tabstop=4 shiftwidth=4 copyindent nolist
 
 if isdirectory(expand("~/.vim/eclim", 1))
