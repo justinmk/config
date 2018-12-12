@@ -23,15 +23,12 @@ export GPG_TTY
   && [ 1 = $(2>&1 nvim -u NONE -i NONE --headless +'echo has("nvim-0.3.2")' +q) ] \
   && export MANPAGER="nvim +Man!"
 
-# =============================================================================
-# Bash-specific commands
-# =============================================================================
-
-# HIST* are bash-only variables, not environmental variables, so do not 'export'
-# ignoredups only ignores _consecutive_ duplicates.
+# Non-default history file, to avoid accidental truncation.
+[ -f "$HOME/.bash_history_x" ] || { [ -f "$HOME/.bash_history" ] && cp "$HOME/.bash_history" "$HOME/.bash_history_x" ; }
+HISTFILE="$HOME/.bash_history_x"
 HISTCONTROL=erasedups:ignoreboth
-HISTSIZE=20000
-HISTFILESIZE=20000
+HISTSIZE=99999
+HISTFILESIZE=99999
 HISTIGNORE='exit:cd:ls:bg:fg:history:f:fd'
 HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
@@ -118,12 +115,6 @@ bd() {
 #some old systems (msysgit) do not support grep --color.
 if grep --color "a" <<< "a" &> /dev/null ; then
     alias grep='grep --color=auto'
-fi
-
-# Backup ~/.bash_history
-if ! [ -f "$HOME/.bash_history.bk" ] \
-   || [ $(wc -l "$HOME/.bash_history" | cut -d ' ' -f 1) -gt $(wc -l "$HOME/.bash_history.bk" | cut -d ' ' -f 1) ] ; then
-  cp "$HOME/.bash_history" "$HOME/.bash_history.bk"
 fi
 
 #MacOS
