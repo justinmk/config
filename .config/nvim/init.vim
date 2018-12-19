@@ -370,7 +370,7 @@ set mouse=nvi
     hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
     hi! link Question MoreMsg
 
-    hi Todo guibg=black guifg=lightgreen ctermbg=black ctermfg=lightgreen
+    hi Todo guibg=white guifg=black ctermbg=white ctermfg=black
     hi! link WildMenu QuickFixLine
 
     " completion/popup menu
@@ -810,7 +810,7 @@ endf
 
 func! s:buf_switch_to_altbuff() abort
   " change to alternate buffer if it is not the current buffer (yes, that can happen)
-  if -1 != bufnr("#") && bufnr("#") != bufnr("%")
+  if buflisted(bufnr("#")) && bufnr("#") != bufnr("%")
     buffer #
     return 1
   endif
@@ -1184,13 +1184,20 @@ augroup END
 " :shell
 " Creates a global default :shell with maximum 'scrollback'.
 func! s:ctrl_s(cnt, new, here) abort
-  let init = { 'termbuf': -1,  'prevwid': win_getid() }
+  let init = { 'prevwid': win_getid() }
   let g:term_shell = a:new ? init : get(g:, 'term_shell', init)
   let d = g:term_shell
-  let b = d.termbuf
+  let b = bufnr(':shell')
 
-  if a:here && bufexists(b)  " Edit the :shell buffer in this window.
+  if bufexists(b) && (a:here || bufnr('#') == b)  " Edit the :shell buffer in this window.
     exe 'buffer' b
+    let d.prevwid = win_getid()
+    return
+  endif
+
+  " Return to alternate buffer.
+  if bufnr('%') == b && d.prevwid == win_getid()
+    exe 'buffer #'
     return
   endif
 
@@ -1240,17 +1247,17 @@ func! s:ctrl_s(cnt, new, here) abort
     let origbuf = bufnr('%')
     exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
     terminal
+    setlocal scrollback=-1
     " augroup nvim_shell
     "   autocmd!
     "   autocmd TabLeave <buffer> if winnr('$') == 1 && bufnr('%') == g:term_shell.termbuf | tabclose | endif
     " augroup END
-    exe 'file :shell '.jobpid(&channel)
+    file :shell
     " XXX: original term:// buffer hangs around after :file ...
     bwipeout! #
     " Set alternate buffer to something intuitive.
     let @# = origbuf
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:false)<CR>
-    let d.termbuf = bufnr('%')
   endif
   " if a:enter
   "   startinsert  " enter terminal-mode
