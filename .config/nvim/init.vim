@@ -99,6 +99,8 @@ let g:surround_no_insert_mappings = 1
 
 Plug 'tpope/vim-dispatch'
 nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>
+" After :Dispatch/:Make
+au QuickFixCmdPost cgetfile copen|if &buftype==#'quickfix'|call nvim_input("G<c-w>L<c-w>_zb")|endif
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
