@@ -20,7 +20,7 @@ GPG_TTY=$(tty)
 export GPG_TTY
 
 2>&1 command -v nvim > /dev/null \
-  && [ 1 = $(2>&1 nvim -u NONE -i NONE --headless +'echo has("nvim-0.3.2")' +q) ] \
+  && nvim -es +'exe !has("nvim-0.3.2")."cq"' \
   && export MANPAGER="nvim +Man!"
 
 # Non-default history file, to avoid accidental truncation.

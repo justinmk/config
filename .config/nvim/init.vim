@@ -590,6 +590,10 @@ nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 
 " quickfix window (in quickfix: toggles between qf & loc list)
 nnoremap <silent><expr> <M-q> '@_:'.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>botright copen':'cclose<bar>botright lopen').'<CR>'
+nnoremap <q :colder<CR>
+nnoremap >q :cnewer<CR>
+nnoremap <l :lolder<CR>
+nnoremap >l :lnewer<CR>
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
@@ -1260,15 +1264,15 @@ set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
-nnoremap >t    :tag<space>
+nnoremap \t    :tag<space>
 " See `man fnmatch`.
-nnoremap >g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/\!*.md' ':/\!*.mpack' ':/\!*.pbf' ':/\!*.pdf' ':/\!*.po' ':(top,exclude,icase)notebooks/' ':/\!data/' ':/\!work/' ':/\!qgis/' ':/\!graphhopper_data/'
+nnoremap \g  mS:Ggrep! -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/\!*.md' ':/\!*.mpack' ':/\!*.pbf' ':/\!*.pdf' ':/\!*.po' ':(top,exclude,icase)notebooks/' ':/\!data/' ':/\!work/' ':/\!qgis/' ':/\!graphhopper_data/'
       \<Home><C-Right><C-Right><C-Right><left>
-nnoremap >v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
+nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
-nnoremap >b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
+nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
 " search current buffer and open results in loclist
-nnoremap >.   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
+nnoremap \c   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
 " search-replace
 nnoremap gsal mr:%s/
 xnoremap gs   mr:s/\%V
