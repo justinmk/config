@@ -370,12 +370,12 @@ set mouse=nvi
     hi MoreMsg guifg=cyan guibg=NONE gui=NONE ctermfg=cyan ctermbg=NONE cterm=NONE
     hi! link Question MoreMsg
 
-    hi Todo guifg=black guibg=lightgreen ctermfg=black ctermbg=lightgreen
+    hi Todo guibg=black guifg=lightgreen ctermbg=black ctermfg=lightgreen
     hi! link WildMenu QuickFixLine
 
     " completion/popup menu
     hi Pmenu guifg=#FFFFFF guibg=#585858 gui=NONE ctermfg=255 ctermbg=240 cterm=NONE
-    hi! link PmenuSel Todo
+    hi! link PmenuSel Search
     hi PmenuSbar guibg=darkgray ctermbg=darkgray
     hi PmenuThumb ctermbg=lightgreen ctermfg=lightgreen
 
@@ -405,7 +405,7 @@ set mouse=nvi
 
     " alternative: 227, 185, 191 (too green)
     " hi Search guifg=#000000 guibg=#d7ff5f ctermfg=0 ctermbg=227 gui=NONE cterm=NONE
-    hi! link Search Visual
+    hi! Search ctermbg=lightgreen ctermfg=black guibg=lightgreen guifg=black
     hi! link IncSearch QuickFixLine
     hi! link Substitute QuickFixLine
 
