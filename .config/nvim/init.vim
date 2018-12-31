@@ -1359,7 +1359,6 @@ endf
 
 set title
 set titlestring=%{getpid().':'.getcwd()}
-set titleold=?
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.config/nvim/after/ftplugin<cr>
