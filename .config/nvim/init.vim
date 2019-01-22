@@ -107,7 +107,6 @@ Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-rsi'
 
 Plug 'tpope/vim-unimpaired'
-nmap co yo
 
 Plug 'tpope/vim-endwise'
 inoremap (<CR> (<CR>)<Esc>O
