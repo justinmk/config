@@ -17,5 +17,11 @@ if ! [ -d "$_REPO_DIR" ] || ! 2>&1 >/dev/null grep justinmk/config "$_REPO_DIR"/
 fi
 
 # Start bash+tmux with cleared environment.
-env -i HOME="$_REPO_DIR" TERM="$TERM" bash -l -c tmux
+#
+# Invoke bash with explicit env vars because:
+#   - If tmux is already running, new sessions inherit THAT environment!
+#   - "tmux set update-environment …" doesn't work at runtime.
+tmux source-file "${_REPO_DIR}/.tmux.conf" || true
+env -i HOME="$_REPO_DIR" DISPLAY="${DISPLAY:-}" LC_ALL="${LC_ALL:-}" LC_CTYPE="${LC_CTYPE:-}" LANG="${LANG:-}" TERM="$TERM" \
+  tmux new-session -E "HOME='$_REPO_DIR' bash -l"
 
