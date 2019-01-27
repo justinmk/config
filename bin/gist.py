@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from sys import stdin
 import json
 import requests
@@ -14,6 +16,12 @@ def main_():
     gitlab_project_id = urllib.parse.quote_plus('justinmk/gist')
 
     inputstr = ""
+
+    if DEBUG:
+        print('netrc_info={}, gist_api_cred={}, gitlab_project_id={}'.format(
+            netrc_info, gist_api_cred, gitlab_project_id))
+
+    print('reading from stdin...')
     for line in stdin:
         inputstr = inputstr + line
 
@@ -30,6 +38,8 @@ def main_():
         print(gist_api_request_payload)
 
     endpoint = 'https://gitlab.com/api/v4/projects/{}/snippets'.format(gitlab_project_id)
+    if DEBUG:
+        print('endpoint={}'.format(endpoint))
     response = requests.post(endpoint,
                         data=gist_api_request_payload,
                         headers={
