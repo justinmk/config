@@ -64,9 +64,9 @@ path_prepend() {
 }
 
 # Add these dirs to $PATH.
-path_prepend "${HOME}/bin/ctags/bin"
 path_prepend "${HOME}/dasht/bin"
 path_prepend "${HOME}/bin"
+# path_prepend "${HOME}/ctags/"
 
 # Add these dirs to $MANPATH.
 [ -d "${HOME}/dasht/man" ] && MANPATH="${HOME}/dasht/man:$MANPATH"

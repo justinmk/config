@@ -1377,8 +1377,7 @@ command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".e
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
-command! Vimsrc tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|edit src/eval.c
-command! -nargs=1 Vimref tabedit ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}') ? '' : 'v').'<args>'
+command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}') ? '' : 'v').'<args>'
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
 command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
