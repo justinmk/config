@@ -42,23 +42,6 @@ if has('nvim')
   Plug 'justinmk/vim-highlightedyank'
 endif
 
-if v:version > 703 && !has('win32') && !has('win32unix')
-Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_ctags_exclude = [
-      \'.vim-src/**',
-      \'venv/**',
-      \'**/site-packages/**',
-      \'data/**',
-      \'dist/**',
-      \'notebooks/**',
-      \'Notebooks/**',
-      \'*graphhopper_data/*.json',
-      \'*graphhopper/*.json',
-      \'*.json',
-      \'qgis/**'
-      \]
-endif
-
 Plug 'tommcdo/vim-exchange'
 
 Plug 'https://github.com/justinmk/vim-ipmotion.git'
@@ -1382,6 +1365,7 @@ command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
 command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
+command! Tags !ctags -R --exclude='build*' --exclude='.vim-src/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**' *
 
 function! Cxn_py() abort
   vsplit
