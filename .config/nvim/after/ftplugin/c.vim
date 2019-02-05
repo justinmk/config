@@ -18,11 +18,9 @@ endif
 
 if fnamemodify(@%, ':p') =~# 'neovim'
   let b:printf_pattern = 'ILOG("%d", %s);'
+  nnoremap <silent> <leader>log oELOG("");<esc>
 endif
 
-if exists(":YcmCompleter")
-  nnoremap <buffer> gd    :<c-u>YcmCompleter GoToDefinition<cr>
-endif
 
 if exists(":Lattach") " vim-lldb plugin
   nnoremap <buffer> yda     :<c-u>Lattach<space>

@@ -1347,7 +1347,7 @@ set titlestring=%{getpid().':'.getcwd()}
 nnoremap <leader>vft  :e ~/.config/nvim/after/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <silent> <leader>vs :Scriptnames<cr>
-inoremap <silent> <leader>log ELOG("");<Left><Left><Left>
+
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
