@@ -19,10 +19,6 @@
 GPG_TTY=$(tty)
 export GPG_TTY
 
-2>&1 command -v nvim > /dev/null \
-  && nvim -es +'exe !has("nvim-0.3.2")."cq"' \
-  && export MANPAGER="nvim +Man!"
-
 # Non-default history file, to avoid accidental truncation.
 [ -f "$HOME/.bash_history_x" ] || { [ -f "$HOME/.bash_history" ] && cp "$HOME/.bash_history" "$HOME/.bash_history_x" ; }
 HISTFILE="$HOME/.bash_history_x"

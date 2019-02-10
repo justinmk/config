@@ -1,6 +1,11 @@
 # .profile: for cases where .bash_profile is skipped
 
-command -v nvim > /dev/null 2>&1 && export EDITOR=nvim || export EDITOR=vim
+if >/dev/null 2>&1 command -v nvim ; then
+  export EDITOR=nvim
+  nvim -es +'exe !has("nvim-0.3.2")."cq"' && export MANPAGER="nvim +Man!"
+else
+  export EDITOR=vim
+fi
 
 # msysgit bash runs .bashrc _and_ .bash_profile, so avoid redundant run.
 if ! [ "$MSYSTEM" = MINGW32 ] ; then
