@@ -71,7 +71,7 @@ Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-scriptease'
 Plug 'tpope/vim-apathy'
 
-Plug 'zhaocai/DirDiff.vim', { 'on': ['DirDiff'] }
+Plug 'will133/vim-dirdiff', { 'on': ['DirDiff'] }
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'tpope/vim-rhubarb'
@@ -496,6 +496,7 @@ nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforw
 "       <c-w>eip
 " available:
 "       <c-w><space>{motion}
+"       <c-_> (<c-->)
 nnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
 nnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
 nnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
