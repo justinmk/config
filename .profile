@@ -3,8 +3,10 @@
 if >/dev/null 2>&1 command -v nvim ; then
   export EDITOR=nvim
   nvim -es +'exe !has("nvim-0.3.2")."cq"' && export MANPAGER="nvim +Man!"
-else
+elif >/dev/null 2>&1 command -v vim ; then
   export EDITOR=vim
+else
+  export EDITOR=vi
 fi
 
 # msysgit bash runs .bashrc _and_ .bash_profile, so avoid redundant run.
