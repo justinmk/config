@@ -1,3 +1,10 @@
+" Needed when running as `vi`. {{{
+set nocp
+set hidden
+set background=dark
+set showcmd
+" }}}
+
 if has('vim_starting')
   " required for alt/meta mappings  https://github.com/tpope/vim-sensible/issues/69
   set encoding=utf-8
@@ -8,47 +15,22 @@ if &rtp !~? '\v(('.escape(expand('~'), '/\').')|\~)[/\\]\.nvim'
   set runtimepath+=~/.config/nvim
 endif
 
-if exists('&guioptions')
-    "use console dialogs instead of popup dialogs; disable all other GUI options.
-    set guioptions=c
-    " cursor behavior:
-    "   - no blinking in normal/visual mode
-    "   - manic blinking in insert-mode
-    set guicursor+=n-v-c:blinkon0,sm:hor30-Cursor,i-ci:ver25-Cursor/lCursor-blinkwait30-blinkoff100-blinkon100
+if 1
+  let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
+  let s:plugins = filereadable(expand("~/.config/nvim/autoload/plug.vim", 1))
+  let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
+
+  exe 'source '.expand('<sfile>:p:h').'/.config/nvim/init.vim'
 endif
 
-let g:loaded_vimballPlugin = 1   " Tell vimball to get lost.
-let g:loaded_getscriptPlugin = 1
-
-let s:is_cygwin = has('win32unix') || has('win64unix') "treat this as mintty
-let s:is_msys = ($MSYSTEM =~? 'MINGW\d\d')
-let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
-let s:plugins = filereadable(expand("~/.config/nvim/autoload/plug.vim", 1))
-let s:plugins_extra = s:plugins && !s:is_msys && !s:is_cygwin
-let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
-
-if s:is_msys
-  let &t_Co = 256
-endif
-
-exe 'source '.expand('<sfile>:p:h').'/.config/nvim/init.vim'
 
 " To map a 'meta' escape sequence in a terminal, you must map the literal control character.
 " insert-mode, type ctrl-v, then press alt+<key> (while in a terminal, not gvim).
 " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
 " http://stackoverflow.com/a/10633069/152142
-if !s:is_msysgit && !s:is_gui
+if 1 && !s:is_msysgit && !s:is_gui
     "avoid: m-b m-d m-f
-    set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m
-          \ <m-n>=n <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s
-          \ <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z
-          \ <m-]>=] <m-;>=;
-endif
-
-if s:is_msysgit
-  func! s:set_CursorLine()
-  " do nothing
-  endfunc
+    set <m-g>=g <m-h>=h <m-i>=i <m-j>=j <m-k>=k <m-l>=l <m-m>=m <m-n>=n <m-o>=o <m-p>=p <m-q>=q <m-r>=r <m-s>=s <m-t>=t <m-w>=w <m-x>=x <m-y>=y <m-z>=z <m-]>=] <m-;>=;
 endif
 
 if has('win32')
@@ -67,19 +49,13 @@ endif
 " let &showbreak="\u21aa" " precedes line wrap
 set listchars=tab:>\ ,trail:-,nbsp:+
 
-if s:is_cygwin || !empty($TMUX)
-  " Mode-dependent cursor   https://code.google.com/p/mintty/wiki/Tips
-  let &t_ti.="\e[1 q"
-  let &t_SI.="\e[5 q"
-  let &t_EI.="\e[1 q"
-  let &t_te.="\e[0 q"
-endif
-
 "transient dirs
-let s:dir = '~/.local/share/vim'
-let &directory = expand(s:dir, 1).'/swap//,'.&directory
-if has("persistent_undo")
-  let &undodir = expand(s:dir, 1).'/undo//,'.&undodir
+if 1
+  let s:dir = '~/.local/share/vim'
+  let &directory = expand(s:dir, 1).'/swap//,'.&directory
+  if has("persistent_undo")
+    let &undodir = expand(s:dir, 1).'/undo//,'.&undodir
+  endif
 endif
 
 set ttimeout
@@ -105,7 +81,7 @@ set hlsearch    " highlight search matches
 set autoread
 
 " Load matchit.vim, but only if the user hasn't installed a newer version.
-if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+if 1 && !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
 
