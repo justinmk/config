@@ -11,7 +11,6 @@ let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
 packadd minpac
 let s:plugins = exists('*minpac#init')
-let s:plugins_extra = s:plugins
 if !s:plugins "{{{
   fun! InstallPlug() " Bootstrap plugin manager on new systems.
     exe '!git clone https://github.com/k-takata/minpac.git ~/.config/nvim/pack/minpac/opt/minpac'
@@ -35,8 +34,6 @@ if has('nvim')
   call minpac#add('justinmk/vim-highlightedyank')
 endif
 
-call minpac#add('tommcdo/vim-exchange')
-
 call minpac#add('https://github.com/justinmk/vim-ipmotion.git')
 call minpac#add('https://github.com/justinmk/vim-gtfo.git')
 call minpac#add('https://github.com/justinmk/vim-dirvish.git')
@@ -49,15 +46,7 @@ call minpac#add('https://github.com/justinmk/vim-sneak.git')
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#absolute_dir = 1
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
-
-if executable("tmux")
-call minpac#add('wellle/tmux-complete.vim')
-endif
 
 call minpac#add('tpope/vim-characterize')
 " call minpac#add('tpope/vim-sleuth')
@@ -85,7 +74,7 @@ call minpac#add('tpope/vim-rsi')
 
 call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tommcdo/vim-lion')
-
+call minpac#add('tommcdo/vim-exchange')
 
 call minpac#add('tpope/vim-endwise')
 inoremap (<CR> (<CR>)<Esc>O
@@ -109,31 +98,30 @@ call minpac#add('mbbill/undotree', {'type': 'opt'})
 
 call minpac#add('tpope/vim-commentary')
 
-if s:plugins_extra
-  call minpac#add('guns/vim-sexp', {'type': 'opt'})
-  call minpac#add('guns/vim-clojure-highlight', {'type': 'opt'})
-  let g:clojure_fold = 1
-  let g:sexp_filetypes = ''
+call minpac#add('guns/vim-sexp', {'type': 'opt'})
+call minpac#add('guns/vim-clojure-highlight', {'type': 'opt'})
+let g:clojure_fold = 1
+let g:sexp_filetypes = ''
 
-  call minpac#add('tpope/vim-salve')
-  let g:salve_auto_start_repl = 1
-  call minpac#add('tpope/vim-fireplace')
+call minpac#add('tpope/vim-salve')
+let g:salve_auto_start_repl = 1
+call minpac#add('tpope/vim-fireplace')
 
-  call minpac#add('justinmk/nvim-repl')
-    nmap yx       <Plug>(ReplSend)
-    nmap yxx      <Plug>(ReplSendLine)
-    xmap <Enter>  <Plug>(ReplSend)
-    nnoremap <c-q> :Repl<CR>
+call minpac#add('justinmk/nvim-repl')
+  nmap yx       <Plug>(ReplSend)
+  nmap yxx      <Plug>(ReplSendLine)
+  xmap <Enter>  <Plug>(ReplSend)
+  nnoremap <c-q> :Repl<CR>
 
-  call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
-  call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
+call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
+call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
-  call minpac#add('junegunn/fzf', { 'do': 'yes n \| ./install' })
-  call minpac#add('junegunn/fzf.vim')
-  let g:fzf_command_prefix = 'Fz'
+call minpac#add('junegunn/fzf', { 'do': 'yes n \| ./install' })
+call minpac#add('junegunn/fzf.vim')
+let g:fzf_command_prefix = 'Fz'
 
-  call minpac#add('tpope/vim-projectionist')
-  " look at derekwyatt/vim-fswitch for more C combos.
+call minpac#add('tpope/vim-projectionist')
+" look at derekwyatt/vim-fswitch for more C combos.
 if has("nvim") && exists('*luaeval')
 lua << EOF
   vim.api.nvim_set_var('projectionist_heuristics', {
@@ -151,7 +139,6 @@ lua << EOF
       },
     })
 EOF
-endif
 
   " call minpac#add('Valloric/MatchTagAlways')
 endif
