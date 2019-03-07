@@ -9,50 +9,43 @@
 let g:loaded_rrhelper = 1
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
-let s:plugins = filereadable(expand("~/.config/nvim/autoload/plug.vim", 1))
+packadd minpac
+let s:plugins = exists('*minpac#init')
 let s:plugins_extra = s:plugins
-
 if !s:plugins "{{{
-  fun! InstallPlug() "bootstrap plug.vim on new systems
-    silent call mkdir(expand("~/.config/nvim/autoload", 1), 'p')
-    exe '!curl -fLo '.expand("~/.config/nvim/autoload/plug.vim", 1)
-      \ .' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  fun! InstallPlug() " Bootstrap plugin manager on new systems.
+    exe '!git clone https://github.com/k-takata/minpac.git ~/.config/nvim/pack/minpac/opt/minpac'
+    " call minpac#update()
   endfun
 else
+call minpac#init()
+" minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
+call minpac#add('k-takata/minpac', {'type': 'opt'})
+" Load the plugins right now. (optional)
+"packloadall
 
-call plug#begin('~/.local/share/nvim/bundle')
-
-if v:false  " Bring the circus to town!
-  " Plug 'terryma/vim-multiple-cursors'
-  Plug 'vim-airline/vim-airline'
-  " Plug 'lfv89/vim-interestingwords'
-  Plug 'majutsushi/tagbar'
-endif
-
-Plug 'justinmk/molokai'
-Plug 'mptre/vim-printf'
+call minpac#add('mptre/vim-printf')
 
 " git clone https://github.com/sunaku/dasht
 " dasht-docsets-install python
-Plug 'sunaku/vim-dasht'
+call minpac#add('sunaku/vim-dasht')
 nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>
 
-Plug 'sbdchd/neoformat'
 if has('nvim')
-  Plug 'justinmk/vim-highlightedyank'
+  call minpac#add('justinmk/vim-highlightedyank')
 endif
 
-Plug 'tommcdo/vim-exchange'
+call minpac#add('tommcdo/vim-exchange')
 
-Plug 'https://github.com/justinmk/vim-ipmotion.git'
-Plug 'https://github.com/justinmk/vim-gtfo.git'
-Plug 'https://github.com/justinmk/vim-dirvish.git'
+call minpac#add('https://github.com/justinmk/vim-ipmotion.git')
+call minpac#add('https://github.com/justinmk/vim-gtfo.git')
+call minpac#add('https://github.com/justinmk/vim-dirvish.git')
 " Disable netrw, but autoload it for `gx`.
 let g:loaded_netrwPlugin = 0
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<CR>
 
-Plug 'https://github.com/justinmk/vim-sneak.git'
+call minpac#add('https://github.com/justinmk/vim-sneak.git')
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#absolute_dir = 1
@@ -63,35 +56,38 @@ map T <Plug>Sneak_T
 map <M-;> <Plug>Sneak_,
 
 if executable("tmux")
-Plug 'wellle/tmux-complete.vim'
+call minpac#add('wellle/tmux-complete.vim')
 endif
 
-Plug 'tpope/vim-characterize'
-" Plug 'tpope/vim-sleuth'
-Plug 'tpope/vim-scriptease'
-Plug 'tpope/vim-apathy'
+call minpac#add('tpope/vim-characterize')
+" call minpac#add('tpope/vim-sleuth')
+call minpac#add('tpope/vim-scriptease')
+call minpac#add('tpope/vim-apathy')
+call minpac#add('tpope/vim-dadbod')
 
-Plug 'will133/vim-dirdiff', { 'on': ['DirDiff'] }
-Plug 'tpope/vim-fugitive'
-Plug 'junegunn/gv.vim'
-Plug 'tpope/vim-rhubarb'
+call minpac#add('will133/vim-dirdiff', {'type': 'opt'})
+call minpac#add('tpope/vim-fugitive')
+call minpac#add('junegunn/gv.vim')
+call minpac#add('tpope/vim-rhubarb')
 
-Plug 'tpope/vim-surround'
+call minpac#add('tpope/vim-surround')
 let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
-Plug 'tpope/vim-dispatch'
+call minpac#add('tpope/vim-dispatch')
 nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-rsi'
+call minpac#add('tpope/vim-repeat')
+call minpac#add('tpope/vim-eunuch')
+call minpac#add('tpope/vim-rsi')
 
-Plug 'tpope/vim-unimpaired'
+call minpac#add('tpope/vim-unimpaired')
+call minpac#add('tommcdo/vim-lion')
 
-Plug 'tpope/vim-endwise'
+
+call minpac#add('tpope/vim-endwise')
 inoremap (<CR> (<CR>)<Esc>O
 inoremap {<CR> {<CR>}<Esc>O
 inoremap {; {<CR>};<Esc>O
@@ -102,45 +98,41 @@ inoremap ([=[ ([=[<CR>]=])<Esc>O
 inoremap [; [<CR>];<Esc>O
 inoremap [, [<CR>],<Esc>O
 
-Plug 'tpope/vim-obsession'
+call minpac#add('tpope/vim-obsession')
 let g:obsession_no_bufenter = 1  " https://github.com/tpope/vim-obsession/issues/40
 
 let g:markdown_syntax_conceal = 0
 
-Plug 'AndrewRadev/linediff.vim'
+call minpac#add('AndrewRadev/linediff.vim')
 let g:linediff_buffer_type = 'scratch'
-Plug 'mbbill/undotree', { 'on': ['UndotreeToggle'] }
+call minpac#add('mbbill/undotree', {'type': 'opt'})
 
-Plug 'tpope/vim-commentary'
+call minpac#add('tpope/vim-commentary')
 
 if s:plugins_extra
-  Plug 'guns/vim-sexp'
-  Plug 'guns/vim-clojure-highlight'
+  call minpac#add('guns/vim-sexp', {'type': 'opt'})
+  call minpac#add('guns/vim-clojure-highlight', {'type': 'opt'})
   let g:clojure_fold = 1
   let g:sexp_filetypes = ''
 
-  Plug 'tpope/vim-salve'
+  call minpac#add('tpope/vim-salve')
   let g:salve_auto_start_repl = 1
-  Plug 'tpope/vim-fireplace'
+  call minpac#add('tpope/vim-fireplace')
 
-  Plug 'justinmk/nvim-repl'
+  call minpac#add('justinmk/nvim-repl')
     nmap yx       <Plug>(ReplSend)
     nmap yxx      <Plug>(ReplSendLine)
     xmap <Enter>  <Plug>(ReplSend)
     nnoremap <c-q> :Repl<CR>
 
-  Plug 'PProvost/vim-ps1'
-  Plug 'chrisbra/Colorizer', { 'on': ['ColorHighlight'] }
+  call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
+  call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
-  Plug 'tommcdo/vim-lion'
-
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes n \| ./install' }
-  Plug 'junegunn/fzf.vim'
+  call minpac#add('junegunn/fzf', { 'do': 'yes n \| ./install' })
+  call minpac#add('junegunn/fzf.vim')
   let g:fzf_command_prefix = 'Fz'
 
-  Plug 'tpope/vim-dadbod'
-
-  Plug 'tpope/vim-projectionist'
+  call minpac#add('tpope/vim-projectionist')
   " look at derekwyatt/vim-fswitch for more C combos.
 if has("nvim") && exists('*luaeval')
 lua << EOF
@@ -161,10 +153,8 @@ lua << EOF
 EOF
 endif
 
-  " Plug 'Valloric/MatchTagAlways', { 'for': 'xml' }
+  " call minpac#add('Valloric/MatchTagAlways')
 endif
-
-call plug#end()
 
 " Eager-load these plugins so we can override their settings. {{{
 runtime! plugin/rsi.vim
@@ -321,6 +311,7 @@ set cursorline
 set mouse=nvi
 
 "colorscheme {{{
+func! s:colors() abort
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
     " space as extra whitespace (makes mouse-copy nicer).
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
@@ -411,6 +402,8 @@ set mouse=nvi
     " other
     hi helpHyperTextJump cterm=underline ctermfg=cyan
     hi MatchParen cterm=bold,underline ctermfg=lightgreen ctermbg=NONE guifg=black guibg=white
+endfunc
+au VimEnter * call <SID>colors()
 "}}}
 
 "==============================================================================
@@ -707,7 +700,8 @@ command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis |
 
 nnoremap yo<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
 
-" filter
+" Format filters
+" ideas: https://github.com/sbdchd/neoformat
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 nnoremap gqaj    :%!python -m json.tool<cr>
