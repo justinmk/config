@@ -30,10 +30,6 @@ call minpac#add('mptre/vim-printf')
 call minpac#add('sunaku/vim-dasht')
 nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>
 
-if has('nvim')
-  call minpac#add('justinmk/vim-highlightedyank')
-endif
-
 call minpac#add('https://github.com/justinmk/vim-ipmotion.git')
 call minpac#add('https://github.com/justinmk/vim-gtfo.git')
 call minpac#add('https://github.com/justinmk/vim-dirvish.git')
@@ -1140,11 +1136,48 @@ augroup vimrc_autocmd
 
   autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal shiftwidth=2 copyindent
 
-  if exists('##TextYankPost')
-    autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])
-      \|call add(g:yankring, join(v:event.regcontents[:999], "\n"))|if len(g:yankring)>10|call remove(g:yankring, 0, 1)|endif
-  endif
+  " if exists('##TextYankPost')
+  "   autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])
+  "     \|call add(g:yankring, join(v:event.regcontents[:999], "\n"))|if len(g:yankring)>10|call remove(g:yankring, 0, 1)|endif
+  " endif
 augroup END
+
+if has('nvim')  " {{{ TextYankPost highlight
+  function! s:hl_yank(regtype) abort
+    if v:event.operator !=# 'y' || v:event.regtype ==# ''
+      return
+    endif
+    " TODO: Is region correct when ^V[count]l ranges multiple lines?
+
+    " TODO
+    " if a:regtype ==# 'v'
+    " elseif a:regtype ==# 'V'
+    " elseif a:regtype[0] ==# "\<C-v>"
+
+    let bnr = bufnr('%')
+    let ns = nvim_create_namespace('')
+    call nvim_buf_clear_namespace(bnr, ns, 0, -1)
+
+    let [_, lin1, col1, off1] = getpos("'[")
+    let [lin1, col1] = [lin1 - 1, col1 - 1]
+    let [_, lin2, col2, off2] = getpos("']")
+    let [lin2, col2] = [lin2 - 1, col2]
+    for l in range(lin1, lin1 + (lin2 - lin1))
+      let is_first = (l == lin1)
+      let is_last = (l == lin2)
+      let c1 = is_first ? (col1 + off1) : 0
+      let c2 = is_last ? (col2 + off2) : -1
+      call nvim_buf_add_highlight(bnr, ns, 'TextYank', l, c1, c2)
+    endfor
+    call timer_start(1000, {-> nvim_buf_clear_namespace(bnr, ns, 0, -1)})
+  endfunc
+  highlight default link TextYank Search
+  highlight TextYank cterm=reverse
+  augroup vimrc_hlyank
+    autocmd!
+    autocmd TextYankPost * call s:hl_yank(v:event.regtype)
+  augroup END
+endif  " }}}
 
 " :shell
 " Creates a global default :shell with maximum 'scrollback'.
