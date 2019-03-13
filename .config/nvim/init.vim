@@ -1142,7 +1142,7 @@ augroup vimrc_autocmd
   " endif
 augroup END
 
-if has('nvim')  " {{{ TextYankPost highlight
+if has('nvim-0.4')  " {{{ TextYankPost highlight
   function! s:hl_yank(operator, regtype, inclusive) abort
     if a:operator !=# 'y' || a:regtype ==# ''
       return
