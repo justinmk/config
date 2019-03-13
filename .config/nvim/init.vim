@@ -1168,7 +1168,7 @@ if has('nvim-0.4')  " {{{ TextYankPost highlight
       let c2 = is_last || a:regtype[0] ==# "\<C-v>" ? (col2 + off2) : -1
       call nvim_buf_add_highlight(bnr, ns, 'TextYank', l, c1, c2)
     endfor
-    call timer_start(1000, {-> nvim_buf_clear_namespace(bnr, ns, 0, -1)})
+    call timer_start(1000, {-> nvim_buf_is_valid(bnr) && nvim_buf_clear_namespace(bnr, ns, 0, -1)})
   endfunc
   highlight default link TextYank Search
   highlight TextYank cterm=reverse
