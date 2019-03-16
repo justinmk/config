@@ -20,8 +20,6 @@ else
 call minpac#init()
 " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
 call minpac#add('k-takata/minpac', {'type': 'opt'})
-" Load the plugins right now. (optional)
-"packloadall
 
 call minpac#add('mptre/vim-printf')
 
@@ -534,7 +532,7 @@ nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
 
-if findfile('plugin/fugitive.vim', &rtp) !=# ''
+if has('nvim') && isdirectory(stdpath('config').'/pack/minpac/start/vim-fugitive')
   func! s:ctrl_g(cnt) abort
     redraw
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
@@ -1236,6 +1234,9 @@ endfunc
 nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
 nnoremap g<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
 
+if has('nvim-0.4')
+  set wildoptions+=tagfile,pum
+endif
 set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
@@ -1283,12 +1284,6 @@ nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<C
 nnoremap <silent>       <M-\> :FzHistory<cr>
 nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzLines<CR>' : ':<C-U>FzBuffers<CR>'
 nmap                    g/    <M-/>
-if !empty(findfile('plugin/tmuxcomplete.vim', &rtp))
-  inoremap <expr> <C-l> fzf#complete(tmuxcomplete#list('lines', 0))
-  inoremap <expr> <M-w> fzf#complete(tmuxcomplete#list('words', 0))
-  nnoremap <silent> <M-w> :call fzf#run({'source':tmuxcomplete#list('words', 0),
-        \                              'sink':function('<SID>fzf_insert_at_point')})<CR>
-endif
 
 nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
 nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
