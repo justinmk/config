@@ -338,6 +338,7 @@ func! s:colors() abort
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
+    hi! link ColorColumn StatusLine
     hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
     hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
 
@@ -1139,7 +1140,7 @@ if has('nvim-0.4')  " {{{ TextYankPost highlight
       let c2 = is_last || a:regtype[0] ==# "\<C-v>" ? (col2 + off2) : -1
       call nvim_buf_add_highlight(bnr, ns, 'TextYank', l, c1, c2)
     endfor
-    call timer_start(1000, {-> nvim_buf_is_valid(bnr) && nvim_buf_clear_namespace(bnr, ns, 0, -1)})
+    call timer_start(300, {-> nvim_buf_is_valid(bnr) && nvim_buf_clear_namespace(bnr, ns, 0, -1)})
   endfunc
   highlight default link TextYank Search
   highlight TextYank cterm=reverse
