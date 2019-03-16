@@ -190,19 +190,7 @@ endif
 nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|edit\|call <SID>restore_change_marks()<CR>' : '')
       \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
       \ . '<CR><C-L>'
-
 inoremap <C-U> <C-G>u<C-U>
-
-" https://github.com/tpope/vim-rsi/pull/17
-function! s:ctrl_u() abort
-  if getcmdpos() > 1
-    let @- = getcmdline()[:getcmdpos()-2]
-  endif
-  return "\<C-U>"
-endfunction
-cnoremap <expr> <C-U> <SID>ctrl_u()
-cnoremap        <C-Y> <C-R>-
-
 
 command! Session if filereadable(stdpath('config').'/session.vim') | exe 'source '.stdpath('config').'/session.vim'
       \ | else | exe 'Obsession '.stdpath('config').'/session.vim' | endif
