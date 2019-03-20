@@ -81,11 +81,8 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 fi
 
-PS1='$(date +%m%d.%H%M) \[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]'
-
-PS1=$PS1'
+PS1='$(date +%m%d.%H%M) \[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]
 $ '
-
 [ -z $SSH_TTY ] || PS1='\[\033[0;30m\]\[\033[47m\]SSH\[\033[0m\] '$PS1
 
 if [ -x /usr/bin/dircolors ]; then
@@ -141,20 +138,6 @@ if [ "$(uname)" = Darwin ] ; then
       defaults write -g KeyRepeat -int 2
       defaults write -g InitialKeyRepeat -int 15
     fi
-fi
-
-# fzf (https://github.com/junegunn/fzf)
-if [ -f ~/.fzf.bash ] ; then
-  export FZF_DEFAULT_OPTS="--multi --black -x --inline-info --no-color"
-  source ~/.fzf.bash
-
-  f() { # includes hidden directories (except .git)
-    find . -name .git -prune -o $1 -print 2> /dev/null | sed s/^..// | fzf
-  }
-  d() { # change to directory
-    local path="$(f '-type d')"
-    [ -z "$path" ] || cd $path
-  }
 fi
 
 ghpr() {

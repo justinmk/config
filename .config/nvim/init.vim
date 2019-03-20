@@ -84,8 +84,6 @@ inoremap [, [<CR>],<Esc>O
 call minpac#add('tpope/vim-obsession')
 let g:obsession_no_bufenter = 1  " https://github.com/tpope/vim-obsession/issues/40
 
-let g:markdown_syntax_conceal = 0
-
 call minpac#add('AndrewRadev/linediff.vim')
 let g:linediff_buffer_type = 'scratch'
 call minpac#add('mbbill/undotree', {'type': 'opt'})
