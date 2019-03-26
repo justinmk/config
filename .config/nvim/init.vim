@@ -351,7 +351,7 @@ func! s:colors() abort
     hi Underlined ctermfg=NONE cterm=underline gui=underline guifg=NONE
 
     " other
-    hi helpHyperTextJump cterm=underline ctermfg=cyan
+    hi helpHyperTextJump cterm=underline ctermfg=cyan gui=underline guifg=cyan
     hi MatchParen cterm=bold,underline ctermfg=lightgreen ctermbg=NONE guifg=black guibg=white
 endfunc
 au VimEnter * call <SID>colors()
@@ -525,6 +525,8 @@ nnoremap >l :lnewer<CR>
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
+nnoremap <up> <c-u>
+nnoremap <down> <c-d>
 
 " set working directory to the current buffer's directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
@@ -1139,7 +1141,7 @@ if has('nvim-0.4')  " {{{ TextYankPost highlight
     call timer_start(300, {-> nvim_buf_is_valid(bnr) && nvim_buf_clear_namespace(bnr, ns, 0, -1)})
   endfunc
   highlight default link TextYank Search
-  highlight TextYank cterm=reverse
+  highlight TextYank cterm=reverse gui=reverse
   augroup vimrc_hlyank
     autocmd!
     autocmd TextYankPost * call s:hl_yank(v:event.operator, v:event.regtype, v:event.inclusive)
@@ -1257,7 +1259,7 @@ xnoremap gs   mr:s/\%V
 " =============================================================================
 set completeopt-=preview
 set complete+=kspell
-set wildignore+=tags,*/gwt-unitCache/*
+set wildignore+=tags,gwt-unitCache/*,build/*,build.?/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
       \,.o,.obj,.dll,.class,.pyc,.ipynb,.so,.swp,.zip,.exe,.jar,.gz
