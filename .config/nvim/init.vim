@@ -267,7 +267,7 @@ func! s:colors() abort
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
     hi Whitespace ctermfg=LightGray
-    hi SpecialKey ctermfg=241
+    hi SpecialKey ctermfg=241 guifg=#626262
     hi! link SpecialChar Whitespace
     hi! link NonText Comment
     hi Comment guifg=#7E8E91 ctermfg=244
@@ -1257,6 +1257,7 @@ xnoremap gs   mr:s/\%V
 " =============================================================================
 " autocomplete / omnicomplete / tags
 " =============================================================================
+set dictionary+=/usr/share/dict/words
 set completeopt-=preview
 set complete+=kspell
 set wildignore+=tags,gwt-unitCache/*,build/*,build.?/*
