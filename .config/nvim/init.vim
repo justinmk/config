@@ -381,8 +381,8 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 inoremap <insert> <C-r>+
 
-" delete the 'head' of a path on the command line
-cnoremap <silent> <c-x> <C-\>e<sid>delete_until()<cr>
+" insert fnameescape('…')
+cnoremap <m-e> <c-r>=fnameescape('')<left><left>
 
 func! s:delete_until() abort
   let c = nr2char(getchar())
