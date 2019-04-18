@@ -22,6 +22,6 @@ fi
 #   - If tmux is already running, new sessions inherit THAT environment!
 #   - "tmux set update-environment …" doesn't work at runtime.
 tmux source-file "${_REPO_DIR}/.tmux.conf" || true
-env -i HOME="$_REPO_DIR" DISPLAY="${DISPLAY:-}" LC_ALL="${LC_ALL:-}" LC_CTYPE="${LC_CTYPE:-}" LANG="${LANG:-}" TERM="$TERM" \
+env -i HOME="$_REPO_DIR" PATH="${PATH:-}" DISPLAY="${DISPLAY:-}" LC_ALL="${LC_ALL:-}" LC_CTYPE="${LC_CTYPE:-}" LANG="${LANG:-}" TERM="$TERM" \
   tmux new-session -E "HOME='$_REPO_DIR' bash -l"
 
