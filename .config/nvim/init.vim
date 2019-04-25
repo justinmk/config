@@ -259,6 +259,7 @@ set nojoinspaces
 set nostartofline
 set cursorline
 set mouse=nvi
+set diffopt+=hiddenoff
 
 "colorscheme {{{
 func! s:colors() abort
@@ -651,7 +652,7 @@ endfunction
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
-nnoremap yo<space> :set <C-R>=(&diffopt =~# 'iwhite') ? 'diffopt-=iwhite' : 'diffopt+=iwhite'<CR><CR>
+nnoremap yo<space> :set <C-R>=(&diffopt =~# 'iwhiteall') ? 'diffopt-=iwhiteall' : 'diffopt+=iwhiteall'<CR><CR>
 
 " Format filters
 " ideas: https://github.com/sbdchd/neoformat
