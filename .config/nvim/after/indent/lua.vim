@@ -1,5 +1,4 @@
-setlocal cindent
-setlocal indentexpr=
+setlocal cindent copyindent indentexpr=
 
 " indent after parens, etc.
 setlocal cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l1,b0  " Control structures
@@ -8,4 +7,4 @@ setlocal cinoptions+=c3,C1,/0                         " Comments
 setlocal cinoptions+=+s                               " Continuation lines
 setlocal cinoptions+=(0,u0,U1,w1,W0,m0,M0             " Parens and arguments
 setlocal cinoptions+=)20,*30                          " Search range
-setlocal cinoptions+=j1                               " Java anonymous classes
+
