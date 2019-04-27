@@ -70,6 +70,10 @@ call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tommcdo/vim-lion')
 call minpac#add('tommcdo/vim-exchange')
 
+call minpac#add('haya14busa/vim-edgemotion')
+map <C-j> <Plug>(edgemotion-j)
+map <C-k> <Plug>(edgemotion-k)
+
 call minpac#add('tpope/vim-endwise')
 inoremap (<CR> (<CR>)<Esc>O
 inoremap {<CR> {<CR>}<Esc>O
@@ -203,25 +207,6 @@ endif
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
 " Instead set softtabstop=-1, then 'shiftwidth' is used.
 set expandtab shiftwidth=2 softtabstop=-1
-
-" vim-vertical-move replacement
-" credit: cherryberryterry: https://www.reddit.com/r/vim/comments/4j4duz/a/d33s213
-function! s:vjump(dir) abort
-  let c = '%'.virtcol('.').'v'
-  let flags = a:dir ? 'bnW' : 'nW'
-  let bot = search('\v'.c.'.*\n^(.*'.c.'.)@!.*$', flags)
-  let top = search('\v^(.*'.c.'.)@!.*$\n.*\zs'.c, flags)
-
-  " norm! m`
-  return a:dir ? (line('.') - (bot > top ? bot : top)).'k'
-    \        : ((bot < top ? bot : top) - line('.')).'j'
-endfunction
-nnoremap <expr> <C-j> <SID>vjump(0)
-nnoremap <expr> <C-k> <SID>vjump(1)
-xnoremap <expr> <C-j> <SID>vjump(0)
-xnoremap <expr> <C-k> <SID>vjump(1)
-onoremap <expr> <C-j> <SID>vjump(0)
-onoremap <expr> <C-k> <SID>vjump(1)
 
 let g:mapleader = "z,"
 
