@@ -10,7 +10,7 @@ if isdirectory(expand("~/.vim/eclim", 1))
 endif
 
 if fnamemodify(@%, ':p') =~# 'hw-dashboard'
-  nnoremap <silent> <leader>log oLog.info("XXX: ");<esc>
+  nnoremap <silent><buffer> <leader>log oLog.info("XXX: ");<esc>
 endif
 
 let b:printf_pattern = 'System.out.println(String.format("%s", %s));'

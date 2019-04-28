@@ -7,5 +7,5 @@ setlocal omnifunc=lsp#complete
 
 let b:printf_pattern = 'print(string.format("%s", %s))'
 if fnamemodify(@%, ':p') =~# 'neovim'
-  nnoremap <silent> <leader>log owrite_file('dbg.txt', require('inspect')(foo)..'\n', true, true)<esc>
+  nnoremap <silent><buffer> <leader>log owrite_file('dbg.txt', require('inspect')(foo)..'\n', true, true)<esc>
 endif

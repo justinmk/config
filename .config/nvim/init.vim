@@ -99,9 +99,9 @@ call minpac#add('guns/vim-clojure-highlight', {'type': 'opt'})
 let g:clojure_fold = 1
 let g:sexp_filetypes = ''
 
-call minpac#add('tpope/vim-salve')
+call minpac#add('tpope/vim-salve', {'type': 'opt'})
 let g:salve_auto_start_repl = 1
-call minpac#add('tpope/vim-fireplace')
+call minpac#add('tpope/vim-fireplace', {'type': 'opt'})
 
 call minpac#add('justinmk/nvim-repl')
   nmap yx       <Plug>(ReplSend)
@@ -112,7 +112,6 @@ call minpac#add('justinmk/nvim-repl')
 call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
 call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
-call minpac#add('junegunn/fzf', { 'do': 'yes n \| ./install' })
 call minpac#add('junegunn/fzf.vim')
 let g:fzf_command_prefix = 'Fz'
 
@@ -1257,9 +1256,6 @@ set suffixesadd=.java,.cs
 function! s:fzf_open_file_at_line(e) abort
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
   execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
-endfunction
-function! s:fzf_insert_at_point(s) abort
-  execute "put ='".a:s."'"
 endfunction
 function! s:fzf_search_fulltext() abort
   call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',

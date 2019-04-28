@@ -18,7 +18,7 @@ endif
 
 if fnamemodify(@%, ':p') =~# 'neovim'
   let b:printf_pattern = 'ILOG("%d", %s);'
-  nnoremap <silent> <leader>log oELOG("");<esc>
+  nnoremap <silent><buffer> <leader>log oELOG("");<esc>
 endif
 
 
