@@ -1078,7 +1078,8 @@ augroup vimrc_autocmd
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  au BufWritePre,FileWritePre * call mkdir(expand('<afile>:p:h'), 'p')
+  " Auto-create parent directories. But not for URIs (paths containing "://").
+  au BufWritePre,FileWritePre * if @% !~# '\(://\)' | call mkdir(expand('<afile>:p:h'), 'p') | endif
 
   "when Vim starts in diff-mode (vim -d, git mergetool):
   "  - do/dp should not auto-fold
