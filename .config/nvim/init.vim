@@ -1247,7 +1247,7 @@ xnoremap gs   mr:s/\%V
 set dictionary+=/usr/share/dict/words
 set completeopt-=preview
 set complete+=kspell
-set wildignore+=tags,gwt-unitCache/*,build/*,build.?/*
+set wildignore+=tags,gwt-unitCache/*,*/__pycache__/*,build/*,build.?/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
       \,.o,.obj,.dll,.class,.pyc,.ipynb,.so,.swp,.zip,.exe,.jar,.gz
