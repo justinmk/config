@@ -112,6 +112,7 @@ call minpac#add('justinmk/nvim-repl')
 call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
 call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
+call minpac#add('junegunn/fzf', { 'do': 'yes n \| ./install' })
 call minpac#add('junegunn/fzf.vim')
 let g:fzf_command_prefix = 'Fz'
 
