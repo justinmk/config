@@ -367,8 +367,10 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
 inoremap <insert> <C-r>+
 
-" insert fnameescape('…')
+" Put fnameescape('…')
 cnoremap <m-e> <c-r>=fnameescape('')<left><left>
+" Put filename tail.
+cnoremap <m-f> <c-r>=fnamemodify(@%, ':t')<cr>
 
 func! s:delete_until() abort
   let c = nr2char(getchar())
@@ -1127,8 +1129,7 @@ if has('nvim-0.4')  " {{{ TextYankPost highlight
     endfor
     call timer_start(300, {-> nvim_buf_is_valid(bnr) && nvim_buf_clear_namespace(bnr, ns, 0, -1)})
   endfunc
-  highlight default link TextYank Search
-  highlight TextYank cterm=reverse gui=reverse
+  highlight default link TextYank Visual
   augroup vimrc_hlyank
     autocmd!
     autocmd TextYankPost * call s:hl_yank(v:event.operator, v:event.regtype, v:event.inclusive)
