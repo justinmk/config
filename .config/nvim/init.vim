@@ -21,7 +21,7 @@ call minpac#init()
 " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
 call minpac#add('k-takata/minpac', {'type': 'opt'})
 
-call minpac#add('mptre/vim-printf')
+call minpac#add('justinmk/vim-printf')
 
 " git clone https://github.com/sunaku/dasht
 " dasht-docsets-install python
