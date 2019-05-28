@@ -1,5 +1,5 @@
 setlocal copyindent
-setlocal formatprg=python3\ -m\ black\ --quiet\ -
+setlocal formatprg=python3\ -m\ black\ --quiet\ --skip-string-normalization\ -
 
 if 0 != 0+search('import logging', 'nw', 0, 100)
   let b:printf_pattern = "logging.info('%{}'.format(%s))"
