@@ -1,7 +1,11 @@
 setlocal copyindent
-setlocal formatprg=python3\ -m\ yapf
+setlocal formatprg=python3\ -m\ black\ --quiet\ -
 
-let b:printf_pattern = "logging.info('%s'.format(%s))"
+if 0 != 0+search('import logging', 'nw', 0, 100)
+  let b:printf_pattern = "logging.info('%{}'.format(%s))"
+else
+  let b:printf_pattern = "print('%{}'.format(%s))"
+endif
 
 " setlocal omnifunc=lsp#complete
 " setlocal keywordprg=:LspHover
