@@ -404,22 +404,8 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " mark position before search
 nnoremap / ms/
 
-func! s:maybe_zz(cmd,halo) abort
-  let topline = line('w0')
-  try
-    exe a:cmd
-  catch /E486:/
-    echohl ErrorMsg | echom matchstr(v:exception, 'E486:.*') | echohl None
-  endtry
-  if topline != line('w0')
-    normal! zz
-    if a:halo
-      call s:halo()
-    endif
-  endif
-endf
-nnoremap <silent> n :<C-U>call <SID>maybe_zz('norm! '.v:count1.'Nn'[v:searchforward],1)<CR>
-nnoremap <silent> N :<C-U>call <SID>maybe_zz('norm! '.v:count1.'nN'[v:searchforward],1)<CR>
+nnoremap <expr> n (<SID>halo()).('Nn'[v:searchforward])
+nnoremap <expr> N (<SID>halo()).('nN'[v:searchforward])
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
@@ -539,8 +525,8 @@ if has('nvim') && isdirectory(stdpath('config').'/pack/minpac/start/vim-fugitive
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
 
-nnoremap <silent> <C-n> :<C-U>call <SID>maybe_zz(&diff ? 'norm ]c]n' : 'norm ]n',1)<CR>
-nnoremap <silent> <C-p> :<C-U>call <SID>maybe_zz(&diff ? 'norm [c[n' : 'norm [n',1)<CR>
+nnoremap <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
+nnoremap <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
@@ -973,16 +959,17 @@ function! s:halo() abort
   call s:halo_show('Halo', -1)
   call timer_start(200, function('s:halo_show', ['Halo2']))
   call timer_start(500, function('s:halo_clear'))
+  return ''
 endfunction
 function! s:halo_show(hl, id) abort
   call s:halo_clear(-1)
   let lcol = col('.') > 10 ? col('.') - 10 : 1
   let g:halo['hl_id'] = matchaddpos(a:hl,
-        \[[line('.'),   lcol, 20],
-        \ [line('.')-1, lcol, 20],
-        \ [line('.')-2, lcol, 20],
-        \ [line('.')+1, lcol, 20],
-        \ [line('.')+2, lcol, 20]]
+        \[[line('.'),   lcol, 10],
+        \ [line('.')-1, lcol, 10],
+        \ [line('.')-1, lcol, 10],
+        \ [line('.')+1, lcol, 10],
+        \ [line('.')+1, lcol, 10]]
         \)
 endfunction
 augroup halo_plugin
