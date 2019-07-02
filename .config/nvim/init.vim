@@ -525,8 +525,8 @@ if has('nvim') && isdirectory(stdpath('config').'/pack/minpac/start/vim-fugitive
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
 
-nnoremap <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
-nnoremap <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
+nmap     <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
+nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
@@ -1209,9 +1209,6 @@ endfunc
 nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
 nnoremap g<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
 
-if has('nvim-0.4')
-  set wildoptions+=tagfile,pum
-endif
 set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
