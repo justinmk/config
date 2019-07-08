@@ -1060,7 +1060,6 @@ augroup vimrc_autocmd
   function! s:setup_gitstatus() abort
     nmap <buffer> <M-n> <c-n>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
     nmap <buffer> <M-p> <c-p>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
-    nmap <buffer><nowait> <M-u> g<Bar><Esc>
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
   autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
