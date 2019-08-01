@@ -79,11 +79,19 @@
   #Use "git diff -R" to reverse the diff to see removed whitespace.
   whitespace = bold red white
 
+# See also: `includeIf`  https://lobste.rs/s/dtrkna/#c_ipltmn
+#
+#   ~/.gitconfig:
+#     [includeIf "gitdir:~/foo/"]
+#       path = .gitconfig_foo
+#
+#   ~/.gitconfig_foo:
+#     [user]
+#       email = …
+#     [core]
+#       sshCommand = ssh -i ~/.ssh/id_…_foo -o 'IdentitiesOnly yes'
 [include]
   path = ~/.gitconfig.local
-#[alias]
-#  #you can re-define existing aliases.
-#  em = !/c/opt/vim/vim `git df`
 
 [filter "lfs"]
   clean = git-lfs clean -- %f
