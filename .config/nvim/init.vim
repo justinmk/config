@@ -1130,15 +1130,9 @@ func! s:ctrl_s(cnt, new, here) abort
   let d = g:term_shell
   let b = bufnr(':shell')
 
-  if bufexists(b) && (a:here || bufnr('#') == b)  " Edit the :shell buffer in this window.
+  if bufexists(b) && a:here  " Edit the :shell buffer in this window.
     exe 'buffer' b
     let d.prevwid = win_getid()
-    return
-  endif
-
-  " Return to alternate buffer.
-  if bufnr('%') == b && d.prevwid == win_getid()
-    exe 'buffer #'
     return
   endif
 
@@ -1155,8 +1149,9 @@ func! s:ctrl_s(cnt, new, here) abort
       if len(bufs) > 0
         exe bufwinnr(bufs[0]).'wincmd w'
       else
-        " Last resort: WTF, just go to previous tab.
-        tabprevious
+        " Last resort: WTF, just go to previous tab?
+        " tabprevious
+        return
       endif
     endif
     let d.prevwid = term_prevwid
@@ -1206,7 +1201,7 @@ func! s:ctrl_s(cnt, new, here) abort
   let d.prevwid = curwinid
 endfunc
 nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
-nnoremap g<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
+nnoremap '<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
 
 set wildcharm=<C-Z>
 nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
