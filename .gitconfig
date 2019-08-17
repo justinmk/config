@@ -43,7 +43,7 @@
   filesEncoding = utf-8
 [alias]
   rf = "!cd -- ${GIT_PREFIX:-.}; find . -maxdepth 3 -type d -name .git -exec echo 'repo: {}' \\; -exec git -C '{}' fetch --all --prune \\;"
-  l  = log --graph --oneline --decorate
+  l  = log --graph --oneline --decorate -8
   ld = log --graph --pretty=format:'%C(yellow)%h%C(bold white red)%d%Creset %s %C(bold green)%cr %Creset%C(white)%an' --abbrev-commit --date=relative
   ll = log --stat --decorate --source -p
   b  = branch -vv
