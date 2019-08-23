@@ -1047,7 +1047,7 @@ augroup vimrc_autocmd
   endf
   autocmd FileType qf nnoremap <buffer> <c-p> <up>
         \|nnoremap <buffer> <c-n> <down>
-        \|nnoremap <silent><buffer> q :call <sid>close_qflist()<cr>
+        \|nnoremap <silent><buffer><nowait> gq :call <sid>close_qflist()<cr>
 
   autocmd CmdwinEnter * nnoremap <silent><buffer> q <C-W>c
 
