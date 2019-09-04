@@ -244,6 +244,8 @@ set nojoinspaces
 set nostartofline
 set cursorline
 set mouse=nvi
+nnoremap <M-LeftMouse> <Cmd>set mouse=<Bar>echo 'mouse OFF until next cursor-move'
+      \<Bar>autocmd CursorMoved * ++once set mouse=nv<Bar>echo 'mouse ON'<CR>
 set diffopt+=hiddenoff
 
 "colorscheme {{{
@@ -1060,6 +1062,7 @@ augroup vimrc_autocmd
   function! s:setup_gitstatus() abort
     nmap <buffer> <M-n> <c-n>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
     nmap <buffer> <M-p> <c-p>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
+    unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
   autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
@@ -1306,7 +1309,8 @@ command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".e
 command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
-command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}') ? '' : 'v').'<args>'
+command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}')
+      \? '<args>' : 'v'.matchstr('<args>', '\v(\d+\.){2}(\d)+'))
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
 command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
