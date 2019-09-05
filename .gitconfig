@@ -1,3 +1,7 @@
+# TODO: Git 2.23 has git blame --ignore-revs-file (cf. git-hyper-blame)
+#   - can ignore "noise" commits
+#   - can ignore changes that split/join/add/remove lines
+#   - .gitconfig: `blame.ignoreRevsFile` works with fugitive
 [user]
   name = Justin M. Keyes
   #email = foo@bar.com

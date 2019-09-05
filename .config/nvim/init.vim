@@ -370,14 +370,9 @@ nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG'
 inoremap <insert> <C-r>+
 
 " Put fnameescape('…')
-cnoremap <m-e> <c-r>=fnameescape('')<left><left>
+cnoremap <m-E> <c-r>=fnameescape('')<left><left>
 " Put filename tail.
-cnoremap <m-f> <c-r>=fnamemodify(@%, ':t')<cr>
-
-func! s:delete_until() abort
-  let c = nr2char(getchar())
-  return substitute(getcmdline(), '\(.*['.escape(c, '\').']\).*', '\1', '')
-endfunc
+cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 
 " key mappings/bindings =================================================== {{{
 nnoremap z= :setlocal spell<CR>z=
@@ -543,7 +538,7 @@ nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
 nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
 nnoremap <silent> Ur             :Gread<cr>
-nnoremap <silent> Us             :Gstatus<cr>
+nnoremap <silent> Us             :G<cr>
 nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
 
 nmap UB Ub
@@ -1051,7 +1046,7 @@ augroup vimrc_autocmd
         \|nnoremap <buffer> <c-n> <down>
         \|nnoremap <silent><buffer><nowait> gq :call <sid>close_qflist()<cr>
 
-  autocmd CmdwinEnter * nnoremap <silent><buffer> q <C-W>c
+  autocmd CmdwinEnter * nnoremap <silent><buffer> gq <C-W>c
 
   " Jump to the last position when reopening a file (except Git commit)
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
@@ -1065,7 +1060,6 @@ augroup vimrc_autocmd
     unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
-  autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 

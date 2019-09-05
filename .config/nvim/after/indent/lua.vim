@@ -1,1 +1,1 @@
-setlocal cindent copyindent indentexpr=
+setlocal copyindent indentexpr=
