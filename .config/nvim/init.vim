@@ -996,6 +996,9 @@ augroup vimrc_savecommitmsg
   autocmd!
   " Remember last git commit message
   func! s:store_commit_msg()
+    if line('$') > 200
+      return
+    endif
     " save
     let [w,r]=[winsaveview(),getreg('"', 1)]
     let [_reg_c,_cmark1,_cmark2] = [@c,getpos("'["),getpos("']")]
