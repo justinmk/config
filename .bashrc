@@ -81,9 +81,9 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 fi
 
-PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M) \[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]
+PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M) \[\e[0;32m\]\u@\h \[\e[36m\]\w\[\e[0m\]
 $ '
-[ -z $SSH_TTY ] || PS1='\[\033[0;30m\]\[\033[47m\]SSH\[\033[0m\] '$PS1
+[ -z $SSH_TTY ] || PS1='\[\e[0;30m\]\[\e[47m\]SSH\[\e[0m\] '$PS1
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
