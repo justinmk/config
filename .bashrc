@@ -81,7 +81,7 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 fi
 
-PS1='$(date +%m%d.%H%M) \[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]
+PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M) \[\033[0;32m\]\u@\h \[\033[36m\]\w\[\033[0m\]
 $ '
 [ -z $SSH_TTY ] || PS1='\[\033[0;30m\]\[\033[47m\]SSH\[\033[0m\] '$PS1
 
