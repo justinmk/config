@@ -109,6 +109,7 @@ call minpac#add('justinmk/nvim-repl')
   xmap <Enter>  <Plug>(ReplSend)
   nnoremap <c-q> :Repl<CR>
 
+call minpac#add('udalov/kotlin-vim')
 call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
 call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
@@ -1311,7 +1312,19 @@ command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
 command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
-command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*' --exclude='.vim-src/**' --exclude='node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**' *
+command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*' --exclude='.vim-src/**' --exclude='node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
+  \ --langdef=kotlin --langmap='kotlin:+.kt' --langmap='kotlin:+.kts'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy)[[:space:]]*)*(private[^ ]*|protected)?[[:space:]]*class[[:space:]]+([[:alnum:]_:]+)/\4/c,classes/'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy)[[:space:]]*)*(private[^ ]*|protected)?[[:space:]]*object[[:space:]]+([[:alnum:]_:]+)/\4/o,objects/'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy)[[:space:]]*)*(private[^ ]*|protected)?[[:space:]]*((abstract|final|sealed|implicit|lazy)[[:space:]]*)*data class[[:space:]]+([[:alnum:]_:]+)/\6/d,dataclasses/'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy)[[:space:]]*)*(private[^ ]*|protected)?[[:space:]]*interface[[:space:]]+([[:alnum:]_:]+)/\4/i,interfaces/'
+  \ --regex-kotlin='/^[[:space:]]*type[[:space:]]+([[:alnum:]_:]+)/\1/T,types/'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy|private[^ ]*(\[[a-z]*\])*|protected)[[:space:]]*)*fun[[:space:]]+([[:alnum:]_:]+)/\4/m,methods/'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy|private[^ ]*|protected)[[:space:]]*)*val[[:space:]]+([[:alnum:]_:]+)/\3/C,constants/'
+  \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy|private[^ ]*|protected)[[:space:]]*)*var[[:space:]]+([[:alnum:]_:]+)/\3/v,variables/'
+  \ --regex-kotlin='/^[[:space:]]*package[[:space:]]+([[:alnum:]_.:]+)/\1/p,packages/'
+  \ --regex-kotlin='/^[[:space:]]*import[[:space:]]+([[:alnum:]_.:]+)/\1/I,imports/'
+  \ *
 
 function! Cxn_py() abort
   vsplit
