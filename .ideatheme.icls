@@ -1,14 +1,15 @@
 <scheme name="Blackula" version="142" parent_scheme="Darcula">
   <option name="FONT_SCALE" value="1.0" />
   <metaInfo>
-    <property name="created">2018-01-23T17:36:21</property>
-    <property name="ide">Idea</property>
-    <property name="ideVersion">2017.3.3.0.0</property>
-    <property name="modified">2018-01-23T17:36:24</property>
+    <property name="created">2019-10-11T11:48:24</property>
+    <property name="ide">idea</property>
+    <property name="ideVersion">2019.2.3.0.0</property>
+    <property name="modified">2019-10-11T11:49:21</property>
     <property name="originalScheme">Blackula</property>
   </metaInfo>
-  <option name="EDITOR_FONT_SIZE" value="12" />
-  <option name="EDITOR_FONT_NAME" value="Menlo" />
+  <option name="LINE_SPACING" value="1.1" />
+  <option name="EDITOR_FONT_SIZE" value="13" />
+  <option name="EDITOR_FONT_NAME" value="Monaco" />
   <attributes>
     <option name="ANNOTATION_NAME_ATTRIBUTES">
       <value>
@@ -148,6 +149,21 @@
         <option name="BACKGROUND" value="d9d961" />
         <option name="EFFECT_COLOR" value="3c704b" />
         <option name="ERROR_STRIPE_COLOR" value="61936f" />
+      </value>
+    </option>
+    <option name="WRITE_IDENTIFIER_UNDER_CARET_ATTRIBUTES">
+      <value>
+        <option name="FOREGROUND" value="3c3f41" />
+        <option name="BACKGROUND" value="ffc66d" />
+        <option name="ERROR_STRIPE_COLOR" value="b56277" />
+        <option name="EFFECT_TYPE" value="1" />
+      </value>
+    </option>
+    <option name="WRITE_SEARCH_RESULT_ATTRIBUTES">
+      <value>
+        <option name="FOREGROUND" value="b0b0b" />
+        <option name="BACKGROUND" value="d9d961" />
+        <option name="ERROR_STRIPE_COLOR" value="8d4457" />
       </value>
     </option>
   </attributes>
