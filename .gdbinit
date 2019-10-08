@@ -1,6 +1,9 @@
 set history save on
 set trace-commands on
 set logging on
+set print pretty on
+set confirm off
+set pagination off
 # homebrew caveat
 set startup-with-shell off
 
