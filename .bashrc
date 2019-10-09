@@ -42,9 +42,8 @@ shopt -s globstar &> /dev/null
 bind "set show-all-if-ambiguous on"
 
 SSHAGENT=/usr/bin/ssh-agent
-SSHAGENTARGS="-s"
 if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
-  eval `$SSHAGENT $SSHAGENTARGS`
+  eval $($SSHAGENT -s)
   trap "kill $SSH_AGENT_PID" 0
 fi
 
@@ -187,6 +186,9 @@ p() {
     ps -e -o pidns,pid,rss,vsz,command
   fi
 }
+
+_Z_DATA="$HOME/.config/z/z"
+. ~/bin/z.sh
 
 [ -f ~/.bashrc.local ] && source ~/.bashrc.local
 
