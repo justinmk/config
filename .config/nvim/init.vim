@@ -531,7 +531,7 @@ xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :Gblame<cr>
 nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do('diff -- '.shellescape(FugitivePath())))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
                     "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
-nnoremap <silent> Ue             :exe 'Gedit\|'.line('.')<cr>zz
+nnoremap <silent> Ue             :Gedit<cr>
 nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
 nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
