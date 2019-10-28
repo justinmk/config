@@ -1,0 +1,8 @@
+{
+    "editor.minimap.enabled": false,
+    "terminal.integrated.rendererType": "dom",
+    "files.insertFinalNewline": true,
+    "vscode-neovim.neovimPath": "/usr/local/bin/nvim",
+    "vscode-neovim.mouseSelectionVisualMode": true,
+    "editor.cursorBlinking": "expand"
+}

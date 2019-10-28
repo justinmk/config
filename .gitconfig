@@ -1,4 +1,5 @@
-# TODO: Git 2.23 has git blame --ignore-revs-file (cf. git-hyper-blame)
+# TODO: git 1.8 + encrypted .netrc:  https://stackoverflow.com/a/16164673
+# TODO: git 2.23 has git blame --ignore-revs-file (cf. git-hyper-blame)
 #   - can ignore "noise" commits
 #   - can ignore changes that split/join/add/remove lines
 #   - .gitconfig: `blame.ignoreRevsFile` works with fugitive

@@ -9,14 +9,16 @@
 let g:loaded_rrhelper = 1
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
-packadd minpac
-let s:plugins = exists('*minpac#init')
-if !s:plugins "{{{
+try
+  packadd minpac
+catch
   fun! InstallPlug() " Bootstrap plugin manager on new systems.
     exe '!git clone https://github.com/k-takata/minpac.git ~/.config/nvim/pack/minpac/opt/minpac'
     " call minpac#update()
   endfun
-else
+endtry
+if exists('*minpac#init') "{{{
+
 call minpac#init()
 " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
 call minpac#add('k-takata/minpac', {'type': 'opt'})
@@ -110,6 +112,7 @@ call minpac#add('justinmk/nvim-repl')
   nnoremap <c-q> :Repl<CR>
 
 call minpac#add('udalov/kotlin-vim')
+call minpac#add('leafgarland/typescript-vim')
 call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
 call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
@@ -457,9 +460,10 @@ func! s:win_motion_resize(type) abort
 
   let &selection = sel_save
 endf
-
-" fit the current window height to the selected text
-xnoremap <silent> <c-w><c-w>  :<C-u>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
+" Fit current window (vertically) to the buffer text.
+nnoremap <silent> <m-=> <cmd>exe min([winheight('%'),line('$')]).'wincmd _'<cr>
+" Fit current window (vertically) to the selected text.
+xnoremap <silent> <m-=> <cmd>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win() abort
@@ -1302,8 +1306,12 @@ nnoremap <silent> <leader>vs :Scriptnames<cr>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
-command! InsertDate           norm! i<c-r>=strftime('%Y/%m/%d %H:%M:%S')<cr>
-command! InsertDateYYYYMMdd   norm! i<c-r>=strftime('%Y%m%d')<cr>
+func! GetDatetime() abort
+  return strftime('%Y/%m/%d %H:%M:%S')
+endf
+func! GetDateYYYYMMdd() abort
+  return strftime('%Y%m%d')
+endf
 command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
 command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
 command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
@@ -1394,6 +1402,10 @@ endfunction
 command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
+
+if exists('*VSCodeCall')
+  nnoremap <silent> K <Cmd>call VSCodeCall('editor.action.showHover')<CR>
+endif
 
 silent! source ~/.vimrc.local
 
