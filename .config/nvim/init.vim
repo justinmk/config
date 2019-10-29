@@ -113,7 +113,7 @@ call minpac#add('udalov/kotlin-vim')
 call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
 call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
 
-call minpac#add('junegunn/fzf', { 'do': 'yes n \| ./install' })
+call minpac#add('junegunn/fzf', { 'do': '!yes n \| ./install' })
 call minpac#add('junegunn/fzf.vim')
 let g:fzf_command_prefix = 'Fz'
 
@@ -1262,10 +1262,13 @@ func! s:slides_hl() abort
     exe 'match SlidesHide /\%>'.(line('w0')-1).'l\n=\{20}=*\n\_.\{-}\zs\n.*\n=\{20}=\_.*/'
   endif
 endfunc
-func! Slides() abort
-  set cmdheight=1
-  set nowrapscan
-  set nohlsearch
+func! Slides(...) abort
+  let editing = len(a:0) > 0 ? a:1 ==# 'editing' : 0
+  if !editing
+    set cmdheight=1
+    set nowrapscan
+    set nohlsearch
+  endif
 
   try
     hi SlidesHide ctermbg=bg ctermfg=bg guibg=bg guifg=bg
@@ -1273,16 +1276,19 @@ func! Slides() abort
   endtry
   hi markdownError ctermbg=NONE ctermfg=NONE guifg=NONE guibg=NONE
 
-  nnoremap <silent> <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
-  nnoremap <silent> <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <buffer><silent> <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <buffer><silent> <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nmap     <buffer><silent> <C-n>  <Down>
+  nmap     <buffer><silent> <C-p>  <Up>
   setlocal colorcolumn=54,67 textwidth=53
-  hi ColorColumn guibg=#555555 guifg=#ffffff
+  exe printf('hi ColorColumn gui%sg=#555555 cterm%sg=235', 'bf'[&bg], 'bf'[&bg])
   " hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
   " sign define limit  text== texthl=SlidesSign
   " sign unplace
 endf
 func! SlidesEnd() abort
   call clearmatches()
+  mapclear <buffer>
 endf
 " }}}
 
