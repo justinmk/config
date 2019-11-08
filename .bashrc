@@ -181,9 +181,9 @@ upload-video() {
 
 p() {
   if [ "$(uname)" = Darwin ] ; then
-    ps -e -o pid,rss,vsz,command
+    ps -e "$@" -o pid,rss,vsz,command
   else
-    ps -e -o pidns,pid,rss,vsz,command
+    ps -e "$@" -o pidns,pid,rss,vsz,command
   fi
 }
 
