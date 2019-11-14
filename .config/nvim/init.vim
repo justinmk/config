@@ -374,6 +374,8 @@ inoremap <insert> <C-r>+
 cnoremap <m-E> <c-r>=fnameescape('')<left><left>
 " Put filename tail.
 cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
+" inVerse search: line NOT containing pattern
+cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
 " key mappings/bindings =================================================== {{{
 nnoremap z= :setlocal spell<CR>z=
@@ -388,8 +390,6 @@ xnoremap <expr> A (mode()=~#'[vV]'?'<C-v>0o$A':'A')
 nnoremap g> :set nomore<bar>40messages<bar>set more<CR>
 
 xnoremap g/ <Esc>/\%V
-" inverse-search: line NOT containing pattern
-nnoremap g? /\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
 " word-wise i_CTRL-Y
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
