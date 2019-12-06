@@ -390,7 +390,7 @@ xnoremap <expr> I (mode()=~#'[vV]'?'<C-v>^o^I':'I')
 xnoremap <expr> A (mode()=~#'[vV]'?'<C-v>0o$A':'A')
 
 
-nnoremap g> :set nomore<bar>40messages<bar>set more<CR>
+nnoremap g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
 
 xnoremap g/ <Esc>/\%V
 
