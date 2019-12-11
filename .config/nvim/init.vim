@@ -13,7 +13,7 @@ try
   packadd minpac
 catch
   fun! InstallPlug() " Bootstrap plugin manager on new systems.
-    exe '!git clone https://github.com/k-takata/minpac.git ~/.config/nvim/pack/minpac/opt/minpac'
+    exe '!git clone https://github.com/k-takata/minpac.git ' stdpath('config').'/pack/minpac/opt/minpac'
     " call minpac#update()
   endfun
 endtry
