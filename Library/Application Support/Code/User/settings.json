@@ -4,5 +4,6 @@
     "files.insertFinalNewline": true,
     "vscode-neovim.neovimPath": "/usr/local/bin/nvim",
     "vscode-neovim.mouseSelectionVisualMode": true,
-    "editor.cursorBlinking": "expand"
+    "editor.cursorBlinking": "expand",
+    "window.zoomLevel": 1
 }

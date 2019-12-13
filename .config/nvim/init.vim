@@ -1068,6 +1068,7 @@ augroup vimrc_autocmd
     unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
+  autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
