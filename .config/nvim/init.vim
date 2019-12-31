@@ -634,6 +634,7 @@ nnoremap yo<space> :set <C-R>=(&diffopt =~# 'iwhiteall') ? 'diffopt-=iwhiteall' 
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
 nnoremap gqaj    :%!python -m json.tool<cr>
+nnoremap gqav    :call append('$', json_encode(eval(join(getline(1,'$')))))<cr>'[k"_dVgg:%!python -m json.tool<cr>
 
 " available mappings:
 "   visual: c-\ <space> m R c-r c-n c-g c-a c-x c-h,<bs><tab>
@@ -1029,9 +1030,6 @@ augroup END
 augroup vimrc_autocmd
   autocmd!
 
-  autocmd TabLeave * let g:lasttab=tabpagenr()
-  nnoremap <silent><expr> <c-tab> g:lasttab.'gt'
-
   autocmd FileType text setlocal textwidth=80
   autocmd BufReadPost *.i setlocal filetype=c
 
@@ -1054,7 +1052,7 @@ augroup vimrc_autocmd
         \|nnoremap <buffer> <c-n> <down>
         \|nnoremap <silent><buffer><nowait> gq :call <sid>close_qflist()<cr>
 
-  autocmd CmdwinEnter * nnoremap <silent><buffer> gq <C-W>c
+  autocmd CmdwinEnter * nnoremap <nowait><silent><buffer> gq <C-W>c
 
   " Jump to the last position when reopening a file (except Git commit)
   autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif

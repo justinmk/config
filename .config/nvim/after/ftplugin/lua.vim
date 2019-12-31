@@ -1,7 +1,10 @@
 " LSP: https://github.com/Alloyed/lua-lsp
+" FORMATTING: https://github.com/Koihik/LuaFormatter
 
 " from https://github.com/tpope/tpope/blob/master/.vimrc
 setlocal includeexpr=substitute(v:fname,'\\.','/','g').'.lua'
+
+setlocal comments-=:-- comments+=:---,:--
 
 let b:printf_pattern = 'print(string.format("%s", %s))'
 if fnamemodify(@%, ':p') =~# 'neovim'
