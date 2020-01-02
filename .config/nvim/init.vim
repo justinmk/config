@@ -513,7 +513,7 @@ if has('nvim') && isdirectory(stdpath('config').'/pack/minpac/start/vim-fugitive
     redraw
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
     " Show git branch.
-    echo fugitive#head(7) msg[2:] (a:cnt?strftime('%Y-%m-%d %H:%M',getftime(expand('%:p'))):'')
+    echo FugitiveHead(7) msg[2:] (a:cnt?strftime('%Y-%m-%d %H:%M',getftime(expand('%:p'))):'')
     " Show current directory.
     echo 'dir:' fnamemodify(getcwd(), ':~')
     " Show current session.
@@ -544,7 +544,7 @@ nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :G<cr>
-nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call fugitive#detect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
+nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call FugitiveDetect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
 
 nmap UB Ub
 nmap UD Ud
@@ -1066,7 +1066,7 @@ augroup vimrc_autocmd
     unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
-  autocmd BufWinEnter * if exists("*fugitive#detect") && empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
+  autocmd BufWinEnter * if exists("*FugitiveDetect") && empty(expand('<afile>'))|call FugitiveDetect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
@@ -1402,8 +1402,10 @@ command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q
 command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
 
-if exists('*VSCodeCall')
+if exists('g:vscode')
   nnoremap <silent> K <Cmd>call VSCodeCall('editor.action.showHover')<CR>
+  nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
+  nnoremap <silent> gi <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
 endif
 
 silent! source ~/.vimrc.local

@@ -2,6 +2,12 @@
 [
     {
         "key": "ctrl+[",
-        "command": "vscode-neovim.escape"
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "!editorFocus"
     },
+    {
+        "key": "Escape",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "!editorFocus"
+    }
 ]
