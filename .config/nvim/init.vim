@@ -9,6 +9,13 @@
 let g:loaded_rrhelper = 1
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
+if exists('g:vscode')
+  nnoremap <silent> K <Cmd>call VSCodeCall('editor.action.showHover')<CR>
+  nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
+  nnoremap <silent> gi <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
+  finish
+endif
+
 try
   packadd minpac
 catch
@@ -1325,7 +1332,7 @@ command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1
 command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
                               \.'|tag <args>'
 command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
-command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*' --exclude='.vim-src/**' --exclude='**/dist/**' --exclude='**/node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
+command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*' --exclude='.vim-src/**' --exclude='**/dist/**' --exclude='node_modules/**' --exclude='**/node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
   \ --exclude=.git --exclude=.svn --exclude=.hg --exclude="*.cache.html" --exclude="*.nocache.js" --exclude="*.min.*" --exclude="*.map" --exclude="*.swp" --exclude="*.bak" --exclude="*.pyc" --exclude="*.class" --exclude="*.sln" --exclude="*.Master" --exclude="*.csproj" --exclude="*.csproj.user" --exclude="*.cache" --exclude="*.dll" --exclude="*.pdb" --exclude=tags --exclude="cscope.*" --exclude="*.tar.*"
   \ --langdef=kotlin --langmap='kotlin:+.kt' --langmap='kotlin:+.kts'
   \ --regex-kotlin='/^[[:space:]]*((abstract|final|sealed|implicit|lazy)[[:space:]]*)*(private[^ ]*|protected)?[[:space:]]*class[[:space:]]+([[:alnum:]_:]+)/\4/c,classes/'
@@ -1401,12 +1408,6 @@ endfunction
 command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
 nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
-
-if exists('g:vscode')
-  nnoremap <silent> K <Cmd>call VSCodeCall('editor.action.showHover')<CR>
-  nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
-  nnoremap <silent> gi <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
-endif
 
 silent! source ~/.vimrc.local
 
