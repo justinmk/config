@@ -1,5 +1,5 @@
 setlocal commentstring=//\ %s
-setlocal comments-=:// comments+=:///://
+setlocal comments-=:// comments+=:///,://
 
 nnoremap <buffer> [[    [[3<c-y>
 
