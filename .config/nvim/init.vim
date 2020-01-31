@@ -67,6 +67,7 @@ let g:surround_indent = 0
 let g:surround_no_insert_mappings = 1
 
 call minpac#add('tpope/vim-dispatch')
+let g:dispatch_no_tmux_make = 1  " Prefer job strategy even in tmux.
 nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>
 " nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 " xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
@@ -246,10 +247,10 @@ set foldlevelstart=99 "open all folds by default
 set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
 
-nnoremap <silent> coz :<c-u>if &foldenable\|set nofoldenable\|
+nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
-nnoremap cot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
+nnoremap yot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
 
 set nojoinspaces
 set nostartofline
@@ -545,7 +546,7 @@ nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(
 nnoremap <silent> Ue             :Gedit<cr>
 nnoremap          Uf             :Gcommit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
-nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
+nnoremap <expr><silent> Ul       '@_<cmd>'.(v:count?'Glog! --summary':'0Glog!').'<cr>'
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
 nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
