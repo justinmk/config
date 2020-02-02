@@ -453,25 +453,10 @@ nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
 " nnoremap y@%   :<c-u>let @"=@%<cr>
 
-func! s:win_motion_resize(type) abort
-  let sel_save = &selection
-  let &selection = "inclusive"
-
-  if a:type ==# 'line' || line("']") > line("'[")
-    exe (line("']") - line("'[") + 1) 'wincmd _'
-    norm! `[zt
-  endif
-  if a:type !=# 'line'
-    "TODO: this assumes sign column is visible.
-    exe ( col("']") -  col("'[") + 3) 'wincmd |'
-  endif
-
-  let &selection = sel_save
-endf
 " Fit current window (vertically) to the buffer text.
 nnoremap <silent> <m-=> <cmd>exe min([winheight('%'),line('$')]).'wincmd _'<cr>
 " Fit current window (vertically) to the selected text.
-xnoremap <silent> <m-=> <cmd>set winfixwidth winfixheight opfunc=<sid>win_motion_resize<CR>gvg@
+xnoremap <silent> <m-=> <esc><cmd>exe (line("'>") - line("'<") + 1).'wincmd _'<cr>
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win() abort
