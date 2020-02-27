@@ -5,5 +5,8 @@
     "vscode-neovim.neovimPath": "/usr/local/bin/nvim",
     "vscode-neovim.mouseSelectionVisualMode": true,
     "editor.cursorBlinking": "expand",
-    "window.zoomLevel": 1
+    "window.zoomLevel": 1,
+    "editor.tokenColorCustomizations": {
+        "comments": "#9f9f9f"
+    }
 }
