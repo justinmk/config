@@ -10,9 +10,14 @@ let g:loaded_rrhelper = 1
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
 if exists('g:vscode')
-  nnoremap <silent> K <Cmd>call VSCodeCall('editor.action.showHover')<CR>
+  nnoremap <silent> <c-k> <Cmd>call VSCodeCall('editor.action.showHover')<CR>
+  nnoremap <silent> gD <Cmd>call VSCodeCall('editor.action.goToImplementation')<CR>
   nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
-  nnoremap <silent> gi <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
+  nnoremap <silent> gR <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
+  nnoremap <silent> <delete> <Cmd>call VSCodeCall('editor.debug.action.toggleBreakpoint')<CR>
+  " nnoremap <silent> gO <Cmd>call VSCodeCall('workbench.action.gotoSymbol')<CR>
+  nnoremap <silent> gO <Cmd>call VSCodeCall('outline.focus')<CR>
+  nnoremap <silent> z/ <Cmd>call VSCodeCall('workbench.action.showAllSymbols')<CR>
   finish
 endif
 
