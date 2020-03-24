@@ -9,5 +9,28 @@
         "key": "Escape",
         "command": "workbench.action.focusActiveEditorGroup",
         "when": "!editorFocus"
+    },
+    {
+        "key": "down",
+        "command": "workbench.action.debug.stepInto",
+        "when": "debugState != 'inactive'"
+    },
+    {
+        "key": "up",
+        "command": "workbench.action.debug.stepOut",
+        "when": "debugState == 'stopped'"
+    },
+    {
+        "key": "right",
+        "command": "workbench.action.debug.stepOver",
+        "when": "debugState == 'stopped'"
+    },
+    {
+        "key": "left",
+        "command": "workbench.action.debug.stepBack"
+    },
+    {
+        "key": "ctrl+=",
+        "command": "workbench.action.toggleMaximizedPanel"
     }
 ]

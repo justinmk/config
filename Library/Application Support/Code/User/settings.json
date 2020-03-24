@@ -6,6 +6,46 @@
     "vscode-neovim.mouseSelectionVisualMode": true,
     "editor.cursorBlinking": "expand",
     "window.zoomLevel": 1,
+    "explorer.confirmDelete": false,
+    "gitlens.menus": {
+        "editor": {
+            "blame": false,
+            "clipboard": false,
+            "compare": false,
+            "details": false,
+            "history": false,
+            "remote": false
+        },
+        "editorGroup": {
+            "blame": false,
+            "compare": false
+        },
+        "editorTab": {
+            "clipboard": false,
+            "compare": false,
+            "history": false,
+            "remote": false
+        },
+        "explorer": {
+            "clipboard": false,
+            "compare": false,
+            "history": false,
+            "remote": false
+        },
+        "scmGroup": {
+            "compare": false,
+            "openClose": false,
+            "stash": false,
+            "stashInline": false
+        },
+        "scmItem": {
+            "clipboard": false,
+            "compare": false,
+            "history": false,
+            "remote": false,
+            "stash": false
+        }
+    },
     "editor.tokenColorCustomizations": {
         "comments": "#9f9f9f"
     }

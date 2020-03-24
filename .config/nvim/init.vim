@@ -18,6 +18,10 @@ if exists('g:vscode')
   " nnoremap <silent> gO <Cmd>call VSCodeCall('workbench.action.gotoSymbol')<CR>
   nnoremap <silent> gO <Cmd>call VSCodeCall('outline.focus')<CR>
   nnoremap <silent> z/ <Cmd>call VSCodeCall('workbench.action.showAllSymbols')<CR>
+  nnoremap <silent> - <Cmd>call VSCodeCall('workbench.files.action.showActiveFileInExplorer')<CR>
+
+  nnoremap <silent> UD <Cmd>call VSCodeCall('git.openChange')<CR>
+  nnoremap <silent> UB <Cmd>call VSCodeCall('gitlens.toggleFileBlame')<CR>
   finish
 endif
 
