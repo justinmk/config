@@ -48,5 +48,8 @@
     },
     "editor.tokenColorCustomizations": {
         "comments": "#9f9f9f"
-    }
+    },
+    "javascript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "editor.renderWhitespace": "boundary"
 }
