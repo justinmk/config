@@ -536,13 +536,13 @@ nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
-nnoremap <silent> Ub             :Gblame<cr>
-nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do('diff -- '.shellescape(FugitivePath())))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiff'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
+nnoremap <silent> Ub             :G blame<cr>
+nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do('diff -- '.shellescape(FugitivePath())))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
                     "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
 nnoremap <silent> Ue             :Gedit<cr>
-nnoremap          Uf             :Gcommit --fixup=
+nnoremap          Uf             :G commit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
-nnoremap <expr><silent> Ul       '@_<cmd>'.(v:count?'Glog! --summary':'0Glog!').'<cr>'
+nnoremap <expr><silent> Ul       '@_<cmd>'.(v:count?'Gclog! --summary':'0Gclog!').'<cr>'
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
 nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
@@ -1212,7 +1212,7 @@ nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
 nnoremap '<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
 
 set wildcharm=<C-Z>
-nnoremap <C-b> :set nomore<bar>ls<bar>set more<cr>:buffer<space>
+nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
