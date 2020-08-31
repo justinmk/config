@@ -542,7 +542,7 @@ nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(
 nnoremap <silent> Ue             :Gedit<cr>
 nnoremap          Uf             :G commit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
-nnoremap <expr><silent> Ul       '@_<cmd>'.(v:count?'Gclog! --summary':'0Gclog!').'<cr>'
+nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
 nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
