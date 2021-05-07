@@ -9,6 +9,7 @@
     "editor.cursorBlinking": "expand",
     "window.zoomLevel": 1,
     "explorer.confirmDelete": false,
+    "explorer.autoReveal": false,
     "gitlens.menus": {
         "editor": {
             "blame": false,
