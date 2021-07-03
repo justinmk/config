@@ -35,7 +35,8 @@ catch
     " call minpac#update()
   endfun
 endtry
-if exists('*minpac#init') "{{{
+
+if isdirectory(stdpath('config').'/pack/minpac') "{{{
 
 call minpac#init()
 " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
