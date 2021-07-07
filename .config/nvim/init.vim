@@ -141,9 +141,9 @@ call minpac#add('junegunn/fzf.vim')
 let g:fzf_command_prefix = 'Fz'
 
 call minpac#add('tpope/vim-projectionist')
-" look at derekwyatt/vim-fswitch for more C combos.
 if has("nvim") && exists('*luaeval')
 lua << EOF
+  -- see derekwyatt/vim-fswitch for more C combos.
   vim.api.nvim_set_var('projectionist_heuristics', {
       ['*.sln'] = {
         ['*.cs'] = {['alternate'] = {'{}.designer.cs'}},
@@ -353,7 +353,7 @@ func! s:colors() abort
     hi! link Directory Identifier
     hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE
     hi! link LineNr CursorLine
-    hi! link SignColumn StatusLineNC
+    hi! link SignColumn Normal
     hi! link CursorLineNr Normal
 
     hi SpellBad ctermbg=red ctermfg=255 cterm=undercurl gui=undercurl guisp=Red
@@ -914,11 +914,11 @@ endfunc
 nnoremap +     :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
 nnoremap <Bar> :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
 
-func! ReadExCommandOutput(newbuf, cmd) abort
+func! ReadExCommandOutput(thisbuf, cmd) abort
   redir => l:message
   silent! execute a:cmd
   redir END
-  if a:newbuf | wincmd n | endif
+  if !a:thisbuf | wincmd n | endif
   silent put=l:message
 endf
 command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>0, <q-args>)
