@@ -385,8 +385,6 @@ set nowrap
 nnoremap & n:&&<CR>
 xnoremap & n:&&<CR>
 
-" Make Y consistent with C and D.
-nnoremap Y y$
 " copy selection to gui-clipboard
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
@@ -532,8 +530,8 @@ if has('nvim') && isdirectory(stdpath('config').'/pack/minpac/start/vim-fugitive
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
 
-nmap     <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
-nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
+nmap     <expr> <C-n> (<SID>halo()).']c]n'
+nmap     <expr> <C-p> (<SID>halo()).'[c[n'
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
