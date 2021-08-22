@@ -214,7 +214,6 @@ endif
 nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|edit\|call <SID>restore_change_marks()<CR>' : '')
       \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
       \ . '<CR><C-L>'
-inoremap <C-U> <C-G>u<C-U>
 
 command! Session if filereadable(stdpath('config').'/session.vim') | exe 'source '.stdpath('config').'/session.vim'
       \ | else | exe 'Obsession '.stdpath('config').'/session.vim' | endif
@@ -246,7 +245,6 @@ set path+=build/src/nvim/auto/**,.deps/build/src/**/,src,src/nvim
 set includeexpr=substitute(v:fname,'^[^\/]*/','','')
 
 let g:sh_noisk = 1
-set hidden      " Allow buffer switching even if unsaved 
 set lazyredraw  " no redraws in macros
 set cmdheight=2
 set ignorecase " case-insensitive searching
@@ -264,7 +262,6 @@ nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
 
 nnoremap yot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
 
-set nojoinspaces
 set nostartofline
 set cursorline
 set mouse=nvi
