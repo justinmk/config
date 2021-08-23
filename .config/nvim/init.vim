@@ -28,146 +28,18 @@ if exists('g:vscode')
 endif
 
 try
-  packadd minpac
+  " packadd packer.nvim
+  " ~/.config/nvim/lua/plugins.lua
+  lua require('plugins')
 catch
   fun! InstallPlug() " Bootstrap plugin manager on new systems.
-    exe '!git clone https://github.com/k-takata/minpac.git ' stdpath('config').'/pack/minpac/opt/minpac'
-    " call minpac#update()
+lua << EOF
+    print(vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim',
+      vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'}))
+    vim.cmd 'packadd packer.nvim'
+EOF
   endfun
 endtry
-
-if isdirectory(stdpath('config').'/pack/minpac') "{{{
-
-call minpac#init()
-" minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
-call minpac#add('k-takata/minpac', {'type': 'opt'})
-
-call minpac#add('justinmk/vim-printf')
-
-" git clone https://github.com/sunaku/dasht
-" dasht-docsets-install python
-call minpac#add('sunaku/vim-dasht')
-nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>
-
-call minpac#add('https://github.com/justinmk/vim-ipmotion.git')
-call minpac#add('https://github.com/justinmk/vim-gtfo.git')
-call minpac#add('https://github.com/justinmk/vim-dirvish.git')
-" Disable netrw, but autoload it for `gx`.
-let g:loaded_netrwPlugin = 0
-nmap gx <Plug>NetrwBrowseX
-nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<CR>
-
-call minpac#add('https://github.com/justinmk/vim-sneak.git')
-let g:sneak#label = 1
-let g:sneak#use_ic_scs = 1
-let g:sneak#absolute_dir = 1
-map <M-;> <Plug>Sneak_,
-
-call minpac#add('tpope/vim-characterize')
-" call minpac#add('tpope/vim-sleuth')
-call minpac#add('tpope/vim-scriptease')
-call minpac#add('tpope/vim-apathy')
-call minpac#add('tpope/vim-dadbod')
-
-call minpac#add('will133/vim-dirdiff', {'type': 'opt'})
-call minpac#add('tpope/vim-fugitive')
-call minpac#add('junegunn/gv.vim')
-call minpac#add('tpope/vim-rhubarb')
-
-call minpac#add('tpope/vim-surround')
-let g:surround_indent = 0
-let g:surround_no_insert_mappings = 1
-
-call minpac#add('tpope/vim-dispatch')
-let g:dispatch_no_tmux_make = 1  " Prefer job strategy even in tmux.
-nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>
-" nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
-" xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
-
-call minpac#add('tpope/vim-repeat')
-call minpac#add('tpope/vim-eunuch')
-call minpac#add('tpope/vim-rsi')
-
-call minpac#add('tpope/vim-unimpaired')
-call minpac#add('tommcdo/vim-lion')
-call minpac#add('tommcdo/vim-exchange')
-
-call minpac#add('haya14busa/vim-edgemotion')
-map <C-j> <Plug>(edgemotion-j)
-map <C-k> <Plug>(edgemotion-k)
-
-call minpac#add('tpope/vim-endwise')
-inoremap (<CR> (<CR>)<Esc>O
-inoremap {<CR> {<CR>}<Esc>O
-inoremap {; {<CR>};<Esc>O
-inoremap {, {<CR>},<Esc>O
-inoremap [<CR> [<CR>]<Esc>O
-inoremap ([[ ([[<CR>]])<Esc>O
-inoremap ([=[ ([=[<CR>]=])<Esc>O
-inoremap [; [<CR>];<Esc>O
-inoremap [, [<CR>],<Esc>O
-
-call minpac#add('tpope/vim-obsession')
-let g:obsession_no_bufenter = 1  " https://github.com/tpope/vim-obsession/issues/40
-
-call minpac#add('AndrewRadev/linediff.vim')
-let g:linediff_buffer_type = 'scratch'
-call minpac#add('mbbill/undotree', {'type': 'opt'})
-
-call minpac#add('tpope/vim-commentary')
-
-call minpac#add('guns/vim-sexp', {'type': 'opt'})
-call minpac#add('guns/vim-clojure-highlight', {'type': 'opt'})
-let g:clojure_fold = 1
-let g:sexp_filetypes = ''
-
-call minpac#add('tpope/vim-salve', {'type': 'opt'})
-let g:salve_auto_start_repl = 1
-call minpac#add('tpope/vim-fireplace', {'type': 'opt'})
-
-call minpac#add('justinmk/nvim-repl')
-  nmap yx       <Plug>(ReplSend)
-  nmap yxx      <Plug>(ReplSendLine)
-  xmap <Enter>  <Plug>(ReplSend)
-  nnoremap <c-q> :Repl<CR>
-
-call minpac#add('udalov/kotlin-vim')
-call minpac#add('leafgarland/typescript-vim')
-call minpac#add('PProvost/vim-ps1', {'type': 'opt'})
-call minpac#add('chrisbra/Colorizer', {'type': 'opt'})
-
-call minpac#add('junegunn/fzf', { 'do': '!yes n | ./install' })
-call minpac#add('junegunn/fzf.vim')
-let g:fzf_command_prefix = 'Fz'
-
-call minpac#add('tpope/vim-projectionist')
-if has("nvim") && exists('*luaeval')
-lua << EOF
-  -- see derekwyatt/vim-fswitch for more C combos.
-  vim.api.nvim_set_var('projectionist_heuristics', {
-      ['*.sln'] = {
-        ['*.cs'] = {['alternate'] = {'{}.designer.cs'}},
-        ['*.designer.cs'] = {['alternate'] = {'{}.cs'}},
-      },
-      ['/*.c|src/*.c'] = {
-        ['*.c'] = {['alternate'] = {'../include/{}.h', '{}.h'}},
-        ['*.h'] = {['alternate'] = '{}.c'},
-      },
-      ['Makefile'] = {
-        ['*Makefile'] = {['alternate'] = '{dirname}CMakeLists.txt'},
-        ['*CMakeLists.txt'] = {['alternate'] = '{dirname}Makefile'},
-      },
-    })
-EOF
-
-  " call minpac#add('Valloric/MatchTagAlways')
-endif
-
-" Eager-load these plugins so we can override their settings. {{{
-runtime! plugin/rsi.vim
-runtime! plugin/commentary.vim
-" }}}
-endif "}}}
 
 " Searches process tree for a process name. Limited breadth/depth.
 fun! s:find_proc_in_tree(rootpid, name, accum) abort
@@ -508,7 +380,7 @@ nnoremap <down> <c-d>
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
 nnoremap cu :lcd ..<bar>pwd<cr>
 
-if has('nvim') && isdirectory(stdpath('config').'/pack/minpac/start/vim-fugitive')
+if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugitive')
   func! s:ctrl_g(cnt) abort
     redraw
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
