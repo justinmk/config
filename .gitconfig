@@ -31,6 +31,9 @@
   default = current
 [diff]
   algorithm = patience
+[blame]
+  markIgnoredLines = true
+  markUnblamableLines = true
 [diff "sqlite3"]
   # To use this:
   #   echo '*.db binary diff=sqlite3 merge=keepTheir' >> .gitattributes
