@@ -58,6 +58,7 @@ if 1
   endif
 endif
 
+set hidden
 set ttimeout
 set ttimeoutlen=100
 set backspace=eol,start,indent

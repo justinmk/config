@@ -1086,7 +1086,7 @@ nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
 " See `man fnmatch`.
 nnoremap \g  mS:Ggrep! -q -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/\!*.md' ':/\!*.mpack' ':/\!*.pbf' ':/\!*.pdf' ':/\!*.po' ':(top,exclude,icase)notebooks/' ':/\!data/' ':/\!work/' ':/\!qgis/' ':/\!graphhopper_data/'
-      \<Home><C-Right><C-Right><C-Right><left>
+      \<Home><C-Right><C-Right><C-Right><C-Right><left>
 nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
 nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>

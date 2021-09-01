@@ -135,7 +135,7 @@ return require('packer').startup(function(use)
   local idk = function()
     use'neovim/nvim-lspconfig'
     require'lspconfig'.clangd.setup{
-      cmd = { [[/usr/local/Cellar/llvm/12.0.0_1/bin/clangd]] },
+      cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
       on_attach = function(...)
         require'vim.lsp.log'.error('xxx on_attach: '..vim.inspect((...)))
       end,
@@ -144,7 +144,10 @@ return require('packer').startup(function(use)
       end,
     }
     vim.cmd([[
-      autocmd Filetype c setlocal omnifunc=v:lua.vim.lsp.omnifunc
+      nnoremap gr <cmd>lua vim.lsp.buf.references()<cr>
+      nnoremap K <cmd>lua vim.lsp.buf.hover()<cr>
+      nnoremap gd <cmd>lua vim.lsp.buf.definition()<cr>
+      autocmd FileType c setlocal omnifunc=v:lua.vim.lsp.omnifunc
     ]])
 
     use'nvim-lua/plenary.nvim'
