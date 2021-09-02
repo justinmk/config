@@ -94,10 +94,9 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
-if has('nvim-0.2')
-  set cpoptions-=_
-  set guicursor+=n:blinkon175
-endif
+set cpoptions-=_
+set guicursor+=n:blinkon175
+au UIEnter * set guifont=Menlo:h20
 
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
 " Instead set softtabstop=-1, then 'shiftwidth' is used.
@@ -257,7 +256,7 @@ xnoremap & n:&&<CR>
 " copy selection to gui-clipboard
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
-nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG'.(has('clipboard')?'"+y':'y')<bar>call winrestview(b:winview)<cr>
+nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG"+y'<bar>call winrestview(b:winview)<cr>
 inoremap <insert> <C-r>+
 
 " Put fnameescape('…')
@@ -311,12 +310,10 @@ inoremap <silent><M-h> <C-\><C-N><C-w><C-h>
 inoremap <silent><M-j> <C-\><C-N><C-w><C-j>
 inoremap <silent><M-k> <C-\><C-N><C-w><C-k>
 inoremap <silent><M-l> <C-\><C-N><C-w><C-l>
-if has('nvim')
-  tnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
-  tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
-  tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
-  tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
-endif
+tnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
+tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
+tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
+tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
 nnoremap Zh     :leftabove vsplit<CR>
 nnoremap Zj     :belowright split<CR>
 nnoremap Zk     :aboveleft split<CR>
@@ -375,10 +372,6 @@ nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 nnoremap <up> <c-u>
 nnoremap <down> <c-d>
-
-" set working directory to the current buffer's directory
-nnoremap cd :lcd %:p:h<bar>pwd<cr>
-nnoremap cu :lcd ..<bar>pwd<cr>
 
 if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugitive')
   func! s:ctrl_g(cnt) abort
@@ -638,10 +631,6 @@ func! s:buf_kill(mercy) abort
   endif
 endf
 
-nnoremap <m-cr> -
-xnoremap <m-cr> -
-onoremap <m-cr> -
-
 " un-join (split) the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
 xnoremap x  "_d
@@ -723,7 +712,7 @@ onoremap <silent> il :normal vil<CR>
 " from tpope vimrc
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
-inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y"],'strftime(v:val)')+[localtime()]),0)<CR>
+inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y","%Y%m%d"],'strftime(v:val)')+[localtime()]),0)<CR>
 
 "do not clobber '[ '] on :write
 function! s:save_change_marks() abort
@@ -1173,18 +1162,12 @@ set titlestring=%{getpid().':'.getcwd()}
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vft  :e ~/.config/nvim/after/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
-nnoremap <silent> <leader>vs :Scriptnames<cr>
+nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
+nnoremap <leader>vs :Scriptnames<cr>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
-func! GetDatetime() abort
-  return strftime('%Y/%m/%d %H:%M:%S')
-endf
-func! GetDateYYYYMMdd() abort
-  return strftime('%Y%m%d')
-endf
 command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
-command! CdNotes        exe 'e '.finddir("notes", expand('~').'/Desktop/github,'.expand('~').'/dev')<bar>lcd %
 command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/neovim/.deps/usr/share/lua/**,".expand("~")."/neovim/.deps/usr/share/lua/**")<bar>lcd %

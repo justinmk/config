@@ -17,6 +17,11 @@ return require('packer').startup(function(use)
     nmap gx <Plug>NetrwBrowseX
   ]])
 
+  use {
+    'glacambre/firenvim',
+    run = function() vim.fn['firenvim#install'](0) end,
+  }
+
   use'https://github.com/justinmk/vim-sneak.git'
   vim.cmd([[
     let g:sneak#label = 1
