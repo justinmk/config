@@ -60,8 +60,8 @@ return require('packer').startup(function(use)
 
   use'haya14busa/vim-edgemotion'
   vim.cmd([[
-    map <C-j> <Plug>(edgemotion-j)
-    map <C-k> <Plug>(edgemotion-k)
+    map <C-j> m'<Plug>(edgemotion-j)
+    map <C-k> m'<Plug>(edgemotion-k)
   ]])
 
   use'tpope/vim-endwise'

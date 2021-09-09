@@ -409,7 +409,7 @@ nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
 "                                        ^ Get repo-relative path via fugitive
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :G<cr>
-nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call FugitiveDetect(expand('%:p'))<bar>endif<bar>Gwrite<cr>
+nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call FugitiveDetect()<bar>endif<bar>Gwrite<cr>
 
 nmap UB Ub
 nmap UD Ud
@@ -430,6 +430,9 @@ nnoremap <expr> dp &diff ? 'dp' : ':Printf<cr>'
 
 " Executes git cmd in the context of b:git_dir.
 function! s:git_do(cmd) abort
+  if !exists('b:git_dir')
+    call FugitiveDetect()
+  endif
   " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
   return systemlist('git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
         \ . ' ' . a:cmd)
@@ -1102,17 +1105,22 @@ function! s:fzf_open_file_at_line(e) abort
   "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
   execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
 endfunction
+function! s:fzf_files() abort
+  call fzf#run({
+    \ 'source':'find . -type d \( -name build -o -name .git -o -name venv -o -name .vim-src -o -name buildd -o -name buildr -o -name .deps \) -prune -false -o -name "*"',
+    \ 'sink':{f -> execute('edit '..f)}})
+endfunction
 function! s:fzf_search_fulltext() abort
-  call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
-        \ 'sink':function('<sid>fzf_open_file_at_line')})
+  call fzf#run({
+    \ 'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
+    \ 'sink':function('<sid>fzf_open_file_at_line')})
 endfunction
 
 " Search current-working-directory _or_ current-file-directory
-nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>FzFiles<CR>'
+nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>call <SID>fzf_files()<CR>'
 " Search MRU files
 nnoremap <silent>       <M-\> :FzHistory<cr>
 nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzLines<CR>' : ':<C-U>FzBuffers<CR>'
-nmap                    g/    <M-/>
 
 nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
 nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
