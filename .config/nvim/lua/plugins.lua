@@ -150,7 +150,7 @@ return require('packer').startup(function(use)
     }
     vim.cmd([[
       nnoremap gr <cmd>lua vim.lsp.buf.references()<cr>
-      nnoremap K <cmd>lua vim.lsp.buf.hover()<cr>
+      autocmd BufWinEnter * if &ft !~# 'help\|vim' | exe 'nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>' | endif
       nnoremap gd <cmd>lua vim.lsp.buf.definition()<cr>
       autocmd FileType c setlocal omnifunc=v:lua.vim.lsp.omnifunc
     ]])

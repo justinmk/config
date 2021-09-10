@@ -392,8 +392,8 @@ if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugit
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
 endif
 
-nmap     <expr> <C-n> (<SID>halo()).']c]n'
-nmap     <expr> <C-p> (<SID>halo()).'[c[n'
+nmap     <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
+nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
@@ -918,15 +918,16 @@ augroup vimrc_autocmd
 
   autocmd CmdwinEnter * nnoremap <nowait><silent><buffer> gq <C-W>c
 
-  " Jump to the last position when reopening a file (except Git commit)
-  autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+  " :help restore-cursor
+  autocmd BufRead * autocmd FileType <buffer> ++once
+    \ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   function! s:setup_gitstatus() abort
-    nmap <buffer> <M-n> <c-n>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
-    nmap <buffer> <M-p> <c-p>dvgg:call feedkeys('<c-v><c-w>h<c-v><c-n><c-v><c-w>P<c-v><c-l>')<cr>
+    nmap <buffer> <M-n> )dv:call feedkeys('<c-v><c-w>h)<c-v><c-w>P<c-v><c-l>')<cr>
+    nmap <buffer> <M-p> (dv:call feedkeys('<c-v><c-w>h)<c-v><c-w>P<c-v><c-l>')<cr>
     unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
