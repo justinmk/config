@@ -41,17 +41,18 @@ EOF
   endfun
 endtry
 
-" Searches process tree for a process name. Limited breadth/depth.
-fun! s:find_proc_in_tree(rootpid, name, accum) abort
+" Searches process tree for a process having a name in the `names` list.
+" Limited breadth/depth.
+fun! s:find_proc_in_tree(rootpid, names, accum) abort
   if a:accum > 9 || !exists('*nvim_get_proc')
     return v:false
   endif
   let p = nvim_get_proc(a:rootpid)
-  if !empty(p) && p.name ==# a:name
+  if !empty(p) && index(a:names, p.name) >= 0
     return v:true
   endif
   for c in nvim_get_proc_children(a:rootpid)[:9]
-    if s:find_proc_in_tree(c, a:name, 1 + a:accum)
+    if s:find_proc_in_tree(c, a:names, 1 + a:accum)
       return v:true
     endif
   endfor
@@ -61,7 +62,7 @@ endfun
 if has("nvim")
   set inccommand=split
   "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-  tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, 'nvim', 0) ? '<esc>' : '<c-\><c-n>'
+  tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, ['nvim', 'fzf'], 0) ? '<esc>' : '<c-\><c-n>'
   augroup vimrc_nvim
     autocmd!
     " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
@@ -398,7 +399,7 @@ nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :G blame<cr>
-nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do('diff -- '.shellescape(FugitivePath())))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
+nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
                     "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
 nnoremap <silent> Ue             :Gedit<cr>
 nnoremap          Uf             :G commit --fixup=
@@ -434,8 +435,7 @@ function! s:git_do(cmd) abort
     call FugitiveDetect()
   endif
   " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
-  return systemlist('git -C '.shellescape(fnamemodify(b:git_dir, ':p:h:h'))
-        \ . ' ' . a:cmd)
+  return systemlist(['git', '-C', fnamemodify(b:git_dir, ':p:h:h')] + a:cmd)
 endfunction
 
 " Gets the git commit hash associated with the given file line.
@@ -448,7 +448,7 @@ function! s:git_sha(filepath, line) abort
     throw 'Invalid a:line: '.a:line
   endif
 
-  let cmd_out = join(s:git_do('blame --root -l -L'.a:line.','.a:line.' -- '.a:filepath))
+  let cmd_out = join(s:git_do(['blame', '--root', '-l', '-L'.a:line.','.a:line, '--', a:filepath]))
   if cmd_out =~# '\v^0{40,}'
     return ''
   endif
@@ -482,7 +482,7 @@ function! s:git_blame_line(filepath, line) abort
   " Note: `git blame` prepends a caret ^ to root commits unless --root is
   "       passed. But it doesn't always mark the 'root' commits we are
   "       interested in, so collect them explicitly with `git rev-list`.
-  let b:git_root_commits = get(b:, 'git_root_commits', s:git_do('rev-list --max-parents=0 HEAD'))
+  let b:git_root_commits = get(b:, 'git_root_commits', s:git_do(['rev-list', '--max-parents=0', 'HEAD']))
 
   if -1 != index(b:git_root_commits, commit_id)
     echo 'root commit'
