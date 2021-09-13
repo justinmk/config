@@ -1108,7 +1108,7 @@ function! s:fzf_open_file_at_line(e) abort
 endfunction
 function! s:fzf_files() abort
   call fzf#run({
-    \ 'source':'find . -type d \( -name build -o -name .git -o -name venv -o -name .vim-src -o -name buildd -o -name buildr -o -name .deps \) -prune -false -o -name "*"',
+    \ 'source':'find . -type d \( -name build -o -name .git -o -name venv -o -name .vim-src -o -name buildd -o -name buildr -o -name .deps -o -name .vscode-test -o -name node_modules -o -name .coverage \) -prune -false -o -name "*"',
     \ 'sink':{f -> execute('edit '..f)}})
 endfunction
 function! s:fzf_search_fulltext() abort
