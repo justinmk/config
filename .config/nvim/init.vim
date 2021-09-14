@@ -387,6 +387,12 @@ if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugit
     echohl None
   endf
   nnoremap <C-g> :<c-u>call <sid>ctrl_g(v:count)<cr>
+
+  func! s:fug_detect() abort
+    if !exists('b:git_dir')
+      call FugitiveDetect()
+    endif
+  endfunc
 endif
 
 nmap     <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
@@ -402,10 +408,10 @@ nnoremap          Uf             :G commit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
 nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
-nnoremap <silent> Up :<c-u>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
+nnoremap <silent> Up :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :G<cr>
-nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call FugitiveDetect()<bar>endif<bar>Gwrite<cr>
+nnoremap <silent> Uw :call <sid>fug_detect()<bar>Gwrite<cr>
 
 nmap UB Ub
 nmap UD Ud
@@ -426,9 +432,7 @@ nnoremap <expr> dp &diff ? 'dp' : ':Printf<cr>'
 
 " Executes git cmd in the context of b:git_dir.
 function! s:git_do(cmd) abort
-  if !exists('b:git_dir')
-    call FugitiveDetect()
-  endif
+  call s:fug_detect()
   " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
   return systemlist(['git', '-C', fnamemodify(b:git_dir, ':p:h:h')] + a:cmd)
 endfunction
