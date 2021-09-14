@@ -402,8 +402,7 @@ nnoremap          Uf             :G commit --fixup=
 nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
 nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
 nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
-nmap     <silent> Up :<c-u>call <sid>git_blame_line('<C-R><C-G>', line('.'))<CR>
-"                                        ^ Get repo-relative path via fugitive
+nnoremap <silent> Up :<c-u>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
 nnoremap <silent> Ur             :Gread<cr>
 nnoremap <silent> Us             :G<cr>
 nnoremap <silent> Uw :if !exists(":Gwrite")<bar>call FugitiveDetect()<bar>endif<bar>Gwrite<cr>
