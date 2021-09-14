@@ -364,10 +364,6 @@ nnoremap <expr><silent> ZB  ':<c-u>call <SID>buf_kill('. !v:count .')<cr>'
 " quickfix window (in quickfix: toggles between qf & loc list)
 nnoremap <silent><expr> <M-q> '@_:'.(&bt!=#'quickfix'<bar><bar>!empty(getloclist(0))?'lclose<bar>botright copen':'cclose<bar>botright lopen')
       \.(v:count ? '<bar>wincmd L' : '').'<CR>'
-nnoremap <q :colder<CR>
-nnoremap >q :cnewer<CR>
-nnoremap <l :lolder<CR>
-nnoremap >l :lnewer<CR>
 
 nnoremap <expr> zt (v:count > 0 ? '@_zt'.v:count.'<c-y>' : 'zt')
 nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
