@@ -135,7 +135,6 @@ return require('packer').startup(function(use)
     runtime! plugin/commentary.vim
   ]])
 
-
   -- xxx
   local idk = function()
     use'neovim/nvim-lspconfig'
@@ -161,6 +160,58 @@ return require('packer').startup(function(use)
       hi! link GitSignsChange Normal
     ]])
   end
+
+  local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#sumneko_lua
+    local system_name
+    if vim.fn.has('mac') == 1 then
+      system_name = 'macOS'
+    elseif vim.fn.has('unix') == 1 then
+      system_name = 'Linux'
+    elseif vim.fn.has('win32') == 1 then
+      system_name = 'Windows'
+    else
+      error('Unsupported system for sumneko')
+    end
+
+    local sumneko_root_path = vim.fn.expand('~')..'/dev/lua-language-server'
+    local sumneko_binary = sumneko_root_path..'/bin/'..system_name..'/lua-language-server'
+
+    if vim.fn.exepath(sumneko_binary) == '' then
+      vim.cmd(string.format('echom "sumneko_binary not found: %s"', sumneko_binary))
+    end
+
+    local runtime_path = vim.split(package.path, ';')
+    table.insert(runtime_path, 'lua/?.lua')
+    table.insert(runtime_path, 'lua/?/init.lua')
+
+    require'lspconfig'.sumneko_lua.setup {
+      cmd = {sumneko_binary, '-E', sumneko_root_path..'/main.lua'};
+      settings = {
+        Lua = {
+          runtime = {
+            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+            version = 'LuaJIT',
+            -- Setup your lua path
+            path = runtime_path,
+          },
+          diagnostics = {
+            -- Get the language server to recognize the `vim` global
+            globals = {'vim'},
+          },
+          workspace = {
+            -- Make the server aware of Neovim runtime files
+            library = vim.api.nvim_get_runtime_file('', true),
+          },
+          -- Do not send telemetry data containing a randomized but unique identifier
+          telemetry = {
+            enable = false,
+          },
+        },
+      },
+    }
+  end
+
   idk()
+  setup_lua_lsp()
 
 end)
