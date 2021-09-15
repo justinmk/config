@@ -147,8 +147,13 @@ return require('packer').startup(function(use)
         require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
       end,
     }
+    require'lspconfig'.tsserver.setup{
+      on_attach = function(client, bufnr)
+      end
+    }
     vim.cmd([[
       nnoremap gr <cmd>lua vim.lsp.buf.references()<cr>
+      nnoremap crr <cmd>lua vim.lsp.buf.code_action()<cr>
       autocmd BufWinEnter * if &ft !~# 'help\|vim' | exe 'nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>' | endif
       nnoremap gd <cmd>lua vim.lsp.buf.definition()<cr>
       set omnifunc=v:lua.vim.lsp.omnifunc
