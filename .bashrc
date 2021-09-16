@@ -66,18 +66,20 @@ path_prepend "${HOME}/bin"
 # Add these dirs to $MANPATH.
 [ -d "${HOME}/dasht/man" ] && MANPATH="${HOME}/dasht/man:$MANPATH"
 
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
+# bash completion (also provides __git_ps1 on some systems). Slow as dirt.
+# `brew --prefix` is also slow, avoid it.
 if [ -n "$TMUX" ]; then
-# bash completion (also provides __git_ps1 on some systems)
-# Slow as dirt.
-if [ -f /usr/local/etc/bash_completion ]; then
-  # `brew --prefix` is horribly expensive, do not use it!
-  source /usr/local/etc/bash_completion
-elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-  . /etc/bash_completion
-fi
+  if [ -r '/usr/local/etc/profile.d/bash_completion.sh' ]; then
+    # brew install bash-completion@2
+    # https://github.com/homebrew/brew/blob/89b8619153ce7f523fcf4d1bb5fa4b3a375c22a4/docs/Shell-Completion.md
+    source '/usr/local/etc/profile.d/bash_completion.sh'
+  elif [ -d '/usr/local/etc/bash_completion.d' ]; then
+    for f in '/usr/local/etc/bash_completion.d/'*; do
+      [ -r "$f" ] && source "$f"
+    done
+  elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+  fi
 fi
 
 PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M)\[\e[0m\] \u@\h \w\[\e[0m\]
@@ -171,12 +173,6 @@ ghrebase1() {
     && git commit --amend -m "$(git log -1 --pretty=format:"%B" \
       | $sed_cmd "1 s/^(.*)\$/\\1 #${PR}/g")" \
     && git log --oneline --graph --decorate -n 5
-}
-
-upload-video() {
-  [ -z "$1" ] && { echo "missing arg 1"; return 1; }
-  ~/bin/upload_video.py --file="$HOME/Downloads/$1.mov" \
-    --title="$(date +%Y-%m-%d-%H:%M)" --privacyStatus="unlisted"
 }
 
 p() {
