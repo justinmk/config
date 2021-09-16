@@ -401,6 +401,7 @@ nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <silent> Ub             :G blame<cr>
+nnoremap <silent> Uc             :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s']))))<cr><cr>
 nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
                     "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
 nnoremap <silent> Ue             :Gedit<cr>
@@ -414,6 +415,7 @@ nnoremap <silent> Us             :G<cr>
 nnoremap <silent> Uw :call <sid>fug_detect()<bar>Gwrite<cr>
 
 nmap UB Ub
+nmap UC Ub
 nmap UD Ud
 nmap UE Ue
 nmap UF Uf
