@@ -400,19 +400,20 @@ nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
-nnoremap <silent> Ub             :G blame<cr>
-nnoremap <silent> Uc             :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s']))))<cr><cr>
-nnoremap <silent> Ud :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
-                    "\:call feedkeys("\<lt>C-w>\<lt>C-w>gg]c")<CR>
-nnoremap <silent> Ue             :Gedit<cr>
-nnoremap          Uf             :G commit --fixup=
-nnoremap <silent> Ug             :Gedit <C-R><C-W><cr>
-nnoremap <expr><silent> Ul       '@_<cmd>GV'.(v:count?'':'!').'<cr>'
-nnoremap          Um :GV -L :<C-r><C-w>:<C-r>%
-nnoremap <silent> Up :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
-nnoremap <silent> Ur             :Gread<cr>
-nnoremap <silent> Us             :G<cr>
+nnoremap <silent> Ub              :G blame<cr>
+nnoremap <silent> Uc              :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s']))))<cr><cr>
+nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
+nnoremap <silent> Ue              :Gedit<cr>
+nnoremap          Uf              :G commit --fixup=
+nnoremap <silent> Ug              :Gedit <C-R><C-W><cr>
+nnoremap <expr><silent> Ul        '@_<cmd>GV'.(v:count?'':'!').'<cr>'
+nnoremap          Um              :GV -L :<C-r><C-w>:<C-r>%
+nnoremap <silent> Up              :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
+nnoremap <silent> Ur              :Gread<cr>
+nnoremap <silent> Us              :G<cr>
 nnoremap <silent> Uw :call <sid>fug_detect()<bar>Gwrite<cr>
+nnoremap <silent> Ux              :<c-u>exe '.GBrowse'..(v:count?'!':'')<cr>
+xnoremap <silent> Ux              :GBrowse<cr>
 
 nmap UB Ub
 nmap UC Ub
@@ -426,6 +427,7 @@ nmap UP Up
 nmap UR Ur
 nmap US Us
 nmap UW Uw
+nmap UX Ux
 
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>

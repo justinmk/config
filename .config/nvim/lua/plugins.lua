@@ -1,4 +1,5 @@
 return require('packer').startup(function(use)
+  -- TODO: minimalist alternative? https://github.com/savq/paq-nvim
   use'wbthomason/packer.nvim'  -- Packer can manage itself
   use'justinmk/vim-printf'
 
