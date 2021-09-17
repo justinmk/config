@@ -416,7 +416,7 @@ nnoremap <silent> Ux              :<c-u>exe '.GBrowse'..(v:count?'!':'')<cr>
 xnoremap <silent> Ux              :GBrowse<cr>
 
 nmap UB Ub
-nmap UC Ub
+nmap UC Uc
 nmap UD Ud
 nmap UE Ue
 nmap UF Uf
@@ -864,35 +864,6 @@ if 0 && !&cursorcolumn
           \ | autocmd! matchparen_cursorcolumn_setup
   augroup END
 endif
-
-augroup vimrc_savecommitmsg
-  autocmd!
-  " Remember last git commit message
-  func! s:store_commit_msg()
-    if line('$') > 200
-      return
-    endif
-    " save
-    let [w,r]=[winsaveview(),getreg('"', 1)]
-    let [_reg_c,_cmark1,_cmark2] = [@c,getpos("'["),getpos("']")]
-
-    let @c=''
-    silent! keepmarks keepjumps keeppatterns 1;/^#/g/\v(^$)|^([^#].*$)/y C
-    keepmarks keepjumps let g:removed_whitespace =
-           \ substitute(@c, '\_[[:space:]]*', '', 'g')
-    let @c = len(g:removed_whitespace) < 10
-           \ ? _reg_c : @c[1:]  " remove first (empty) line
-
-    " restore
-    call winrestview(w)
-    call setreg('"', r)
-    call setpos("'[", _cmark1)
-    call setpos("']", _cmark2)
-  endf
-  autocmd BufEnter COMMIT_EDITMSG
-        \ autocmd! vimrc_savecommitmsg TextChanged,TextChangedI <buffer> silent call <SID>store_commit_msg()
-  autocmd BufWritePost COMMIT_EDITMSG let g:LAST_COMMIT_MSG = @c
-augroup END
 
 augroup vimrc_autocmd
   autocmd!
