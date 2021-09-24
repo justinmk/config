@@ -116,6 +116,10 @@ return require('packer').startup(function(use)
   use'tpope/vim-projectionist'
   -- see derekwyatt/vim-fswitch for more C combos.
   vim.api.nvim_set_var('projectionist_heuristics', {
+      ['package.json'] = {
+        ['package.json'] = {['alternate'] = {'package-lock.json'}},
+        ['package-lock.json'] = {['alternate'] = {'package.json'}},
+      },
       ['*.sln'] = {
         ['*.cs'] = {['alternate'] = {'{}.designer.cs'}},
         ['*.designer.cs'] = {['alternate'] = {'{}.cs'}},
