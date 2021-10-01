@@ -126,7 +126,6 @@ set foldopen-=search
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
-set splitright
 if has('patch-7.4.314') | set shortmess+=c | endif
 
 nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
