@@ -22,6 +22,10 @@ return require('packer').startup(function(use)
     'glacambre/firenvim',
     run = function() vim.fn['firenvim#install'](0) end,
   }
+  vim.cmd([[
+    nnoremap <D-v> "+p
+    inoremap <D-v> <esc>"+pa
+  ]])
 
   use'https://github.com/justinmk/vim-sneak.git'
   vim.cmd([[
@@ -143,26 +147,27 @@ return require('packer').startup(function(use)
   -- xxx
   local idk = function()
     use'neovim/nvim-lspconfig'
+    local function on_attach()
+      vim.cmd([[
+        nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
+        nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
+        nnoremap <buffer> crr <cmd>lua vim.lsp.buf.code_action()<cr>
+        nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
+        nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
+        nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
+        setlocal omnifunc=v:lua.vim.lsp.omnifunc
+      ]])
+    end
     require'lspconfig'.clangd.setup{
       cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
-      on_attach = function(...)
-        require'vim.lsp.log'.error('xxx on_attach: '..vim.inspect((...)))
-      end,
+      on_attach = on_attach,
       on_exit = function(...)
         require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
       end,
     }
     require'lspconfig'.tsserver.setup{
-      on_attach = function(client, bufnr)
-      end
+      on_attach = on_attach,
     }
-    vim.cmd([[
-      nnoremap gr <cmd>lua vim.lsp.buf.references()<cr>
-      nnoremap crr <cmd>lua vim.lsp.buf.code_action()<cr>
-      autocmd BufWinEnter * if &ft !~# 'help\|vim' | exe 'nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>' | endif
-      nnoremap gd <cmd>lua vim.lsp.buf.definition()<cr>
-      set omnifunc=v:lua.vim.lsp.omnifunc
-    ]])
 
     use'nvim-lua/plenary.nvim'
     use'lewis6991/gitsigns.nvim'
@@ -187,7 +192,7 @@ return require('packer').startup(function(use)
     local sumneko_binary = sumneko_root_path..'/bin/'..system_name..'/lua-language-server'
 
     if vim.fn.exepath(sumneko_binary) == '' then
-      vim.cmd(string.format('echom "sumneko_binary not found: %s"', sumneko_binary))
+      vim.cmd(string.format('autocmd UIEnter * ++once echom "sumneko_binary not found: %s"', sumneko_binary))
     end
 
     local runtime_path = vim.split(package.path, ';')
