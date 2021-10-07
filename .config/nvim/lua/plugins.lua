@@ -155,6 +155,7 @@ return require('packer').startup(function(use)
         nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
         nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
         nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
+        nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
         setlocal omnifunc=v:lua.vim.lsp.omnifunc
       ]])
     end
