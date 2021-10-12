@@ -63,14 +63,11 @@ if has("nvim")
   set inccommand=split
   "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
   tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, ['nvim', 'fzf'], 0) ? '<esc>' : '<c-\><c-n>'
-  augroup vimrc_nvim
-    autocmd!
-    " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
-    " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
-    " :checktime is SLOW
-    " autocmd CursorHold,FocusGained * silent! checktime
-    autocmd FocusGained * call <SID>halo()
-  augroup END
+
+  " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
+  " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
+  " :checktime is SLOW
+  " autocmd CursorHold,FocusGained * silent! checktime
 
   if has('nvim-0.3.1')
     set fillchars+=msgsep:‾
@@ -291,8 +288,8 @@ noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " mark position before search
 nnoremap / ms/
 
-nnoremap <expr> n (<SID>halo()).('Nn'[v:searchforward])
-nnoremap <expr> N (<SID>halo()).('nN'[v:searchforward])
+nnoremap <expr> n 'Nn'[v:searchforward]
+nnoremap <expr> N 'nN'[v:searchforward]
 
 " manage windows
 "       [count]<c-w>s and [count]<c-w>v create a [count]-sized split
@@ -394,8 +391,8 @@ if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugit
   endfunc
 endif
 
-nmap     <expr> <C-n> (<SID>halo()).(&diff?']c]n':']n')
-nmap     <expr> <C-p> (<SID>halo()).(&diff?'[c[n':'[n')
+nmap     <expr> <C-n> &diff?']c]n':']n'
+nmap     <expr> <C-p> &diff?'[c[n':'[n'
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
@@ -818,51 +815,11 @@ nnoremap <silent> m<bs> :call nvim_buf_clear_highlight(bufnr('%'), -1, 0, -1)<cr
 
 " }}} mappings
 
-highlight Halo  guifg=black guibg=white   ctermfg=black ctermbg=white
-highlight Halo2 guifg=white guibg=#F92672 ctermfg=white ctermbg=197
-let g:halo = {}
-function! s:halo_clear(id) abort
-  silent! call matchdelete(g:halo['hl_id'])
-endfunction
-function! s:halo() abort
-  call s:halo_show('Halo', -1)
-  call timer_start(200, function('s:halo_show', ['Halo2']))
-  call timer_start(500, function('s:halo_clear'))
-  return ''
-endfunction
-function! s:halo_show(hl, id) abort
-  call s:halo_clear(-1)
-  let lcol = col('.') > 10 ? col('.') - 10 : 1
-  let g:halo['hl_id'] = matchaddpos(a:hl,
-        \[[line('.'),   lcol, 10],
-        \ [line('.')-1, lcol, 10],
-        \ [line('.')-1, lcol, 10],
-        \ [line('.')+1, lcol, 10],
-        \ [line('.')+1, lcol, 10]]
-        \)
-endfunction
-augroup halo_plugin
+augroup vimrc_halo
   autocmd!
-  autocmd WinLeave * call <SID>halo_clear(-1)
+  autocmd FocusGained * setlocal cursorcolumn | autocmd CursorMoved,CursorMovedI,InsertEnter,WinLeave * ++once setlocal nocursorcolumn
+  " autocmd WinLeave * call setlocal nocursorcolumn
 augroup END
-
-" A massively simplified take on https://github.com/chreekat/vim-paren-crosshairs
-func! s:matchparen_cursorcolumn_setup() abort
-  augroup matchparen_cursorcolumn
-    autocmd!
-    autocmd CursorMoved * if get(w:, "paren_hl_on", 0) | set cursorcolumn | else | set nocursorcolumn | endif
-    autocmd InsertEnter * set nocursorcolumn
-  augroup END
-endf
-if 0 && !&cursorcolumn
-  augroup matchparen_cursorcolumn_setup
-    autocmd!
-    " - Add the event _only_ if matchparen is enabled.
-    " - Event must be added _after_ matchparen loaded (so we can react to w:paren_hl_on).
-    autocmd CursorMoved * if exists("#matchparen#CursorMoved") | call <sid>matchparen_cursorcolumn_setup() | endif
-          \ | autocmd! matchparen_cursorcolumn_setup
-  augroup END
-endif
 
 augroup vimrc_autocmd
   autocmd!
