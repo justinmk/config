@@ -27,13 +27,13 @@ return require('packer').startup(function(use)
     inoremap <D-v> <esc>"+pa
   ]])
 
-  use'https://github.com/justinmk/vim-sneak.git'
   vim.cmd([[
     let g:sneak#label = 1
     let g:sneak#use_ic_scs = 1
     let g:sneak#absolute_dir = 1
     map <M-;> <Plug>Sneak_,
   ]])
+  use'https://github.com/justinmk/vim-sneak.git'
 
   use'tpope/vim-characterize'
   use'tpope/vim-scriptease'
@@ -118,7 +118,6 @@ return require('packer').startup(function(use)
   vim.g.fzf_command_prefix = 'Fz'
 
   use'tpope/vim-projectionist'
-  -- see derekwyatt/vim-fswitch for more C combos.
   vim.api.nvim_set_var('projectionist_heuristics', {
       ['package.json'] = {
         ['package.json'] = {['alternate'] = {'package-lock.json'}},
@@ -133,8 +132,8 @@ return require('packer').startup(function(use)
         ['*.h'] = {['alternate'] = '{}.c'},
       },
       ['Makefile'] = {
-        ['*Makefile'] = {['alternate'] = '{dirname}CMakeLists.txt'},
-        ['*CMakeLists.txt'] = {['alternate'] = '{dirname}Makefile'},
+        ['Makefile'] = {['alternate'] = 'CMakeLists.txt'},
+        ['CMakeLists.txt'] = {['alternate'] = 'Makefile'},
       },
     })
 
