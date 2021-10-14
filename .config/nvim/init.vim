@@ -817,7 +817,7 @@ nnoremap <silent> m<bs> :call nvim_buf_clear_highlight(bufnr('%'), -1, 0, -1)<cr
 
 augroup vimrc_halo
   autocmd!
-  autocmd FocusGained * setlocal cursorcolumn | autocmd CursorMoved,CursorMovedI,InsertEnter,WinLeave * ++once setlocal nocursorcolumn
+  autocmd FocusGained * setlocal cursorcolumn | autocmd FocusLost,CursorMoved,CursorMovedI,InsertEnter,WinLeave * ++once setlocal nocursorcolumn
   " autocmd WinLeave * call setlocal nocursorcolumn
 augroup END
 
