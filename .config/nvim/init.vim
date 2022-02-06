@@ -1104,6 +1104,8 @@ nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
 nnoremap <leader>vs :Scriptnames<cr>
 
+nnoremap <leader>== o<c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr>.<cr><c-r>+<cr>tag=""
+
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
