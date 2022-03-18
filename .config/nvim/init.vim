@@ -69,10 +69,10 @@ if has("nvim")
   " :checktime is SLOW
   " autocmd CursorHold,FocusGained * silent! checktime
 
-  if has('nvim-0.3.1')
-    set fillchars+=msgsep:‾
-    hi MsgSeparator ctermbg=black ctermfg=white
-  endif
+  set fillchars+=msgsep:‾
+  set laststatus=3
+  hi! link MsgSeparator VertSplit
+  hi! link WinSeparator VertSplit
 endif
 
 " Use <C-L> to:
@@ -213,7 +213,7 @@ func! s:colors() abort
     hi StatusLine cterm=bold,reverse gui=bold,reverse
     hi! link ColorColumn StatusLine
     hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
-    hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=232 cterm=bold
+    hi VertSplit guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=NONE cterm=NONE
 
     hi! link Directory Identifier
     hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE
