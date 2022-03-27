@@ -143,21 +143,22 @@ return require('packer').startup(function(use)
     runtime! plugin/commentary.vim
   ]])
 
+  local function on_attach()
+    vim.cmd([[
+    nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
+    nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
+    nnoremap <buffer> crr <cmd>lua vim.lsp.buf.code_action()<cr>
+    nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
+    nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
+    nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
+    nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
+    setlocal omnifunc=v:lua.vim.lsp.omnifunc
+    ]])
+  end
+
   -- xxx
   local idk = function()
     use'neovim/nvim-lspconfig'
-    local function on_attach()
-      vim.cmd([[
-        nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
-        nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
-        nnoremap <buffer> crr <cmd>lua vim.lsp.buf.code_action()<cr>
-        nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
-        nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
-        nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
-        nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
-        setlocal omnifunc=v:lua.vim.lsp.omnifunc
-      ]])
-    end
     require'lspconfig'.clangd.setup{
       cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
       on_attach = on_attach,
@@ -201,6 +202,7 @@ return require('packer').startup(function(use)
 
     require'lspconfig'.sumneko_lua.setup {
       cmd = {sumneko_binary, '-E', sumneko_root_path..'/main.lua'};
+      on_attach = on_attach,
       settings = {
         Lua = {
           runtime = {

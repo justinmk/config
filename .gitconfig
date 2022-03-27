@@ -66,6 +66,7 @@
 [advice]
   detachedHead = false
   statusHints = false
+  skippedCherryPicks = false
 [feature]
   manyFiles = true
 [color]
