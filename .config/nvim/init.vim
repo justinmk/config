@@ -207,6 +207,7 @@ func! s:colors() abort
     " hi Search guifg=#000000 guibg=#d7ff5f ctermfg=0 ctermbg=227 gui=NONE cterm=NONE
     hi! Search ctermbg=LightCyan ctermfg=black guibg=LightCyan guifg=black
     hi! link IncSearch QuickFixLine
+    hi! link CurSearch IncSearch
     hi! link Substitute QuickFixLine
 
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
@@ -391,8 +392,8 @@ if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugit
   endfunc
 endif
 
-nmap     <expr> <C-n> &diff?']c]n':']n'
-nmap     <expr> <C-p> &diff?'[c[n':'[n'
+nmap <expr> <C-n> &diff?']c]n':(luaeval('({pcall(require, "gitsigns")})[1]')?'<cmd>lua require("gitsigns"):next_hunk({wrap=false})<cr>':']n')
+nmap <expr> <C-p> &diff?'[c[n':(luaeval('({pcall(require, "gitsigns")})[1]')?'<cmd>lua require("gitsigns"):prev_hunk({wrap=false})<cr>':'[n')
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
