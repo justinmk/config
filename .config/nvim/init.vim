@@ -128,7 +128,7 @@ if has('patch-7.4.314') | set shortmess+=c | endif
 nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
-nnoremap yot :setlocal textwidth<C-R>=(&textwidth == 80) ? '<' : '=80'<CR><CR>
+nnoremap yoT :setlocal textwidth=<C-R>=(&textwidth == 80) ? '0' : '80'<CR><CR>
 
 set nostartofline
 set cursorline
