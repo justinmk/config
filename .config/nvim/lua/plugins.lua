@@ -179,19 +179,8 @@ return require('packer').startup(function(use)
   end
 
   local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#sumneko_lua
-    local system_name
-    if vim.fn.has('mac') == 1 then
-      system_name = 'macOS'
-    elseif vim.fn.has('unix') == 1 then
-      system_name = 'Linux'
-    elseif vim.fn.has('win32') == 1 then
-      system_name = 'Windows'
-    else
-      error('Unsupported system for sumneko')
-    end
-
     local sumneko_root_path = vim.fn.expand('~')..'/dev/lua-language-server'
-    local sumneko_binary = sumneko_root_path..'/bin/'..system_name..'/lua-language-server'
+    local sumneko_binary = sumneko_root_path..'/bin/lua-language-server'
 
     if vim.fn.exepath(sumneko_binary) == '' then
       vim.cmd(string.format('autocmd UIEnter * ++once echom "sumneko_binary not found: %s"', sumneko_binary))
