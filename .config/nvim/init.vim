@@ -402,14 +402,15 @@ nnoremap <silent> Uc              :G commit --edit -m <c-r>=shellescape(trim(joi
 nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
-nnoremap <silent> Ug              :Gedit <C-R><C-W><cr>
-nnoremap <expr><silent> Ul        '@_<cmd>GV'.(v:count?'':'!').'<cr>'
-nnoremap          Um              :GV -L :<C-r><C-w>:<C-r>%
+nnoremap <silent> Ug              :echo 'use UU'<cr>
+nnoremap <expr><silent> Ul        '@_<cmd>G log --oneline --decorate'.(v:count?'':' -- %').'<cr>'
+nnoremap          Um              :G log --oneline --decorate -L :<C-r><C-w>:<C-r>%
 nnoremap <silent> Up              :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
 nnoremap <silent> Ur              :Gread<cr>
 nnoremap <silent> Us              :G<cr>
-nnoremap <silent> Uw :call <sid>fug_detect()<bar>Gwrite<cr>
-nnoremap <silent> Ux              :<c-u>exe '.GBrowse'..(v:count?'!':'')<cr>
+nnoremap <silent> Uu              :Gedit <C-R><C-W><cr>
+nnoremap <silent> Uw              :call <sid>fug_detect()<bar>Gwrite<cr>
+nnoremap <expr>   Ux              '@_:GBrowse '.(v:count?'@':'<cr>')
 xnoremap <silent> Ux              :GBrowse<cr>
 
 nmap UB Ub
@@ -423,8 +424,10 @@ nmap UM Um
 nmap UP Up
 nmap UR Ur
 nmap US Us
+nmap UU Uu
 nmap UW Uw
 nmap UX Ux
+xmap UX Ux
 
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
@@ -856,9 +859,12 @@ augroup vimrc_autocmd
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd FileType gitconfig setlocal commentstring=#\ %s
+  " For the ":G log" buffer opened by the "UL" mapping.
+  autocmd FileType git if get(b:, 'fugitive_type') ==# 'temp'
+    \ | exe 'nnoremap <nowait><buffer><silent> <C-n> <C-\><C-n>0j:call feedkeys("p")<CR>'
+    \ | exe 'nnoremap <nowait><buffer><silent> <C-p> <C-\><C-n>0k:call feedkeys("p")<CR>'
+    \ | endif
   function! s:setup_gitstatus() abort
-    nmap <buffer> <M-n> )dv:call feedkeys('<c-v><c-w>h)<c-v><c-w>P<c-v><c-l>')<cr>
-    nmap <buffer> <M-p> (dv:call feedkeys('<c-v><c-w>h)<c-v><c-w>P<c-v><c-l>')<cr>
     unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
@@ -1110,18 +1116,12 @@ nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=str
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
-command! CdLibUV        exe 'e '.finddir(".deps/build/src/libuv", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
-command! CdNvimDeps     exe 'e '.finddir(".deps", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/neovim/.deps/usr/share/lua/**,".expand("~")."/neovim/.deps/usr/share/lua/**")<bar>lcd %
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
-command! ProfileVim     exe 'Start '.v:progpath.' --startuptime "'.expand("~/vimprofile.txt").'" -c "e ~/vimprofile.txt"'
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
-command! -nargs=1 Vimref split ~/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}')
+command! -nargs=1 Vimref split ~/dev/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}')
       \? '<args>' : 'v'.matchstr('<args>', '\v(\d+\.){2}(\d)+'))
-command! -nargs=1 Vimtag exe 'noswapfile edit '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**").'/src/version.c'
-                              \.'|tag <args>'
-command! -nargs=1 Ghpr GV refs/pull/upstream/<args>
 command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*/**' --exclude='**/build*/**' --exclude='cdk.out/**' --exclude='**/cdk.out/**' --exclude='.vim-src/**' --exclude='**/dist/**' --exclude='node_modules/**' --exclude='**/node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
   \ --exclude=.git --exclude=.svn --exclude=.hg --exclude="*.cache.html" --exclude="*.nocache.js" --exclude="*.min.*" --exclude="*.map" --exclude="*.swp" --exclude="*.bak" --exclude="*.pyc" --exclude="*.class" --exclude="*.sln" --exclude="*.Master" --exclude="*.csproj" --exclude="*.csproj.user" --exclude="*.cache" --exclude="*.dll" --exclude="*.pdb" --exclude=tags --exclude="cscope.*" --exclude="*.tar.*"
   \ *
@@ -1189,7 +1189,6 @@ function! s:init_lynx() abort
 endfunction
 command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
-nnoremap gow :Start "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-proxy-server "%:p"<cr>
 
 silent! source ~/.vimrc.local
 

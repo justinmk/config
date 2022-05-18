@@ -42,7 +42,6 @@ return require('packer').startup(function(use)
 
   use{'will133/vim-dirdiff', opt=true}
   use'tpope/vim-fugitive'
-  use'junegunn/gv.vim'
   use'tpope/vim-rhubarb'
 
   use'tpope/vim-surround'
