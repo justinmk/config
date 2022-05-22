@@ -403,8 +403,9 @@ nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:co
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
 nnoremap <silent> Ug              :echo 'use UU'<cr>
-nnoremap <expr><silent> Ul        '@_<cmd>G log --oneline --decorate'.(v:count?'':' -- %').'<cr>'
-nnoremap          Um              :G log --oneline --decorate -L :<C-r><C-w>:<C-r>%
+nnoremap <expr><silent> Ul        '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' -- %').'<cr>'
+nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
+nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
 nnoremap <silent> Up              :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
 nnoremap <silent> Ur              :Gread<cr>
 nnoremap <silent> Us              :G<cr>
@@ -863,6 +864,7 @@ augroup vimrc_autocmd
   autocmd FileType git if get(b:, 'fugitive_type') ==# 'temp'
     \ | exe 'nnoremap <nowait><buffer><silent> <C-n> <C-\><C-n>0j:call feedkeys("p")<CR>'
     \ | exe 'nnoremap <nowait><buffer><silent> <C-p> <C-\><C-n>0k:call feedkeys("p")<CR>'
+    \ | match Comment /  \S\+ ([^)]\+)$/
     \ | endif
   function! s:setup_gitstatus() abort
     unmap <buffer> U
@@ -1116,7 +1118,7 @@ nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=str
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
-command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/neovim/.deps/usr/share/lua/**,".expand("~")."/neovim/.deps/usr/share/lua/**")<bar>lcd %
+command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/dev/neovim/.deps/usr/share/lua/**,".expand("~")."/dev/neovim/.deps/usr/share/lua/**")<bar>lcd %
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
