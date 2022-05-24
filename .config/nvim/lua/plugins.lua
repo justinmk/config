@@ -50,7 +50,7 @@ return require('packer').startup(function(use)
 
   use'tpope/vim-dispatch'
   vim.g.dispatch_no_tmux_make = 1  -- Prefer job strategy even in tmux.
-  vim.cmd([[nnoremap mT mT:FocusDispatch NVIM_LISTEN_ADDRESS= VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
+  vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
   -- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
   -- xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 

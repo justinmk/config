@@ -397,13 +397,13 @@ nmap <expr> <C-p> &diff?'[c[n':(luaeval('({pcall(require, "gitsigns")})[1]')?'<c
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
-nnoremap <silent> Ub              :G blame<cr>
+nnoremap <expr>   Ub              '@_<cmd>G blame '..(v:count?'--ignore-revs-file ""':'')..'<cr>'
 nnoremap <silent> Uc              :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s']))))<cr><cr>
 nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
 nnoremap <silent> Ug              :echo 'use UU'<cr>
-nnoremap <expr><silent> Ul        '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' -- %').'<cr>'
+nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' -- %').'<cr>'
 nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
 nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
 nnoremap <silent> Up              :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
@@ -837,19 +837,11 @@ augroup vimrc_autocmd
     let altwin = s:get_alt_winnr()
     wincmd c
     exe altwin.'wincmd w'
-    " let [win_cnt, last_win] = [winnr('$'), winnr() == winnr('$')]
-    " if last_win "If quickfix window is open, it is _always_ the last window.
-    "   cclose
-    "   if win_cnt == winnr('$')
-    "     lclose " :cclose didn't change win count; that means we were in loclist.
-    "   end
-    " else
-    "   lclose
-    " endif
   endf
   autocmd FileType qf nnoremap <buffer> <c-p> <up>
         \|nnoremap <buffer> <c-n> <down>
         \|nnoremap <silent><buffer><nowait> gq :call <sid>close_qflist()<cr>
+        \|setlocal nolist
 
   autocmd CmdwinEnter * nnoremap <nowait><silent><buffer> gq <C-W>c
 
@@ -881,8 +873,8 @@ augroup vimrc_autocmd
   "  - do/dp should not auto-fold
   autocmd VimEnter * if &diff | exe 'windo set foldmethod=manual' | endif
 
-  " autocmd VimEnter * if !empty($NVIM_LISTEN_ADDRESS) && $NVIM_LISTEN_ADDRESS !=# v:servername
-  "       \ |let g:r=jobstart(['nc', '-U', $NVIM_LISTEN_ADDRESS],{'rpc':v:true})
+  " autocmd VimEnter * if !empty($NVIM)
+  "       \ |let g:r=jobstart(['nc', '-U', $NVIM],{'rpc':v:true})
   "       \ |let g:f=fnameescape(expand('%:p'))
   "       \ |noau bwipe
   "       \ |call rpcrequest(g:r, "nvim_command", "tabedit ".g:f)|qa|endif
@@ -1148,7 +1140,7 @@ function! Cxn(addr) abort
 
   terminal
   let nvim_path = executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
-  call chansend(&channel, "NVIM_LISTEN_ADDRESS= ".nvim_path." -u NORC\n")
+  call chansend(&channel, nvim_path." -u NORC\n")
   call chansend(&channel, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
   call chansend(&channel, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")
   call chansend(&channel, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
