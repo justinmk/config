@@ -49,6 +49,8 @@
   cmd = $EDITOR -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w|only|diffoff!'
 [i18n]
   filesEncoding = utf-8
+[commit]
+  status = false
 [alias]
   w = !git-when-merged --log
   rf = "!cd -- ${GIT_PREFIX:-.}; find . -maxdepth 3 -type d -name .git -exec echo 'repo: {}' \\; -exec git -C '{}' fetch --all --prune \\;"
