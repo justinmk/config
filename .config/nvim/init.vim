@@ -856,6 +856,7 @@ augroup vimrc_autocmd
   autocmd FileType git if get(b:, 'fugitive_type') ==# 'temp'
     \ | exe 'nnoremap <nowait><buffer><silent> <C-n> <C-\><C-n>0j:call feedkeys("p")<CR>'
     \ | exe 'nnoremap <nowait><buffer><silent> <C-p> <C-\><C-n>0k:call feedkeys("p")<CR>'
+    \ | exe 'nnoremap <nowait><buffer><silent> gq <C-w>q'
     \ | match Comment /  \S\+ ([^)]\+)$/
     \ | endif
   function! s:setup_gitstatus() abort
