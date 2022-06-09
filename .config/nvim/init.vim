@@ -238,7 +238,7 @@ au VimEnter * call <SID>colors()
 "==============================================================================
 " text, tab and indent 
 
-set formatoptions+=rno1l
+set formatoptions+=rno1l/
 " don't syntax-highlight long lines
 set synmaxcol=200
 
