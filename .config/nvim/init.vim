@@ -265,7 +265,7 @@ cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
 " key mappings/bindings =================================================== {{{
-nnoremap z= :setlocal spell<CR>z=
+nnoremap <expr> z= ':<c-u>setlocal spell<CR>'.v:count.'z='
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
 
