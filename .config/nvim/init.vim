@@ -218,6 +218,8 @@ func! s:colors() abort
 
     hi! link Directory Identifier
     hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE
+    hi! link CursorLineSign CursorLine
+    hi! link CursorLineFold CursorLine
     hi! link LineNr CursorLine
     hi! link SignColumn Normal
     hi! link CursorLineNr Normal
@@ -265,6 +267,7 @@ cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
 " key mappings/bindings =================================================== {{{
+nnoremap g: :lua 
 nnoremap <expr> z= ':<c-u>setlocal spell<CR>'.v:count.'z='
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
@@ -846,7 +849,7 @@ augroup vimrc_autocmd
   autocmd BufRead * autocmd FileType <buffer> ++once
     \ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
 
-  autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO setf text
+  autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if expand('<afile>:t') !=# 'CMakeLists.txt' | setf text | endif
   autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   " For the ":G log" buffer opened by the "UL" mapping.

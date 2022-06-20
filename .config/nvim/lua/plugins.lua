@@ -151,6 +151,7 @@ return require('packer').startup(function(use)
     nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
     nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
     nnoremap <buffer> crr <cmd>lua vim.lsp.buf.code_action()<cr>
+    nnoremap <buffer> crR <cmd>lua vim.lsp.buf.rename()<cr>
     nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
     nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
     nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
