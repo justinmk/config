@@ -411,8 +411,8 @@ nnoremap <silent> Ur              :Gread<cr>
 nnoremap <silent> Us              :G<cr>
 nnoremap <silent> Uu              :Gedit <C-R><C-W><cr>
 nnoremap <silent> Uw              :call <sid>fug_detect()<bar>Gwrite<cr>
-nnoremap <expr>   Ux              '@_:GBrowse '.(v:count?'@':'<cr>')
-xnoremap <silent> Ux              :GBrowse<cr>
+nnoremap <expr>   Ux              '@_:.GBrowse '.(v:count?'@':'<cr>')
+xnoremap <expr>   Ux              ':.GBrowse '.(v:count?'@':'<cr>')
 
 nmap UB Ub
 nmap UC Uc
