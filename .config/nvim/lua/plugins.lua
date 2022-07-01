@@ -180,22 +180,25 @@ return require('packer').startup(function(use)
     vim.cmd([[
       hi! link GitSignsChange Normal
     ]])
+
+    use'nvim-treesitter/playground'
+    use {
+      'nvim-treesitter/nvim-treesitter',
+      run = function() vim.cmd('TSUpdate') end
+    }
   end
 
   local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#sumneko_lua
-    local sumneko_root_path = vim.fn.expand('~')..'/dev/lua-language-server'
-    local sumneko_binary = sumneko_root_path..'/bin/lua-language-server'
-
-    if vim.fn.exepath(sumneko_binary) == '' then
-      vim.cmd(string.format('autocmd UIEnter * ++once echom "sumneko_binary not found: %s"', sumneko_binary))
-    end
+    -- if vim.fn.exepath('lua-language-server') == '' then
+    --   vim.cmd(string.format('autocmd UIEnter * ++once echom "lua-language-server not found'))
+    -- end
 
     local runtime_path = vim.split(package.path, ';')
     table.insert(runtime_path, 'lua/?.lua')
     table.insert(runtime_path, 'lua/?/init.lua')
 
     require'lspconfig'.sumneko_lua.setup {
-      cmd = {sumneko_binary, '-E', sumneko_root_path..'/main.lua'};
+      cmd = {'lua-language-server'};
       on_attach = on_attach,
       settings = {
         Lua = {

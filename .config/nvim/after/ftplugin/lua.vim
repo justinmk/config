@@ -16,4 +16,5 @@ endif
 nnoremap <buffer> yxal :luafile %<cr>
 
 iabbrev <buffer> lo local
-iabbrev <buffer> fu local function()<left><left>
+iabbrev <buffer> lf local function()<left><left>
+iabbrev <buffer> fu function() end<left><left><left><left>

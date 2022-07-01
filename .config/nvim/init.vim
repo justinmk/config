@@ -200,7 +200,7 @@ func! s:colors() abort
     hi DiffText        guifg=black   guibg=cyan    ctermfg=16  ctermbg=cyan gui=NONE cterm=NONE
 
     "If 242 is too dark, keep incrementing...
-    hi FoldColumn      guifg=#465457 guibg=#000000 ctermfg=242 ctermbg=16
+    hi! link FoldColumn CursorLine
     hi Folded          guifg=#465457 guibg=NONE    ctermfg=242 ctermbg=NONE
 
     hi Error           guifg=#FFFFFF   guibg=Red   ctermfg=15 ctermbg=9
