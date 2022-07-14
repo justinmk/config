@@ -253,11 +253,7 @@ set synmaxcol=200
 set linebreak
 set nowrap
 
-" =============================================================================
-" normal mode
-
-nnoremap & n:&&<CR>
-xnoremap & n:&&<CR>
+" key mappings/bindings =================================================== {{{
 
 " copy selection to gui-clipboard
 xnoremap Y "+y
@@ -272,7 +268,6 @@ cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 " inVerse search: line NOT containing pattern
 cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
-" key mappings/bindings =================================================== {{{
 nnoremap g: :lua 
 nnoremap <expr> z= ':<c-u>setlocal spell<CR>'.v:count.'z='
 nnoremap ' `
@@ -1016,7 +1011,7 @@ nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar
 nnoremap <C-f> :edit **/
 nnoremap \t    :tag<space>
 " See `man fnmatch`.
-nnoremap \g  mS:Ggrep! -q -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/\!*.md' ':/\!*.mpack' ':/\!*.pbf' ':/\!*.pdf' ':/\!*.po' ':(top,exclude,icase)notebooks/' ':/\!data/' ':/\!work/' ':/\!qgis/' ':/\!graphhopper_data/'
+nnoremap \g  mS:Ggrep! -q -E <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/\!*.mpack' ':/\!*.pbf' ':/\!*.pdf' ':/\!*.po' ':(top,exclude,icase)notebooks/' ':/\!data/' ':/\!work/' ':/\!qgis/' ':/\!graphhopper_data/'
       \<Home><C-Right><C-Right><C-Right><C-Right><left>
 nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
