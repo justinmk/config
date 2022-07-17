@@ -132,9 +132,6 @@ nnoremap yoT :setlocal textwidth=<C-R>=(&textwidth == 80) ? '0' : '80'<CR><CR>
 
 set nostartofline
 set cursorline
-set mouse=nvi
-nnoremap <M-LeftMouse> <Cmd>set mouse=<Bar>echo 'mouse OFF until next cursor-move'
-      \<Bar>autocmd CursorMoved * ++once set mouse=nv<Bar>echo 'mouse ON'<CR>
 set diffopt+=hiddenoff
 
 "colorscheme {{{
