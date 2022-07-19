@@ -35,6 +35,7 @@ return require('packer').startup(function(use)
   ]])
   use'https://github.com/justinmk/vim-sneak.git'
 
+  use'tpope/vim-sleuth'
   use'tpope/vim-characterize'
   use'tpope/vim-scriptease'
   use'tpope/vim-apathy'

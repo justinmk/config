@@ -97,8 +97,9 @@ set guicursor+=n:blinkon175
 au UIEnter * set guifont=Menlo:h20
 
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
-" Instead set softtabstop=-1, then 'shiftwidth' is used.
+" Set softtabstop=-1 to mirror 'shiftwidth' is used.
 set expandtab shiftwidth=2 softtabstop=-1
+autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | set listchars+=tab:\ \  | endif
 
 let g:mapleader = "z,"
 
@@ -128,7 +129,7 @@ if has('patch-7.4.314') | set shortmess+=c | endif
 nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
-nnoremap yoT :setlocal textwidth=<C-R>=(&textwidth == 80) ? '0' : '80'<CR><CR>
+nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : (v:count ? v:count : 80)<CR><CR>
 
 set nostartofline
 set cursorline
@@ -877,8 +878,6 @@ augroup vimrc_autocmd
   "       \ |let g:f=fnameescape(expand('%:p'))
   "       \ |noau bwipe
   "       \ |call rpcrequest(g:r, "nvim_command", "tabedit ".g:f)|qa|endif
-
-  autocmd BufRead,BufNewFile *.{ascx,aspx} setlocal shiftwidth=2 copyindent
 
   " if exists('##TextYankPost')
   "   autocmd TextYankPost * let g:yankring=get(g:,'yankring',[])
