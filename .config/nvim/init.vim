@@ -59,22 +59,6 @@ fun! s:find_proc_in_tree(rootpid, names, accum) abort
   return v:false
 endfun
 
-if has("nvim")
-  set inccommand=split
-  "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-  tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, ['nvim', 'fzf'], 0) ? '<esc>' : '<c-\><c-n>'
-
-  " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
-  " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
-  " :checktime is SLOW
-  " autocmd CursorHold,FocusGained * silent! checktime
-
-  set fillchars+=msgsep:‾
-  set laststatus=3
-  hi! link MsgSeparator WinSeparator
-  hi! link WinSeparator WinSeparator
-endif
-
 " Use <C-L> to:
 "   - redraw
 "   - clear 'hlsearch'
@@ -92,6 +76,15 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
+set fillchars+=msgsep:‾
+set laststatus=3
+set inccommand=split
+
+" https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
+" autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
+" :checktime is SLOW
+" autocmd CursorHold,FocusGained * silent! checktime
+
 set cpoptions-=_
 set guicursor+=n:blinkon175
 au UIEnter * set guifont=Menlo:h20
@@ -144,6 +137,9 @@ func! s:colors() abort
     "   https://github.com/neovim/neovim/commit/98e2da7d50b8f22edb20cdb744788ef0085d0cb6
     "   https://github.com/neovim/neovim/commit/1ad6423f02bad6d7941ca38f2d5f7b757811e022
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
+    hi NormalNC ctermbg=234
+    hi! link WinSeparator NormalNC
+    hi! link MsgSeparator WinSeparator
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
     hi Whitespace ctermfg=LightGray
     hi SpecialKey ctermfg=241 guifg=#626262
@@ -215,11 +211,11 @@ func! s:colors() abort
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
     hi! link ColorColumn StatusLine
-    hi StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
-    hi WinSeparator guifg=#808080 guibg=#080808 gui=bold ctermfg=244 ctermbg=NONE cterm=NONE
+    hi! StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
 
     hi! link Directory Identifier
     hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE
+    hi! link CursorColumn CursorLine
     hi! link CursorLineSign CursorLine
     hi! link CursorLineFold CursorLine
     hi! link LineNr CursorLine
@@ -252,6 +248,9 @@ set linebreak
 set nowrap
 
 " key mappings/bindings =================================================== {{{
+
+"tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+tnoremap <silent><expr> <esc> <SID>find_proc_in_tree(b:terminal_job_pid, ['nvim', 'fzf'], 0) ? '<esc>' : '<c-\><c-n>'
 
 " copy selection to gui-clipboard
 xnoremap Y "+y
@@ -821,7 +820,8 @@ nnoremap <silent> m<bs> :call nvim_buf_clear_highlight(bufnr('%'), -1, 0, -1)<cr
 
 augroup vimrc_halo
   autocmd!
-  autocmd FocusGained * setlocal cursorcolumn | autocmd FocusLost,CursorMoved,CursorMovedI,InsertEnter,WinLeave * ++once setlocal nocursorcolumn
+  autocmd FocusGained * if winnr('$') > 1 && &buftype!=#'terminal' | setlocal cursorcolumn | endif
+    \ | autocmd FocusLost,CursorMoved,CursorMovedI,InsertEnter,WinLeave,WinScrolled * ++once setlocal nocursorcolumn
   " autocmd WinLeave * call setlocal nocursorcolumn
 augroup END
 
