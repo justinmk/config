@@ -132,10 +132,6 @@ set diffopt+=hiddenoff
 func! s:colors() abort
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
     " space as extra whitespace (makes mouse-copy nicer).
-    "
-    " TODO: blanks firenvim, related to these Nvim commits?
-    "   https://github.com/neovim/neovim/commit/98e2da7d50b8f22edb20cdb744788ef0085d0cb6
-    "   https://github.com/neovim/neovim/commit/1ad6423f02bad6d7941ca38f2d5f7b757811e022
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
     hi NormalNC ctermbg=234
     hi! link WinSeparator NormalNC
@@ -232,9 +228,7 @@ func! s:colors() abort
     hi helpHyperTextJump cterm=underline ctermfg=cyan gui=underline guifg=cyan
     hi MatchParen cterm=bold,underline ctermfg=lightgreen ctermbg=NONE guifg=black guibg=white
 endfunc
-if !get(g:, 'started_by_firenvim')
-  autocmd VimEnter * call <SID>colors()
-endif
+autocmd VimEnter * call <SID>colors()
 "}}}
 
 "==============================================================================
