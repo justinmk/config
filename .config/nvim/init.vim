@@ -744,7 +744,11 @@ nnoremap <expr> ZZ          (v:count ? ':<c-u>xa!<cr>' : '@_ZZ')
 nnoremap <expr> ZQ          (v:count ? ':<c-u>qa!<cr>' : '@_ZQ')
 nnoremap <expr> <c-w>=      (v:count ? ':<c-u>windo setlocal nowinfixheight nowinfixwidth<cr><c-w>=' : '@_<c-w>=')
 
-func! s:zoom_toggle() abort
+func! s:zoom_toggle(cnt) abort
+  if a:cnt  " Fallback to default '|' behavior if count was provided.
+    exe 'norm! '.v:count.'|'
+  endif
+
   if 1 == winnr('$')
     return
   endif
@@ -754,20 +758,12 @@ func! s:zoom_toggle() abort
   if exists('t:zoom_restore')
     exe t:zoom_restore
     unlet t:zoom_restore
-  else
+  elseif winrestcmd() !=# restore_cmd
     let t:zoom_restore = restore_cmd
   endif
-  return '<Nop>'
 endfunc
-func! s:zoom_or_goto_column(cnt) abort
-  if a:cnt
-    exe 'norm! '.v:count.'|'
-  else
-    call s:zoom_toggle()
-  endif
-endfunc
-nnoremap +     :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
-nnoremap <Bar> :<C-U>call <SID>zoom_or_goto_column(v:count)<CR>
+nnoremap +     :<C-U>call <SID>zoom_toggle(v:count)<CR>
+nnoremap <Bar> :<C-U>call <SID>zoom_toggle(v:count)<CR>
 
 func! ReadExCommandOutput(thisbuf, cmd) abort
   redir => l:message
