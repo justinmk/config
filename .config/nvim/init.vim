@@ -636,7 +636,6 @@ endf
 " un-join (split) the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
 xnoremap x  "_d
-xnoremap P  "0p
 
 nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
 
