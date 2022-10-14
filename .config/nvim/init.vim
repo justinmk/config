@@ -85,6 +85,8 @@ set inccommand=split
 " :checktime is SLOW
 " autocmd CursorHold,FocusGained * silent! checktime
 
+set jumpoptions+=view
+set splitkeep=topline
 set cpoptions-=_
 set guicursor+=n:blinkon175
 au UIEnter * set guifont=Menlo:h20
@@ -260,7 +262,7 @@ cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
 nnoremap g: :lua 
-nnoremap <expr> z= ':<c-u>setlocal spell<CR>'.v:count.'z='
+nnoremap z= <cmd>setlocal spell<CR>z=
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
 

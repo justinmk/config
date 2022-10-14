@@ -42,6 +42,7 @@ return require('packer').startup(function(use)
   use'tpope/vim-dadbod'
 
   use{'will133/vim-dirdiff', opt=true}
+  -- gh wrapper: https://github.com/pwntester/octo.nvim
   use'tpope/vim-fugitive'
   use'tpope/vim-rhubarb'
 
@@ -114,7 +115,6 @@ return require('packer').startup(function(use)
 
   use'udalov/kotlin-vim'
   use'leafgarland/typescript-vim'
-  use{'PProvost/vim-ps1', opt=true}
   use{'chrisbra/Colorizer', opt=true}
 
   use{'junegunn/fzf', run='yes n | ./install'}
