@@ -28,15 +28,12 @@ if exists('g:vscode')
 endif
 
 try
-  " packadd packer.nvim
-  " ~/.config/nvim/lua/plugins.lua
   lua require('plugins')
 catch
   fun! InstallPlug() " Bootstrap plugin manager on new systems.
 lua << EOF
-    print(vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim',
-      vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'}))
-    vim.cmd 'packadd packer.nvim'
+  print(vim.fn.system({'git', 'clone', 'https://github.com/savq/paq-nvim.git',
+    vim.fn.stdpath('data')..'/site/pack/paqs/start/paq-nvim'}))
 EOF
   endfun
 endtry
@@ -86,7 +83,6 @@ set inccommand=split
 " autocmd CursorHold,FocusGained * silent! checktime
 
 set jumpoptions+=view
-set splitkeep=topline
 set cpoptions-=_
 set guicursor+=n:blinkon175
 au UIEnter * set guifont=Menlo:h20
@@ -279,7 +275,7 @@ xnoremap g/ <Esc>/\%V
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
 
 " current-file directory
-noremap! <silent> <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
+noremap! <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
 
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
@@ -364,7 +360,7 @@ nnoremap <expr> zb (v:count > 0 ? '@_zb'.v:count.'<c-e>' : 'zb')
 nnoremap <up> <c-u>
 nnoremap <down> <c-d>
 
-if has('nvim') && isdirectory(stdpath('data').'/site/pack/packer/start/vim-fugitive')
+if has('nvim') && isdirectory(stdpath('data').'/site/pack/paqs/start/vim-fugitive')
   func! s:ctrl_g(cnt) abort
     redraw
     redir => msg | silent exe "norm! 1\<c-g>" | redir END
