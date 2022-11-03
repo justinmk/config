@@ -74,7 +74,6 @@ set sessionoptions-=blank
 " general settings / options
 "==============================================================================
 set fillchars+=msgsep:‾
-set laststatus=3
 set inccommand=split
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
@@ -205,7 +204,7 @@ func! s:colors() abort
     hi Visual gui=NONE cterm=NONE guifg=black guibg=white ctermfg=black ctermbg=white
     hi StatusLine cterm=bold,reverse gui=bold,reverse
     hi! link ColorColumn StatusLine
-    hi! StatusLineNC guifg=bg guibg=darkgrey ctermfg=232 ctermbg=242 cterm=NONE gui=NONE
+    hi! StatusLineNC cterm=underline ctermfg=243 ctermbg=234 gui=underline guifg=white guibg=black
 
     hi! link Directory Identifier
     hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE

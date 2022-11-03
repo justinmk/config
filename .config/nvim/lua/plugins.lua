@@ -38,24 +38,11 @@ require 'paq' {
   'tpope/vim-rsi',
 
   'tpope/vim-unimpaired',
+  'tpope/vim-endwise',
   'tommcdo/vim-lion',
   'tommcdo/vim-exchange',
 
   'haya14busa/vim-edgemotion',
-
-  'cohama/lexima.vim',
-  'tpope/vim-endwise',
-  -- vim.cmd([====[
-  --   inoremap (<CR> (<CR>)<Esc>O
-  --   inoremap {<CR> {<CR>}<Esc>O
-  --   inoremap {; {<CR>};<Esc>O
-  --   inoremap {, {<CR>},<Esc>O
-  --   inoremap [<CR> [<CR>]<Esc>O
-  --   inoremap ([[ ([[<CR>]])<Esc>O
-  --   inoremap ([=[ ([=[<CR>]=])<Esc>O
-  --   inoremap [; [<CR>];<Esc>O
-  --   inoremap [, [<CR>],<Esc>O
-  -- ]====])
 
   'tpope/vim-obsession',
 
@@ -131,17 +118,17 @@ vim.cmd([[
   omap <C-k> <Plug>(edgemotion-k)
 ]])
 
--- vim.cmd([====[
---   inoremap (<CR> (<CR>)<Esc>O
---   inoremap {<CR> {<CR>}<Esc>O
---   inoremap {; {<CR>};<Esc>O
---   inoremap {, {<CR>},<Esc>O
---   inoremap [<CR> [<CR>]<Esc>O
---   inoremap ([[ ([[<CR>]])<Esc>O
---   inoremap ([=[ ([=[<CR>]=])<Esc>O
---   inoremap [; [<CR>];<Esc>O
---   inoremap [, [<CR>],<Esc>O
--- ]====])
+vim.cmd([====[
+  inoremap (<CR> (<CR>)<Esc>O
+  inoremap {<CR> {<CR>}<Esc>O
+  inoremap {; {<CR>};<Esc>O
+  inoremap {, {<CR>},<Esc>O
+  inoremap [<CR> [<CR>]<Esc>O
+  inoremap ([[ ([[<CR>]])<Esc>O
+  inoremap ([=[ ([=[<CR>]=])<Esc>O
+  inoremap [; [<CR>];<Esc>O
+  inoremap [, [<CR>],<Esc>O
+]====])
 
 vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issues/40
 
