@@ -123,7 +123,7 @@ nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : 
 
 set nostartofline
 set cursorline
-set diffopt+=hiddenoff
+set diffopt+=hiddenoff,linematch:60
 
 "colorscheme {{{
 func! s:colors() abort
@@ -851,9 +851,6 @@ augroup vimrc_autocmd
   autocmd BufWinEnter * if exists("*FugitiveDetect") && empty(expand('<afile>'))|call FugitiveDetect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-
-  " Auto-create parent directories. But not for URIs (paths containing "://").
-  au BufWritePre,FileWritePre * if @% !~# '\(://\)' | call mkdir(expand('<afile>:p:h'), 'p') | endif
 
   "when Vim starts in diff-mode (vim -d, git mergetool):
   "  - do/dp should not auto-fold

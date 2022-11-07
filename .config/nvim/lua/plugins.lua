@@ -73,10 +73,10 @@ require 'paq' {
   'nvim-lua/plenary.nvim',
   'lewis6991/gitsigns.nvim',
 
-  'nvim-treesitter/playground',
-  {
-    'nvim-treesitter/nvim-treesitter',
-    -- run = function() vim.cmd('TSUpdate') end
+  -- :packadd nvim-treesitter | packadd playground
+  { 'nvim-treesitter/playground', opt=true, },
+  { 'nvim-treesitter/nvim-treesitter', opt=true,
+    -- run = function() vim.cmd('TSUpdate') end,
   },
 }
 
