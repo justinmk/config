@@ -20,6 +20,8 @@ if exists('g:vscode')
   nnoremap <silent> z/ <Cmd>call VSCodeCall('workbench.action.showAllSymbols')<CR>
   nnoremap <silent> - <Cmd>call VSCodeCall('workbench.files.action.showActiveFileInExplorer')<CR>
   nnoremap <silent> <c-b> <Cmd>call VSCodeCall('workbench.action.showAllEditorsByMostRecentlyUsed')<CR>
+  nnoremap <silent> ]c <Cmd>call VSCodeCall('workbench.action.editor.nextChange')<CR>
+  nnoremap <silent> [c <Cmd>call VSCodeCall('workbench.action.editor.previousChange')<CR>
 
   nnoremap <silent> UD <Cmd>call VSCodeCall('git.openChange')<CR>
   nnoremap <silent> UW <Cmd>call VSCodeCall('git.stage')<CR>
