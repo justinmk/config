@@ -717,7 +717,7 @@ function! s:restore_change_marks() abort
   call setpos("'[", s:change_marks[0])
   call setpos("']", s:change_marks[1])
 endfunction
-nnoremap z. :call <SID>save_change_marks()<Bar>w<Bar>call <SID>restore_change_marks()<cr>
+nnoremap z. :call <SID>save_change_marks()<Bar>w ++p<Bar>call <SID>restore_change_marks()<cr>
 
 " select last inserted text
 nnoremap gV `[v`]

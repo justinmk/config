@@ -62,8 +62,8 @@ require 'paq' {
   'leafgarland/typescript-vim',
   {'chrisbra/Colorizer', opt=true},
 
-  {'junegunn/fzf', run='yes n | ./install'},
-  {'junegunn/fzf.vim'},
+  'junegunn/fzf',
+  'junegunn/fzf.vim',
 
   'tpope/vim-projectionist',
 
