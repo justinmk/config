@@ -245,5 +245,34 @@ local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob
   }
 end
 
+local function set_esc_keymap()
+  vim.cmd([[autocmd TermOpen * tnoremap <buffer> <Esc> <C-\><C-N>]])
+  if 1 == vim.fn.exists('$NVIM')  then
+    local function parent_chan()
+      local ok, chan = pcall(vim.fn.sockconnect, 'pipe', vim.env.NVIM, {rpc=true})
+      return ok and chan or nil
+    end
+    local chan = parent_chan()
+    if not chan then return end
+    -- Unmap <Esc> in the parent so it gets sent to the child (this) Nvim.
+    local esc_mapdict = vim.fn.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg('<Esc>', 't', false, true)]], {})
+    if esc_mapdict.rhs == [[<C-\><C-N>]] then
+      vim.fn.rpcrequest(chan, 'nvim_exec_lua', [=[vim.cmd('tunmap <buffer> <Esc>')]=], {})
+      vim.fn.chanclose(chan)
+      vim.api.nvim_create_autocmd({'VimLeave'}, { callback = function()
+        chan = parent_chan()
+        if not chan then return end
+        -- Restore the <Esc> mapping on VimLeave.
+        vim.fn.rpcrequest(chan, 'nvim_exec_lua', [=[
+          local esc_mapdict = ...
+          vim.fn.mapset('t', false, esc_mapdict)
+        ]=], {esc_mapdict})
+        vim.fn.chanclose(chan)
+      end, })
+    end
+  end
+end
+
+set_esc_keymap()
 idk()
 setup_lua_lsp()
