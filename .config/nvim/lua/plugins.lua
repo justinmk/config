@@ -7,16 +7,16 @@ require 'paq' {
   -- dasht-docsets-install python
   'sunaku/vim-dasht',
 
-  { url='https://github.com/justinmk/vim-ipmotion.git' },
-  { url='https://github.com/justinmk/vim-gtfo.git' },
-  { url='https://github.com/justinmk/vim-dirvish.git' },
+  'https://github.com/justinmk/vim-ipmotion.git',
+  'https://github.com/justinmk/vim-gtfo.git',
+  'https://github.com/justinmk/vim-dirvish.git',
 
   {
     'glacambre/firenvim',
     run = function() vim.fn['firenvim#install'](0) end,
   },
 
-  { url='https://github.com/justinmk/vim-sneak.git' },
+  'https://github.com/justinmk/vim-sneak.git',
 
   'tpope/vim-sleuth',
   'tpope/vim-characterize',
