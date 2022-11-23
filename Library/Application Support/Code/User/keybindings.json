@@ -41,5 +41,14 @@
         "key": "alt+q",
         "command": "workbench.actions.view.problems",
         "when": "workbench.panel.markers.view.active"
+    },
+    {
+        "key": "cmd+d",
+        "command": "aws.dev.openMenu"
+    },
+    {
+        "key": "cmd+t",
+        "command": "workbench.action.terminal.new",
+        "when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
     }
 ]

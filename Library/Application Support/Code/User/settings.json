@@ -54,7 +54,7 @@
     },
     "javascript.preferences.importModuleSpecifier": "relative",
     "typescript.preferences.importModuleSpecifier": "relative",
-    "editor.renderWhitespace": "boundary",
+    "editor.renderWhitespace": "none",
     "githubPullRequests.remotes": [
         "origin",
         "upstream",
