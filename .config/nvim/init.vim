@@ -90,6 +90,8 @@ set cursorline
 set diffopt+=hiddenoff,linematch:60
 
 if exists('g:vscode')
+  xnoremap Y "+y
+
   nnoremap <silent> <c-k> <Cmd>call VSCodeCall('editor.action.showHover')<CR>
   nnoremap <silent> gD <Cmd>call VSCodeCall('editor.action.goToImplementation')<CR>
   nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
