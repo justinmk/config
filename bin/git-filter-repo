@@ -77,6 +77,7 @@ __all__ = ["Blob", "Reset", "FileChange", "Commit", "Tag", "Progress",
 
 deleted_hash = b'0'*40
 write_marks = True
+date_format_permissive = True
 
 def gettext_poison(msg):
   if "GIT_TEST_GETTEXT_POISON" in os.environ: # pragma: no cover
@@ -234,6 +235,9 @@ class AncestryGraph(object):
     # than the max depth of any of its ancestors.
     self.graph = {}
 
+    # Cached results from previous calls to is_ancestor().
+    self._cached_is_ancestor = {}
+
   def record_external_commits(self, external_commits):
     """
     Record in graph that each commit in external_commits exists, and is
@@ -269,20 +273,29 @@ class AncestryGraph(object):
     Return whether possible_ancestor is an ancestor of check
     """
     a, b = self.value[possible_ancestor], self.value[check]
+    original_pair = (a,b)
     a_depth = self.graph[a][0]
     ancestors = [b]
     visited = set()
     while ancestors:
       ancestor = ancestors.pop()
+      prev_pair = (a, ancestor)
+      if prev_pair in self._cached_is_ancestor:
+        if not self._cached_is_ancestor[prev_pair]:
+          continue
+        self._cached_is_ancestor[original_pair] = True
+        return True
       if ancestor in visited:
         continue
       visited.add(ancestor)
       depth, more_ancestors = self.graph[ancestor]
       if ancestor == a:
+        self._cached_is_ancestor[original_pair] = True
         return True
       elif depth <= a_depth:
         continue
       ancestors.extend(more_ancestors)
+    self._cached_is_ancestor[original_pair] = False
     return False
 
 class MailmapInfo(object):
@@ -291,7 +304,7 @@ class MailmapInfo(object):
     self._parse_file(filename)
 
   def _parse_file(self, filename):
-    name_and_email_re = re.compile(br'(.*?)\s*<([^>]+)>\s*')
+    name_and_email_re = re.compile(br'(.*?)\s*<([^>]*)>\s*')
     comment_re = re.compile(br'\s*#.*')
     if not os.access(filename, os.R_OK):
       raise SystemExit(_("Cannot read %s") % decode(filename))
@@ -331,8 +344,8 @@ class MailmapInfo(object):
     for old, new in self.changes.items():
       old_name, old_email = old
       new_name, new_email = new
-      if (email == old_email or not old_email) and (
-          name  == old_name  or not old_name):
+      if (old_email is None or email.lower() == old_email.lower()) and (
+          name == old_name or not old_name):
         return (new_name or name, new_email or email)
     return (name, email)
 
@@ -353,7 +366,7 @@ class ProgressWriter(object):
     self._last_progress_update = 0
     if self._last_message:
       self.show(self._last_message)
-      sys.stdout.write("\n")
+    sys.stdout.write("\n")
 
 class _IDs(object):
   """
@@ -383,6 +396,12 @@ class _IDs(object):
 
     # A map of new-ids to every old-id that points to the new-id (1:N map)
     self._reverse_translation = {}
+
+  def has_renames(self):
+    """
+    Return whether there have been ids remapped to new values
+    """
+    return bool(self._translation)
 
   def new(self):
     """
@@ -946,7 +965,7 @@ class FastExportParser(object):
     # Compile some regexes and cache those
     self._mark_re = re.compile(br'mark :(\d+)\n$')
     self._parent_regexes = {}
-    parent_regex_rules = (b' :(\d+)\n$', b' ([0-9a-f]{40})\n')
+    parent_regex_rules = (br' :(\d+)\n$', br' ([0-9a-f]{40})\n')
     for parent_refname in (b'from', b'merge'):
       ans = [re.compile(parent_refname+x) for x in parent_regex_rules]
       self._parent_regexes[parent_refname] = ans
@@ -1081,15 +1100,6 @@ class FastExportParser(object):
     user_regex = self._user_regexes[usertype]
     (name, email, when) = user_regex.match(self._currentline).groups()
 
-    # TimeZone idiocy; IST is any of four timezones, so someone translated
-    # it to something that was totally invalid...and it got recorded that
-    # way.  Others have suggested just using an invalid timezone that
-    # fast-import will not choke on.  Let's do that.  Note that +051800
-    # seems to be the only weird timezone found in the wild, by me or some
-    # other posts google returned on the subject...
-    if when.endswith(b'+051800'):
-      when = when[0:-7]+b'+0261'
-
     self._advance_currentline()
     return (name, email, when)
 
@@ -1203,13 +1213,14 @@ class FastExportParser(object):
       original_id = self._parse_original_id();
 
     author_name = None
+    author_email = None
     if self._currentline.startswith(b'author'):
       (author_name, author_email, author_date) = self._parse_user(b'author')
 
     (committer_name, committer_email, committer_date) = \
       self._parse_user(b'committer')
 
-    if not author_name:
+    if not author_name and not author_email:
       (author_name, author_email, author_date) = \
         (committer_name, committer_email, committer_date)
 
@@ -1328,6 +1339,8 @@ class FastExportParser(object):
       if not tag.dumped:
         self._imported_refs.add(b'refs/tags/'+tag.ref)
         tag.dump(self._output)
+    else:
+      tag.skip()
 
   def _parse_progress(self):
     """
@@ -1482,6 +1495,12 @@ class SubprocessWrapper(object):
     return subprocess.check_output(SubprocessWrapper.decodify(*args), **kwargs)
 
   @staticmethod
+  def check_call(*args, **kwargs): # pragma: no cover  # used by filter-lamely
+    if 'cwd' in kwargs:
+      kwargs['cwd'] = decode(kwargs['cwd'])
+    return subprocess.check_call(SubprocessWrapper.decodify(*args), **kwargs)
+
+  @staticmethod
   def Popen(*args, **kwargs):
     if 'cwd' in kwargs:
       kwargs['cwd'] = decode(kwargs['cwd'])
@@ -1501,16 +1520,13 @@ class GitUtils(object):
       args = ['--all']
     if len(args) == 1 and isinstance(args[0], list):
       args = args[0]
-    p1 = subproc.Popen(["git", "rev-list"] + args,
-                       bufsize=-1,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                       cwd=repo)
-    p2 = subproc.Popen(["wc", "-l"], stdin=p1.stdout, stdout=subprocess.PIPE)
-    count = int(p2.communicate()[0])
-    if p1.poll() != 0:
+    p = subproc.Popen(["git", "rev-list", "--count"] + args,
+                      stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                      cwd=repo)
+    if p.wait() != 0:
       raise SystemExit(_("%s does not appear to be a valid git repository")
-                       % repo)
-    return count
+                       % decode(repo))
+    return int(p.stdout.read())
 
   @staticmethod
   def get_total_objects(repo):
@@ -1554,6 +1570,7 @@ class GitUtils(object):
   def get_blob_sizes(quiet = False):
     blob_size_progress = ProgressWriter()
     num_blobs = 0
+    processed_blobs_msg = _("Processed %d blob sizes")
 
     # Get sizes of blobs by sha1
     cmd = '--batch-check=%(objectname) %(objecttype) ' + \
@@ -1569,9 +1586,9 @@ class GitUtils(object):
       if objtype == b'blob':
         unpacked_size[sha] = objsize
         packed_size[sha] = objdisksize
-      num_blobs += 1
+        num_blobs += 1
       if not quiet:
-        blob_size_progress.show(_("Processed %d blob sizes") % num_blobs)
+        blob_size_progress.show(processed_blobs_msg % num_blobs)
     cf.wait()
     if not quiet:
       blob_size_progress.finish()
@@ -1594,7 +1611,7 @@ class GitUtils(object):
       oldmode, mode, oldhash, newhash, changetype = fileinfo.split()
       if changetype == b'D':
         file_changes.append(FileChange(b'D', path))
-      elif changetype in (b'A', b'M'):
+      elif changetype in (b'A', b'M', b'T'):
         identifier = HASH_TO_ID.get(newhash, newhash)
         file_changes.append(FileChange(b'M', path, identifier, mode))
       else: # pragma: no cover
@@ -1604,10 +1621,12 @@ class GitUtils(object):
 
   @staticmethod
   def print_my_version():
-    with open(sys.argv[0], 'br') as f:
+    with open(__file__, 'br') as f:
       contents = f.read()
     # If people replaced @@LOCALEDIR@@ string to point at their local
     # directory, undo it so we can get original source version.
+    contents = re.sub(br'\A#\!.*',
+                      br'#!/usr/bin/env python3', contents)
     contents = re.sub(br'(\("GIT_TEXTDOMAINDIR"\) or ").*"',
                       br'\1@@LOCALEDIR@@"', contents)
 
@@ -1616,32 +1635,51 @@ class GitUtils(object):
     print(decode(version[0:12]))
 
 class FilteringOptions(object):
+  default_replace_text = b'***REMOVED***'
   class AppendFilter(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
+      user_path = values
       suffix = option_string[len('--path-'):] or 'match'
       if suffix.startswith('rename'):
         mod_type = 'rename'
         match_type = option_string[len('--path-rename-'):] or 'match'
-        values = values.split(b':', 1)
+        values = values.split(b':')
+        if len(values) != 2:
+          raise SystemExit(_("Error: --path-rename expects one colon in its"
+                             " argument: <old_name:new_name>."))
         if values[0] and values[1] and not (
            values[0].endswith(b'/') == values[1].endswith(b'/')):
           raise SystemExit(_("Error: With --path-rename, if OLD_NAME and "
                              "NEW_NAME are both non-empty and either ends "
                              "with a slash then both must."))
+        if any(v.startswith(b'/') for v in values):
+          raise SystemExit(_("Error: Pathnames cannot begin with a '/'"))
+        components = values[0].split(b'/') + values[1].split(b'/')
       else:
         mod_type = 'filter'
         match_type = suffix
+        components = values.split(b'/')
+        if values.startswith(b'/'):
+          raise SystemExit(_("Error: Pathnames cannot begin with a '/'"))
+      for illegal_path in [b'.', b'..']:
+        if illegal_path in components:
+          raise SystemExit(_("Error: Invalid path component '%s' found in '%s'")
+                           % (decode(illegal_path), decode(user_path)))
       if match_type == 'regex':
         values = re.compile(values)
       items = getattr(namespace, self.dest, []) or []
       items.append((mod_type, match_type, values))
+      if (match_type, mod_type) == ('glob', 'filter'):
+        if not values.endswith(b'*'):
+          extension = b'*' if values.endswith(b'/') else b'/*'
+          items.append((mod_type, match_type, values+extension))
       setattr(namespace, self.dest, items)
 
   class HelperFilter(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
       af = FilteringOptions.AppendFilter(dest='path_changes',
                                          option_strings=None)
-      dirname = values if values[-1] == b'/' else values+b'/'
+      dirname = values if values[-1:] == b'/' else values+b'/'
       if option_string == '--subdirectory-filter':
         af(parser, namespace, dirname,     '--path-match')
         af(parser, namespace, dirname+b':', '--path-rename')
@@ -1694,8 +1732,11 @@ class FilteringOptions(object):
     To remove all .DS_Store files:
       git filter-repo --filename-callback 'return None if os.path.basename(filename) == b".DS_Store" else filename'
 
+    Note that if BODY resolves to a filename, then the contents of that file
+    will be used as the BODY in the callback function.
+
     For more detailed examples and explanations AND caveats, see
-      https://github.com/newren/git-filter-repo#callbacks
+      https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#CALLBACKS
 
 EXAMPLES
 
@@ -1727,7 +1768,7 @@ EXAMPLES
       git filter-repo --path src/ --to-subdirectory-filter my-module --tag-rename '':'my-module-'
 
     For more detailed examples and explanations, see
-      https://github.com/newren/git-filter-repo#examples''')
+      https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES''')
 
     # Create the basic parser
     parser = argparse.ArgumentParser(description=summary,
@@ -1741,9 +1782,21 @@ EXAMPLES
         help=_("Analyze repository history and create a report that may be "
                "useful in determining what to filter in a subsequent run. "
                "Will not modify your repo."))
+    analyze.add_argument('--report-dir',
+        metavar='DIR_OR_FILE',
+        type=os.fsencode,
+        dest='report_dir',
+        help=_("Directory to write report, defaults to GIT_DIR/filter_repo/analysis,"
+               "refuses to run if exists, --force delete existing dir first."))
 
     path = parser.add_argument_group(title=_("Filtering based on paths "
-                                             "(see also --filename-callback)"))
+                                             "(see also --filename-callback)"),
+                                     description=textwrap.dedent(_("""
+           These options specify the paths to select.  Note that much like git
+           itself, renames are NOT followed so you may need to specify multiple
+           paths, e.g. `--path olddir/ --path newdir/`
+           """[1:])))
+
     path.add_argument('--invert-paths', action='store_false', dest='inclusive',
         help=_("Invert the selection of files from the specified "
                "--path-{match,glob,regex} options below, i.e. only select "
@@ -1767,7 +1820,8 @@ EXAMPLES
                "paths"))
     path.add_argument('--use-base-name', action='store_true',
         help=_("Match on file base name instead of full path from the top "
-               "of the repo.  Incompatible with --path-rename."))
+               "of the repo.  Incompatible with --path-rename, and "
+               "incompatible with matching against directory names."))
 
     rename = parser.add_argument_group(title=_("Renaming based on paths "
                                              "(see also --filename-callback)"))
@@ -1776,7 +1830,9 @@ EXAMPLES
         action=FilteringOptions.AppendFilter,
         help=_("Path to rename; if filename or directory matches OLD_NAME "
                "rename to NEW_NAME.  Multiple --path-rename options can be "
-               "specified."))
+               "specified.  NOTE: If you combine filtering options with "
+               "renaming ones, do not rely on a rename argument to select "
+               "paths; you also need a filter to select them."))
 
     helpers = parser.add_argument_group(title=_("Path shortcuts"))
     helpers.add_argument('--paths-from-file', metavar='FILENAME',
@@ -1785,7 +1841,8 @@ EXAMPLES
         help=_("Specify several path filtering and renaming directives, one "
                "per line.  Lines with '==>' in them specify path renames, "
                "and lines can begin with 'literal:' (the default), 'glob:', "
-               "or 'regex:' to specify different matching styles"))
+               "or 'regex:' to specify different matching styles.  Blank "
+               "lines and lines starting with a '#' are ignored."))
     helpers.add_argument('--subdirectory-filter', metavar='DIRECTORY',
         action=FilteringOptions.HelperFilter, type=os.fsencode,
         help=_("Only look at history that touches the given subdirectory "
@@ -1803,8 +1860,8 @@ EXAMPLES
                "By default, each expression is treated as literal text, "
                "but 'regex:' and 'glob:' prefixes are supported.  You can "
                "end the line with '==>' and some replacement text to "
-               "choose a replacement choice other than the default of "
-               "'***REMOVED***'. "))
+               "choose a replacement choice other than the default of '{}'."
+               .format(decode(FilteringOptions.default_replace_text))))
     contents.add_argument('--strip-blobs-bigger-than', metavar='SIZE',
                           dest='max_blob_size', default=0,
         help=_("Strip blobs (files) bigger than specified size (e.g. '5M', "
@@ -1822,6 +1879,10 @@ EXAMPLES
 
     messages = parser.add_argument_group(title=_("Filtering of commit messages "
                                                "(see also --message-callback)"))
+    messages.add_argument('--replace-message', metavar='EXPRESSIONS_FILE',
+        help=_("A file with expressions that, if found in commit messages, "
+               "will be replaced. This file uses the same syntax as "
+               "--replace-text."))
     messages.add_argument('--preserve-commit-hashes', action='store_true',
         help=_("By default, since commits are rewritten and thus gain new "
                "hashes, references to old commit hashes in commit messages "
@@ -1844,7 +1905,7 @@ EXAMPLES
                "part of git history, historical versions of the file will "
                "be ignored; only the current contents are consulted."))
     people.add_argument('--use-mailmap', dest='mailmap',
-        action='store_const', const='.mailmap',
+        action='store_const', const=b'.mailmap',
         help=_("Same as: '--mailmap .mailmap' "))
 
     parents = parser.add_argument_group(title=_("Parent rewriting"))
@@ -1879,34 +1940,39 @@ EXAMPLES
                "merge commits have no file changes, they can be pruned.  The "
                "default ('auto') is to only prune empty merge commits which "
                "become degenerate (not which started as such)."))
+    parents.add_argument('--no-ff', action='store_true',
+        help=_("Even if the first parent is or becomes an ancestor of another "
+               "parent, do not prune it.  This modifies how "
+               "--prune-degenerate behaves, and may be useful in projects who "
+               "always use merge --no-ff."))
 
     callback = parser.add_argument_group(title=_("Generic callback code snippets"))
-    callback.add_argument('--filename-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--filename-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing filenames; see CALLBACKS "
                "sections below."))
-    callback.add_argument('--message-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--message-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing messages (both commit "
                "messages and tag messages); see CALLBACKS section below."))
-    callback.add_argument('--name-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--name-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing names of people; see "
                "CALLBACKS section below."))
-    callback.add_argument('--email-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--email-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing emails addresses; see "
                "CALLBACKS section below."))
-    callback.add_argument('--refname-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--refname-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing refnames; see CALLBACKS "
                "section below."))
 
-    callback.add_argument('--blob-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--blob-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing blob objects; see "
                "CALLBACKS section below."))
-    callback.add_argument('--commit-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--commit-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing commit objects; see "
                "CALLBACKS section below."))
-    callback.add_argument('--tag-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--tag-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing tag objects; see CALLBACKS "
                "section below."))
-    callback.add_argument('--reset-callback', metavar="FUNCTION_BODY",
+    callback.add_argument('--reset-callback', metavar="FUNCTION_BODY_OR_FILE",
         help=_("Python code body for processing reset objects; see "
                "CALLBACKS section below."))
 
@@ -1928,8 +1994,10 @@ EXAMPLES
     misc.add_argument('--version', action='store_true',
         help=_("Display filter-repo's version and exit."))
     misc.add_argument('--force', '-f', action='store_true',
-        help=_("Rewrite history even if the current repo does not look "
-               "like a fresh clone."))
+        help=_("Rewrite repository history even if the current repo does not "
+               "look like a fresh clone.  History rewriting is irreversible "
+               "(and includes immediate pruning of reflogs and old objects), "
+               "so be cautious about using this flag."))
     misc.add_argument('--partial', action='store_true',
         help=_("Do a partial history rewrite, resulting in the mixture of "
                "old and new history.  This implies a default of "
@@ -2019,18 +2087,20 @@ EXAMPLES
     # PERF: remove these checks once new enough git versions are common
     p = subproc.Popen('git fast-export -h'.split(),
                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    p.wait()
     output = p.stdout.read()
+    if b'--anonymize-map' not in output: # pragma: no cover
+      global date_format_permissive
+      date_format_permissive = False
     if b'--mark-tags' not in output: # pragma: no cover
       global write_marks
       write_marks = False
       if args.state_branch:
-        raise SystemExit(_("Error: need a version of git whose fast-export "
-                           "command has the --mark-tags option"))
+        # We need a version of git-fast-export with --mark-tags
+        raise SystemExit(_("Error: need git >= 2.24.0"))
     if b'--reencode' not in output: # pragma: no cover
       if args.preserve_commit_encoding:
-        raise SystemExit(_("Error: need a version of git whose fast-export "
-                           "command has the --reencode option"))
+        # We need a version of git-fast-export with --reencode
+        raise SystemExit(_("Error: need git >= 2.23.0"))
       else:
         # Set args.preserve_commit_encoding to None which we'll check for later
         # to avoid passing --reencode=yes to fast-export (that option was the
@@ -2040,11 +2110,10 @@ EXAMPLES
       # diff-tree --combined-all-paths, which is even more important...
       p = subproc.Popen('git diff-tree -h'.split(),
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-      p.wait()
       output = p.stdout.read()
       if b'--combined-all-paths' not in output:
-        raise SystemExit(_("Error: need a version of git whose diff-tree "
-                           "command has the --combined-all-paths option"))
+        # We need a version of git-diff-tree with --combined-all-paths
+        raise SystemExit(_("Error: need git >= 2.22.0"))
     # End of sanity checks on git version
     if args.max_blob_size:
       suffix = args.max_blob_size[-1]
@@ -2067,7 +2136,7 @@ EXAMPLES
         line = line.rstrip(b'\r\n')
 
         # Determine the replacement
-        replacement = b'***REMOVED***'
+        replacement = FilteringOptions.default_replace_text
         if b'==>' in line:
           line, replacement = line.rsplit(b'==>', 1)
 
@@ -2097,6 +2166,9 @@ EXAMPLES
 
         # Skip blank lines
         if not line:
+          continue
+        # Skip comment lines
+        if line.startswith(b'#'):
           continue
 
         # Determine the replacement
@@ -2130,6 +2202,9 @@ EXAMPLES
           new_path_changes.append(['rename', match_type, (match, repl)])
         else:
           new_path_changes.append(['filter', match_type, match])
+          if match_type == 'glob' and not match.endswith(b'*'):
+            extension = b'*' if match.endswith(b'/') else b'/*'
+            new_path_changes.append(['filter', match_type, match+extension])
       return new_path_changes
 
   @staticmethod
@@ -2154,6 +2229,8 @@ EXAMPLES
       args.mailmap = MailmapInfo(args.mailmap)
     if args.replace_text:
       args.replace_text = FilteringOptions.get_replace_text(args.replace_text)
+    if args.replace_message:
+      args.replace_message = FilteringOptions.get_replace_text(args.replace_message)
     if args.strip_blobs_with_ids:
       with open(args.strip_blobs_with_ids, 'br') as f:
         args.strip_blobs_with_ids = set(f.read().split())
@@ -2161,6 +2238,7 @@ EXAMPLES
       args.strip_blobs_with_ids = set()
     if (args.partial or args.refs) and not args.replace_refs:
       args.replace_refs = 'update-no-add'
+    args.repack = not (args.partial or args.refs)
     if args.refs or args.source or args.target:
       args.partial = True
     if not args.refs:
@@ -2259,7 +2337,7 @@ class RepoAnalyze(object):
         RepoAnalyze.handle_file(stats, graph, commit, modes, shas, filenames)
       elif modes[-1] == b'040000' and change_types.strip(b'RAM') == b'':
         RepoAnalyze.handle_file(stats, graph, commit, modes, shas, filenames)
-      elif change_types.strip(b'RAM') == b'':
+      elif change_types.strip(b'RAMT') == b'':
         RepoAnalyze.handle_file(stats, graph, commit, modes, shas, filenames)
         RepoAnalyze.handle_renames(stats, commit, change_types, filenames)
       else:
@@ -2282,6 +2360,7 @@ class RepoAnalyze(object):
              'num_commits': 0}
 
     # Setup the rev-list/diff-tree process
+    processed_commits_msg = _("Processed %d commits")
     commit_parse_progress = ProgressWriter()
     num_commits = 0
     cmd = ('git rev-list --topo-order --reverse {}'.format(' '.join(args.refs)) +
@@ -2329,11 +2408,17 @@ class RepoAnalyze(object):
           filenames = [PathQuoting.dequote(x) for x in splits[1:]]
           file_changes.append([modes, shas, change_types, filenames])
 
+      # If someone is trying to analyze a subset of the history, make sure
+      # to avoid dying on commits with parents that we haven't seen before
+      if args.refs:
+        graph.record_external_commits([p for p in parents
+                                       if not p in graph.value])
+
       # Analyze this commit and update progress
       RepoAnalyze.analyze_commit(stats, graph, commit, parents, date,
                                  file_changes)
       num_commits += 1
-      commit_parse_progress.show(_("Processed %d commits") % num_commits)
+      commit_parse_progress.show(processed_commits_msg % num_commits)
 
     # Show the final commits processed message and record the number of commits
     commit_parse_progress.finish()
@@ -2425,8 +2510,8 @@ class RepoAnalyze(object):
         current packing, which may be suboptimal if you haven't gc'ed for a
         while.
 
-        Unpacked size represents what size your repository would be if no if
-        no trees, commits, tags, or other metadata were included AND if no
+        Unpacked size represents what size your repository would be if no
+        trees, commits, tags, or other metadata were included AND if no
         files were packed; i.e., without delta-ing or compression.
 
         Both unpacked and packed sizes can be slightly misleading.  Deleting
@@ -2566,7 +2651,7 @@ class RepoAnalyze(object):
     with open(os.path.join(reportdir, b"path-all-sizes.txt"), 'bw') as f:
       msg = "=== %s ===\n" % _("All paths by reverse accumulated size")
       f.write(msg.encode())
-      msg = _("Format: unpacked size, packed size, date deleted, pathectory name\n")
+      msg = _("Format: unpacked size, packed size, date deleted, path name\n")
       f.write(msg.encode())
       for pathname, size in sorted(path_size['packed'].items(),
                                    key=lambda x:(x[1],x[0]), reverse=True):
@@ -2598,15 +2683,25 @@ class RepoAnalyze(object):
 
   @staticmethod
   def run(args):
-    git_dir = GitUtils.determine_git_dir(b'.')
+    if args.report_dir:
+      reportdir = args.report_dir
+    else:
+      git_dir = GitUtils.determine_git_dir(b'.')
 
     # Create the report directory as necessary
-    results_tmp_dir = os.path.join(git_dir, b'filter-repo')
-    if not os.path.isdir(results_tmp_dir):
-      os.mkdir(results_tmp_dir)
-    reportdir = os.path.join(results_tmp_dir, b"analysis")
-    if not args.force and os.path.isdir(reportdir):
-      shutil.rmtree(reportdir)
+      results_tmp_dir = os.path.join(git_dir, b'filter-repo')
+      if not os.path.isdir(results_tmp_dir):
+        os.mkdir(results_tmp_dir)
+      reportdir = os.path.join(results_tmp_dir, b"analysis")
+
+    if os.path.isdir(reportdir):
+      if args.force:
+        sys.stdout.write(_("Warning: Removing recursively: \"%s\"") % decode(reportdir))
+        shutil.rmtree(reportdir)
+      else:
+        sys.stdout.write(_("Error: dir already exists (use --force to delete): \"%s\"\n") % decode(reportdir))
+        sys.exit(1)
+
     os.mkdir(reportdir)
 
     # Gather the data we need
@@ -2622,6 +2717,10 @@ class InputFileBackup:
   def __init__(self, input_file, output_file):
     self.input_file  = input_file
     self.output_file = output_file
+
+  def close(self):
+    self.input_file.close()
+    self.output_file.close()
 
   def read(self, size):
     output = self.input_file.read(size)
@@ -2769,6 +2868,9 @@ class RepoFilter(object):
       callback_field = '_{}_callback'.format(type)
       code_string = getattr(self._args, type+'_callback')
       if code_string:
+        if os.path.exists(code_string):
+          with open(code_string, 'r', encoding='utf-8') as f:
+            code_string = f.read()
         if getattr(self, callback_field):
           raise SystemExit(_("Error: Cannot pass a %s_callback to RepoFilter "
                              "AND pass --%s-callback"
@@ -2824,17 +2926,33 @@ class RepoFilter(object):
   @staticmethod
   def sanity_check(refs, is_bare):
     def abort(reason):
+      try:
+        cmd = 'git config remote.origin.url'
+        output = subproc.check_output(cmd.split()).strip()
+      except subprocess.CalledProcessError as e:
+        output = None
+      msg = ""
+      if output and os.path.isdir(output):
+        msg = _("Note: when cloning local repositories, you need to pass\n"
+                "      --no-local to git clone to avoid this issue.\n")
       raise SystemExit(
-        _("Aborting: Refusing to overwrite repo history since this does not\n"
-          "look like a fresh clone.\n"
-          "  (%s)\n"
-          "To override, use --force.") % reason)
+        _("Aborting: Refusing to destructively overwrite repo history since\n"
+          "this does not look like a fresh clone.\n"
+          "  (%s)\n%s"
+          "Please operate on a fresh clone instead.  If you want to proceed\n"
+          "anyway, use --force.") % (reason, msg))
 
-    # Make sure repo is fully packed, just like a fresh clone would be
+    # Make sure repo is fully packed, just like a fresh clone would be.
+    # Note that transfer.unpackLimit defaults to 100, meaning that a
+    # repository with no packs and less than 100 objects should be considered
+    # fully packed.
     output = subproc.check_output('git count-objects -v'.split())
     stats = dict(x.split(b': ') for x in output.splitlines())
     num_packs = int(stats[b'packs'])
-    if stats[b'count'] != b'0' or num_packs > 1:
+    num_loose_objects = int(stats[b'count'])
+    if num_packs > 1 or \
+       (num_packs == 1 and num_loose_objects > 0) or \
+       num_loose_objects >= 100:
       abort(_("expected freshly packed repo"))
 
     # Make sure there is precisely one remote, named "origin"...or that this
@@ -2981,8 +3099,6 @@ class RepoFilter(object):
        Returns a tuple:
          (parents, new_first_parent_if_would_become_non_merge)'''
 
-    if self._args.prune_degenerate == 'never':
-      return parents, None
     always_prune = (self._args.prune_degenerate == 'always')
 
     # Pruning of empty commits means multiple things:
@@ -3005,6 +3121,10 @@ class RepoFilter(object):
 
     # We can't have redundant parents if we don't have at least 2 parents
     if len(parents) < 2:
+      return parents, None
+
+    # Don't remove redundant parents if user doesn't want us to
+    if self._args.prune_degenerate == 'never':
       return parents, None
 
     # Remove duplicate parents (if both sides of history have lots of commits
@@ -3042,6 +3162,12 @@ class RepoFilter(object):
         if not always_prune and \
            self._orig_graph.is_ancestor(orig_parents[cur],
                                         orig_parents[other]):
+          continue
+        # Some folks want their history to have all first parents be merge
+        # commits (except for any root commits), and always do a merge --no-ff.
+        # For such folks, don't remove the first parent even if it's an
+        # ancestor of other commits.
+        if self._args.no_ff and cur == 0:
           continue
         # Okay so the cur-th parent is an ancestor of the other-th parent,
         # and it wasn't that way in the original repository; mark the
@@ -3093,12 +3219,16 @@ class RepoFilter(object):
     if not self._import_pipes:
       return False
 
-    # non-merge commits can only be empty if blob/file-change editing caused
-    # all file changes in the commit to have the same file contents as
-    # the parent.
-    changed_files = set(change.filename for change in commit.file_changes)
-    if len(orig_parents) < 2 and changed_files - self._files_tweaked:
-      return False
+    # If there have not been renames/remappings of IDs (due to insertion of
+    # new blobs), then we can sometimes know things aren't prunable with a
+    # simple check
+    if not _IDS.has_renames():
+      # non-merge commits can only be empty if blob/file-change editing caused
+      # all file changes in the commit to have the same file contents as
+      # the parent.
+      changed_files = set(change.filename for change in commit.file_changes)
+      if len(orig_parents) < 2 and changed_files - self._files_tweaked:
+        return False
 
     # Finally, the hard case: due to either blob rewriting, or due to pruning
     # of empty commits wiping out the first parent history back to the merge
@@ -3126,7 +3256,10 @@ class RepoFilter(object):
     for change in commit.file_changes:
       parent = new_1st_parent or commit.parents[0] # exists due to above checks
       quoted_filename = PathQuoting.enquote(change.filename)
-      self._output.write(b"ls :%d %s\n" % (parent, quoted_filename))
+      if isinstance(parent, int):
+        self._output.write(b"ls :%d %s\n" % (parent, quoted_filename))
+      else:
+        self._output.write(b"ls %s %s\n" % (parent, quoted_filename))
       self._output.flush()
       parent_version = fi_output.readline().split()
       if change.type == b'D':
@@ -3174,7 +3307,10 @@ class RepoFilter(object):
     if blob.original_id in self._args.strip_blobs_with_ids:
       blob.skip()
 
-    if self._args.replace_text:
+    if ( self._args.replace_text
+        # not (if blob contains zero byte in the first 8Kb, that is, if blob is binary data)
+        and not b"\0" in blob.data[0:8192]
+    ):
       for literal, replacement in self._args.replace_text['literals']:
         blob.data = blob.data.replace(literal, replacement)
       for regex,   replacement in self._args.replace_text['regexes']:
@@ -3183,7 +3319,7 @@ class RepoFilter(object):
     if self._blob_callback:
       self._blob_callback(blob, self.callback_metadata())
 
-  def _tweak_commit(self, commit, aux_info):
+  def _filter_files(self, commit):
     def filename_matches(path_expression, pathname):
       ''' Returns whether path_expression matches pathname or a leading
           directory thereof, allowing path_expression to not have a trailing
@@ -3224,37 +3360,7 @@ class RepoFilter(object):
             full_pathname = match.sub(repl, full_pathname)
       return full_pathname if (wanted == filtering_is_inclusive) else None
 
-    # Change the commit message according to callback
-    if not self._args.preserve_commit_hashes:
-      commit.message = self._hash_re.sub(self._translate_commit_hash,
-                                         commit.message)
-    if self._message_callback:
-      commit.message = self._message_callback(commit.message)
-
-    # Change the author & committer according to mailmap rules
     args = self._args
-    if args.mailmap:
-      commit.author_name, commit.author_email = \
-          args.mailmap.translate(commit.author_name, commit.author_email)
-      commit.committer_name, commit.committer_email = \
-          args.mailmap.translate(commit.committer_name, commit.committer_email)
-    # Change author & committer according to callbacks
-    if self._name_callback:
-      commit.author_name = self._name_callback(commit.author_name)
-      commit.committer_name = self._name_callback(commit.committer_name)
-    if self._email_callback:
-      commit.author_email = self._email_callback(commit.author_email)
-      commit.committer_email = self._email_callback(commit.committer_email)
-
-    # Sometimes the 'branch' given is a tag; if so, rename it as requested so
-    # we don't get any old tagnames
-    if self._args.tag_rename:
-      commit.branch = RepoFilter._do_tag_rename(args.tag_rename, commit.branch)
-    if self._refname_callback:
-      commit.branch = self._refname_callback(commit.branch)
-
-    # Filter or rename the list of file changes
-    orig_file_changes = set(commit.file_changes)
     new_file_changes = {}  # Assumes no renames or copies, otherwise collisions
     for change in commit.file_changes:
       # NEEDSWORK: _If_ we ever want to pass `--full-tree` to fast-export and
@@ -3268,11 +3374,12 @@ class RepoFilter(object):
       if change.filename in self._newnames:
         change.filename = self._newnames[change.filename]
       else:
+        original_filename = change.filename
         change.filename = newname(args.path_changes, change.filename,
                                   args.use_base_name, args.inclusive)
         if self._filename_callback:
           change.filename = self._filename_callback(change.filename)
-        self._newnames[change.filename] = change.filename
+        self._newnames[original_filename] = change.filename
       if not change.filename:
         continue # Filtering criteria excluded this file; move on to next one
       if change.filename in new_file_changes:
@@ -3316,13 +3423,44 @@ class RepoFilter(object):
       new_file_changes[change.filename] = change
     commit.file_changes = [v for k,v in sorted(new_file_changes.items())]
 
-    # Find out which files were modified by the callbacks.  Such paths could
-    # lead to sebsequent commits being empty (e.g. if removed a line containing
-    # a password from every version of a file that had the password, and some
-    # later commit did nothing more than remove that line)
-    final_file_changes = set(commit.file_changes)
-    differences = orig_file_changes.symmetric_difference(final_file_changes)
-    self._files_tweaked.update(x.filename for x in differences)
+  def _tweak_commit(self, commit, aux_info):
+    # Change the commit message according to callback
+    if not self._args.preserve_commit_hashes:
+      commit.message = self._hash_re.sub(self._translate_commit_hash,
+                                         commit.message)
+    if self._args.replace_message:
+      for literal, replacement in self._args.replace_message['literals']:
+        commit.message = commit.message.replace(literal, replacement)
+      for regex,   replacement in self._args.replace_message['regexes']:
+        commit.message = regex.sub(replacement, commit.message)
+    if self._message_callback:
+      commit.message = self._message_callback(commit.message)
+
+    # Change the author & committer according to mailmap rules
+    args = self._args
+    if args.mailmap:
+      commit.author_name, commit.author_email = \
+          args.mailmap.translate(commit.author_name, commit.author_email)
+      commit.committer_name, commit.committer_email = \
+          args.mailmap.translate(commit.committer_name, commit.committer_email)
+    # Change author & committer according to callbacks
+    if self._name_callback:
+      commit.author_name = self._name_callback(commit.author_name)
+      commit.committer_name = self._name_callback(commit.committer_name)
+    if self._email_callback:
+      commit.author_email = self._email_callback(commit.author_email)
+      commit.committer_email = self._email_callback(commit.committer_email)
+
+    # Sometimes the 'branch' given is a tag; if so, rename it as requested so
+    # we don't get any old tagnames
+    if self._args.tag_rename:
+      commit.branch = RepoFilter._do_tag_rename(args.tag_rename, commit.branch)
+    if self._refname_callback:
+      commit.branch = self._refname_callback(commit.branch)
+
+    # Filter or rename the list of file changes
+    orig_file_changes = set(commit.file_changes)
+    self._filter_files(commit)
 
     # Record ancestry graph
     parents, orig_parents = commit.parents, aux_info['orig_parents']
@@ -3346,6 +3484,19 @@ class RepoFilter(object):
       commit.file_changes = GitUtils.get_file_changes(self._repo_working_dir,
                                                       ID_TO_HASH[parents[0]],
                                                       commit.original_id)
+      orig_file_changes = set(commit.file_changes)
+      self._filter_files(commit)
+
+    # Find out which files were modified by the callbacks.  Such paths could
+    # lead to subsequent commits being empty (e.g. if removing a line containing
+    # a password from every version of a file that had the password, and some
+    # later commit did nothing more than remove that line)
+    final_file_changes = set(commit.file_changes)
+    if self._args.replace_text or self._blob_callback:
+      differences = orig_file_changes.union(final_file_changes)
+    else:
+      differences = orig_file_changes.symmetric_difference(final_file_changes)
+    self._files_tweaked.update(x.filename for x in differences)
 
     # Call the user-defined callback, if any
     if self._commit_callback:
@@ -3382,6 +3533,11 @@ class RepoFilter(object):
 
   def _tweak_tag(self, tag):
     # Tweak the tag message according to callbacks
+    if self._args.replace_message:
+      for literal, replacement in self._args.replace_message['literals']:
+        tag.message = tag.message.replace(literal, replacement)
+      for regex,   replacement in self._args.replace_message['regexes']:
+        tag.message = regex.sub(replacement, tag.message)
     if self._message_callback:
       tag.message = self._message_callback(tag.message)
 
@@ -3440,7 +3596,7 @@ class RepoFilter(object):
         contents = subproc.check_output(cmd)
       except subprocess.CalledProcessError as e: # pragma: no cover
         raise SystemExit(_("Failed loading %s from %s") %
-                         (decode(marks_basename), branch))
+                         (decode(marks_basename), full_branch))
     if contents:
       biggest_id = max(int(x.split()[0][1:]) for x in contents.splitlines())
       _IDS._next_id = max(_IDS._next_id, biggest_id+1)
@@ -3550,7 +3706,10 @@ class RepoFilter(object):
   def _setup_output(self):
     if not self._args.dry_run:
       location = ['-C', self._args.target] if self._args.target else []
-      fip_cmd = ['git'] + location + ['fast-import', '--force', '--quiet']
+      fip_cmd = ['git'] + location + ['-c', 'core.ignorecase=false',
+                                      'fast-import', '--force', '--quiet']
+      if date_format_permissive:
+        fip_cmd.append('--date-format=raw-permissive')
       if self._args.state_branch:
         target_marks_file = self._load_marks_file(b'target-marks')
         fip_cmd.extend([b'--export-marks='+target_marks_file,
@@ -3564,7 +3723,7 @@ class RepoFilter(object):
       self._output = open(self._fe_filt, 'bw')
     else:
       self._output = self._fip.stdin
-    if self._args.debug:
+    if self._args.debug and not self._args.dry_run:
       self._output = DualFileWriter(self._fip.stdin, self._output)
       tmp = [decode(x) if isinstance(x, bytes) else x for x in fip_cmd]
       print("[DEBUG] Running: {}".format(' '.join(tmp)))
@@ -3676,6 +3835,7 @@ class RepoFilter(object):
     batch_check_process = None
     batch_check_output_re = re.compile(b'^([0-9a-f]{40}) ([a-z]+) ([0-9]+)$')
     with open(os.path.join(metadata_dir, b'ref-map'), 'bw') as f:
+      f.write(("%-40s %-40s %s\n" % (_("old"), _("new"), _("ref"))).encode())
       for refname, old_hash in orig_refs.items():
         if refname not in exported_refs:
           continue
@@ -3805,6 +3965,7 @@ class RepoFilter(object):
       # Make sure fast-export completed successfully
       if not self._args.stdin and self._fep.wait():
         raise SystemExit(_("Error: fast-export failed; see above.")) # pragma: no cover
+      self._input.close()
 
     # If we're not the manager of self._output, we should avoid post-run cleanup
     if not self._managed_output:
@@ -3820,9 +3981,8 @@ class RepoFilter(object):
       self._save_marks_files()
 
     # Notify user how long it took, before doing a gc and such
-    repack = (not self._args.partial)
     msg = "New history written in {:.2f} seconds..."
-    if repack:
+    if self._args.repack:
       msg = "New history written in {:.2f} seconds; now repacking/cleaning..."
     print(msg.format(time.time()-start))
 
@@ -3844,9 +4004,11 @@ class RepoFilter(object):
       # Write out data about run
       self._record_metadata(self.results_tmp_dir(), self._orig_refs)
 
-    # If repack, then nuke the reflogs and repack.  If reset, do a reset --hard
+    # Final cleanup:
+    #   If we need a repack, then nuke the reflogs and repack.
+    #   If we need a reset, do a reset --hard
     reset = not GitUtils.is_repository_bare(target_working_dir)
-    RepoFilter.cleanup(target_working_dir, repack, reset,
+    RepoFilter.cleanup(target_working_dir, self._args.repack, reset,
                        run_quietly=self._args.quiet,
                        show_debuginfo=self._args.debug)
 
@@ -3854,7 +4016,7 @@ class RepoFilter(object):
     print(_("Completely finished after {:.2f} seconds.")
           .format(time.time()-start))
 
-if __name__ == '__main__':
+def main():
   setup_gettext()
   args = FilteringOptions.parse_args(sys.argv[1:])
   if args.analyze:
@@ -3862,3 +4024,6 @@ if __name__ == '__main__':
   else:
     filter = RepoFilter(args)
     filter.run()
+
+if __name__ == '__main__':
+  main()
