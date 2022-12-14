@@ -715,9 +715,9 @@ nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
 nnoremap <C-v>q q
 
 " Replay @q or set it from v:register.
-nnoremap <expr> <Space> (v:register==#'"')?'@q':(":let @q = '<C-R>=substitute(@".v:register.",\"'\",\"''\",\"g\")<CR>'<C-F>010l")
+nnoremap <expr> q (v:register==#'"')?'q':(':let @'.(empty(reg_recorded())?'q':reg_recorded())." = '<C-R>=substitute(@".v:register.",\"'\",\"''\",\"g\")<CR>'<C-F>010l")
 " Replay @q for each line of the visual selection.
-xnoremap <Space> @q
+xnoremap Q :normal @<c-r>=reg_recorded()<cr><cr>
 
 nnoremap <expr> <c-w><c-q>  (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> <c-w>q      (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
