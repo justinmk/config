@@ -130,10 +130,10 @@ func! s:colors() abort
     hi QuickFixLine guifg=black guibg=cyan ctermfg=black ctermbg=cyan
     " Special should be (at least slightly) distinct from SpecialKey.
     hi Special ctermfg=LightCyan guifg=LightCyan
-    " hi Special guifg=#F92672 gui=bold ctermfg=197 cterm=NONE
+    " hi Special guifg=#F92672 gui=NONE ctermfg=197 cterm=NONE
 
     " cyan
-    hi Identifier ctermfg=cyan guifg=cyan
+    hi Identifier cterm=NONE ctermfg=cyan guifg=cyan gui=NONE
     hi! link Statement Identifier
     hi! link Exception Identifier
     hi! link Title Identifier
