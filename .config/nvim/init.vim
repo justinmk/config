@@ -45,6 +45,7 @@ set inccommand=split
 " :checktime is SLOW
 " autocmd CursorHold,FocusGained * silent! checktime
 
+set shada^=r/tmp/,r/private/,rfugitive:,rzipfile:,rterm:
 set jumpoptions+=view
 set cpoptions-=_
 set guicursor+=n:blinkon175
@@ -116,8 +117,7 @@ func! s:colors() abort
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
     " space as extra whitespace (makes mouse-copy nicer).
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
-    hi NormalNC ctermbg=234
-    hi! link WinSeparator NormalNC
+    " hi NormalNC ctermbg=234
     hi! link MsgSeparator WinSeparator
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
     hi Whitespace ctermfg=LightGray
