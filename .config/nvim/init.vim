@@ -305,9 +305,9 @@ nnoremap <m-i> <c-i>
 " nnoremap y@%   :<c-u>let @"=@%<cr>
 
 " Fit current window (vertically) to the buffer text.
-nnoremap <silent> <m-=> <cmd>exe min([winheight('%'),line('$')]).'wincmd _'<cr>
+nnoremap <silent> <m-=> <cmd>exe min([winheight('%'),line('$')]).'wincmd _'<bar>setlocal winfixheight<cr>
 " Fit current window (vertically) to the selected text.
-xnoremap <silent> <m-=> <esc><cmd>exe (line("'>") - line("'<") + 1).'wincmd _'<cr>
+xnoremap <silent> <m-=> <esc><cmd>exe (line("'>") - line("'<") + 1).'wincmd _'<bar>setlocal winfixheight<cr>
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win() abort
