@@ -18,7 +18,6 @@ require 'paq' {
 
   'https://github.com/justinmk/vim-sneak.git',
 
-  'tpope/vim-sleuth',
   'tpope/vim-characterize',
   'tpope/vim-scriptease',
   'tpope/vim-apathy',
