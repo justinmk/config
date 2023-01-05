@@ -37,7 +37,7 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
-set fillchars+=msgsep:‾
+set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
@@ -45,7 +45,7 @@ set inccommand=split
 " :checktime is SLOW
 " autocmd CursorHold,FocusGained * silent! checktime
 
-set shada^=r/tmp/,r/private/,rfugitive:,rzipfile:,rterm:
+set shada^=r/tmp/,r/private/,rfugitive:,rzipfile:,rterm:,rhealth:
 set jumpoptions+=view
 set cpoptions-=_
 set guicursor+=n:blinkon175
