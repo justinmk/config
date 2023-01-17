@@ -1,0 +1,349 @@
+==============================================================================
+XWiki syntax 2.1                                                 *xwiki-syntax*
+
+From https://www.xwiki.org/xwiki/bin/view/Documentation/UserGuide/Features/XWikiSyntax/
+
+==============================================================================
+EDITING
+
+### Paragraphs
+
+Paragraphs are text elements separated by 2 or more new lines.
+
+Paragraph on multiple lines: >
+
+    Paragraph on
+    multiple lines
+
+Parametrized paragraph: >
+
+    (% style="text-align:center;color:blue" %)
+    Centered and blue paragraph
+
+Inline styling: >
+
+    paragraph with (% style="color:red" %)red text(%%) inside
+
+==============================================================================
+HEADINGS
+
+Standard headings: >
+
+    = level 1 =
+    == level 2 ==
+    === level 3 ===
+    ==== level 4 ====
+    ===== level 5 =====
+    ====== level 6 ======
+
+
+==============================================================================
+TEXT FORMATTING
+
+General text formatting: >
+
+    **bold**
+    __underline__
+    //italic//
+    --strikeout--
+    ##monospace##
+    ^^superscript^^
+    ,,subscript,,
+
+Horizontal Line: must be 4 or more dashes. >
+
+    ----
+
+Parametrized horizontal line: >
+
+    (% style="border-color:blue" %)
+    ----
+
+
+LITERAL
+
+Use "{{{…}}}" for verbatim (aka "preformatted", literal, will not be parsed): >
+
+    {{{**[[verbatim]]**}}} content
+
+    {{{
+    multiline
+    **verbatim**
+    content
+    }}}
+
+
+outputs exactly >
+
+    **[[verbatim]]** content
+
+    multiline
+    **verbatim**
+    content
+
+
+BLOCKQUOTE
+
+Quotations (blockquote): >
+
+    > quote ...
+    >> nested quote ...
+    no quote.
+
+
+==============================================================================
+LISTS
+
+Bulleted list: >
+
+    * item 1
+    ** item 2
+    *** item 3
+    * item 4
+
+looks like... >
+
+    * item 1
+        * item 2
+            * item 3
+    * item 4
+
+Numbered list: >
+
+    1. item 1
+    11. item 2
+    111. item 3
+    1. item 4
+
+looks like... >
+
+    1. item 1
+        1. item 2
+            1. item 3
+    2. item 4
+
+
+Definition List: >
+
+    ; term 1
+    : definition 1
+    :; term 2 (nested)
+    :: definition 2
+
+looks like... >
+
+    **term 1**
+    definition 1
+        **term 2 (nested)**
+        definition 2
+
+
+
+==============================================================================
+LINKS
+
+The full format of a link is: >
+
+    [label>>] (resource) [||parameters]
+
+Absolute link to page PageB located in PageA: >
+
+    [[PageA.PageB]]
+
+    => [PageB](…)
+
+Relative link to page PageA from the current page: >
+
+    [[PageA]] or [[.PageA]]
+
+    => [PageA](…)
+
+Relative link to page PageB in PageA from the current page: >
+
+    [[.PageA.PageB]]
+
+    => [PageB](#)
+
+Link with a label (XWiki Syntax is supported inside link labels): >
+
+    [[label>>PageA]]
+
+    => [label](…)
+
+Link with wiki syntax in the label: >
+
+    [[**bold label**>>PageA]]
+
+    => [**bold label**](…)
+
+Link on an image: >
+
+    [[image:PageA@img.png>>PageA]]
+
+    => [![img.png](/xwiki/bin/download/XWiki/XWikiSyntaxLinks/img.png?rev=1.1)](…)
+
+Absolute link to page PageB located in PageA in wiki WikiA: >
+
+    [[WikiA:PageA.PageB]]
+
+    => [PageB](…)
+
+Link that opens in a new window: >
+
+    [[PageA||target="_blank"]]
+
+    => [PageA](…)
+
+Implicit link to a URL: >
+
+    This is a URL: https://xwiki.org
+
+Explicit link to a URL: >
+
+    [[https://xwiki.org]]
+
+Explicit link to a URL with a label: >
+
+    [[XWiki>>https://xwiki.org]]
+
+Link to an Anchor in a page: >
+
+    [[PageA.PageB||anchor="anchor"]]
+
+    ...anchor generated from a heading:
+    [[PageA.PageB||anchor="HMyheading"]]
+
+    ...anchor in the current page:
+    [[label>>||anchor="anchor"]]
+
+Note: When you add a Heading, an anchor named "H" followed by the heading
+title with only alpha characters is created. For example, for a Heading named
+"My heading", the generated anchor will be "HMyheading".
+
+
+
+==============================================================================
+TABLES
+
+Standard table: >
+
+    |=Title 1|=Title 2
+    |Word 1|Word 2
+
+    or
+
+    !=Title 1!=Title 2
+    !!Word 1!!Word 2
+
+Parametrized table: >
+
+    (% style="background-color:red;text-align:center" %)
+    |=Title 1|=(% style="background-color:yellow" %)Title 2
+    |Word 1|Word 2
+
+Filterable Sortable table: >
+
+    {{velocity}}
+    $xwiki.ssfx.use("js/xwiki/table/table.css")
+    $xwiki.jsfx.use("js/xwiki/table/tablefilterNsort.js", true)
+    {{/velocity}}
+
+    (% class="grid sortable filterable doOddEven" id="tableid" %)
+    (% class="sortHeader" %)|=Title 1|=Title 2
+    |Cell 11|Cell 12
+    |Cell 21|Cell 22
+
+
+==============================================================================
+IMAGES
+
+The format of an image is either: >
+
+    image: (reference)
+
+    or
+
+    [[{caption>>}image: (reference) {||parameters}]]
+
+Image from attachment on current page: >
+
+    image:img.png
+
+    => ![img.png](/xwiki/bin/download/XWiki/XWikiSyntaxImages/img.png?rev=1.2)
+
+    ...from attachment on another page:
+    image:PageA.PageB@img.png
+
+Image with parameters: >
+
+    [[image:img.png||width="25" height="25"]]
+
+    => ![img.png](/xwiki/bin/download/XWiki/XWikiSyntaxImages/img.png?width=25&height=25&rev=1.2)
+
+Image with caption (can nest XWiki markup): >
+
+    [[~[~[XWiki~>~>https://www.xwiki.org~]~] supports captions.>>image:img.png]]	
+
+    => ![img.png](/xwiki/bin/download/XWiki/XWikiSyntaxImages/img.png?rev=1.2)
+
+Images located at URL: >
+
+    image:https://some/url/img.png
+
+    => ![img.png](/xwiki/bin/download/XWiki/XWikiSyntaxImages/img.png?rev=1.2)
+
+Prepackaged Icons: >
+
+    image:icon:accept
+
+    => ![accept](/xwiki/resources/icons/silk/accept.png?cache-version=1666345755000)
+
+
+
+==============================================================================
+ADVANCED
+
+Groups: Use groups "(((…)))" to inline a document into a list item, table
+cell, etc. This allows for example to insert complex elements or style.
+Supports nesting: a Group can contain another Group, etc.
+
+Example: inlining group into a table cell: >
+
+    |=Header 1|=Header 2|=Header 3
+    |Cell One|(((
+        = Embedded document =
+        * Embedded list item one
+        * Embedded list item two
+          ** sub-item 1
+          ** sub-item 2
+    ))) | Cell Three
+    Next paragraph in the top-level document
+
+ 
+
+The "~" character escapes XWiki syntax: >
+
+    not ~[~[link~]~]
+
+Use "~~"  to enter a literal "~" character.
+
+
+MACROS
+
+There is only one kind of macro in XWiki Syntax 2.1, which is called by the
+syntax: >
+
+    {{macroname param1="value1" ... paramN="valueN"}}...{{/macroname}}
+
+For macros without content: >
+
+    {{macroname param1="value1" ... paramN="valueN"/}}
+
+Use the {{html}} macro to enter HTML: >
+
+    {{html}}<abbr title="HyperText Markup Language">HTML</abbr>{{/html}}
+
+
+
+
+vim:tw=78:sw=4:ts=8:ft=help:norl:
