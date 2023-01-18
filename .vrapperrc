@@ -98,7 +98,7 @@ eclipseuiaction eclipseshowdoc org.eclipse.ui.edit.text.showInformation
 nnoremap K   :eclipseshowdoc<cr>
 
 " go to super implementation
-eclipseaction eclipsegotosuper org.eclipse.java.ui.edit.text.java.open.super.implementation
+eclipseaction eclipsegotosuper org.eclipse.jdt.ui.edit.text.java.open.super.implementation
 nnoremap gzi :eclipsegotosuper<cr>
 
 "show refactor menu
