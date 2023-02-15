@@ -207,16 +207,12 @@ local idk = function()
 
 end
 
-local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#sumneko_lua
-  -- if vim.fn.exepath('lua-language-server') == '' then
-  --   vim.cmd(string.format('autocmd UIEnter * ++once echom "lua-language-server not found'))
-  -- end
-
+local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#lua_ls
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
   table.insert(runtime_path, 'lua/?/init.lua')
 
-  require'lspconfig'.sumneko_lua.setup {
+  require'lspconfig'.lua_ls.setup {
     cmd = {'lua-language-server'};
     on_attach = on_attach,
     settings = {
