@@ -1067,12 +1067,11 @@ set title
 set titlestring=%{getpid().':'.getcwd()}
 
 " special-purpose mappings/commands ===========================================
-nnoremap <leader>vft  :e ~/.config/nvim/after/ftplugin<cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
 nnoremap <leader>vs :Scriptnames<cr>
 
-nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr>.<cr><c-r>+<cr>tag=""<esc><cmd>set nopaste<cr>
+nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr>.<cr><c-r>+<cr>tags: <esc><cmd>set nopaste<cr>
 
 xnoremap <leader>{ <esc>'<A {`>o}==`<
 
