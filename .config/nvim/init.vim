@@ -37,6 +37,7 @@ set sessionoptions-=blank
 "==============================================================================
 " general settings / options
 "==============================================================================
+set exrc
 set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 

@@ -1,1 +1,1 @@
-iabbrev <buffer> ps Problem:<cr><cr>Solution:<cr>
+exe 'source' fnamemodify(expand('<sfile>'), ':h').'/text.vim'

@@ -1,6 +1,6 @@
-setlocal shiftwidth=4
+exe 'source' fnamemodify(expand('<sfile>'), ':h').'/text.vim'
 
-iabbrev <buffer> ps Problem:<cr><cr>Solution:<cr>
+setlocal shiftwidth=4
 
 " URL/footnote macro
 nnoremap <buffer> z,fn "fyiWmfGo[f]: <Esc>`fyiwi[<Esc>ebEa]<Esc>b
