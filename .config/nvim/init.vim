@@ -382,6 +382,7 @@ nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
 nnoremap <silent> Ug              :echo 'use UU'<cr>
 nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' -- %').'<cr>'
+nnoremap <expr>   1Ul             '@_<cmd>Gedit @<cr>'
 nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
 nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
 nnoremap <silent> Up              :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
@@ -399,6 +400,7 @@ nmap UE Ue
 nmap UF Uf
 nmap UG Ug
 nmap UL Ul
+nmap 1UL 1Ul
 nmap UM Um
 nmap UP Up
 nmap UR Ur

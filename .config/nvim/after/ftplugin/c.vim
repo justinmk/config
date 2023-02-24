@@ -22,12 +22,3 @@ if fnamemodify(@%, ':p') =~# 'neovim'
   let b:printf_pattern = 'ILOG("%d", %s);'
   nnoremap <silent><buffer> <leader>log oELOG("");<esc>
 endif
-
-
-if exists(":Lattach") " vim-lldb plugin
-  nnoremap <buffer> yda     :<c-u>Lattach<space>
-  nnoremap <buffer> <up>    :<c-u>Lcontinue<cr>
-  nnoremap <buffer> <right> :<c-u>Lnext<cr>
-  nnoremap <buffer> <left>  :<c-u>Lnext<cr>
-  nnoremap <buffer> <down>  :<c-u>Lstep<cr>
-endif
