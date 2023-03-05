@@ -382,10 +382,11 @@ nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
 nnoremap <silent> Ug              :echo 'use UU'<cr>
 nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' -- %').'<cr>'
+xnoremap          Ul              :Gclog!<cr>
 nnoremap <expr>   1Ul             '@_<cmd>Gedit @<cr>'
+nnoremap <silent> Up              mS:.Gclog<cr>
 nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
 nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
-nnoremap <silent> Up              :<c-u>call <sid>fug_detect()<bar>call <sid>git_blame_line(FugitiveGitPath(expand('%')), line('.'))<CR>
 nnoremap <silent> Ur              :Gread<cr>
 nnoremap <silent> Us              :G<cr>
 nnoremap <silent> Uu              :Gedit <C-R><C-W><cr>
@@ -400,6 +401,7 @@ nmap UE Ue
 nmap UF Uf
 nmap UG Ug
 nmap UL Ul
+xmap UL Ul
 nmap 1UL 1Ul
 nmap UM Um
 nmap UP Up
@@ -420,60 +422,6 @@ function! s:git_do(cmd) abort
   call s:fug_detect()
   " git 1.8.5: -C is a (more reliable) alternative to --git-dir/--work-tree.
   return systemlist(['git', '-C', fnamemodify(b:git_dir, ':p:h:h')] + a:cmd)
-endfunction
-
-" Gets the git commit hash associated with the given file line.
-function! s:git_sha(filepath, line) abort
-  if '' ==# s:trimws_ml(a:filepath)
-    throw 'invalid (empty) filepath'
-  elseif !exists("b:git_dir")
-    throw 'Missing b:git_dir'
-  elseif a:line <= 0
-    throw 'Invalid a:line: '.a:line
-  endif
-
-  let cmd_out = join(s:git_do(['blame', '--root', '-l', '-L'.a:line.','.a:line, '--', a:filepath]))
-  if cmd_out =~# '\v^0{40,}'
-    return ''
-  endif
-
-  return matchstr(cmd_out, '\w\+\ze\W\?', 0, 1)
-endfunction
-
-function! s:git_blame_line(filepath, line) abort
-  if '' ==# s:trimws_ml(a:filepath)
-    echo 'cannot blame'
-    return
-  endif
-
-  if 'blob' ==# get(b:,'fugitive_type','')
-    " Use fugitive blame in fugitive buffers, instead of git directly.
-    let commit_id = substitute(execute('.Gblame'), '\v\_s*(\S+)\s+.*', '\1', '')
-  else
-    " Use git directly.
-    let commit_id = s:git_sha(a:filepath, a:line)
-  endif
-
-  if commit_id ==# ''
-    echo 'not committed'
-    return
-  elseif commit_id ==# 'fatal'
-    echo 'cannot blame'
-    return
-  endif
-
-  " Find commit(s) with 0 parents.
-  " Note: `git blame` prepends a caret ^ to root commits unless --root is
-  "       passed. But it doesn't always mark the 'root' commits we are
-  "       interested in, so collect them explicitly with `git rev-list`.
-  let b:git_root_commits = get(b:, 'git_root_commits', s:git_do(['rev-list', '--max-parents=0', 'HEAD']))
-
-  if -1 != index(b:git_root_commits, commit_id)
-    echo 'root commit'
-    return
-  endif
-
-  exe 'Gpedit '.commit_id
 endfunction
 
 " :help :DiffOrig
