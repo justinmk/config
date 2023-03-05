@@ -1,3 +1,5 @@
+lua vim.treesitter.start()
+
 " execute/evaluate
 nnoremap <buffer>         yxal    :Runtime<cr>
 nnoremap <silent><buffer> yxx     :keeppatterns          .g/^/exe getline('.')<CR>
