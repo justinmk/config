@@ -94,6 +94,15 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
   end
 })
 
+-- Enable treesitter
+vim.api.nvim_create_autocmd({'FileType'}, {
+  callback = function()
+    -- local lang = ev.match
+    -- if vim.treesitter.get_lang(lang) ~= nil then
+    pcall(function() vim.treesitter.start() end)
+  end
+})
+
 
 vim.cmd([[nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>]])
 

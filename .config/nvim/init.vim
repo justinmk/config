@@ -242,7 +242,7 @@ cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 " inVerse search: line NOT containing pattern
 cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 
-nnoremap g: :lua 
+nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
 nnoremap ' `
 inoremap <C-space> <C-x><C-o>
