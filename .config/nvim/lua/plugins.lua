@@ -78,6 +78,23 @@ require 'paq' {
   },
 }
 
+vim.api.nvim_create_autocmd({'UIEnter'}, {
+  callback = function()
+    local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
+    if client and client.name == "Firenvim" then
+      vim.cmd[[nnoremap <expr> + '@_<cmd>set lines='..(v:count?v:count:'20')..'<cr>']]
+      vim.o.laststatus = 0
+      if vim.o.lines < 10 then
+        vim.o.lines = 10
+      end
+      if vim.o.columns < 80 then
+        vim.o.columns = 80
+      end
+    end
+  end
+})
+
+
 vim.cmd([[nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>]])
 
 -- Disable netrw, but autoload it for `gx`.
@@ -182,7 +199,6 @@ local function on_attach(client, bufnr)
   nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
   nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
   nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
-  setlocal omnifunc=v:lua.vim.lsp.omnifunc
   ]])
 end
 
