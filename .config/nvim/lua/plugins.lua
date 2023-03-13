@@ -295,3 +295,40 @@ end
 set_esc_keymap()
 idk()
 setup_lua_lsp()
+
+
+
+
+
+-- Gets completed items that look like functions.
+local function _get_function_names(name)
+  local l = vim.fn.getcompletion(('lua %s'):format(name), 'cmdline')
+  local filtered = vim.tbl_filter(function(s)
+    return vim.fn.luaeval(('type(%s%s) == "function"'):format(name, s))
+  end, l)
+  return filtered
+end
+local function _list_all_functions()
+  vim.cmd([[
+    new
+    silent put =map(filter(api_info().functions, '!has_key(v:val,''deprecated_since'')'), 'v:val.name')
+    g/^$/d
+    silent %s/^nvim_/
+    silent %s/^buf_/
+    silent %s/^win_/
+    silent %s/^tabpage_/
+
+    normal! G
+    silent put =v:lua._get_function_names('vim.')
+    silent put =v:lua._get_function_names('vim.treesitter.')
+    silent put =v:lua._get_function_names('vim.lsp.')
+    silent put =v:lua._get_function_names('vim.diagnostic.')
+
+    silent %sort u
+  ]])
+
+  -- local top = vim.fn.getcompletion('lua vim.', 'cmdline')
+  -- print(vim.inspect(top))
+end
+_G._get_function_names = _get_function_names
+_G._list_all_functions = _list_all_functions
