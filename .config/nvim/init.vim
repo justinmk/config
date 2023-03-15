@@ -71,7 +71,7 @@ set path+=build/src/nvim/auto/**,.deps/build/src/**/,src,src/nvim
 set includeexpr=substitute(v:fname,'^[^\/]*/','','')
 
 let g:sh_noisk = 1
-set lazyredraw  " no redraws in macros
+" set lazyredraw  " no redraws in macros. Disabled for: https://github.com/neovim/neovim/issues/22674
 set cmdheight=2
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
