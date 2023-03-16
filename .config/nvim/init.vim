@@ -699,14 +699,8 @@ endfunc
 nnoremap +     :<C-U>call <SID>zoom_toggle(v:count)<CR>
 nnoremap <Bar> :<C-U>call <SID>zoom_toggle(v:count)<CR>
 
-func! ReadExCommandOutput(thisbuf, cmd) abort
-  redir => l:message
-  silent! execute a:cmd
-  redir END
-  if !a:thisbuf | wincmd n | endif
-  silent put=l:message
-endf
-command! -nargs=+ -bang -complete=command R call ReadExCommandOutput(<bang>0, <q-args>)
+command! -nargs=+ -bang -complete=command R if !<bang>0 | wincmd n | endif
+    \ | call execute(printf("put=execute('%s')", substitute(escape(<q-args>, '"'), "'", "''", 'g')))
 inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
 func! s:get_visual_selection_list() abort
