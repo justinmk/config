@@ -95,6 +95,7 @@ if exists('g:vscode')
   xnoremap Y "+y
 
   nnoremap <silent> <c-k> <Cmd>call VSCodeCall('editor.action.showHover')<CR>
+  nnoremap <silent> gd <Cmd>call VSCodeCall(v:count ? 'typescript.goToSourceDefinition' : 'editor.action.revealDefinition')<CR>
   nnoremap <silent> gD <Cmd>call VSCodeCall('editor.action.goToImplementation')<CR>
   nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
   nnoremap <silent> gR <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
@@ -640,9 +641,7 @@ endfunction
 xnoremap <expr>   il <SID>line_inner_movement(v:count1)
 onoremap <silent> il :normal vil<CR>
 
-" from tpope vimrc
-inoremap <M-o> <C-O>o
-inoremap <M-O> <C-O>O
+" From @tpope vimrc:
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y","%Y%m%d"],'strftime(v:val)')+[localtime()]),0)<CR>
 " Show unix time as human-readable. 1677604904 => '2023-02-28 09:21:45'
 nnoremap gA :echo strftime('%Y-%m-%d %H:%M:%S', '<c-r><c-w>')<cr>
