@@ -58,7 +58,6 @@ require 'paq' {
 
   'justinmk/nvim-repl',
 
-  'leafgarland/typescript-vim',
   {'chrisbra/Colorizer', opt=true},
 
   'junegunn/fzf',
