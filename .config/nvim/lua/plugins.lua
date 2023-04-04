@@ -3,10 +3,6 @@ require 'paq' {
 
   'justinmk/vim-printf',
 
-  -- git clone https://github.com/sunaku/dasht
-  -- dasht-docsets-install python
-  'sunaku/vim-dasht',
-
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
   'https://github.com/justinmk/vim-dirvish.git',
@@ -51,7 +47,6 @@ require 'paq' {
   'tpope/vim-commentary',
 
   {'guns/vim-sexp', opt=true},
-  {'guns/vim-clojure-highlight', opt=true},
 
   {'tpope/vim-salve', opt=true},
   {'tpope/vim-fireplace', opt=true},
