@@ -388,7 +388,7 @@ nnoremap <expr>   1Ul             '@_<cmd>Gedit @<cr>'
 nnoremap <silent> Up              mS:.Gclog<cr>
 nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
 nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
-nnoremap <silent> Ur              :Gread<cr>
+nnoremap <expr>   Ur              '@_<cmd>Gread'.(v:count?(' @'.repeat('^',v:count).':%'):'').'<cr>'
 nnoremap <silent> Us              :G<cr>
 nnoremap <silent> Uu              :Gedit <C-R><C-W><cr>
 nnoremap <silent> Uw              :call <sid>fug_detect()<bar>Gwrite<cr>
