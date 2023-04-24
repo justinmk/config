@@ -561,8 +561,8 @@ func! s:buf_kill(mercy) abort
   if !empty(origbufname)
     silent! exe 'argdelete '.origbufname
   endif
-  " obliterate the buffer and all of its related state (marks, local options, ...), 
-  if bufexists(origbuf) "some other mechanism may have deleted the buffer already.
+  " Unload the buffer state and remove it from the buffer list.
+  if buflisted(origbuf) || bufloaded(origbuf)
     exe 'bdelete! '.origbuf
   endif
 endf
