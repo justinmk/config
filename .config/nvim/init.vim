@@ -382,7 +382,7 @@ nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:co
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
 nnoremap <silent> Ug              :echo 'use UU'<cr>
-nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' -- %').'<cr>'
+nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' --follow -- %').'<cr>'
 xnoremap          Ul              :Gclog!<cr>
 nnoremap <expr>   1Ul             '@_<cmd>Gedit @<cr>'
 nnoremap <silent> Up              mS:.Gclog<cr>
