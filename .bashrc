@@ -59,8 +59,8 @@ path_prepend() {
 }
 
 # Add these dirs to $PATH.
-path_prepend "${HOME}/dasht/bin"
 path_prepend "${HOME}/bin"
+# path_prepend "${HOME}/dasht/bin"
 # path_prepend "${HOME}/ctags/"
 
 # Add these dirs to $MANPATH.
@@ -68,11 +68,19 @@ path_prepend "${HOME}/bin"
 
 # bash completion (also provides __git_ps1 on some systems). Slow as dirt.
 # `brew --prefix` is also slow, avoid it.
+# brew install bash-completion@2
+# https://github.com/homebrew/brew/blob/89b8619153ce7f523fcf4d1bb5fa4b3a375c22a4/docs/Shell-Completion.md
 if [ -n "$TMUX" ]; then
-  if [ -r '/usr/local/etc/profile.d/bash_completion.sh' ]; then
-    # brew install bash-completion@2
-    # https://github.com/homebrew/brew/blob/89b8619153ce7f523fcf4d1bb5fa4b3a375c22a4/docs/Shell-Completion.md
-    source '/usr/local/etc/profile.d/bash_completion.sh'
+  if [ -r '/opt/homebrew/etc/profile.d/bash_completion.sh' ]; then
+    # homebrew uses /opt/homebrew for ARM packages. https://apple.stackexchange.com/a/410829/36305
+    . '/opt/homebrew/etc/profile.d/bash_completion.sh'
+
+    # These are separate, wtf?
+    . /opt/homebrew/etc/bash_completion.d/git-completion.bash
+    . /opt/homebrew/etc/bash_completion.d/npm
+  elif [ -r '/usr/local/etc/profile.d/bash_completion.sh' ]; then
+    # homebrew uses /usr/local for Intel packages. https://apple.stackexchange.com/a/410829/36305
+    . '/usr/local/etc/profile.d/bash_completion.sh'
   elif [ -d '/usr/local/etc/bash_completion.d' ]; then
     for f in '/usr/local/etc/bash_completion.d/'*; do
       [ -r "$f" ] && source "$f"
