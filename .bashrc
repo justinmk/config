@@ -48,7 +48,7 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
 fi
 
 is_in_path() {
-  echo "${PATH}:" | 2>&1 >/dev/null grep -E "${HOME}/bin"'/?:'
+  echo "${PATH}:" | 2>&1 >/dev/null grep -E "$1"'/?:'
 }
 
 path_prepend() {
