@@ -121,7 +121,7 @@ func! s:colors() abort
     " hi NormalNC ctermbg=234
     hi! link MsgSeparator WinSeparator
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
-    hi Whitespace ctermfg=LightGray
+    hi Whitespace ctermfg=235
     hi SpecialKey ctermfg=241 guifg=#626262
     hi! link SpecialChar Whitespace
     hi! link NonText Comment
@@ -216,7 +216,7 @@ autocmd VimEnter * call <SID>colors()
 "}}}
 
 "==============================================================================
-" text, tab and indent 
+" text, tab and indent
 
 set formatoptions+=rno1l/
 " don't syntax-highlight long lines
@@ -435,7 +435,7 @@ nnoremap yo<space> :set <C-R>=(&diffopt =~# 'iwhiteall') ? 'diffopt-=iwhiteall' 
 " ideas: https://github.com/sbdchd/neoformat
 nnoremap gqax    :%!tidy -q -i -xml -utf8<cr>
 nnoremap gqah    :%!tidy -q -i -ashtml -utf8<cr>
-nnoremap gqaj    :%!python -m json.tool<cr>
+nnoremap gqaj    :%!python3 -m json.tool<cr>
 nnoremap gqav    :call append('$', json_encode(eval(join(getline(1,'$')))))<cr>'[k"_dVgg:%!python -m json.tool<cr>
 
 " available mappings:
