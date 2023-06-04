@@ -39,6 +39,9 @@ set sessionoptions-=blank
 "==============================================================================
 set exrc
 set fillchars+=msgsep:‾,eob:·
+" "indent line"
+exe 'set listchars+=multispace:'..repeat('\ ', 2)..'\│'
+autocmd OptionSet shiftwidth exe 'set listchars+=multispace:'..repeat('\ ', &shiftwidth)..'\│'
 set inccommand=split
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
@@ -55,7 +58,7 @@ au UIEnter * set guifont=Menlo:h20
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
 " Set softtabstop=-1 to mirror 'shiftwidth' is used.
 set expandtab shiftwidth=2 softtabstop=-1
-autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | set listchars+=tab:\ \  | endif
+autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
 
 let g:mapleader = "z,"
 
@@ -80,7 +83,7 @@ set foldopen-=search
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
-if has('patch-7.4.314') | set shortmess+=c | endif
+if has('patch-7.4.314') | set shortmess+=cC | endif
 
 nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
@@ -242,6 +245,8 @@ cnoremap <m-E> <c-r>=fnameescape('')<left><left>
 cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
 " inVerse search: line NOT containing pattern
 cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
+" Hit space to match multiline whitespace.
+cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
