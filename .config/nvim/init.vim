@@ -40,8 +40,8 @@ set sessionoptions-=blank
 set exrc
 set fillchars+=msgsep:‾,eob:·
 " "indent line"
-exe 'set listchars+=multispace:'..repeat('\ ', 2)..'\│'
-autocmd OptionSet shiftwidth exe 'set listchars+=multispace:'..repeat('\ ', &shiftwidth)..'\│'
+exe 'set listchars+=leadmultispace:'..repeat('\ ', 2)..'\│'
+autocmd OptionSet shiftwidth exe 'set listchars+=leadmultispace:'..repeat('\ ', &shiftwidth)..'\│'
 set inccommand=split
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
