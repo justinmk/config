@@ -51,6 +51,7 @@ require 'paq' {
   {'tpope/vim-salve', opt=true},
   {'tpope/vim-fireplace', opt=true},
 
+  'https://github.com/echasnovski/mini.completion',
   'justinmk/nvim-repl',
 
   {'chrisbra/Colorizer', opt=true},
@@ -207,6 +208,8 @@ end
 
 -- xxx
 local idk = function()
+  require('mini.completion').setup({})
+
   require'lspconfig'.clangd.setup{
     cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
     on_attach = on_attach,
