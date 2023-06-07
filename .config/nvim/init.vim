@@ -1,12 +1,7 @@
-" Windows Registry Editor Version 5.00
-"
-" [HKEY_CLASSES_ROOT\*\shell\Edit with Vim]
-"
-" [HKEY_CLASSES_ROOT\*\shell\Edit with Vim\command]
-" @="nvim-qt.exe \"%L\""
+" Vim news: https://www.arp242.net/vimlog/
+" Nvim news: https://neovim.io/doc/user/news.html
 "==============================================================================
 
-let g:loaded_rrhelper = 1
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 
 try
@@ -56,14 +51,15 @@ set guicursor+=n:blinkon175
 au UIEnter * set guifont=Menlo:h20
 
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
-" Set softtabstop=-1 to mirror 'shiftwidth' is used.
+" Set softtabstop=-1 to mirror 'shiftwidth'.
 set expandtab shiftwidth=2 softtabstop=-1
 autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
+set list
+autocmd FileType help let &l:listchars = substitute(&listchars, 'leadmultispace[^,]\+,\?', '', 'g')
 
 let g:mapleader = "z,"
 
 set undofile
-set list
 set fileformats=unix,dos
 
 " [i, [d
@@ -921,6 +917,7 @@ nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
 nnoremap '<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
 
 set wildcharm=<C-Z>
+set wildoptions+=fuzzy
 nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
 " _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
 nnoremap <C-f> :edit **/
