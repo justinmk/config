@@ -194,7 +194,7 @@ func! s:colors() abort
     hi! StatusLineNC cterm=underline ctermfg=243 ctermbg=234 gui=underline guifg=white guibg=black
 
     hi! link Directory Identifier
-    hi CursorLine guibg=#303030 ctermbg=235 cterm=NONE
+    hi CursorLine guibg=#303030 ctermbg=236 cterm=NONE
     hi! link CursorColumn CursorLine
     hi! link CursorLineSign CursorLine
     hi! link CursorLineFold CursorLine

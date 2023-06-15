@@ -3,6 +3,11 @@ require 'paq' {
 
   'justinmk/vim-printf',
 
+  -- Hint: to open files start with "+" or "-" from the terminal, prefix them with "./".
+  --    nvim ./-foo
+  --    nvim ./+foo
+  'https://github.com/bogado/file-line',
+
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
   'https://github.com/justinmk/vim-dirvish.git',
@@ -124,7 +129,7 @@ vim.g.surround_indent = 0
 vim.g.surround_no_insert_mappings = 1
 
 vim.g.dispatch_no_tmux_make = 1  -- Prefer job strategy even in tmux.
-vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
+vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
 -- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 -- xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
 
