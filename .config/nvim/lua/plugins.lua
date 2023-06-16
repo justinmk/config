@@ -6,7 +6,7 @@ require 'paq' {
   -- Hint: to open files start with "+" or "-" from the terminal, prefix them with "./".
   --    nvim ./-foo
   --    nvim ./+foo
-  'https://github.com/bogado/file-line',
+  'https://github.com/lewis6991/fileline.nvim',
 
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
