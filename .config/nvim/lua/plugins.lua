@@ -299,7 +299,36 @@ idk()
 setup_lua_lsp()
 
 
-
+-- Remap ":'<,'>s/" to ":'<,'>s/\%V".
+local function map_cmdline_sub()
+  local cmd = vim.fn.getcmdline()
+  if not cmd:match("^'") then
+    return
+  end
+  local ok, rv = pcall(vim.api.nvim_parse_cmd, cmd, {})
+  if not ok or not rv.cmd == 'substitute' then
+    return
+  end
+  if cmd:match("'<,'>s[^u ]") then
+    vim.fn.setcmdline(cmd..[[\%V]])
+    return true
+  end
+end
+do
+  local skip = false
+  vim.api.nvim_create_autocmd('CmdlineEnter', {
+    callback = function()
+      skip = false
+    end
+  })
+  vim.api.nvim_create_autocmd('CmdlineChanged', {
+    callback = function()
+      if not skip and map_cmdline_sub() then
+        skip = true
+      end
+    end
+  })
+end
 
 
 -- Gets completed items that look like functions.

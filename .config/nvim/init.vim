@@ -123,7 +123,7 @@ func! s:colors() abort
     hi Cursor gui=NONE cterm=NONE guibg=#F92672 guifg=white ctermbg=47 ctermfg=black
     hi Whitespace ctermfg=235
     hi SpecialKey ctermfg=241 guifg=#626262
-    hi! link SpecialChar Whitespace
+    hi! link SpecialChar SpecialChar
     hi! link NonText Comment
     hi Comment guifg=#7E8E91 ctermfg=244
     hi! link Constant Normal
