@@ -70,6 +70,7 @@ require 'paq' {
   'neovim/nvim-lspconfig',
 
   'nvim-lua/plenary.nvim',
+  'https://github.com/lewis6991/satellite.nvim',
   'lewis6991/gitsigns.nvim',
 
   -- :packadd nvim-treesitter
@@ -212,7 +213,8 @@ local function on_attach(client, bufnr)
 end
 
 -- xxx
-local idk = function()
+local function idk()
+  require('satellite').setup()
   require('mini.completion').setup({})
 
   require'lspconfig'.clangd.setup{
