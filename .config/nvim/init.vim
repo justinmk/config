@@ -239,10 +239,12 @@ inoremap <insert> <C-r>+
 cnoremap <m-E> <c-r>=fnameescape('')<left><left>
 " Put filename tail.
 cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
-" inVerse search: line NOT containing pattern
-cnoremap <m-/> \v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
+" Inverse search: line NOT containing pattern
+nnoremap /<BS> /\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
 " Hit space to match multiline whitespace.
 cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
+" Opt-in to searching within the visual selection.
+xnoremap // <Esc>/\%V
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
@@ -255,8 +257,6 @@ xnoremap <expr> A (mode()=~#'[vV]'?'<C-v>0o$A':'A')
 
 
 nnoremap g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
-
-xnoremap g/ <Esc>/\%V
 
 " word-wise i_CTRL-Y
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
@@ -930,9 +930,6 @@ nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
 " search current buffer and open results in loclist
 nnoremap \c   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
-" search-replace
-nnoremap gsal mr:%s/
-xnoremap gs   mr:s/\%V
 
 " =============================================================================
 " autocomplete / omnicomplete / tags
@@ -1019,8 +1016,6 @@ nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
 nnoremap <leader>vs :Scriptnames<cr>
 
 nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr>.<cr><c-r>+<cr>tags: <esc><cmd>set nopaste<cr>
-
-xnoremap <leader>{ <esc>'<A {`>o}==`<
 
 command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
 command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/dev/neovim/.deps/usr/share/lua/**,".expand("~")."/dev/neovim/.deps/usr/share/lua/**")<bar>lcd %

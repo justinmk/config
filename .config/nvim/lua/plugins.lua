@@ -72,11 +72,6 @@ require 'paq' {
   'nvim-lua/plenary.nvim',
   'https://github.com/lewis6991/satellite.nvim',
   'lewis6991/gitsigns.nvim',
-
-  -- :packadd nvim-treesitter
-  { 'nvim-treesitter/nvim-treesitter', opt=true,
-    -- run = function() vim.cmd('TSUpdate') end,
-  },
 }
 
 vim.api.nvim_create_autocmd({'UIEnter'}, {
@@ -130,6 +125,9 @@ vim.g.surround_indent = 0
 vim.g.surround_no_insert_mappings = 1
 
 vim.g.dispatch_no_tmux_make = 1  -- Prefer job strategy even in tmux.
+-- TODO:
+-- run closest zig test case: https://github.com/mfussenegger/dotfiles/commit/8e827b72e2b72e7fb240e8a270d786cffc38a2a5#diff-7d18f76b784e0cb761b7fc0a995680cf2a27b6f77031b60b854248478aed8b6fR5
+-- run closest neovim lua test case via make: https://github.com/mfussenegger/dotfiles/commit/a32190b76b678517849d6da84d56836d44a22f2d#diff-f81a3d06561894224d8353f9babc6a7fa9b4962a40c191eb5c23c9cdcc6004c0R158
 vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
 -- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 -- xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
