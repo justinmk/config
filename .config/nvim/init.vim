@@ -746,8 +746,11 @@ augroup END
 augroup vimrc_autocmd
   autocmd!
 
-  autocmd FileType text setlocal textwidth=80
   autocmd BufReadPost *.i setlocal filetype=c
+
+  " Defaults for text-like buffers.
+  autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
+  autocmd FileType markdown,gitcommit runtime! after/ftplugin/text.vim
 
   " Closes the current quickfix list and returns to the alternate window.
   func! s:close_qflist()

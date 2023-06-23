@@ -70,7 +70,8 @@ require 'paq' {
   'neovim/nvim-lspconfig',
 
   'nvim-lua/plenary.nvim',
-  'https://github.com/lewis6991/satellite.nvim',
+  -- Waiting for BufNew fix: https://github.com/lewis6991/satellite.nvim/issues/33
+  -- 'https://github.com/lewis6991/satellite.nvim',
   'lewis6991/gitsigns.nvim',
 }
 
@@ -212,7 +213,6 @@ end
 
 -- xxx
 local function idk()
-  require('satellite').setup()
   require('mini.completion').setup({})
 
   require'lspconfig'.clangd.setup{
@@ -329,6 +329,12 @@ do
     end
   })
 end
+
+vim.cmd[[
+autocmd TermOpen *
+  \ autocmd TermEnter <buffer=abuf> ++once
+  \ autocmd TermClose <buffer=abuf> if !v:event.status | exe 'silent! bdelete! '..expand('<abuf>') | endif
+]]
 
 
 -- Gets completed items that look like functions.

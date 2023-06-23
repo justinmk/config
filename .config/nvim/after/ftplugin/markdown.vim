@@ -1,5 +1,3 @@
-exe 'source' fnamemodify(expand('<sfile>'), ':h').'/text.vim'
-
 setlocal shiftwidth=4
 
 " URL/footnote macro
