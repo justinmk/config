@@ -745,7 +745,7 @@ augroup END
 
 augroup vimrc_autocmd
   autocmd!
-
+  autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
 
   " Defaults for text-like buffers.
@@ -907,6 +907,7 @@ func! s:ctrl_s(cnt, new, here) abort
     file :shell
     " XXX: original term:// buffer hangs around after :file ...
     bwipeout! #
+    autocmd VimLeavePre * bwipeout! ^:shell$
     " Set alternate buffer to something intuitive.
     let @# = origbuf
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:false)<CR>
