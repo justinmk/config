@@ -71,7 +71,7 @@ require 'paq' {
 
   'nvim-lua/plenary.nvim',
   -- Waiting for BufNew fix: https://github.com/lewis6991/satellite.nvim/issues/33
-  -- 'https://github.com/lewis6991/satellite.nvim',
+  'https://github.com/lewis6991/satellite.nvim',
   'lewis6991/gitsigns.nvim',
 }
 
@@ -213,6 +213,7 @@ end
 
 -- xxx
 local function idk()
+  require('satellite').setup()
   require('mini.completion').setup({})
 
   require'lspconfig'.clangd.setup{
