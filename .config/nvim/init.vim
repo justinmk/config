@@ -235,16 +235,17 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG"+y'<bar>call winrestview(b:winview)<cr>
 inoremap <insert> <C-r>+
 
-" Put fnameescape('…')
-cnoremap <m-E> <c-r>=fnameescape('')<left><left>
 " Put filename tail.
-cnoremap <m-F> <c-r>=fnamemodify(@%, ':t')<cr>
-" Inverse search: line NOT containing pattern
-nnoremap /<BS> /\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>
+cnoremap <m-%> <c-r>=fnamemodify(@%, ':t')<cr>
+" current-file directory
+noremap! <m-\> <c-r>=expand('%:p:h', 1)<cr>
+noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
+" /<BS>: Inverse search (line NOT containing pattern).
+cnoremap <expr> <BS> (getcmdtype() =~ '[/?]' && getcmdline() == '') ? '\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>' : '<BS>'
 " Hit space to match multiline whitespace.
 cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
-" Opt-in to searching within the visual selection.
-xnoremap // <Esc>/\%V
+" //: "Search within visual selection".
+cnoremap <expr> / (mode() =~# '[vV]' && getcmdtype() =~ '[/?]' && getcmdline() == '') ? (nvim_input('<esc><esc>/\%V')?'':'') : '/'
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
@@ -260,11 +261,6 @@ nnoremap g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set 
 
 " word-wise i_CTRL-Y
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
-
-" current-file directory
-noremap! <c-r><c-\> <c-r>=expand('%:p:h', 1)<cr>
-
-noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 
 " mark position before search
 nnoremap / ms/
