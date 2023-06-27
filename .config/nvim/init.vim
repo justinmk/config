@@ -238,14 +238,14 @@ inoremap <insert> <C-r>+
 " Put filename tail.
 cnoremap <m-%> <c-r>=fnamemodify(@%, ':t')<cr>
 " current-file directory
-noremap! <m-\> <c-r>=expand('%:p:h', 1)<cr>
+noremap! <m-/> <c-r>=expand('%:p:h', 1)<cr>
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " /<BS>: Inverse search (line NOT containing pattern).
 cnoremap <expr> <BS> (getcmdtype() =~ '[/?]' && getcmdline() == '') ? '\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>' : '<BS>'
 " Hit space to match multiline whitespace.
 cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
 " //: "Search within visual selection".
-cnoremap <expr> / (mode() =~# '[vV]' && getcmdtype() =~ '[/?]' && getcmdline() == '') ? (nvim_input('<esc><esc>/\%V')?'':'') : '/'
+cnoremap <expr> / (mode() =~# '[vV\x16]' && getcmdtype() =~ '[/?]' && getcmdline() == '') ? (nvim_input('<esc><esc>/\%V')?'':'') : '/'
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
@@ -893,7 +893,9 @@ func! s:ctrl_s(cnt, new, here) abort
     endif
   else
     let origbuf = bufnr('%')
-    exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
+    if !a:here
+      exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
+    endif
     terminal
     setlocal scrollback=-1
     " augroup nvim_shell
