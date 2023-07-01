@@ -1,3 +1,16 @@
+-- TODO plugins:
+--
+-- lldb plugin
+--    1. set breakpoints...
+--        vim.diagnostic.set()({namespace}, {bufnr}, {diagnostics}, {opts})
+--    
+--    2. write breakpoints to a lldbinit file
+--    3. start nvim server in new tmux window:
+--       :Start! lldb --source lldbinit --one-line run -- ~/dev/neovim/build/bin/nvim --headless --listen ~/.cache/nvim/debug-server.pipe
+--    4. start nvim client in new tmux window
+--       :Start ~/dev/neovim/build/bin/nvim --remote-ui --server ~/.cache/nvim/debug-server.pipe
+
+
 require 'paq' {
   'savq/paq-nvim', -- Let Paq manage itself
 
@@ -93,7 +106,10 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
 
 -- Enable treesitter
 vim.api.nvim_create_autocmd({'FileType'}, {
-  callback = function()
+  callback = function(ev)
+    if not ev.match or ev.match == '' or ev.match == 'text' then
+      vim.treesitter.stop()
+    end
     -- local lang = ev.match
     -- if vim.treesitter.get_lang(lang) ~= nil then
     pcall(function() vim.treesitter.start() end)
@@ -102,13 +118,6 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 
 
 vim.cmd([[nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>]])
-
--- Disable netrw, but autoload it for `gx`.
-vim.cmd([[
-  let g:loaded_netrwPlugin = 0
-  nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<CR>
-  nmap gx <Plug>NetrwBrowseX
-]])
 
 vim.cmd([[
   nnoremap <D-v> "+p
@@ -234,7 +243,7 @@ local function idk()
 
 end
 
-local function setup_lua_lsp()  -- https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#lua_ls
+local function setup_lua_lsp()
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
   table.insert(runtime_path, 'lua/?/init.lua')

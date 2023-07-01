@@ -3,6 +3,7 @@
 "==============================================================================
 
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
+let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
 
 try
   lua require('plugins')
