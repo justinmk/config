@@ -114,7 +114,7 @@ bd() {
   fi
 }
 
-#some old systems (msysgit) do not support grep --color.
+# Some old systems (msysgit) do not support grep --color.
 if grep --color "a" <<< "a" &> /dev/null ; then
     alias grep='grep --color=auto'
 fi
@@ -124,23 +124,19 @@ fi
 #   also: $OSTYPE
 if [ "$(uname)" = Darwin ] ; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
-
     #BSD-style aliases
     alias ls='ls -GC'
 
-    if ! [ 2 = "$(defaults read -g KeyRepeat)" ] ; then
+    if ! [ '0' = "$(defaults read -g ApplePressAndHoldEnabled)" ] ; then
+      printf '\n%s\n\n' 'bashrc: initialize macOS defaults'
       # Display ASCII control characters using caret notation in standard text views
       # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
       defaults write -g NSTextShowsControlCharacters -bool true
-
       defaults write com.apple.finder DisableAllAnimations -bool true
-
       # Display full POSIX path as Finder window title
       defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
-
       # Avoid creating .DS_Store files on network volumes
       defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-
       # Set key-repeat rate. But not too high: on macOS 10.13 KeyRepeat=0 is insane.
       defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
       defaults write NSGlobalDomain KeyRepeat -int 2
