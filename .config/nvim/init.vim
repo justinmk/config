@@ -246,7 +246,7 @@ cnoremap <expr> <BS> (getcmdtype() =~ '[/?]' && getcmdline() == '') ? '\v^(()@!.
 " Hit space to match multiline whitespace.
 cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
 " //: "Search within visual selection".
-cnoremap <expr> / (mode() =~# '[vV\x16]' && getcmdtype() =~ '[/?]' && getcmdline() == '') ? (nvim_input('<esc><esc>/\%V')?'':'') : '/'
+cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && getcmdline() == '') ? "\<C-c>\<Esc>/\\%V" : '/'
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
@@ -700,27 +700,6 @@ command! -nargs=+ -bang -complete=command R if !<bang>0 | wincmd n | endif
     \ | call execute(printf("put=execute('%s')", substitute(escape(<q-args>, '"'), "'", "''", 'g')))
 inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
-func! s:get_visual_selection_list() abort
-  let [lnum1, col1] = getpos("'<")[1:2]
-  let [lnum2, col2] = getpos("'>")[1:2]
-  let lines = getline(lnum1, lnum2)
-  let lines[-1] = lines[-1][: col2 - (&selection ==? 'inclusive' ? 1 : 2)]
-  let lines[0] = lines[0][col1 - 1:]
-  return lines
-endf
-
-func! s:get_visual_selection_searchpattern() abort
-  let lines = s:get_visual_selection_list()
-  let lines = map(lines, 'escape(v:val, ''/\'')')
-  " Join with a _literal_ \n to make a valid search pattern.
-  return join(lines, '\n')
-endf
-
-"read last visual-selection into command line
-cnoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
-inoremap <c-r><c-v> <c-r>=join(<sid>get_visual_selection_list(), " ")<cr>
-
-xnoremap * <esc>ms/\V<c-r>=<sid>get_visual_selection_searchpattern()<cr><cr>
 nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
 nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
 
