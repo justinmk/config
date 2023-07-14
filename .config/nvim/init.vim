@@ -216,7 +216,6 @@ autocmd VimEnter * call <SID>colors()
 " text, tab and indent
 
 set formatoptions+=rno1l/
-set comments+=fb:•
 " don't syntax-highlight long lines
 set synmaxcol=200
 
@@ -231,6 +230,8 @@ set nowrap
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG"+y'<bar>call winrestview(b:winview)<cr>
+" copy current (relative) filename (to gui-clipboard if available)
+nnoremap "%y <cmd>let @+=fnamemodify(@%, ':.')<cr>
 inoremap <insert> <C-r>+
 
 " Put filename tail.
@@ -904,6 +905,7 @@ nnoremap \t    :tag<space>
 " See `man fnmatch`.
 nnoremap \g  mS:Ggrep! -q <C-R>=(system(['git','grep','-P'])=~#'no pattern')?'-P':'-E'<CR> <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.mpack' ':/!*.pbf' ':/!*.pdf' ':/!*.po' ':(top,exclude,icase)notebooks/' ':/!data/' ':/!work/' ':/!qgis/' ':/!graphhopper_data/'
       \<Home><C-Right><C-Right><C-Right><C-Right><left>
+nnoremap 9\g  :Ggrep<m-up><Home><C-Right><C-Right><C-Right><C-Right><left>
 nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
 " search all file buffers (clear qf first).
 nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>

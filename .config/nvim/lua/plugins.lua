@@ -340,11 +340,6 @@ do
   })
 end
 
-vim.cmd[[
-autocmd TermOpen *
-  \ autocmd TermEnter <buffer=abuf> ++once
-  \ autocmd TermClose <buffer=abuf> if !v:event.status | exe 'silent! bdelete! '..expand('<abuf>') | endif
-]]
 
 
 -- Gets completed items that look like functions.
