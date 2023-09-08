@@ -710,13 +710,6 @@ nnoremap <silent> m<bs> :call nvim_buf_clear_highlight(bufnr('%'), -1, 0, -1)<cr
 
 " }}} mappings
 
-augroup vimrc_halo
-  autocmd!
-  autocmd FocusGained * if winnr('$') > 1 && &buftype!=#'terminal' | setlocal cursorcolumn | endif
-    \ | autocmd FocusLost,CursorMoved,CursorMovedI,InsertEnter,WinLeave,WinScrolled * ++once setlocal nocursorcolumn
-  " autocmd WinLeave * call setlocal nocursorcolumn
-augroup END
-
 augroup vimrc_autocmd
   autocmd!
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
