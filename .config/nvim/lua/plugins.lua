@@ -116,8 +116,6 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 })
 
 
-vim.cmd([[nnoremap <silent> gK :call Dasht([expand('<cword>'), expand('<cWORD>')])<CR>]])
-
 vim.cmd([[
   nnoremap <D-v> "+p
   inoremap <D-v> <esc>"+pa
@@ -209,6 +207,7 @@ local function on_attach(client, bufnr)
   -- require'lsp_compl'.attach(client, bufnr, { server_side_fuzzy_completion = true })
   vim.cmd([[
   nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
+  nnoremap <buffer> gK <cmd>lua vim.lsp.inlay_hint(0,nil)<cr>
   nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
   nnoremap <buffer> crr <cmd>lua vim.lsp.buf.code_action()<cr>
   nnoremap <buffer> crn <cmd>lua vim.lsp.buf.rename()<cr>
