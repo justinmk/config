@@ -19,8 +19,6 @@ if 1
   let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
   let s:plugins = filereadable(expand("~/.config/nvim/autoload/plug.vim", 1))
   let s:is_gui = has('gui_running') || strlen(&term) == 0 || &term ==? 'builtin_gui'
-
-  exe 'source '.expand('<sfile>:p:h').'/.config/nvim/init.vim'
 endif
 
 

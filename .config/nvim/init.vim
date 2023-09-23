@@ -987,7 +987,33 @@ set titlestring=%{getpid().':'.getcwd()}
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
-nnoremap <leader>vs :Scriptnames<cr>
+
+" scriptease
+" TODO:
+"   - g={motion} / g!{motion}
+"   - :PP (pretty print expression)
+nnoremap <leader>vs   :caddexpr join(map(split(execute('scriptnames'), '\n'), {k,v->matchstr(v,':\s*\zs.*')..':1: '}),"\n")<bar>copen<cr>
+nnoremap zS <cmd>Inspect<cr>
+command! -addr=other -range=-1 -nargs=? -complete=command Time exe TimeCommand(<q-args>, <count>)
+function! TimeCommand(cmd, count) abort
+  let time = reltime()
+  try
+    if a:count > 1
+      let i = 0
+      while i < a:count
+        execute a:cmd
+        let i += 1
+      endwhile
+    else
+      execute a:cmd
+    endif
+  finally
+    let elapsed = reltime(time)
+    redraw
+    echomsg matchstr(reltimestr(elapsed), '.*\..\{,3\}') . ' seconds to run :'.a:cmd
+  endtry
+  return ''
+endfunction
 
 nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr>.<cr><c-r>+<cr>tags: <esc><cmd>set nopaste<cr>
 

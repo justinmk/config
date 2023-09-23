@@ -1,6 +1,7 @@
 {
     "editor.minimap.enabled": false,
     "terminal.integrated.rendererType": "dom",
+    "terminal.integrated.macOptionIsMeta": true,
     "files.insertFinalNewline": true,
     "vscode-neovim.revealCursorScrollLine": true,
     "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim",
