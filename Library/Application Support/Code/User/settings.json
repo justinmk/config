@@ -9,8 +9,15 @@
     "vscode-neovim.mouseSelectionVisualMode": true,
     "editor.cursorBlinking": "expand",
     "window.zoomLevel": 1,
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
     "explorer.confirmDelete": false,
     "explorer.autoReveal": false,
+    "gitlens.showWhatsNewAfterUpgrades": false,
+    "gitlens.showWelcomeOnInstall": false,
+    "gitlens.plusFeatures.enabled": false,
+    "gitlens.codeLens.enabled": false,
     "gitlens.menus": {
         "editor": {
             "blame": false,
