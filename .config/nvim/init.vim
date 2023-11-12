@@ -986,6 +986,7 @@ set titlestring=%{getpid().':'.getcwd()}
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
+nnoremap <leader>vr   :Vimref<cr>
 
 " scriptease
 " TODO:
@@ -1021,8 +1022,33 @@ command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/dev/neovim/.deps
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
 command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
-command! -nargs=1 Vimref split ~/dev/neovim/.vim-src/|exe 'lcd %:h'|exe 'Gedit '.(-1 == match('<args>', '\v(\d+\.){2}')
-      \? '<args>' : 'v'.matchstr('<args>', '\v(\d+\.){2}(\d)+'))
+func! GetVimref(...) abort
+  let tagpat = '\v(\d+\.){2}(\d)+'
+  let ref = (a:0 is 0 || empty(a:1)) ? matchstr(expand('<cWORD>'), tagpat) : matchstr(a:1, tagpat)
+  if empty(ref) && (a:0 is 0 || empty(a:1))
+    return expand('<cword>')
+  endif
+  return empty(ref) ? a:1 : 'v'..ref
+endfunc
+func! EditVimref(...) abort
+  let ref = GetVimref(a:0 ? a:1 : '')
+  let vimdir = luaeval('vim.fs.normalize(vim.fn.expand("~/dev/neovim/.vim-src/"))')
+  if winnr('#') != 0
+    wincmd p
+    let cwd = luaeval('vim.fs.normalize(vim.fn.expand(vim.fn.getcwd()))')
+    if cwd !=# vimdir
+      " Switch back
+      wincmd p
+      split ~/dev/neovim/.vim-src/
+      lcd %:h
+    endif
+  else
+    split ~/dev/neovim/.vim-src/
+    lcd %:h
+  endif
+  exe 'Gedit '..ref
+endfunc
+command! -nargs=? Vimref call EditVimref('<args>')
 command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*/**' --exclude='**/build*/**' --exclude='cdk.out/**' --exclude='**/cdk.out/**' --exclude='.vim-src/**' --exclude='**/dist/**' --exclude='node_modules/**' --exclude='**/node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
   \ --exclude=.git --exclude=.svn --exclude=.hg --exclude="*.cache.html" --exclude="*.nocache.js" --exclude="*.min.*" --exclude="*.map" --exclude="*.swp" --exclude="*.bak" --exclude="*.pyc" --exclude="*.class" --exclude="*.sln" --exclude="*.Master" --exclude="*.csproj" --exclude="*.csproj.user" --exclude="*.cache" --exclude="*.dll" --exclude="*.pdb" --exclude=tags --exclude="cscope.*" --exclude="*.tar.*"
   \ *
