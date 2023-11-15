@@ -87,28 +87,6 @@ set nostartofline
 set cursorline
 set diffopt+=hiddenoff,linematch:60
 
-if exists('g:vscode')
-  xnoremap Y "+y
-
-  nnoremap <silent> <c-k> <Cmd>call VSCodeCall('editor.action.showHover')<CR>
-  nnoremap <silent> gd <Cmd>call VSCodeCall(v:count ? 'typescript.goToSourceDefinition' : 'editor.action.revealDefinition')<CR>
-  nnoremap <silent> gD <Cmd>call VSCodeCall('editor.action.goToImplementation')<CR>
-  nnoremap <silent> gr <Cmd>call VSCodeCall('references-view.find')<CR>
-  nnoremap <silent> gR <Cmd>call VSCodeCall('references-view.findImplementations')<CR>
-  nnoremap <silent> <delete> <Cmd>call VSCodeCall('editor.debug.action.toggleBreakpoint')<CR>
-  " nnoremap <silent> gO <Cmd>call VSCodeCall('workbench.action.gotoSymbol')<CR>
-  nnoremap <silent> gO <Cmd>call VSCodeCall('outline.focus')<CR>
-  nnoremap <silent> z/ <Cmd>call VSCodeCall('workbench.action.showAllSymbols')<CR>
-  nnoremap <silent> - <Cmd>call VSCodeCall('workbench.files.action.showActiveFileInExplorer')<CR>
-  nnoremap <silent> <c-b> <Cmd>call VSCodeCall('workbench.action.showAllEditorsByMostRecentlyUsed')<CR>
-  nnoremap <silent> ]c <Cmd>call VSCodeCall('workbench.action.editor.nextChange')<CR>
-  nnoremap <silent> [c <Cmd>call VSCodeCall('workbench.action.editor.previousChange')<CR>
-
-  nnoremap <silent> UD <Cmd>call VSCodeCall('git.openChange')<CR>
-  nnoremap <silent> UW <Cmd>call VSCodeCall('git.stage')<CR>
-  nnoremap <silent> UB <Cmd>call VSCodeCall('gitlens.toggleFileBlame')<CR>
-endif
-
 "colorscheme {{{
 func! s:colors() abort
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
@@ -1116,6 +1094,26 @@ function! s:init_lynx() abort
 endfunction
 command! -nargs=1 Web       vnew|call termopen('lynx -use_mouse '.shellescape(<q-args>))|call <SID>init_lynx()
 command! -nargs=1 Websearch vnew|call termopen('lynx -use_mouse https://duckduckgo.com/?q='.shellescape(substitute(<q-args>,'#','%23','g')))|call <SID>init_lynx()
+
+if exists('g:vscode')
+  nnoremap <silent> <c-k> <Cmd>lua require('vscode-neovim').call('editor.action.showHover')<CR>
+  nnoremap <silent> gd <Cmd>lua require('vscode-neovim').call(v:count ? 'typescript.goToSourceDefinition' : 'editor.action.revealDefinition')<CR>
+  nnoremap <silent> gD <Cmd>lua require('vscode-neovim').call('editor.action.goToImplementation')<CR>
+  nnoremap <silent> gr <Cmd>lua require('vscode-neovim').call('references-view.find')<CR>
+  nnoremap <silent> gR <Cmd>lua require('vscode-neovim').call('references-view.findImplementations')<CR>
+  nnoremap <silent> <delete> <Cmd>lua require('vscode-neovim').call('editor.debug.action.toggleBreakpoint')<CR>
+  " nnoremap <silent> gO <Cmd>lua require('vscode-neovim').call('workbench.action.gotoSymbol')<CR>
+  nnoremap <silent> gO <Cmd>lua require('vscode-neovim').call('outline.focus')<CR>
+  nnoremap <silent> z/ <Cmd>lua require('vscode-neovim').call('workbench.action.showAllSymbols')<CR>
+  nnoremap <silent> - <Cmd>lua require('vscode-neovim').call('workbench.files.action.showActiveFileInExplorer')<CR>
+  nnoremap <silent> <c-b> <Cmd>lua require('vscode-neovim').call('workbench.action.showAllEditorsByMostRecentlyUsed')<CR>
+  nnoremap <silent> ]c <Cmd>lua require('vscode-neovim').call('workbench.action.editor.nextChange')<CR>
+  nnoremap <silent> [c <Cmd>lua require('vscode-neovim').call('workbench.action.editor.previousChange')<CR>
+
+  nnoremap <silent> UD <Cmd>lua require('vscode-neovim').call('git.openChange')<CR>
+  nnoremap <silent> UW <Cmd>lua require('vscode-neovim').call('git.stage')<CR>
+  nnoremap <silent> UB <Cmd>lua require('vscode-neovim').call('gitlens.toggleFileBlame')<CR>
+endif
 
 silent! source ~/.vimrc.local
 
