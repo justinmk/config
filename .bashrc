@@ -47,15 +47,11 @@ if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
   trap "kill $SSH_AGENT_PID" 0
 fi
 
-is_in_path() {
-  echo "${PATH}:" | 2>&1 >/dev/null grep -E "$1"'/?:'
-}
-
 path_prepend() {
   [ -z "$1" ] && { echo 'path_prepend: missing/empty arg' ; exit 1 ; }
-  if ! is_in_path "$1" && [ -d "$1" ] ; then
-    PATH="${1}:${PATH}"
-  fi
+  # Remove existing match, if any.
+  local path=''$(echo $PATH | sed 's:\:'$1'$::' | sed 's:\:'$1'\::\::' | sed 's:^'$1'\:::')
+  PATH="${1}:${path}"
 }
 
 # Add these dirs to $PATH.
