@@ -206,7 +206,7 @@ local function on_attach(client, bufnr)
   -- require'lsp_compl'.attach(client, bufnr, { server_side_fuzzy_completion = true })
   vim.cmd([[
   nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
-  nnoremap <buffer> gK <cmd>lua vim.lsp.inlay_hint(0,nil)<cr>
+  nnoremap <buffer> gK <cmd>lua vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())<cr>
   " Get diagnostics only for current buffer (one client):
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
