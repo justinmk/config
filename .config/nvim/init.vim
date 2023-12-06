@@ -88,7 +88,7 @@ set cursorline
 set diffopt+=hiddenoff,linematch:60
 
 "colorscheme {{{
-func! s:colors() abort
+func! OldColors() abort
     " Clear `Normal` cterm values, so terminal emulators won't treat negative
     " space as extra whitespace (makes mouse-copy nicer).
     hi Normal cterm=NONE ctermfg=NONE ctermbg=NONE guifg=white guibg=black
@@ -186,7 +186,6 @@ func! s:colors() abort
     hi helpHyperTextJump cterm=underline ctermfg=cyan gui=underline guifg=cyan
     hi MatchParen cterm=bold,underline ctermfg=lightgreen ctermbg=NONE guifg=black guibg=white
 endfunc
-autocmd VimEnter * call <SID>colors()
 "}}}
 
 "==============================================================================
