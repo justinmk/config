@@ -366,6 +366,7 @@ nnoremap <silent> Uu              :Gedit <C-R><C-A><cr>
 nnoremap <silent> Uw              :call <sid>fug_detect()<bar>Gwrite<cr>
 nnoremap          Ux              :<c-u>try<bar>.GBrowse<bar>catch<bar>call feedkeys(':.GBrowse @')<bar>endtry<cr>
 xnoremap          Ux              :<c-u>try<bar>'<,'>GBrowse<bar>catch<bar>call feedkeys('gv:GBrowse @')<bar>endtry<cr>
+nnoremap          U.              :G  <c-r><c-w><bar>G s<home><right><right>
 
 nmap UB Ub
 nmap UC Uc

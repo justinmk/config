@@ -79,5 +79,7 @@
         "default": "right",
         "jupyter-notebook": "left"
     },
-    "redhat.telemetry.enabled": false
+    "redhat.telemetry.enabled": false,
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "git.openRepositoryInParentFolders": "never"
 }
