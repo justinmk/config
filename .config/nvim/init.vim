@@ -78,7 +78,7 @@ set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
 if has('patch-7.4.314') | set shortmess+=cC | endif
 
-nnoremap <silent> yoz :<c-u>if &foldenable\|set nofoldenable\|
+nnoremap <silent> yoz :<c-u>if &foldenable && 2==&foldnestmax && 0==&foldlevel\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
 nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : (v:count ? v:count : 80)<CR><CR>
@@ -186,6 +186,7 @@ func! OldColors() abort
     hi helpHyperTextJump cterm=underline ctermfg=cyan gui=underline guifg=cyan
     hi MatchParen cterm=bold,underline ctermfg=lightgreen ctermbg=NONE guifg=black guibg=white
 endfunc
+" call OldColors()
 "}}}
 
 "==============================================================================
@@ -200,6 +201,7 @@ set nowrap
 
 " key mappings/bindings =================================================== {{{
 
+nnoremap \q q
 "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 
 " copy selection to gui-clipboard
@@ -208,7 +210,6 @@ xnoremap Y "+y
 nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG"+y'<bar>call winrestview(b:winview)<cr>
 " copy current (relative) filename (to gui-clipboard if available)
 nnoremap "%y <cmd>let @+=fnamemodify(@%, ':.')<cr>
-inoremap <insert> <C-r>+
 
 " Put filename tail.
 cnoremap <m-%> <c-r>=fnamemodify(@%, ':t')<cr>
@@ -704,29 +705,29 @@ augroup vimrc_autocmd
   endf
   autocmd FileType qf nnoremap <buffer> <c-p> <up>
         \|nnoremap <buffer> <c-n> <down>
-        \|nnoremap <silent><buffer><nowait> gq :call <sid>close_qflist()<cr>
+        \|nnoremap <silent><buffer><nowait> q :call <sid>close_qflist()<cr>
         \|setlocal nolist
 
-  autocmd CmdwinEnter * nnoremap <nowait><silent><buffer> gq <C-W>c
+  autocmd CmdwinEnter * nnoremap <nowait><silent><buffer> q <C-W>c
 
   " :help restore-cursor
   autocmd BufRead * autocmd FileType <buffer> ++once
     \ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if expand('<afile>:t') !=# 'CMakeLists.txt' | setf text | endif
-  autocmd BufNewFile,BufRead *.proj set ft=xml "force filetype for msbuild
   autocmd FileType gitconfig setlocal commentstring=#\ %s
   " For the ":G log" buffer opened by the "UL" mapping.
   autocmd FileType git if get(b:, 'fugitive_type') ==# 'temp'
     \ | exe 'nnoremap <nowait><buffer><silent> <C-n> <C-\><C-n>0j:call feedkeys("p")<CR>'
     \ | exe 'nnoremap <nowait><buffer><silent> <C-p> <C-\><C-n>0k:call feedkeys("p")<CR>'
-    \ | exe 'nnoremap <nowait><buffer><silent> gq <C-w>q'
+    \ | exe 'nnoremap <nowait><buffer><silent> q <C-w>q'
     \ | match Comment /  \S\+ ([^)]\+)$/
     \ | endif
   function! s:setup_gitstatus() abort
     unmap <buffer> U
   endfunction
   autocmd FileType fugitive call <SID>setup_gitstatus()
+  autocmd FileType fugitive,fugitiveblame nnoremap <silent><buffer> q <c-w>c
   autocmd BufWinEnter * if exists("*FugitiveDetect") && empty(expand('<afile>'))|call FugitiveDetect(getcwd())|endif
 
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS
