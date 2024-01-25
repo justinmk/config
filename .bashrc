@@ -183,6 +183,15 @@ p() {
   fi
 }
 
+# Connect to first Nvim server found.
+nvim_remote_ui() {
+  NVIMRUN="$(2>&1 nvim -V1 -es +'echo stdpath("run")' | head -1 | tr -d '\r')"
+  [ -n "$NVIMRUN" ] && echo "nvim run-dir: $NVIMRUN" || { echo "failed to get nvim run-dir"; return 1; }
+  NVIMSERVER=$(find "$NVIMRUN" -type s | head -1)
+  [ -n "$NVIMSERVER" ] && echo "found nvim server: $NVIMSERVER" || { echo "no nvim server found"; return 1; }
+  nvim --remote-ui --server "$NVIMSERVER"
+}
+
 _Z_DATA="$HOME/.config/z/z"
 . ~/bin/z.sh
 

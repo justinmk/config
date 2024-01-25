@@ -340,5 +340,17 @@ do
   })
 end
 
-
+-- Detach the UI by closing the highest channel number.
+-- https://github.com/neovim/neovim/issues/23093
+vim.api.nvim_create_user_command('UIDetach', function()
+  local maxchan = 0
+  vim.iter(vim.api.nvim_list_uis()):map(function(o)
+    if o.chan and not o.stdout_tty and o.chan > maxchan then
+      maxchan = o.chan
+    end
+  end)
+  if maxchan > 0 then
+    vim.fn.chanclose(maxchan)
+  end
+end, {})
 
