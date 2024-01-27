@@ -40,6 +40,8 @@ set inccommand=split
 " theme/colorscheme
 if !empty($TMUX)
   highlight SpellBad guibg=Red guifg=White
+  highlight CursorLine ctermbg=235
+  highlight Comment ctermfg=gray
 endif
 " highlight Normal guibg=NvimDarkGrey1
 " highlight NormalNC guibg=NvimDarkGrey2
@@ -254,16 +256,23 @@ nmap <expr> <C-p> &diff?'[c[n':(luaeval('({pcall(require, "gitsigns")})[1]')?'<c
 
 " version control
 xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
+
+" Blame:
 nnoremap <expr>   Ub              '@_<cmd>G blame '..(v:count?'--ignore-revs-file ""':'')..'<cr>'
+nnoremap <silent> 1Ub             :.,G blame<bar>call feedkeys("\<lt>cr>")<cr>
+xnoremap          Ub              :G blame<cr>
+
+" Commit using the last commit-message.
 nnoremap <silent> Uc              :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s']))))<cr><cr>
 nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
-nnoremap <silent> Ug              :echo 'use UU'<cr>
+
+" Log:
 nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' --follow -- %').'<cr>'
 xnoremap          Ul              :Gclog!<cr>
 nnoremap <expr>   1Ul             '@_<cmd>Gedit @<cr>'
-nnoremap <silent> Up              mS:.Gclog<cr>
+
 nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
 nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
 nnoremap <expr>   Ur              '@_<cmd>Gread'.(v:count?(' @'.repeat('^',v:count).':%'):'').'<cr>'
@@ -275,16 +284,16 @@ xnoremap          Ux              :<c-u>try<bar>'<,'>GBrowse<bar>catch<bar>call 
 nnoremap          U.              :G  <c-r><c-w><bar>G s<home><right><right>
 
 nmap UB Ub
+nmap 1UB 1Ub
+xmap UB Ub
 nmap UC Uc
 nmap UD Ud
 nmap UE Ue
 nmap UF Uf
-nmap UG Ug
 nmap UL Ul
 xmap UL Ul
 nmap 1UL 1Ul
 nmap UM Um
-nmap UP Up
 nmap UR Ur
 nmap US Us
 nmap UU Uu

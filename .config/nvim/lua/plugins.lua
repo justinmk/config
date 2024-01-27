@@ -40,6 +40,7 @@ require 'paq' {
   -- gh wrapper: https://github.com/pwntester/octo.nvim
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
+  -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
 
   'tpope/vim-surround',
 
