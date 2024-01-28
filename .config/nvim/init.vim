@@ -95,6 +95,13 @@ nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : 
 set nostartofline
 set cursorline
 set diffopt+=hiddenoff,linematch:60
+" Dim cursorline in non-current window.
+augroup config_cursorline
+  autocmd!
+  highlight CursorLineNC cterm=underline gui=underline ctermbg=NONE guibg=NONE
+  autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC
+  autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC
+augroup END
 
 "==============================================================================
 " text, tab and indent
