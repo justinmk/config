@@ -8,6 +8,8 @@
     "vscode-neovim.mouseSelectionStartVisualMode": true,
     "vscode-neovim.mouseSelectionVisualMode": true,
     "editor.cursorBlinking": "expand",
+    "editor.stickyScroll.enabled": true,
+    "workbench.tree.enableStickyScroll": true,
     "window.zoomLevel": 1,
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
@@ -81,5 +83,9 @@
     },
     "redhat.telemetry.enabled": false,
     "editor.inlineSuggest.suppressSuggestions": true,
+    "editor.inlineSuggest.showToolbar": "always",
+    "window.density.editorTabHeight": "compact",
+    "window.commandCenter": false,
+    "diffEditor.hideUnchangedRegions.enabled": true,
     "git.openRepositoryInParentFolders": "never"
 }
