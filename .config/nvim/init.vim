@@ -270,7 +270,7 @@ nnoremap <silent> 1Ub             :.,G blame<bar>call feedkeys("\<lt>cr>")<cr>
 xnoremap          Ub              :G blame<cr>
 
 " Commit using the last commit-message.
-nnoremap <silent> Uc              :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s']))))<cr><cr>
+nnoremap <silent> Uc              :G commit --edit -m <c-r>=shellescape(trim(join(<sid>git_do(['log', '-1', '--format=%s', '--', @%]))))<cr><cr>
 nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(<SID>git_do(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G commit --fixup=
