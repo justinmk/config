@@ -179,14 +179,6 @@ tnoremap <silent><M-h> <C-\><C-N><C-w><C-h>
 tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
 tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
 tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
-nnoremap Zh     :leftabove vsplit<CR>
-nnoremap Zj     :belowright split<CR>
-nnoremap Zk     :aboveleft split<CR>
-nnoremap Zl     :rightbelow vsplit<CR>
-nmap     ZH     Zh
-nmap     ZJ     Zj
-nmap     ZK     Zk
-nmap     ZL     Zl
 nnoremap <M-n> :call <SID>buf_new()<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
 nnoremap <silent>      <s-tab>  <C-^>

@@ -62,8 +62,6 @@ require 'paq' {
   'AndrewRadev/linediff.vim',
   {'mbbill/undotree', opt=true},
 
-  'tpope/vim-commentary',
-
   {'guns/vim-sexp', opt=true},
 
   {'tpope/vim-salve', opt=true},
@@ -116,11 +114,6 @@ vim.api.nvim_create_autocmd({'FileType'}, {
   end
 })
 
-
-vim.cmd([[
-  nnoremap <D-v> "+p
-  inoremap <D-v> <esc>"+pa
-]])
 
 vim.cmd([[
   let g:sneak#label = 1
@@ -200,7 +193,6 @@ vim.api.nvim_set_var('projectionist_heuristics', {
 -- Eager-load these plugins so we can override their settings. {{{
 vim.cmd([[
   runtime! plugin/rsi.vim
-  runtime! plugin/commentary.vim
 ]])
 
 local function on_attach(client, bufnr)
