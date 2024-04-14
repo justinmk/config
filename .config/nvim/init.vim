@@ -99,7 +99,7 @@ set diffopt+=hiddenoff,linematch:60
 " Dim cursorline in non-current window.
 augroup config_cursorline
   autocmd!
-  highlight CursorLineNC cterm=underline gui=underline ctermbg=NONE guibg=NONE
+  highlight CursorLineNC cterm=underline gui=underline ctermfg=gray guifg=NvimLightGrey4 ctermbg=NONE guibg=NONE
   autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC
   autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC
 augroup END
@@ -529,12 +529,12 @@ endfunction
 xnoremap <expr>   il <SID>line_inner_movement(v:count1)
 onoremap <silent> il :normal vil<CR>
 
-" From @tpope vimrc:
+" Insert formatted datetime (from @tpope vimrc).
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y","%Y%m%d"],'strftime(v:val)')+[localtime()]),0)<CR>
-" Show unix time as human-readable. 1677604904 => '2023-02-28 09:21:45'
+" Print unix time at cursor as human-readable datetime. 1677604904 => '2023-02-28 09:21:45'
 nnoremap gA :echo strftime('%Y-%m-%d %H:%M:%S', '<c-r><c-w>')<cr>
 
-"do not clobber '[ '] on :write
+" Do not clobber '[ '] on :write.
 function! s:save_change_marks() abort
   let s:change_marks = [getpos("'["), getpos("']")]
 endfunction
@@ -544,20 +544,17 @@ function! s:restore_change_marks() abort
 endfunction
 nnoremap z. :call <SID>save_change_marks()<Bar>w ++p<Bar>call <SID>restore_change_marks()<cr>
 
-" select last inserted text
+" Select last inserted text.
 nnoremap gV `[v`]
 
-" repeat last command for each line of a visual selection
+" Repeat last command for each line of a visual selection.
 xnoremap . :normal .<CR>
-" XXX: fix this
-" repeat the last edit on the next [count] matches.
-nnoremap <silent> gn :normal n.<CR>:<C-U>call repeat#set("n.")<CR>
+" Repeat the last edit on the next [count] matches.
+nnoremap <silent> gn :normal n.<CR>
 nnoremap <C-v>q q
 
-" Replay @q or set it from v:register.
+" Record a macro, or set the last-recorded macro to v:register (example: "aq).
 nnoremap <expr> q (v:register==#'"')?'q':(':let @'.(empty(reg_recorded())?'q':reg_recorded())." = '<C-R>=substitute(@".v:register.",\"'\",\"''\",\"g\")<CR>'<C-F>010l")
-" Replay @q for each line of the visual selection.
-xnoremap Q :normal @<c-r>=reg_recorded()<cr><cr>
 
 nnoremap <expr> <c-w><c-q>  (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
 nnoremap <expr> <c-w>q      (v:count ? ':<c-u>confirm qa<cr>' : '<c-w><c-q>')
@@ -965,7 +962,7 @@ function! Cxn(addr) abort
   endif
 
   terminal
-  let nvim_path = executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
+  let nvim_path = v:progpath " executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
   call chansend(&channel, nvim_path." -u NORC\n")
   call chansend(&channel, ":let j=jobstart('nc -U ".v:servername."',{'rpc':v:true})\n")
   call chansend(&channel, ":call rpcrequest(j, 'nvim_set_var', 'cxn', v:servername)\n")

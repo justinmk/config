@@ -90,7 +90,11 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
   callback = function()
     local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
     if client and client.name == "Firenvim" then
-      vim.cmd[[nnoremap <expr> + '@_<cmd>set lines='..(v:count?v:count:'20')..'<cr>']]
+      vim.cmd[[
+        nnoremap <expr> + '@_<cmd>set lines='..(v:count?v:count:'20')..'<cr>'
+        nnoremap <D-v> "+p
+        inoremap <D-v> <esc>"+pa
+      ]]
       vim.o.laststatus = 0
       if vim.o.lines < 10 then
         vim.o.lines = 10
