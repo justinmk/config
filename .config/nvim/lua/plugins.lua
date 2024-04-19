@@ -80,10 +80,11 @@ require 'paq' {
   -- use'mfussenegger/nvim-lsp-compl',
   'neovim/nvim-lspconfig',
 
-  'nvim-lua/plenary.nvim',
-  -- Waiting for BufNew fix: https://github.com/lewis6991/satellite.nvim/issues/33
+  -- requires nvim-treesitter? :(
+  -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
+
   'https://github.com/lewis6991/satellite.nvim',
-  'lewis6991/gitsigns.nvim',
+  'https://github.com/lewis6991/gitsigns.nvim',
 }
 
 vim.api.nvim_create_autocmd({'UIEnter'}, {
@@ -203,7 +204,7 @@ local function on_attach(client, bufnr)
   -- require'lsp_compl'.attach(client, bufnr, { server_side_fuzzy_completion = true })
   vim.cmd([[
   nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
-  nnoremap <buffer> gK <cmd>lua vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())<cr>
+  nnoremap <buffer> gK <cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>
   " Get diagnostics only for current buffer (one client):
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
