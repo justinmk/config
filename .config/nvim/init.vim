@@ -916,7 +916,8 @@ autocmd BufEnter */.vim-src/* setlocal nolist
 function! Cxn_py() abort
   vsplit
   terminal
-  call chansend(&channel, "python3\nimport pynvim\n")
+  let py = isdirectory('venv') ? './venv/bin/python3' : 'python3'
+  call chansend(&channel, py .. "\nimport pynvim\n")
   call chansend(&channel, "n = pynvim.attach('socket', path='".g:cxn."')\n")
 endfunction
 function! Cxn(addr) abort
