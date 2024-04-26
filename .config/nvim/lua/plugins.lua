@@ -209,11 +209,8 @@ local function on_attach(client, bufnr)
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
   nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
-  nnoremap <buffer> crr <cmd>lua vim.lsp.buf.code_action()<cr>
-  nnoremap <buffer> crn <cmd>lua vim.lsp.buf.rename()<cr>
   nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
   nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
-  nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<cr>
   nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
   ]])
 end
