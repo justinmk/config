@@ -208,7 +208,7 @@ local function on_attach(client, bufnr)
   " Get diagnostics only for current buffer (one client):
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
-  nnoremap <buffer> crq <cmd>lua vim.diagnostic.setqflist()<cr>
+  nnoremap <buffer> grq <cmd>lua vim.diagnostic.setqflist()<cr>
   nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
   nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
   nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
