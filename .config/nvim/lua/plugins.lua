@@ -315,10 +315,11 @@ local function set_esc_keymap()
   end
 end
 
-set_esc_keymap()
-idk()
-setup_lua_lsp()
-
+if not vim.g.vscode then
+  set_esc_keymap()
+  idk()
+  setup_lua_lsp()
+end
 
 -- Remap ":'<,'>s/" to ":'<,'>s/\%V".
 local function map_cmdline_sub()
