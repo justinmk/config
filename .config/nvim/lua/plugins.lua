@@ -158,6 +158,16 @@ vim.cmd([====[
   inoremap [, [<CR>],<Esc>O
 ]====])
 
+-- gX: Web search
+vim.keymap.set('n', 'gX', function()
+  vim.ui.open(('https://google.com/search?q=%s'):format(vim.fn.expand('<cword>')))
+end)
+vim.keymap.set('x', 'gX', function()
+  vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(
+    vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'))))))
+  vim.api.nvim_input('<esc>')
+end)
+
 vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issues/40
 
 vim.g.linediff_buffer_type = 'scratch'
