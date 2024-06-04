@@ -164,7 +164,7 @@ vim.keymap.set('n', 'gX', function()
 end)
 vim.keymap.set('x', 'gX', function()
   vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(
-    vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'))))))
+    vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'), { type=vim.fn.mode() }), ' '))))
   vim.api.nvim_input('<esc>')
 end)
 
