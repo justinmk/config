@@ -1,5 +1,4 @@
 setlocal textwidth=100
-setlocal commentstring=//\ %s
 setlocal comments-=:// comments+=:///,://
 
 nnoremap <buffer> [[    [[3<c-y>
