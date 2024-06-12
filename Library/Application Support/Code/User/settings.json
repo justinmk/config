@@ -87,5 +87,6 @@
     "window.density.editorTabHeight": "compact",
     "window.commandCenter": false,
     "diffEditor.hideUnchangedRegions.enabled": true,
-    "git.openRepositoryInParentFolders": "never"
+    "git.openRepositoryInParentFolders": "never",
+    "extensions.ignoreRecommendations": true
 }
