@@ -978,8 +978,8 @@ if exists('g:vscode')
   nnoremap <silent> z/ <Cmd>lua require('vscode-neovim').call('workbench.action.showAllSymbols')<CR>
   nnoremap <silent> - <Cmd>lua require('vscode-neovim').call('workbench.files.action.showActiveFileInExplorer')<CR>
   nnoremap <silent> <c-b> <Cmd>lua require('vscode-neovim').call('workbench.action.showAllEditorsByMostRecentlyUsed')<CR>
-  nnoremap <silent> ]c <Cmd>lua require('vscode-neovim').call('workbench.action.editor.nextChange')<CR>
-  nnoremap <silent> [c <Cmd>lua require('vscode-neovim').call('workbench.action.editor.previousChange')<CR>
+  nnoremap <silent> <c-n> <Cmd>lua require('vscode-neovim').call('workbench.action.editor.nextChange')<CR>
+  nnoremap <silent> <c-p> <Cmd>lua require('vscode-neovim').call('workbench.action.editor.previousChange')<CR>
 
   nnoremap <silent> UD <Cmd>lua require('vscode-neovim').call('git.openChange')<CR>
   nnoremap <silent> UW <Cmd>lua require('vscode-neovim').call('git.stage')<CR>

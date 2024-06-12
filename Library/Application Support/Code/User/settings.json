@@ -76,6 +76,11 @@
         "**/.settings": true,
         "**/.factorypath": true
     },
+    "search.exclude": {
+        "**/.vscode-test/": true,
+        "**/aws-sam-cli-src/": true,
+        "**/testFixtures/workspaceFolder/": true
+    },
     "go.toolsManagement.autoUpdate": true,
     "notebook.cellToolbarLocation": {
         "default": "right",
@@ -87,6 +92,53 @@
     "window.density.editorTabHeight": "compact",
     "window.commandCenter": false,
     "diffEditor.hideUnchangedRegions.enabled": true,
+    "terminal.integrated.shellIntegration.enabled": true,
     "git.openRepositoryInParentFolders": "never",
-    "extensions.ignoreRecommendations": true
+    "extensions.ignoreRecommendations": true,
+    "remote.SSH.defaultExtensions": [
+        "amazonwebservices.aws-toolkit-vscode"
+    ],
+    "yaml.customTags": [
+        "!And",
+        "!And sequence",
+        "!If",
+        "!If sequence",
+        "!Not",
+        "!Not sequence",
+        "!Equals",
+        "!Equals sequence",
+        "!Or",
+        "!Or sequence",
+        "!FindInMap",
+        "!FindInMap sequence",
+        "!Base64",
+        "!Join",
+        "!Join sequence",
+        "!Cidr",
+        "!Ref",
+        "!Sub",
+        "!Sub sequence",
+        "!GetAtt",
+        "!GetAZs",
+        "!ImportValue",
+        "!ImportValue sequence",
+        "!Select",
+        "!Select sequence",
+        "!Split",
+        "!Split sequence"
+    ],
+    "aws.dev.forceDevMode": true,
+    "_aws.dev.devenvTimeoutMs": 200,
+    "_aws.dev.logfile": "~/awstoolkit.log",
+    "_aws.dev.forceInstallTools": true,
+    "aws.suppressPrompts": {
+        "remoteConnected": true
+    },
+    "_aws.suppressPrompts": {
+        "remoteConnected": true,
+        "ecsRunCommand": true,
+        "codeWhispererNewWelcomeMessageKey": true,
+        "codeWhispererNewWelcomeMessage": true,
+        "amazonQWelcomePage": true
+    }
 }
