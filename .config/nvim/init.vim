@@ -261,6 +261,8 @@ xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
 nnoremap <expr>   Ub              '@_<cmd>G blame '..(v:count?'--ignore-revs-file ""':'')..'<cr>'
 nnoremap <silent> 1Ub             :.,G blame<bar>call feedkeys("\<lt>cr>")<cr>
 xnoremap          Ub              :G blame<cr>
+" Blame "name":
+nnoremap          Un              <cmd>Gitsigns blame_line<cr>
 
 " Commit using the last commit-message.
 nnoremap          Uc              :G commit --edit -m <c-r>=shellescape(FugitiveExecute(['log', '-1', '--format=%s', '--', FugitivePath()]).stdout[0])<cr><cr>
@@ -294,6 +296,7 @@ nmap UL Ul
 xmap UL Ul
 nmap 1UL 1Ul
 nmap UM Um
+nmap UN Un
 nmap UR Ur
 nmap US Us
 nmap UU Uu
