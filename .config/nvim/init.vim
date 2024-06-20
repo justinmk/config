@@ -618,7 +618,7 @@ augroup vimrc_autocmd
   autocmd CmdwinEnter * nnoremap <nowait><silent><buffer> q <C-W>c
 
   " :help restore-cursor
-  autocmd BufRead * autocmd FileType <buffer> ++once
+  autocmd BufReadPre * autocmd FileType <buffer> ++once
     \ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if expand('<afile>:t') !=# 'CMakeLists.txt' | setf text | endif
@@ -667,11 +667,12 @@ func! s:ctrl_s(cnt, new, here) abort
 
   if bufexists(b) && a:here  " Edit the :shell buffer in this window.
     exe 'buffer' b
+    setlocal nobuflisted
     let d.prevwid = win_getid()
     return
   endif
 
-  " Return to previous window.
+  " Return to previous (non-:shell) window.
   if bufnr('%') == b
     let term_prevwid = win_getid()
     if !win_gotoid(d.prevwid)
@@ -737,6 +738,7 @@ func! s:ctrl_s(cnt, new, here) abort
   "   startinsert  " enter terminal-mode
   " endif
   let d.prevwid = curwinid
+  setlocal nobuflisted
 endfunc
 nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
 nnoremap '<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
