@@ -375,3 +375,31 @@ vim.api.nvim_create_user_command('UIDetach', function()
   end
 end, {})
 
+local function _config()
+  _G._vimrc = _G._vimrc or {}
+
+  -- 'tabline'
+  _G._vimrc.tablabel = function(n)
+    local buflist = vim.fn.tabpagebuflist(n)
+    local winnr = vim.fn.tabpagewinnr(n)
+    local name = vim.fn.fnamemodify(vim.fn.bufname(buflist[winnr]), ':t')
+    _G.foo = name
+    name = name:len() > 20 and name:sub(1, 20) .. '…' or name
+    return name == '' and 'No Name' or ' ' .. name
+  end
+  _G._vimrc.tabline = function()
+    local s = ''
+    for i = 1, vim.fn.tabpagenr('$') do
+      -- Highlight group.
+      local hlgroup = (i == vim.fn.tabpagenr() and '%#TabLineSel#' or '%#TabLine#')
+      -- %T: set the tabpage number (for mouse clicks).
+      s = s .. ('%s%%%dT %%{v:lua._vimrc.tablabel(%d)} '):format(hlgroup, i, i)
+    end
+    -- After last tab: Fill with TabLineFill. Reset tabpage nr. Right-align the "close" (X) button.
+    return s .. '%#TabLineFill#%T%=%#TabLine#%999XX'
+  end
+
+  vim.go.tabline='%!v:lua._vimrc.tabline()'
+end
+
+_config()
