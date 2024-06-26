@@ -256,7 +256,9 @@ local function idk()
     }
   }
 
-  require('gitsigns').setup()
+  require('gitsigns').setup{
+    signs_staged_enable = false
+  }
   vim.cmd([[
     hi! link GitSignsChange Normal
   ]])
