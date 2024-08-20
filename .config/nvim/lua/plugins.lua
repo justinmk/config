@@ -332,32 +332,31 @@ if not vim.g.vscode then
   setup_lua_lsp()
 end
 
--- Remap ":'<,'>s/" to ":'<,'>s/\%V".
-local function map_cmdline_sub()
-  local cmd = vim.fn.getcmdline()
-  if not cmd:match("^'") then
-    return
-  end
-  local ok, rv = pcall(vim.api.nvim_parse_cmd, cmd, {})
-  if not ok or not rv.cmd == 'substitute' then
-    return
-  end
-  if cmd:match("'<,'>s[^u ]") then
-    vim.fn.setcmdline(cmd..[[\%V]])
-    return true
-  end
-end
+-- Map ":'<,'>s/" to ":'<,'>s/\%V".
 do
   local skip = false
+
+  local function map_cmdline_sub()
+    local cmd = vim.fn.getcmdline()
+    local ok, rv = pcall(vim.api.nvim_parse_cmd, cmd, {})
+    -- vim.notify(vim.inspect(rv))
+
+    if ok and rv.cmd == 'substitute' and cmd:match("'<,'>s[^u ]") then
+      skip = true
+      vim.fn.setcmdline(cmd..[[\%V]])
+    end
+  end
+
   vim.api.nvim_create_autocmd('CmdlineEnter', {
     callback = function()
       skip = false
     end
   })
+
   vim.api.nvim_create_autocmd('CmdlineChanged', {
     callback = function()
-      if not skip and map_cmdline_sub() then
-        skip = true
+      if not skip then
+        map_cmdline_sub()
       end
     end
   })
