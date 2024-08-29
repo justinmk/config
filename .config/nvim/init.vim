@@ -21,8 +21,8 @@ endtry
 "   - clear 'hlsearch'
 "   - update the current diff (if any)
 " Use {count}<C-L> to:
-"   - reload (:edit) the current buffer
-nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:call <SID>save_change_marks()\|edit\|call <SID>restore_change_marks()<CR>' : '')
+"   - reload (:edit) the current buffer (TODO: ":lockmarks edit" doesn't preserve '[ '] marks)
+nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:edit<CR>' : '')
       \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
       \ . '<CR><C-L>'
 
@@ -530,15 +530,8 @@ inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M
 " Print unix time at cursor as human-readable datetime. 1677604904 => '2023-02-28 09:21:45'
 nnoremap gA :echo strftime('%Y-%m-%d %H:%M:%S', '<c-r><c-w>')<cr>
 
-" Do not clobber '[ '] on :write.
-function! s:save_change_marks() abort
-  let s:change_marks = [getpos("'["), getpos("']")]
-endfunction
-function! s:restore_change_marks() abort
-  call setpos("'[", s:change_marks[0])
-  call setpos("']", s:change_marks[1])
-endfunction
-nnoremap z. :call <SID>save_change_marks()<Bar>w ++p<Bar>call <SID>restore_change_marks()<cr>
+" Preserve '[ '] on :write.
+nnoremap z. :lockmarks update ++p<cr>
 
 " Select last inserted text.
 nnoremap gV `[v`]
@@ -599,6 +592,7 @@ augroup vimrc_autocmd
   autocmd!
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
+  autocmd InsertLeave * if &buftype=='' && filereadable(expand('%:p')) | lockmarks update ++p | endif
 
   " Defaults for text-like buffers.
   autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
