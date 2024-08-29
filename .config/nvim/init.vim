@@ -54,6 +54,7 @@ endif
 
 set shada^=r/tmp/,r/private/,rfugitive:,rzipfile:,rterm:,rhealth:
 set jumpoptions+=view
+set tabclose=uselast
 set cpoptions-=_
 set guicursor+=n:blinkon175
 au UIEnter * set guifont=Menlo:h20
