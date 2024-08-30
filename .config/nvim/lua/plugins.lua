@@ -92,7 +92,7 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
     local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
     if client and client.name == "Firenvim" then
       vim.cmd[[
-        nnoremap <expr> + '@_<cmd>set lines='..(v:count?v:count:'20')..'<cr>'
+        nnoremap <expr> + '@_<cmd>set columns='..(v:count?v:count:'150')..' lines='..(v:count?v:count:'40')..'<cr>'
         nnoremap <D-v> "+p
         inoremap <D-v> <esc>"+pa
       ]]
