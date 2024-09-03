@@ -580,7 +580,7 @@ inoremap <c-r>R <c-o>:<up><home>R! <cr>
 nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
 nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
 
-hi MarkLine guibg=darkred guifg=gray ctermbg=9 ctermfg=15
+hi MarkLine guibg=darkred guifg=white ctermbg=9 ctermfg=15
 func! s:markline() abort
   call nvim_buf_add_highlight(bufnr('%'), 0, 'MarkLine', (line('.')-1), 0, -1)
 endf

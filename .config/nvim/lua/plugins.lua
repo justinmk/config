@@ -245,7 +245,7 @@ local function idk()
     }
     vim.lsp.buf.execute_command(params)
   end
-  require'lspconfig'.tsserver.setup{
+  require'lspconfig'.ts_ls.setup{
     on_attach = on_attach,
     -- capabilities = capabilities,
     commands = {
