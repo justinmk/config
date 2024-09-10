@@ -654,24 +654,27 @@ augroup END
 
 " :shell
 " Creates a global default :shell with maximum 'scrollback'.
-func! s:ctrl_s(cnt, new, here) abort
-  let init = { 'prevwid': win_getid() }
-  let g:term_shell = a:new ? init : get(g:, 'term_shell', init)
-  let d = g:term_shell
+func! s:ctrl_s(cnt, here) abort
+  let g:term_shell = get(g:, 'term_shell', { 'prevwid': win_getid() })
   let b = bufnr(':shell')
 
   if bufexists(b) && a:here  " Edit the :shell buffer in this window.
     exe 'buffer' b
     setlocal nobuflisted
-    let d.prevwid = win_getid()
+    let g:term_shell.prevwid = win_getid()
     return
   endif
 
-  " Return to previous (non-:shell) window.
+  " Return to previous window, and maybe close the :shell tabpage.
   if bufnr('%') == b
+    let tab = tabpagenr()
     let term_prevwid = win_getid()
-    if !win_gotoid(d.prevwid)
+    if !win_gotoid(g:term_shell.prevwid)
       wincmd p
+    endif
+    if tabpagewinnr(tab, '$') == 1 && tabpagenr() != tab
+    " Close the :shell tabpage if it's the only window in the tabpage.
+      exe 'tabclose' tab
     endif
     if bufnr('%') == b
       " Edge-case: :shell buffer showing in multiple windows in curtab.
@@ -680,47 +683,62 @@ func! s:ctrl_s(cnt, new, here) abort
       if len(bufs) > 0
         exe bufwinnr(bufs[0]).'wincmd w'
       else
-        " Last resort: WTF, just go to previous tab?
+        " Last resort: can happen if :mksession restores an old :shell.
         " tabprevious
+        if &buftype !=# 'terminal' && getline(1) == '' && line('$') == 1
+          " XXX: cleanup stale, empty :shell buffer (caused by :mksession).
+          bwipeout! %
+          " Try again.
+          call s:ctrl_s(a:cnt, a:here)
+        end
         return
       endif
     endif
-    let d.prevwid = term_prevwid
+    let g:term_shell.prevwid = term_prevwid
+
     return
   endif
 
-  " Go to existing :shell or create new.
   let curwinid = win_getid()
-  if a:cnt == 0 && bufexists(b) && winbufnr(d.prevwid) == b
-    call win_gotoid(d.prevwid)
+  if a:cnt == 0 && bufexists(b) && winbufnr(g:term_shell.prevwid) == b
+    " Go to :shell displayed in the previous window.
+    call win_gotoid(g:term_shell.prevwid)
   elseif bufexists(b)
+    " Go to existing :shell.
+
     let w = bufwinid(b)
-    if a:cnt == 0 && w > 0  " buffer exists in current tabpage
+    if a:cnt == 0 && w > 0
+      " Found in current tabpage.
       call win_gotoid(w)
-    else  " not in current tabpage; go to first found
+    else
+      " Not in current tabpage.
       let ws = win_findbuf(b)
       if a:cnt == 0 && !empty(ws)
+        " Found in another tabpage.
         call win_gotoid(ws[0])
       else
+        " Not displayed in any window; open a new tabpage.
         exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
         exe 'buffer' b
-        " augroup nvim_shell
-        "   autocmd!
-        "   autocmd TabLeave <buffer> if winnr('$') == 1 && bufnr('%') == g:term_shell.termbuf | tabclose | endif
-        " augroup END
       endif
     endif
+
+    if &buftype !=# 'terminal' && getline(1) == '' && line('$') == 1
+      call win_gotoid(g:term_shell.prevwid)
+      " XXX: cleanup stale, empty :shell buffer (caused by :mksession).
+      exe 'bwipeout!' b
+      " Try again.
+      call s:ctrl_s(a:cnt, a:here)
+    end
   else
+    " Create new :shell.
+
     let origbuf = bufnr('%')
     if !a:here
       exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
     endif
     terminal
     setlocal scrollback=-1
-    " augroup nvim_shell
-    "   autocmd!
-    "   autocmd TabLeave <buffer> if winnr('$') == 1 && bufnr('%') == g:term_shell.termbuf | tabclose | endif
-    " augroup END
     file :shell
     " XXX: original term:// buffer hangs around after :file ...
     bwipeout! #
@@ -729,14 +747,12 @@ func! s:ctrl_s(cnt, new, here) abort
     let @# = origbuf
     tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:false)<CR>
   endif
-  " if a:enter
-  "   startinsert  " enter terminal-mode
-  " endif
-  let d.prevwid = curwinid
+
+  let g:term_shell.prevwid = curwinid
   setlocal nobuflisted
 endfunc
-nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:false)<CR>
-nnoremap '<C-s> :<C-u>call <SID>ctrl_s(v:count, v:false, v:true)<CR>
+nnoremap <C-s> :<C-u>call <SID>ctrl_s(v:count, v:false)<CR>
+nnoremap '<C-s> :<C-u>call <SID>ctrl_s(v:count, v:true)<CR>
 
 set wildcharm=<C-Z>
 set wildoptions+=fuzzy
