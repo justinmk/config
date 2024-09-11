@@ -269,7 +269,7 @@ nnoremap          Un              <cmd>Gitsigns blame_line<cr>
 nnoremap          Uc              :G commit --edit -m <c-r>=shellescape(FugitiveExecute(['log', '-1', '--format=%s', '--', FugitivePath()]).stdout[0])<cr><cr>
 nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(FugitiveExecute(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
 nnoremap <silent> Ue              :Gedit<cr>
-nnoremap          Uf              :G commit --fixup=<c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr>
+nnoremap          Uf              :G show <c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr><cr><c-w><c-w>:G commit --fixup=<c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr>
 
 " Log:
 nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' --follow -- %').'<cr>'
