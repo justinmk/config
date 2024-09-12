@@ -181,11 +181,10 @@ tnoremap <silent><M-j> <C-\><C-N><C-w><C-j>
 tnoremap <silent><M-k> <C-\><C-N><C-w><C-k>
 tnoremap <silent><M-l> <C-\><C-N><C-w><C-l>
 nnoremap <M-n> :call <SID>buf_new()<CR>
+nnoremap <c-i> <c-i>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
 nnoremap <silent>      <s-tab>  <C-^>
-nnoremap <m-i> <c-i>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
-" nnoremap y@%   :<c-u>let @"=@%<cr>
 
 " Fit current window (vertically) to the buffer text.
 nnoremap <silent> <m-=> <cmd>exe min([winheight('%'),line('$')]).'wincmd _'<bar>setlocal winfixheight<cr>
