@@ -745,7 +745,7 @@ func! s:ctrl_s(cnt, here) abort
     autocmd VimLeavePre * bwipeout! ^:shell$
     " Set alternate buffer to something intuitive.
     let @# = origbuf
-    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false, v:false)<CR>
+    tnoremap <buffer> <C-s> <C-\><C-n>:call <SID>ctrl_s(0, v:false)<CR>
   endif
 
   let g:term_shell.prevwid = curwinid
