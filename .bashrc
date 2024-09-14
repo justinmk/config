@@ -66,24 +66,22 @@ path_prepend "${HOME}/bin"
 # `brew --prefix` is also slow, avoid it.
 # brew install bash-completion@2
 # https://github.com/homebrew/brew/blob/89b8619153ce7f523fcf4d1bb5fa4b3a375c22a4/docs/Shell-Completion.md
-if [ -n "$TMUX" ]; then
-  if [ -r '/opt/homebrew/etc/profile.d/bash_completion.sh' ]; then
-    # homebrew uses /opt/homebrew for ARM packages. https://apple.stackexchange.com/a/410829/36305
-    . '/opt/homebrew/etc/profile.d/bash_completion.sh'
+if [ -r '/opt/homebrew/etc/profile.d/bash_completion.sh' ]; then
+  # homebrew uses /opt/homebrew for ARM packages. https://apple.stackexchange.com/a/410829/36305
+  . '/opt/homebrew/etc/profile.d/bash_completion.sh'
 
-    # These are separate, wtf?
-    . /opt/homebrew/etc/bash_completion.d/git-completion.bash
-    . /opt/homebrew/etc/bash_completion.d/npm
-  elif [ -r '/usr/local/etc/profile.d/bash_completion.sh' ]; then
-    # homebrew uses /usr/local for Intel packages. https://apple.stackexchange.com/a/410829/36305
-    . '/usr/local/etc/profile.d/bash_completion.sh'
-  elif [ -d '/usr/local/etc/bash_completion.d' ]; then
-    for f in '/usr/local/etc/bash_completion.d/'*; do
-      [ -r "$f" ] && source "$f"
-    done
-  elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-  fi
+  # These are separate, wtf?
+  . /opt/homebrew/etc/bash_completion.d/git-completion.bash
+  . /opt/homebrew/etc/bash_completion.d/npm
+elif [ -r '/usr/local/etc/profile.d/bash_completion.sh' ]; then
+  # homebrew uses /usr/local for Intel packages. https://apple.stackexchange.com/a/410829/36305
+  . '/usr/local/etc/profile.d/bash_completion.sh'
+elif [ -d '/usr/local/etc/bash_completion.d' ]; then
+  for f in '/usr/local/etc/bash_completion.d/'*; do
+    [ -r "$f" ] && source "$f"
+  done
+elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+  . /etc/bash_completion
 fi
 
 PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M)\[\e[0m\] \u@\h \w\[\e[0m\]
