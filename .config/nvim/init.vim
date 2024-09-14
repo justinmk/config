@@ -652,6 +652,7 @@ augroup vimrc_autocmd
 augroup END
 
 " :shell
+"
 " Creates a global default :shell with maximum 'scrollback'.
 func! s:ctrl_s(cnt, here) abort
   let g:term_shell = get(g:, 'term_shell', { 'prevwid': win_getid() })
@@ -664,7 +665,9 @@ func! s:ctrl_s(cnt, here) abort
     return
   endif
 
-  " Return to previous window, and maybe close the :shell tabpage.
+  "
+  " Return to previous window, maybe close the :shell tabpage.
+  "
   if bufnr('%') == b
     let tab = tabpagenr()
     let term_prevwid = win_getid()
@@ -698,6 +701,9 @@ func! s:ctrl_s(cnt, here) abort
     return
   endif
 
+  "
+  " Go to existing :shell or create a new one.
+  "
   let curwinid = win_getid()
   if a:cnt == 0 && bufexists(b) && winbufnr(g:term_shell.prevwid) == b
     " Go to :shell displayed in the previous window.
@@ -716,7 +722,7 @@ func! s:ctrl_s(cnt, here) abort
         " Found in another tabpage.
         call win_gotoid(ws[0])
       else
-        " Not displayed in any window; open a new tabpage.
+        " Not in any existing window; open a tabpage (or split-window if [count] was given).
         exe ((a:cnt == 0) ? 'tab split' : a:cnt.'split')
         exe 'buffer' b
       endif
