@@ -129,6 +129,7 @@ nnoremap "%y <cmd>let @+=fnamemodify(@%, ':.')<cr>
 
 " Put filename tail.
 cnoremap <m-%> <c-r>=fnamemodify(@%, ':t')<cr>
+cmap     <m-s-5> <m-%>
 " current-file directory
 noremap! <m-/> <c-r>=expand('%:p:h', 1)<cr>
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
