@@ -532,7 +532,7 @@ inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M
 nnoremap gA :echo strftime('%Y-%m-%d %H:%M:%S', '<c-r><c-w>')<cr>
 
 " Preserve '[ '] on :write.
-nnoremap z. :lockmarks update ++p<cr>
+nnoremap <silent> z. :silent lockmarks update ++p<cr>
 
 " Select last inserted text.
 nnoremap gV `[v`]
@@ -593,7 +593,7 @@ augroup vimrc_autocmd
   autocmd!
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
-  autocmd InsertLeave * if &buftype=='' && filereadable(expand('%:p')) | lockmarks update ++p | endif
+  autocmd InsertLeave * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
 
   " Defaults for text-like buffers.
   autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
