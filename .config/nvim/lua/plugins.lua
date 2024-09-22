@@ -142,12 +142,12 @@ vim.cmd([[
 ]])
 
 vim.cmd([====[
+  inoremap [[ [[ ]]<Left><Left><Left>
+  inoremap [= [=[ ]=]<Left><Left><Left><Left>
   inoremap {<CR> {<CR>}<Esc>O
   inoremap {; {<CR>};<Esc>O
   inoremap {, {<CR>},<Esc>O
   inoremap [<CR> [<CR>]<Esc>O
-  inoremap [[ [[<CR>]]<Esc>O
-  inoremap [= [=[<CR>]=]<Esc>O
   inoremap [; [<CR>];<Esc>O
   inoremap [, [<CR>],<Esc>O
 ]====])
