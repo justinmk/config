@@ -30,9 +30,9 @@ HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
 # After each command:
-# - set term title to cwd
+# - set term title to $_MY_TITLE or cwd
 # - append to history file
-PROMPT_COMMAND='printf "\033]0;${PWD}\007" ; history -a'
+PROMPT_COMMAND='printf "\033]0;${_MY_TITLE:-$PWD}\007" ; history -a'
 # truncate long paths to ".../foo/bar/baz"
 PROMPT_DIRTRIM=4
 
