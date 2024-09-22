@@ -2,7 +2,7 @@
 
 if >/dev/null 2>&1 command -v nvim ; then
   export EDITOR=nvim
-  nvim -es +'exe !has("nvim-0.3.2")."cq"' && export MANPAGER="nvim +Man!"
+  export MANPAGER="nvim +Man!"
 elif >/dev/null 2>&1 command -v vim ; then
   export EDITOR=vim
 else
