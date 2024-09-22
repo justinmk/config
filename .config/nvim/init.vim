@@ -272,12 +272,12 @@ nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G show <c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr><cr><c-w><c-w>:G commit --fixup=<c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr>
 
 " Log:
-nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aL (%cr)" --date=relative'.(v:count?'':' --follow -- %').'<cr>'
+nnoremap <expr>   Ul              '@_<cmd>G log --pretty="%h%d %s  %aN (%cr)" --date=relative'.(v:count?'':' --follow -- %').'<cr>'
 xnoremap          Ul              :Gclog!<cr>
 nnoremap <expr>   1Ul             '@_<cmd>Gedit @<cr>'
 
-nnoremap          U:              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative 
-nnoremap          Um              :G log --pretty="%h%d %s  %aL (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
+nnoremap          U:              :G log --pretty="%h%d %s  %aN (%cr)" --date=relative 
+nnoremap          Um              :G log --pretty="%h%d %s  %aN (%cr)" --date=relative -L :<C-r><C-w>:<C-r>%
 nnoremap <expr>   Ur              '@_<cmd>Gread'.(v:count?(' @'.repeat('^',v:count).':%'):'').'<cr>'
 nnoremap <silent> Us              :G<cr>
 nnoremap <silent> Uu              :Gedit <C-R><C-A><cr>
