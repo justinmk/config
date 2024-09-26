@@ -95,7 +95,7 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
         set cmdheight=0 shortmess+=W scrolloff=0 laststatus=0 textwidth=9999
         nnoremap <expr> + '@_<cmd>set columns='..(v:count?v:count:'150')..' lines='..(v:count?v:count:'40')..'<cr>'
         nnoremap <D-v> "+p
-        inoremap <D-v> <c-o>"+
+        inoremap <D-v> <c-o>"+p
       ]]
     end
   end
