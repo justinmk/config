@@ -5,16 +5,12 @@
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
 
-try
-  lua require('plugins')
-catch
-  fun! InstallPlug() " Bootstrap plugin manager on new systems.
+fun! InstallPlug() " Bootstrap plugin manager on new systems.
 lua << EOF
   print(vim.fn.system({'git', 'clone', 'https://github.com/savq/paq-nvim.git',
     vim.fn.stdpath('data')..'/site/pack/paqs/start/paq-nvim'}))
 EOF
-  endfun
-endtry
+endfun
 
 " Use <C-L> to:
 "   - redraw
@@ -861,7 +857,7 @@ set titlestring=%{getpid().':'.getcwd()}
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
-nnoremap <leader>vp   :exe 'e' stdpath('config')..'/lua/plugins.lua'<cr>
+nnoremap <leader>vp   :exe 'e' stdpath('config')..'/plugin/'<cr>
 nnoremap <leader>vr   :Vimref<cr>
 
 " scriptease
