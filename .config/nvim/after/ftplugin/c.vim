@@ -21,3 +21,5 @@ if fnamemodify(@%, ':p') =~# 'neovim'
   let b:printf_pattern = 'ILOG("%d", %s);'
   nnoremap <silent><buffer> <leader>log oELOG("");<esc>
 endif
+
+command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);

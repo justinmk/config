@@ -823,28 +823,24 @@ func! s:slides_hl() abort
   endif
 endfunc
 func! Slides(...) abort
-  let editing = len(a:0) > 0 ? a:1 ==# 'editing' : 0
-  if !editing
-    set cmdheight=1
-    set nowrapscan
-    set nohlsearch
+  let editing = !!a:0
+  if editing
+    setlocal colorcolumn=54,67 textwidth=53
+    exe printf('hi ColorColumn gui%sg=#555555 cterm%sg=235', 'bf'[&bg], 'bf'[&bg])
+  else
+    setlocal cmdheight=1 nowrapscan nohlsearch scrolloff=0
   endif
 
-  try
-    hi SlidesHide ctermbg=bg ctermfg=bg guibg=bg guifg=bg
-  catch /E420/
-  endtry
   hi markdownError ctermbg=NONE ctermfg=NONE guifg=NONE guibg=NONE
 
-  nnoremap <buffer><silent> <Down> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
-  nnoremap <buffer><silent> <Up>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
-  nmap     <buffer><silent> <C-n>  <Down>
-  nmap     <buffer><silent> <C-p>  <Up>
-  setlocal colorcolumn=54,67 textwidth=53
-  exe printf('hi ColorColumn gui%sg=#555555 cterm%sg=235', 'bf'[&bg], 'bf'[&bg])
-  " hi SlidesSign guibg=white guifg=black ctermbg=black ctermfg=white gui=NONE cterm=NONE
-  " sign define limit  text== texthl=SlidesSign
-  " sign unplace
+  " For cterm.
+  let bg = synIDattr(synIDtrans(hlID('Normal')), 'bg', 'cterm')
+  let bg = !empty(bg) ? bg : (&bg==#'dark'?'black':'white')
+  " Hide slides before/after the current one.
+  exe 'hi SlidesHide ctermbg='..bg..' ctermfg='..bg..' cterm=nocombine guibg=bg guifg=bg gui=nocombine'
+
+  nnoremap <buffer><silent> <Right> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <buffer><silent> <Left>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
 endf
 func! SlidesEnd() abort
   call clearmatches()
@@ -889,11 +885,9 @@ endfunction
 
 nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr>.<cr><c-r>+<cr>tags: <esc><cmd>set nopaste<cr>
 
-command! InsertCBreak         norm! i#include <signal.h>raise(SIGINT);
-command! CdNvimLuaClient exe 'e '.finddir("nvim", expand("~")."/dev/neovim/.deps/usr/share/lua/**,".expand("~")."/dev/neovim/.deps/usr/share/lua/**")<bar>lcd %
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
-command! ConvertBlockComment keeppatterns .,/\*\//s/\v^((\s*\/\*)|(\s*\*\/)|(\s*\*))(.*)/\/\/\/\5/
+
 func! GetVimref(...) abort
   let tagpat = '\v(\d+\.){2}(\d)+'
   let ref = (a:0 is 0 || empty(a:1)) ? matchstr(expand('<cWORD>'), tagpat) : matchstr(a:1, tagpat)
