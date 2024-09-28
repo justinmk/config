@@ -39,7 +39,7 @@ set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 
 " theme/colorscheme
-if !empty($TMUX)
+if !&termguicolors
   highlight SpellBad guibg=Red guifg=White
   highlight CursorLine ctermbg=235
   highlight Comment ctermfg=gray
@@ -97,12 +97,16 @@ nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : 
 set nostartofline
 set cursorline
 set diffopt+=hiddenoff,linematch:60
-" Dim cursorline in non-current window.
+" De-emphasize non-current window:
+" - dim cursorline
+" - remove winbar
 augroup config_cursorline
   autocmd!
   highlight CursorLineNC cterm=underline gui=underline ctermfg=gray guifg=NvimLightGrey4 ctermbg=NONE guibg=NONE
-  autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC
-  autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC
+  highlight! link WinBar Statusline
+  highlight! link WinBarNC StatuslineNC
+  autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC winbar=\ 
+  autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC winbar=
 augroup END
 
 "==============================================================================
