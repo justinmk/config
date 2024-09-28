@@ -98,7 +98,7 @@ set diffopt+=hiddenoff,linematch:60
 " - remove winbar
 augroup config_cursorline
   autocmd!
-  highlight CursorLineNC cterm=underline gui=underline ctermfg=gray guifg=NvimLightGrey4 ctermbg=NONE guibg=NONE
+  highlight CursorLineNC cterm=underdashed gui=underdashed ctermfg=gray guifg=NvimLightGrey4 ctermbg=NONE guibg=NONE
   highlight! link WinBar Statusline
   highlight! link WinBarNC StatuslineNC
   autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC winbar=\ 

@@ -35,11 +35,11 @@ end
 
 --- Highlights a line across the entire viewport.
 --- HACK: copies the line text into a virt_text overlay.
-local function hl_line(bufnr, linenr)
-  local line = vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)
-  vim.cmd[[hi MyHeading cterm=reverse gui=reverse]]
-  vim.api.nvim_buf_set_extmark(0, vim.api.nvim_create_namespace('my_heading_higlight'), linenr, 0, {
-      virt_text = {{ line[1] .. (' '):rep(200), 'MyHeading' }},
+local function hl_line(bufnr, linenr, text, hlgroup)
+  -- local line = vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)
+  local ns = vim.api.nvim_create_namespace('my_heading_higlight')
+  vim.api.nvim_buf_set_extmark(bufnr, ns, linenr, 0, {
+      virt_text = {{ text .. (' '):rep(200), hlgroup }},
       virt_text_pos = 'overlay',
       -- hl_mode = 'combine',
   })
@@ -47,12 +47,18 @@ end
 
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = 'help',
+  group = vim.api.nvim_create_augroup('help_heading', { clear=true }),
   callback = function(ev)
     -- Highlight h1,h2 in :help docs.
     ts_traverse(0, function(node, name, startline, endline, text)
       if name == 'h1' or name == 'h2' or name == 'h3' then
-        hl_line(0, startline + 1)
+        local hlgroup = name == 'h1' and 'MyH1' or 'MyH2'
+        text = text:find('[-=]') and '' or text
+        hl_line(0, startline, text, hlgroup)
       end
     end)
   end
 })
+
+vim.cmd[[hi MyH1 cterm=underline gui=underdouble]]
+vim.cmd[[hi MyH2 cterm=underdouble gui=underdotted]]
