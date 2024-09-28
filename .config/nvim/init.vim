@@ -93,16 +93,24 @@ nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : 
 set nostartofline
 set cursorline
 set diffopt+=hiddenoff,linematch:60
-" De-emphasize non-current window:
-" - dim cursorline
-" - remove winbar
+
+" Highlight current window:
+" - highlight WinSeparator/SignColumn (for "border" effect)
+" - dim non-current cursorline
+func! s:focusable_wins() abort
+  return filter(nvim_tabpage_list_wins(0), {k,v-> !!nvim_win_get_config(v).focusable})
+endf
 augroup config_cursorline
   autocmd!
   highlight CursorLineNC cterm=underdashed gui=underdashed ctermfg=gray guifg=NvimLightGrey4 ctermbg=NONE guibg=NONE
   highlight! link WinBar Statusline
   highlight! link WinBarNC StatuslineNC
-  autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC winbar=\ 
-  autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC winbar=
+  highlight link WinBorder Statusline
+  autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC winhighlight-=WinSeparator:WinBorder,SignColumn:WinBorder
+  autocmd WinResized * if 1 == len(s:focusable_wins()) | setlocal winhighlight-=WinSeparator:WinBorder,SignColumn:WinBorder | endif
+  autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC
+  "autocmd WinEnter * if 1 < len(s:focusable_wins()) | setlocal winhighlight+=WinSeparator:WinBorder,SignColumn:WinBorder | endif
+  autocmd WinEnter * setlocal winhighlight+=WinSeparator:WinBorder,SignColumn:WinBorder
 augroup END
 
 "==============================================================================
