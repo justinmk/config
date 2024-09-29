@@ -588,16 +588,6 @@ command! -nargs=+ -bang -complete=command R if !<bang>0 | wincmd n | endif
     \ | call execute(printf("put=execute('%s')", substitute(escape(<q-args>, '"'), "'", "''", 'g')))
 inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
-nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
-nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
-
-hi MarkLine guibg=darkred guifg=white ctermbg=9 ctermfg=15
-func! s:markline() abort
-  call nvim_buf_add_highlight(bufnr('%'), 0, 'MarkLine', (line('.')-1), 0, -1)
-endf
-nnoremap <silent> m.  :call <sid>markline()<cr>
-nnoremap <silent> m<bs> :call nvim_buf_clear_highlight(bufnr('%'), -1, 0, -1)<cr>
-
 " }}} mappings
 
 augroup vimrc_autocmd

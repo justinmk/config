@@ -72,6 +72,9 @@ require 'paq' {
 
   {'chrisbra/Colorizer', opt=true},
 
+  'https://github.com/inkarkat/vim-ingo-library',
+  'https://github.com/inkarkat/vim-mark',
+
   'junegunn/fzf',
   'junegunn/fzf.vim',
 
@@ -130,7 +133,22 @@ vim.g.dispatch_no_tmux_make = 1  -- Prefer job strategy even in tmux.
 -- run closest neovim lua test case via make: https://github.com/mfussenegger/dotfiles/commit/a32190b76b678517849d6da84d56836d44a22f2d#diff-f81a3d06561894224d8353f9babc6a7fa9b4962a40c191eb5c23c9cdcc6004c0R158
 vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
 -- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
--- xnoremap <silent> R   :<c-u>call <sid>tmux_run_operator(visualmode(), 1)<CR>
+
+vim.cmd([[
+  nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
+  nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
+
+  " Configure https://github.com/inkarkat/vim-mark until it enrages me enough to rewrite it.
+  let g:mw_no_mappings = 1
+  "nnoremap <silent> m.. :exe 'Mark /\%'..line('.')..'l./'<cr>
+  nnoremap <silent> m.. :exe 'Mark /\V'..escape(getline('.'), '/\')..'/'<cr>
+  nnoremap <silent> m*  :exe 'Mark /\V'..escape(substitute('<c-r><c-w>', "'", "''", 'g'), '/\')..'/'<cr>
+  nmap     <silent> m?  <Plug>MarkToggle
+  nnoremap <silent> m<bs> :MarkClear<cr>
+  nmap     <silent> ]m <Plug>MarkSearchAnyOrDefaultNext
+  nmap     <silent> [m <Plug>MarkSearchAnyOrDefaultPrev
+  xmap              m*  <Plug>MarkIWhiteSet
+]])
 
 vim.cmd([[
   nmap <C-j> m'<Plug>(edgemotion-j)
