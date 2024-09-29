@@ -92,25 +92,28 @@ nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : 
 
 set nostartofline
 set cursorline
-set diffopt+=hiddenoff,linematch:60
+set diffopt+=hiddenoff,linematch:60,foldcolumn:0
 
-" Highlight current window:
-" - highlight WinSeparator/SignColumn (for "border" effect)
-" - dim non-current cursorline
+"
+" Highlight current window
+"
 func! s:focusable_wins() abort
   return filter(nvim_tabpage_list_wins(0), {k,v-> !!nvim_win_get_config(v).focusable})
 endf
-augroup config_cursorline
+augroup config_curwin_border
   autocmd!
-  highlight CursorLineNC cterm=underdashed gui=underdashed ctermfg=gray guifg=NvimLightGrey4 ctermbg=NONE guibg=NONE
-  highlight! link WinBar Statusline
-  highlight! link WinBarNC StatuslineNC
+  highlight CursorLineNC cterm=underdashed gui=underdashed ctermfg=gray guisp=NvimLightGrey4 ctermbg=NONE guibg=NONE
   highlight link WinBorder Statusline
-  autocmd WinLeave * setlocal winhighlight+=CursorLine:CursorLineNC winhighlight-=WinSeparator:WinBorder,SignColumn:WinBorder
-  autocmd WinResized * if 1 == len(s:focusable_wins()) | setlocal winhighlight-=WinSeparator:WinBorder,SignColumn:WinBorder | endif
+
+  " Dim non-current cursorline.
   autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC
-  "autocmd WinEnter * if 1 < len(s:focusable_wins()) | setlocal winhighlight+=WinSeparator:WinBorder,SignColumn:WinBorder | endif
-  autocmd WinEnter * setlocal winhighlight+=WinSeparator:WinBorder,SignColumn:WinBorder
+
+  " Highlight curwin WinSeparator/SignColumn for "border" effect.
+  let s:winborder_hl = 'WinSeparator:WinBorder,SignColumn:WinBorder'
+  autocmd WinLeave * exe 'setlocal winhighlight+=CursorLine:CursorLineNC winhighlight-='..s:winborder_hl
+  autocmd WinEnter * exe 'setlocal winhighlight+='..s:winborder_hl
+  " Disable effect if there is only 1 window.
+  autocmd WinResized * if 1 == len(s:focusable_wins()) | exe 'setlocal winhighlight-='..s:winborder_hl | endif
 augroup END
 
 "==============================================================================
