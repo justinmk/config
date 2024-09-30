@@ -70,6 +70,12 @@ require 'paq' {
   'https://github.com/echasnovski/mini.completion',
   'justinmk/nvim-repl',
 
+  'https://github.com/mfussenegger/nvim-qwahl',
+  -- Provides `require('tsht').nodes()`.
+  'https://github.com/mfussenegger/nvim-treehopper',
+  -- TODO:
+  -- 'https://github.com/mfussenegger/nvim-overfly',
+
   {'chrisbra/Colorizer', opt=true},
 
   'https://github.com/inkarkat/vim-ingo-library',
