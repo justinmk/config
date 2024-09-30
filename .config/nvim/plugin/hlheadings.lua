@@ -48,28 +48,27 @@ local function hl_line(bufnr, linenr, text, ns, hlgroup, width)
   })
 end
 
-local ns = vim.api.nvim_create_namespace('my_heading_higlight')
-vim.cmd[[hi MyH1 ctermbg=DarkGrey guisp=fg guibg=NvimDarkGray4]]
-vim.cmd[[hi MyH2 ctermbg=DarkGrey guisp=fg guibg=NvimDarkGray4]]
+local ns = vim.api.nvim_create_namespace('my_heading_highlight')
+vim.cmd[[hi MyH1 ctermbg=DarkGrey guisp=fg guibg=#3b3b3b]] -- cterm=underdouble gui=underdouble guisp=fg
+vim.cmd[[hi MyH2 ctermbg=DarkGrey guisp=fg guibg=#3a3a3a]] -- cterm=underdouble gui=underdouble guisp=fg
 
 vim.api.nvim_create_autocmd({'FileType'}, {
-  pattern = 'help',
+  pattern = 'markdown',
   group = vim.api.nvim_create_augroup('config_helpheadings', { clear=true }),
   callback = function(ev)
     -- vim.cmd[[hi clear @markup.heading.1.delimiter.vimdoc]]
     -- vim.cmd[[hi clear @markup.heading.2.delimiter.vimdoc]]
-    -- local curmarks = vim.api.nvim_buf_get_extmarks(0, vim.api.nvim_create_namespace('my_heading_higlight'), 0, -1, {})
+    -- local curmarks = vim.api.nvim_buf_get_extmarks(0, vim.api.nvim_create_namespace('my_heading_highlight'), 0, -1, {})
     vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
     local width = 78
 
-    -- Highlight headings in :help docs.
+    -- Highlight headings in markdown docs.
     ts_traverse(0, function(node, name, startline, endline, text)
-      local hlgroup = name == 'h1' and 'MyH1' or 'MyH2'
-      if name == 'h3' then
+      local hlgroup = 'MyH2' -- name == 'atx_heading' and 'MyH1' or 'MyH2'
+      if name == 'setext_heading' or name == 'atx_heading' then
         hl_line(0, startline, nil, ns, hlgroup, width)
-      elseif name == 'h1' or name == 'h2' or name == 'h3' then
-        -- hl_line(0, startline, '', ns, nil, width)
-        hl_line(0, startline + 1, nil, ns, hlgroup, width)
+      elseif name == 'setext_h1_underline' or name == 'setext_h2_underline' then
+        hl_line(0, startline, '', ns, 'Normal', width)
       end
     end)
   end
