@@ -237,7 +237,7 @@ augroup config_autocmd
   autocmd!
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
-  autocmd InsertLeave * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
+  autocmd BufHidden * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
 
   " :help restore-cursor
   autocmd BufReadPre * autocmd FileType <buffer> ++once
