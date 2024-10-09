@@ -160,7 +160,7 @@ ghpr() {
 }
 
 ghco() {
-  git checkout refs/pull/upstream/${1}
+  git checkout refs/pull/upstream/${1} || git checkout refs/pull/origin/${1}
 }
 
 ghrebase1() {
