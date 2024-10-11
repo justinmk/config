@@ -288,31 +288,6 @@ set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 " Better `gf`
 set suffixesadd=.java,.cs
 
-function! s:fzf_open_file_at_line(e) abort
-  "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
-  execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
-endfunction
-function! s:fzf_files() abort
-  call fzf#run({
-    \ 'source':'find . -type d \( -name build -o -name .git -o -name venv -o -name .vim-src -o -name buildd -o -name buildr -o -name .deps -o -name .vscode-test -o -name node_modules -o -name .coverage \) -prune -false -o -name "*"',
-    \ 'sink':{f -> execute('edit '..f)}})
-endfunction
-function! s:fzf_search_fulltext() abort
-  call fzf#run({
-    \ 'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
-    \ 'sink':function('<sid>fzf_open_file_at_line')})
-endfunction
-
-" Search current-working-directory _or_ current-file-directory
-nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>call <SID>fzf_files()<CR>'
-" Search MRU files
-nnoremap <silent>       <M-\> :FzHistory<cr>
-nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzLines<CR>' : ':<C-U>FzBuffers<CR>'
-
-nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
-nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
-
-
 set title
 set titlestring=%{getpid().':'.getcwd()}
 

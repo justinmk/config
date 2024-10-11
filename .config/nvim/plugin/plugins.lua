@@ -82,7 +82,7 @@ require 'paq' {
   'https://github.com/inkarkat/vim-mark',
 
   'junegunn/fzf',
-  'junegunn/fzf.vim',
+  'https://github.com/ibhagwan/fzf-lua',
 
   'tpope/vim-projectionist',
 
@@ -202,8 +202,6 @@ vim.cmd([[
   nnoremap <c-q> :Repl<CR>
 ]])
 
-vim.g.fzf_command_prefix = 'Fz'
-
 vim.api.nvim_set_var('projectionist_heuristics', {
     ['package.json'] = {
       ['package.json'] = {['alternate'] = {'package-lock.json'}},
@@ -230,15 +228,16 @@ vim.cmd([[
 
 local function on_attach(client, bufnr)
   vim.cmd([[
-  nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<cr>
-  nnoremap <buffer> gK <cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>
+  nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
+  nnoremap <buffer> gK  <cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>
   " Get diagnostics only for current buffer (one client):
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
   nnoremap <buffer> grq <cmd>lua vim.diagnostic.setqflist()<cr>
-  nnoremap <buffer> gO <cmd>lua vim.lsp.buf.document_symbol()<cr>
-  nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<cr>
-  nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<cr>
+  nnoremap <buffer> gO  <cmd>FzfLua lsp_document_symbols<cr>
+  nnoremap <buffer> gr/ <cmd>FzfLua lsp_workspace_symbols<cr>
+  nnoremap <buffer> gd  <cmd>lua vim.lsp.buf.definition()<cr>
+  nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
   ]])
 end
 
@@ -326,15 +325,15 @@ local function set_esc_keymap()
     local chan = parent_chan()
     if not chan then return end
     -- Unmap <Esc> in the parent so it gets sent to the child (this) Nvim.
-    local esc_mapdict = vim.fn.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg('<Esc>', 't', false, true)]], {})
+    local esc_mapdict = vim.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg('<Esc>', 't', false, true)]], {})
     if esc_mapdict.rhs == [[<C-\><C-N>]] then
-      vim.fn.rpcrequest(chan, 'nvim_exec_lua', [=[vim.cmd('tunmap <buffer> <Esc>')]=], {})
+      vim.rpcrequest(chan, 'nvim_exec_lua', [=[vim.cmd('tunmap <buffer> <Esc>')]=], {})
       vim.fn.chanclose(chan)
       vim.api.nvim_create_autocmd({'VimLeave'}, { callback = function()
         chan = parent_chan()
         if not chan then return end
         -- Restore the <Esc> mapping on VimLeave.
-        vim.fn.rpcrequest(chan, 'nvim_exec_lua', [=[
+        vim.rpcrequest(chan, 'nvim_exec_lua', [=[
           local esc_mapdict = ...
           vim.fn.mapset('t', false, esc_mapdict)
         ]=], {esc_mapdict})
@@ -344,10 +343,33 @@ local function set_esc_keymap()
   end
 end
 
+local function setup_fzf()
+  -- Search full-text or filenames.
+  -- TODO: ignore dirs: build .git venv .vim-src .deps .vscode-test node_modules .coverage
+  vim.keymap.set('n', '<M-/>', function()
+    if vim.v.count == 0 then
+      vim.cmd 'FzfLua files'
+      return
+    end
+    require'fzf-lua'.live_grep({
+      cmd = 'git grep --line-number --column --color=always -v "^[[:space:]]*$"'
+    })
+  end)
+
+  vim.cmd[=[
+    " Search MRU files
+    nnoremap <silent>       <M-\> :FzfLua oldfiles<cr>
+    nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzfLua lines<CR>' : ':<C-U>FzfLua buffers<CR>'
+    nnoremap <silent> gO    :FzfLua btags<cr>
+    nnoremap <silent> gr/   :FzfLua tags<cr>
+  ]=]
+end
+
 if not vim.g.vscode then
   set_esc_keymap()
   idk()
   setup_lua_lsp()
+  setup_fzf()
 end
 
 -- Map ":'<,'>s/" to ":'<,'>s/\%V".

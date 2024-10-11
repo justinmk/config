@@ -9,7 +9,7 @@ vim.cmd[[
   nnoremap <silent> <delete> <Cmd>lua require('vscode-neovim').call('editor.debug.action.toggleBreakpoint')<CR>
    nnoremap <silent> gO <Cmd>lua require('vscode-neovim').call('workbench.action.gotoSymbol')<CR>
   "nnoremap <silent> gO <Cmd>lua require('vscode-neovim').call('outline.focus')<CR>
-  nnoremap <silent> z/ <Cmd>lua require('vscode-neovim').call('workbench.action.showAllSymbols')<CR>
+  nnoremap <silent> gr/ <Cmd>lua require('vscode-neovim').call('workbench.action.showAllSymbols')<CR>
   nnoremap <silent> - <Cmd>lua require('vscode-neovim').call('workbench.files.action.showActiveFileInExplorer')<CR>
   nnoremap <silent> <c-b> <Cmd>lua require('vscode-neovim').call('workbench.action.showAllEditorsByMostRecentlyUsed')<CR>
   nnoremap <silent> <c-n> <Cmd>lua require('vscode-neovim').call('workbench.action.editor.nextChange')<CR>
