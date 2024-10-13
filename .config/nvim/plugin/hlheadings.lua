@@ -38,11 +38,12 @@ end
 
 --- Overlays a highlight on a line.
 --- HACK: copies the line text into a virt_text overlay.
-local function hl_line(bufnr, linenr, text, ns, hlgroup, width)
-  local line = text and text or vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)[1]
-  local linelen = vim.fn.strdisplaywidth(line)
+local function hl_line(bufnr, linenr, hide, ns, hlgroup, minlen)
+  local line = vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)[1]
+  local len = vim.fn.strdisplaywidth(line)
+  local pad_len = math.max(minlen and 0 or len, (minlen or 0) - len)
   vim.api.nvim_buf_set_extmark(bufnr, ns, linenr, 0, {
-      virt_text = {{ line .. (' '):rep(math.max(0, width - linelen)), hlgroup }},
+      virt_text = {{ (hide and '' or line) .. (' '):rep(pad_len), hlgroup }},
       virt_text_pos = 'overlay',
       hl_mode = 'combine',
   })
@@ -60,15 +61,15 @@ vim.api.nvim_create_autocmd({'FileType'}, {
     -- vim.cmd[[hi clear @markup.heading.2.delimiter.vimdoc]]
     -- local curmarks = vim.api.nvim_buf_get_extmarks(0, vim.api.nvim_create_namespace('my_heading_highlight'), 0, -1, {})
     vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
-    local width = 78
+    local minlen = 78
 
     -- Highlight headings in markdown docs.
     ts_traverse(0, function(node, name, startline, endline, text)
       local hlgroup = 'MyH2' -- name == 'atx_heading' and 'MyH1' or 'MyH2'
       if name == 'setext_heading' or name == 'atx_heading' then
-        hl_line(0, startline, nil, ns, hlgroup, width)
-      elseif name == 'setext_h1_underline' or name == 'setext_h2_underline' then
-        hl_line(0, startline, '', ns, 'Normal', width)
+        hl_line(0, startline, false, ns, hlgroup, minlen)
+      -- elseif name == 'setext_h1_underline' or name == 'setext_h2_underline' then
+      --   hl_line(0, startline, true, ns, 'Normal')
       end
     end)
   end
