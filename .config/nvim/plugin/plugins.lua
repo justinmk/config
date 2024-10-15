@@ -229,7 +229,7 @@ vim.cmd([[
 local function on_attach(client, bufnr)
   vim.cmd([[
   nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
-  nnoremap <buffer> gK  <cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>
+  nnoremap <buffer> gK  <cmd>lua if vim.v.count > 0 then vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) else vim.diagnostic.open_float() end<cr>
   " Get diagnostics only for current buffer (one client):
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
