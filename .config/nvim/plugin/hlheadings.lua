@@ -40,6 +40,9 @@ end
 --- HACK: copies the line text into a virt_text overlay.
 local function hl_line(bufnr, linenr, hide, ns, hlgroup, minlen)
   local line = vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)[1]
+  if not line then
+    return
+  end
   local len = vim.fn.strdisplaywidth(line)
   local pad_len = math.max(minlen and 0 or len, (minlen or 0) - len)
   vim.api.nvim_buf_set_extmark(bufnr, ns, linenr, 0, {
