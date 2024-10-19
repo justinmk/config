@@ -14,6 +14,9 @@
 require 'paq' {
   'savq/paq-nvim', -- Let Paq manage itself
 
+  -- Minimal, yet aesthetic, "screencast" tool.
+  {'https://github.com/NvChad/showkeys', opt=true},
+
   'justinmk/vim-printf',
 
   -- Hint: to open files start with "+" or "-" from the terminal, prefix them with "./".
