@@ -247,7 +247,7 @@ augroup config_autocmd
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if expand('<afile>:t') !=# 'CMakeLists.txt' | setf text | endif
 
-  autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='Visual', timeout=300}
+  autocmd TextYankPost * silent! lua vim.hl.on_yank {higroup='Visual', timeout=300}
 
   " autocmd VimEnter * if !empty($NVIM)
   "       \ |let g:r=jobstart(['nc', '-U', $NVIM],{'rpc':v:true})

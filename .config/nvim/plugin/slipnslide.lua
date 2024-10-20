@@ -1,4 +1,5 @@
 -- TODO: use this instead?: https://github.com/sotte/presenting.nvim
+-- TODO: https://github.com/3rd/image.nvim (hack it to use imagemagick cli instead of ffi)
 
 vim.cmd[[
 func! s:slides_hl() abort
