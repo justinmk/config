@@ -7,10 +7,12 @@ func! s:slides_hl() abort
   if hlID('SlidesHide') == 0
     " use folds instead of highlight
   else
-    exe 'match SlidesHide /\%>'.(line('w0')-1).'l\n=\{20}=*\n\_.\{-}\zs\n.*\n=\{20}=\_.*/'
+    exe 'match SlidesHide /\%>'.(line('w0')-1).'l\n\(#[^#]\|==\)[^\n]*\n\_.\{-}\zs\n.*\n\(#[^#]\|==\)\+\_.*/'
   endif
 endfunc
 func! Slides(...) abort
+  call SlidesEnd()
+
   let editing = !!a:0
   if editing
     setlocal colorcolumn=54,67 textwidth=53
@@ -27,11 +29,15 @@ func! Slides(...) abort
   " Hide slides before/after the current one.
   exe 'hi SlidesHide ctermbg='..bg..' ctermfg='..bg..' cterm=nocombine guibg=bg guifg=bg gui=nocombine'
 
-  nnoremap <buffer><silent> <Right> :keeppatterns /^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
-  nnoremap <buffer><silent> <Left>   :keeppatterns ?^======<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <buffer><silent> <Right> :keeppatterns /\v^(#[^#]<bar>\=\=+)<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  nnoremap <buffer><silent> <Left>   :keeppatterns ?\v^(#[^#]<bar>\=\=+)<CR>zt<C-Y>:call <SID>slides_hl()<CR>
+  let old_ctrl_l = substitute(maparg('<c-l>', 'n', 0), '|', '<bar>', 'g')
+  exe "nnoremap <buffer><silent><expr> <C-L> ':call clearmatches()<cr>'.."..old_ctrl_l
 endf
 func! SlidesEnd() abort
   call clearmatches()
   mapclear <buffer>
 endf
+
+command! -nargs=? Slides call Slides()
 ]]

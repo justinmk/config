@@ -40,8 +40,6 @@ if !&termguicolors
   highlight CursorLine ctermbg=235
   highlight Comment ctermfg=gray
 endif
-highlight Search guibg=NvimDarkCyan guifg=White ctermbg=DarkCyan ctermfg=White
-highlight CurSearch guibg=NvimLightCyan guifg=Black ctermbg=Cyan ctermfg=Black
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada

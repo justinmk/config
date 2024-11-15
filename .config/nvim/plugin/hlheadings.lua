@@ -44,6 +44,8 @@ local function hl_line(bufnr, linenr, hide, ns, hlgroup, minlen)
     return
   end
   local len = vim.fn.strdisplaywidth(line)
+  -- Scrub markup chars.
+  line = line:gsub('^%s*[#]+', ' ')
   local pad_len = math.max(minlen and 0 or len, (minlen or 0) - len)
   vim.api.nvim_buf_set_extmark(bufnr, ns, linenr, 0, {
       virt_text = {{ (hide and '' or line) .. (' '):rep(pad_len), hlgroup }},
@@ -53,8 +55,16 @@ local function hl_line(bufnr, linenr, hide, ns, hlgroup, minlen)
 end
 
 local ns = vim.api.nvim_create_namespace('my_heading_highlight')
-vim.cmd[[hi MyH1 ctermbg=DarkGrey guisp=fg guibg=#3b3b3b]] -- cterm=underdouble gui=underdouble guisp=fg
-vim.cmd[[hi MyH2 ctermbg=DarkGrey guisp=fg guibg=#3a3a3a]] -- cterm=underdouble gui=underdouble guisp=fg
+vim.cmd[[
+  autocmd VimEnter,OptionSet background if v:option_new ==# 'dark'
+    \| hi MyH1 ctermfg=white ctermbg=DarkGrey guisp=fg guifg=white guibg=#3b3b3b
+    \| hi MyH2 ctermfg=white ctermbg=DarkGrey guisp=fg guifg=white guibg=#3a3a3a
+    \| else
+    \| hi MyH1 ctermfg=black ctermbg=LightGrey guisp=fg guifg=black guibg=LightGrey
+    \| hi MyH2 ctermfg=black ctermbg=LightGrey guisp=fg guifg=black guibg=LightGrey
+    \| endif
+  hi MyH1 ctermfg=white ctermbg=DarkGrey guisp=fg guifg=white guibg=#3b3b3b
+]] -- cterm=underdouble gui=underdouble guisp=fg
 
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = 'markdown',
