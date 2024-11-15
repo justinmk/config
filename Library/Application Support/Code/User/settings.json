@@ -77,6 +77,7 @@
         "**/.factorypath": true
     },
     "search.exclude": {
+        "**/.vscode-test-web/": true,
         "**/.vscode-test/": true,
         "**/aws-sam-cli-src/": true,
         "**/testFixtures/workspaceFolder/": true

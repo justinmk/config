@@ -301,7 +301,6 @@ nnoremap <leader>vr   :Vimref<cr>
 "   - g={motion} / g!{motion}
 "   - :PP (pretty print expression)
 nnoremap <leader>vs   :caddexpr join(map(split(execute('scriptnames'), '\n'), {k,v->matchstr(v,':\s*\zs.*')..':1: '}),"\n")<bar>copen<cr>
-nnoremap zS <cmd>Inspect<cr>
 command! -addr=other -range=-1 -nargs=? -complete=command Time exe TimeCommand(<q-args>, <count>)
 function! TimeCommand(cmd, count) abort
   let time = reltime()

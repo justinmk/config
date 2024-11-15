@@ -1,5 +1,8 @@
 setlocal shiftwidth=4
 
+" Nvim 0.10 URL tokens + treesitter!
+nnoremap <buffer> <silent> z<Tab> <cmd>exe 'setlocal ' (&conceallevel ? 'conceallevel=0 concealcursor=' : 'conceallevel=2 concealcursor=nv')<cr>
+
 " URL/footnote macro
 nnoremap <buffer> <leader>fn "fyiWmfGo[f]: <Esc>`fyiwi[<Esc>ebEa]<Esc>b
 
