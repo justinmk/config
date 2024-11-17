@@ -1,3 +1,7 @@
+local M = {}
+
+local ns = vim.api.nvim_create_namespace('my_heading_highlight')
+
 ---@return integer,integer,string
 local function getbufline(node, bufnr, offset)
   offset = offset or 0
@@ -27,7 +31,7 @@ end
 
 --- Traverses all treesitter trees in the given buffer.
 ---
----@param fn fun(node, name, startline, endline, text)
+---@param fn fun(node: table, name: string, startline: integer, endline: integer, text: string)
 local function ts_traverse(bufnr, fn)
   local lang_tree = assert(vim.treesitter.get_parser(bufnr, nil, { error = false }))
   for _, tree in ipairs(lang_tree:trees()) do
@@ -43,9 +47,9 @@ local function hl_line(bufnr, linenr, hide, ns, hlgroup, minlen)
   if not line then
     return
   end
-  local len = vim.fn.strdisplaywidth(line)
   -- Scrub markup chars.
-  line = line:gsub('^%s*[#]+', ' ')
+  line = line:gsub('^%s*[#]+', ''):gsub('%s*$', '')
+  local len = vim.fn.strdisplaywidth(line)
   local pad_len = math.max(minlen and 0 or len, (minlen or 0) - len)
   vim.api.nvim_buf_set_extmark(bufnr, ns, linenr, 0, {
       virt_text = {{ (hide and '' or line) .. (' '):rep(pad_len), hlgroup }},
@@ -54,7 +58,41 @@ local function hl_line(bufnr, linenr, hide, ns, hlgroup, minlen)
   })
 end
 
-local ns = vim.api.nvim_create_namespace('my_heading_highlight')
+local function clear()
+  vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+end
+
+function _G.hlheadings_do_hl()
+  -- vim.cmd[[hi clear @markup.heading.1.delimiter.vimdoc]]
+  -- vim.cmd[[hi clear @markup.heading.2.delimiter.vimdoc]]
+  clear()
+  local minlen = 300
+
+  local curline = vim.fn.line('.')
+  local did_h1 = false
+  local stop = false
+
+  -- Highlight headings in markdown docs.
+  ts_traverse(0, function(node, name, startline, endline, text)
+    local hlgroup = 'MyH2' -- name == 'atx_heading' and 'MyH1' or 'MyH2'
+    local at_or_below_cursor = startline + 1 >= curline
+    if stop then
+      return
+    end
+    if at_or_below_cursor and did_h1 and name == 'atx_h1_marker' then
+      stop = true
+    end
+    if at_or_below_cursor and name == 'atx_h1_marker' then
+      did_h1 = true
+    end
+    if name == 'setext_heading' or name == 'atx_heading' then
+      hl_line(0, startline, false, ns, hlgroup, minlen)
+    -- elseif name == 'setext_h1_underline' or name == 'setext_h2_underline' then
+    --   hl_line(0, startline, true, ns, 'Normal')
+    end
+  end)
+end
+
 vim.cmd[[
   autocmd VimEnter,OptionSet background if v:option_new ==# 'dark'
     \| hi MyH1 ctermfg=white ctermbg=DarkGrey guisp=fg guifg=white guibg=#3b3b3b
@@ -69,21 +107,13 @@ vim.cmd[[
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = 'markdown',
   group = vim.api.nvim_create_augroup('config_helpheadings', { clear=true }),
-  callback = function(ev)
-    -- vim.cmd[[hi clear @markup.heading.1.delimiter.vimdoc]]
-    -- vim.cmd[[hi clear @markup.heading.2.delimiter.vimdoc]]
-    -- local curmarks = vim.api.nvim_buf_get_extmarks(0, vim.api.nvim_create_namespace('my_heading_highlight'), 0, -1, {})
-    vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
-    local minlen = 78
-
-    -- Highlight headings in markdown docs.
-    ts_traverse(0, function(node, name, startline, endline, text)
-      local hlgroup = 'MyH2' -- name == 'atx_heading' and 'MyH1' or 'MyH2'
-      if name == 'setext_heading' or name == 'atx_heading' then
-        hl_line(0, startline, false, ns, hlgroup, minlen)
-      -- elseif name == 'setext_h1_underline' or name == 'setext_h2_underline' then
-      --   hl_line(0, startline, true, ns, 'Normal')
-      end
-    end)
-  end
+  callback = function()
+    if vim.wo.diff then
+      clear()
+    else
+      _G.hlheadings_do_hl()
+    end
+  end,
 })
+
+return M
