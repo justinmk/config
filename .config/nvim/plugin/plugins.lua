@@ -44,6 +44,8 @@ require 'paq' {
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
+  'https://github.com/daliusd/ghlite.nvim',
+  'https://github.com/lewis6991/gitsigns.nvim',
 
   'tpope/vim-surround',
 
@@ -96,7 +98,6 @@ require 'paq' {
   -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
 
   'https://github.com/lewis6991/satellite.nvim',
-  'https://github.com/lewis6991/gitsigns.nvim',
 }
 
 vim.api.nvim_create_autocmd({'UIEnter'}, {
@@ -276,6 +277,7 @@ local function idk()
     }
   }
 
+  require('ghlite').setup{}
   require('gitsigns').setup{
     signs_staged_enable = false
   }
