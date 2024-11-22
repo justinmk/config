@@ -16,11 +16,11 @@ endfun
 "   - redraw
 "   - clear 'hlsearch'
 "   - update the current diff (if any)
-" Use {count}<C-L> to:
-"   - reload (:edit) the current buffer (TODO: ":lockmarks edit" doesn't preserve '[ '] marks)
-nnoremap <silent><expr> <C-L> (v:count ? ':<C-U>:edit<CR>' : '')
-      \ . ':nohlsearch'.(has('diff')?'\|diffupdate':'')
-      \ . '<CR><C-L>'
+" Use {count}<C-L> to also:
+"   - clear all extmark namespaces
+nnoremap <silent><expr> <C-L> (v:count ? '<cmd>call nvim_buf_clear_namespace(0,-1,0,-1)<cr>' : '')
+      \ .. ':nohlsearch'.(has('diff')?'\|diffupdate':'')
+      \ .. '<CR><C-L>'
 
 command! Session if filereadable(stdpath('config').'/session.vim') | exe 'source '.stdpath('config').'/session.vim'
       \ | else | exe 'Obsession '.stdpath('config').'/session.vim' | endif
