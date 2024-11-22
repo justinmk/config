@@ -3,7 +3,6 @@
 -- lldb plugin
 --    1. set breakpoints...
 --        vim.diagnostic.set()({namespace}, {bufnr}, {diagnostics}, {opts})
---    
 --    2. write breakpoints to a lldbinit file
 --    3. start nvim server in new tmux window:
 --       :Start! lldb --source lldbinit --one-line run -- ~/dev/neovim/build/bin/nvim --headless --listen ~/.cache/nvim/debug-server.pipe
@@ -432,6 +431,16 @@ local function _config()
   end
 
   vim.go.tabline='%!v:lua._vimrc.tabline()'
+
+  -- credit: gpanders, #30415
+  vim.api.nvim_create_user_command('TermHl', function()
+    local b = vim.api.nvim_create_buf(false, true)
+    local chan = vim.api.nvim_open_term(b, {})
+    vim.api.nvim_chan_send(chan, table.concat(
+      vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n')
+    )
+    vim.api.nvim_win_set_buf(0, b)
+  end, { desc = 'Highlights ANSI termcodes in curbuf' })
 end
 
 _config()
