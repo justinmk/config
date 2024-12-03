@@ -348,6 +348,7 @@ local function set_esc_keymap()
 end
 
 local function setup_fzf()
+  require('fzf-lua').setup({ fzf_colors = true })
   -- Search full-text or filenames.
   -- TODO: ignore dirs: build .git venv .vim-src .deps .vscode-test node_modules .coverage
   vim.keymap.set('n', '<M-/>', function()

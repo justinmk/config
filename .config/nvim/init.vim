@@ -279,7 +279,7 @@ nnoremap \c   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
 " autocomplete / omnicomplete / tags
 " =============================================================================
 set dictionary+=/usr/share/dict/words
-set completeopt-=preview
+set completeopt=menuone,noselect,noinsert,fuzzy
 set complete+=f,kspell
 set wildignore+=tags,gwt-unitCache/*,*/__pycache__/*,build/*,build.?/*,*/node_modules/*
 " Files with these suffixes get a lower priority when matching a wildcard
