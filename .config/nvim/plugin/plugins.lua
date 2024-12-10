@@ -16,7 +16,7 @@ require 'paq' {
   -- Minimal, yet aesthetic, "screencast" tool.
   {'https://github.com/NvChad/showkeys', opt=true},
 
-  'justinmk/vim-printf',
+  'https://github.com/Goose97/timber.nvim',
 
   -- Hint: to open files start with "+" or "-" from the terminal, prefix them with "./".
   --    nvim ./-foo
@@ -462,6 +462,18 @@ local function _config()
     )
     vim.api.nvim_win_set_buf(0, b)
   end, { desc = 'Highlights ANSI termcodes in curbuf' })
+
+  -- printf/log util
+  require('timber').setup({
+    log_templates = {
+      default = {
+        lua = [[print(string.format('%watcher_marker_start %%s %watcher_marker_end', %log_target))]]
+      }
+    }
+  })
+  vim.keymap.set({ 'n' }, 'dpj', function()
+    require('timber.actions').insert_log({ position = 'below' })
+  end)
 end
 
 _config()

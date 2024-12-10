@@ -106,6 +106,5 @@ xmap UX Ux
 "linewise partial staging in visual-mode.
 xnoremap <c-p> :diffput<cr>
 xnoremap <c-o> :diffget<cr>
-nnoremap <expr> dp &diff ? 'dp' : ':Printf<cr>'
 ]=]
 
