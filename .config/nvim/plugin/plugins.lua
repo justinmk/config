@@ -229,6 +229,21 @@ vim.cmd([[
   runtime! plugin/rsi.vim
 ]])
 
+-- xxx
+local function idk()
+  require('satellite').setup()
+  require('mini.completion').setup({})
+
+  require('ghlite').setup{}
+  require('gitsigns').setup{
+    signs_staged_enable = false
+  }
+  vim.cmd([[
+    hi! link GitSignsChange Normal
+  ]])
+
+end
+
 local function on_attach(client, bufnr)
   vim.cmd([[
   nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
@@ -244,19 +259,7 @@ local function on_attach(client, bufnr)
   ]])
 end
 
--- xxx
-local function idk()
-  require('satellite').setup()
-  require('mini.completion').setup({})
-
-  require'lspconfig'.clangd.setup{
-    cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
-    on_attach = on_attach,
-    on_exit = function(...)
-      require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
-    end,
-  }
-
+local function config_lsp()
   local function organize_imports()
     local params = {
       command = '_typescript.organizeImports',
@@ -265,35 +268,42 @@ local function idk()
     }
     vim.lsp.buf.execute_command(params)
   end
-  require'lspconfig'.ts_ls.setup{
-    on_attach = on_attach,
-    -- capabilities = capabilities,
-    commands = {
-      OrganizeImports = {
-        organize_imports,
-        description = 'Organize Imports'
-      }
-    }
-  }
+  vim.lsp.config('ts_ls', {
+    on_attach = function()
+      on_attach()
+      vim.api.nvim_buf_create_user_command(0, 'LspTSOrganizeImports', organize_imports, {})
+    end,
+    init_options = { hostInfo = 'neovim' },
+    cmd = { 'typescript-language-server', '--stdio' },
+    filetypes = {
+      'javascript',
+      'javascriptreact',
+      'javascript.jsx',
+      'typescript',
+      'typescriptreact',
+      'typescript.tsx',
+    },
+    root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git', },
+  })
+  vim.lsp.enable('ts_ls')
 
-  require('ghlite').setup{}
-  require('gitsigns').setup{
-    signs_staged_enable = false
-  }
-  vim.cmd([[
-    hi! link GitSignsChange Normal
-  ]])
-
-end
-
-local function setup_lua_lsp()
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
   table.insert(runtime_path, 'lua/?/init.lua')
-
-  require'lspconfig'.lua_ls.setup {
-    cmd = {'lua-language-server'};
+  vim.lsp.config('luals', {
+    cmd = { 'lua-language-server' },
     on_attach = on_attach,
+    filetypes = { 'lua' },
+    root_markers = {
+      '.luarc.json',
+      '.luarc.jsonc',
+      '.luacheckrc',
+      '.stylua.toml',
+      'stylua.toml',
+      'selene.toml',
+      'selene.yml',
+      '.git',
+    },
     settings = {
       Lua = {
         runtime = {
@@ -316,7 +326,17 @@ local function setup_lua_lsp()
         },
       },
     },
+  })
+  vim.lsp.enable('luals')
+
+  require'lspconfig'.clangd.setup{
+    cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
+    on_attach = on_attach,
+    on_exit = function(...)
+      require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
+    end,
   }
+
 end
 
 local function set_esc_keymap()
@@ -373,7 +393,7 @@ end
 if not vim.g.vscode then
   set_esc_keymap()
   idk()
-  setup_lua_lsp()
+  config_lsp()
   setup_fzf()
 end
 
