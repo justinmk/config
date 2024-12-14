@@ -63,8 +63,8 @@ xnoremap          Ub              :G blame<cr>
 " Blame "name":
 nnoremap          Un              <cmd>Gitsigns blame_line<cr>
 
-" Commit using the last commit-message.
-nnoremap          Uc              :G commit --edit -m <c-r>=shellescape(FugitiveExecute(['log', '-1', '--format=%s', '--', FugitivePath()]).stdout[0])<cr><cr>
+" Commit using the current file's most-recent commit-message.
+nnoremap <expr>   Uc              '@_:G commit '..(v:count ? '--no-verify' : '')..' --edit -m '..shellescape(FugitiveExecute(['log', '-1', '--format=%s', '--', FugitivePath()]).stdout[0])..'<cr>'
 nnoremap <silent> Ud              :<C-U>if &diff<bar>diffupdate<bar>elseif !v:count && empty(FugitiveExecute(['diff', '--', FugitivePath()]))<bar>echo 'no changes'<bar>else<bar>exe 'Gvdiffsplit'.(v:count ? ' HEAD'.repeat('^', v:count) : '')<bar>call feedkeys('<c-v><c-l>')<bar>endif<cr>
 nnoremap <silent> Ue              :Gedit<cr>
 nnoremap          Uf              :G show <c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr><cr><c-w><c-w>:G commit --fixup=<c-r>=FugitiveExecute(['log', '-1', '--format=%h', '--', FugitivePath()]).stdout[0]<cr>
