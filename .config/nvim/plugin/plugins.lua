@@ -434,8 +434,9 @@ local function _config()
   _G._vimrc.tablabel = function(n)
     local buflist = vim.fn.tabpagebuflist(n)
     local winnr = vim.fn.tabpagewinnr(n)
-    local name = vim.fn.fnamemodify(vim.fn.bufname(buflist[winnr]), ':t')
-    _G.foo = name
+    local bufname = vim.fn.bufname(buflist[winnr])
+    local isdir = bufname:sub(#bufname) == '/'
+    local name = vim.fn.fnamemodify(bufname, isdir and ':h:t' or ':t') .. (isdir and '/' or '')
     name = name:len() > 20 and name:sub(1, 20) .. '…' or name
     return name == '' and 'No Name' or ' ' .. name
   end

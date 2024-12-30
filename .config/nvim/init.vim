@@ -133,7 +133,7 @@ cnoremap <expr> <BS> (getcmdtype() =~ '[/?]' && getcmdline() == '') ? '\v^(()@!.
 " Hit space to match multiline whitespace.
 cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
 " //: "Search within visual selection".
-cnoremap <expr> / (mode() =~# "[vV\<C-v>]" && getcmdtype() =~ '[/?]' && getcmdline() == '') ? "\<C-c>\<Esc>/\\%V" : '/'
+cnoremap <expr> / (getcmdtype() =~ '[/?]' && getcmdline() == '') ? "\<C-c>\<Esc>/\\%V" : '/'
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
