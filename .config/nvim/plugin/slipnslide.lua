@@ -96,7 +96,7 @@ function _G.show_cur_slide()
     ]=]
   end
 
-  hlheadings_do_hl()
+  vim.cmd[[doautocmd FileType]] -- Trigger hlheadings.lua:hlheadings_do_hl().
   require'img'.clear_all()
   try_show_img()
 end

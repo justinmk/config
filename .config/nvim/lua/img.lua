@@ -158,7 +158,7 @@ function M.clear_all(proto)
 end
 
 M.clear_all()
-M.show({ filename = vim.fn.expand('~/notes/talks/img/mtg-homunculus.png') })
+-- M.show({ filename = vim.fn.expand('~/notes/talks/img/mtg-homunculus.png') })
 -- write(CODES.ESC .. '[2J')
 
 return M
