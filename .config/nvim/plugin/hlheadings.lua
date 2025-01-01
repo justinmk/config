@@ -1,6 +1,7 @@
 local M = {}
 
-local ns = vim.api.nvim_create_namespace('my_heading_highlight')
+local ns = vim.api.nvim_create_namespace('my.hlheadings.hl')
+local event_ns = vim.api.nvim_create_augroup('my.hlheadings', { clear=true })
 
 ---@return integer,integer,string
 local function getbufline(node, bufnr, offset)
@@ -62,7 +63,7 @@ local function clear()
   vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
 end
 
-function _G.hlheadings_do_hl()
+local function hlheadings_do_hl()
   -- vim.cmd[[hi clear @markup.heading.1.delimiter.vimdoc]]
   -- vim.cmd[[hi clear @markup.heading.2.delimiter.vimdoc]]
   clear()
@@ -106,13 +107,27 @@ vim.cmd[[
 
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = 'markdown',
-  group = vim.api.nvim_create_augroup('config_helpheadings', { clear=true }),
+  group = event_ns,
   callback = function()
     if vim.wo.diff then
       clear()
     else
-      _G.hlheadings_do_hl()
+      hlheadings_do_hl()
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd({'InsertEnter'}, {
+  group = event_ns,
+  callback = function()
+    clear()
+  end,
+})
+
+vim.api.nvim_create_autocmd({'InsertLeave'}, {
+  group = event_ns,
+  callback = function()
+    hlheadings_do_hl()
   end,
 })
 
