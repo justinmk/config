@@ -114,20 +114,25 @@ vim.api.nvim_create_autocmd({'FileType'}, {
     else
       hlheadings_do_hl()
     end
-  end,
-})
 
-vim.api.nvim_create_autocmd({'InsertEnter'}, {
-  group = event_ns,
-  callback = function()
-    clear()
-  end,
-})
+    if vim.b.did_hlheadings then
+      return
+    end
 
-vim.api.nvim_create_autocmd({'InsertLeave'}, {
-  group = event_ns,
-  callback = function()
-    hlheadings_do_hl()
+    vim.api.nvim_create_autocmd({'InsertEnter'}, {
+      buffer = 0,
+      callback = function()
+        clear()
+      end,
+    })
+    vim.api.nvim_create_autocmd({'InsertLeave'}, {
+      buffer = 0,
+      callback = function()
+        hlheadings_do_hl()
+      end,
+    })
+
+    vim.b.did_hlheadings = true
   end,
 })
 
