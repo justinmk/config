@@ -35,7 +35,6 @@ set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 
 " theme/colorscheme
-highlight TabLineSel guibg=bg guifg=NvimLightGray1
 if !&termguicolors
   highlight SpellBad guibg=Red guifg=White
   highlight CursorLine ctermbg=235
