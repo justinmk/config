@@ -57,6 +57,7 @@ au UIEnter * set guifont=Menlo:h20
 " Set softtabstop=-1 to mirror 'shiftwidth'.
 set expandtab shiftwidth=2 softtabstop=-1
 autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
+set listchars+=trail:⣿
 set list
 
 let g:mapleader = "z,"

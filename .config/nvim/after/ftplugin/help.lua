@@ -1,7 +1,6 @@
 -- execute/evaluate
 vim.cmd[[
   nnoremap <buffer>         yxal    :Runtime<cr>
-  nnoremap <silent><buffer> yxx     :keeppatterns          .g/^/exe getline('.')<CR>
   xnoremap <silent><buffer> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 
   " Justify a line, using cursor position as the midpoint.

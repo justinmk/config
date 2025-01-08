@@ -78,6 +78,7 @@ require 'paq' {
   -- Provides `require('tsht').nodes()`.
   'https://github.com/mfussenegger/nvim-treehopper',
   -- TODO:
+  -- 'https://github.com/mfussenegger/nluarepl',
   -- 'https://github.com/mfussenegger/nvim-overfly',
 
   {'chrisbra/Colorizer', opt=true},
@@ -90,7 +91,6 @@ require 'paq' {
 
   'tpope/vim-projectionist',
 
-  -- use'mfussenegger/nvim-lsp-compl',
   'neovim/nvim-lspconfig',
 
   -- requires nvim-treesitter? :(
@@ -200,7 +200,7 @@ vim.g.salve_auto_start_repl = 1
 
 vim.cmd([[
   nmap yx       <Plug>(ReplSend)
-  nmap yxx      <Plug>(ReplSendLine)
+  "nmap yxx      <Plug>(ReplSendLine)
   xmap <Enter>  <Plug>(ReplSend)
   nnoremap <c-q> :Repl<CR>
 ]])
