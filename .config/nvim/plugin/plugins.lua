@@ -329,14 +329,32 @@ local function config_lsp()
   })
   vim.lsp.enable('luals')
 
-  require'lspconfig'.clangd.setup{
+  vim.lsp.config('clangd', {
     cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
     on_attach = on_attach,
     on_exit = function(...)
       require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
     end,
-  }
-
+    filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
+    root_markers = {
+      '.clangd',
+      '.clang-tidy',
+      '.clang-format',
+      'compile_commands.json',
+      'compile_flags.txt',
+      'configure.ac', -- AutoTools
+      '.git',
+    },
+    capabilities = {
+      textDocument = {
+        completion = {
+          editsNearCursor = true,
+        },
+      },
+      offsetEncoding = { 'utf-8', 'utf-16' },
+    },
+  })
+  vim.lsp.enable('clangd')
 end
 
 local function set_esc_keymap()
