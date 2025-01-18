@@ -358,30 +358,45 @@ local function config_lsp()
 end
 
 local function set_esc_keymap()
-  vim.cmd([[autocmd TermOpen * tnoremap <buffer> <Esc> <C-\><C-N>]])
-  if 1 == vim.fn.exists('$NVIM')  then
+  vim.api.nvim_create_autocmd({'TermOpen'}, { callback = function()
+    vim.keymap.set('t', '<C-[>', [[<C-\><C-N>]], { buffer = 0 })
+    vim.keymap.set('t', '<Esc>', [[<C-\><C-N>]], { buffer = 0 })
+  end, })
+
+  -- :terminal-nested Nvim:
+  if vim.env.NVIM then
     local function parent_chan()
       local ok, chan = pcall(vim.fn.sockconnect, 'pipe', vim.env.NVIM, {rpc=true})
       return ok and chan or nil
     end
     local chan = parent_chan()
-    if not chan then return end
-    -- Unmap <Esc> in the parent so it gets sent to the child (this) Nvim.
-    local esc_mapdict = vim.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg('<Esc>', 't', false, true)]], {})
-    if esc_mapdict.rhs == [[<C-\><C-N>]] then
-      vim.rpcrequest(chan, 'nvim_exec_lua', [=[vim.cmd('tunmap <buffer> <Esc>')]=], {})
-      vim.fn.chanclose(chan)
-      vim.api.nvim_create_autocmd({'VimLeave'}, { callback = function()
-        chan = parent_chan()
-        if not chan then return end
-        -- Restore the <Esc> mapping on VimLeave.
-        vim.rpcrequest(chan, 'nvim_exec_lua', [=[
-          local esc_mapdict = ...
-          vim.fn.mapset('t', false, esc_mapdict)
-        ]=], {esc_mapdict})
-        vim.fn.chanclose(chan)
-      end, })
+    if not chan then
+      return
     end
+
+    local to_restore = {} --- Mappings to restore.
+    local function unmap_parent(lhs)
+      -- Unmap <Esc> and <C-[> in the parent so it gets sent to the child (this) Nvim.
+      local map = vim.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg(..., 't', false, true)]], { lhs }) --[[@as table<string,any>]]
+      if map.rhs == [[<C-\><C-N>]] then
+        vim.rpcrequest(chan, 'nvim_exec_lua', [[vim.keymap.del('t', ..., {buffer=0})]], { lhs })
+      end
+      table.insert(to_restore, map)
+    end
+    unmap_parent('<Esc>')
+    unmap_parent('<C-[>')
+    vim.fn.chanclose(chan)
+
+    -- Restore the mapping(s) on VimLeave.
+    vim.api.nvim_create_autocmd({'VimLeave'}, { callback = function()
+      local chan2 = assert(parent_chan())
+      for _, map in ipairs(to_restore) do
+        vim.rpcrequest(chan2, 'nvim_exec_lua', [=[
+          local map = ...
+          vim.fn.mapset('t', false, map)
+        ]=], {map})
+      end
+    end, })
   end
 end
 
