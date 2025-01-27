@@ -247,7 +247,6 @@ end
 local function on_attach(client, bufnr)
   vim.cmd([[
   nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
-  nnoremap <buffer> gK  <cmd>lua if vim.v.count > 0 then vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) else vim.diagnostic.open_float() end<cr>
   " Get diagnostics only for current buffer (one client):
   " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
   " vim.fn.setqflist(vim.diagnostic.toqflist(d))
@@ -257,6 +256,15 @@ local function on_attach(client, bufnr)
   nnoremap <buffer> gd  <cmd>lua vim.lsp.buf.definition()<cr>
   nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
   ]])
+
+  vim.keymap.set('n', 'gK', function(ev)
+    if vim.v.count > 0 then
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    else
+      -- vim.diagnostic.open_float()
+      vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
+    end
+  end, { buffer = 0, desc = 'Toggle verbose diagnostics. Toggle inlay_hint with [count].' })
 end
 
 local function config_lsp()
