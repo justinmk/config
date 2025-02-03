@@ -1,0 +1,31 @@
+# NOTE: Use lldb from homebrew:
+#     /usr/local/opt/llvm/bin/lldb
+
+# Give ~/bin/*.py precedence in Python path:
+# script import os, sys
+# script sys.path[:0] = [os.path.expanduser('~/bin/')]
+# script import lldb_nvim
+
+# Example "pwd" command that runs Python:
+# command alias pwd script print os.getcwd()
+
+# Nvim
+#
+# Run nvim in separate terminal, then attach to its TUI process:
+# Terminal 1:
+#     VIMRUNTIME=$HOME/dev/neovim/runtime/ ~/dev/neovim/build/bin/nvim --luamod-dev -c "call writefile([nvim_get_proc(getpid()).ppid], expand('~/nvim.ppid'))"
+# Terminal 2:
+#     /usr/local/opt/llvm/bin/lldb --attach-pid "$(cat ~/nvim.ppid)" ; kill "$(cat ~/nvim.ppid)"^C
+#
+# Run nvim when LLDB starts:
+# process launch -X true -- nvim --luamod-dev
+#
+# "runnvim" command
+command script import ~/bin/lldb_nvim.py
+command script add -f lldb_nvim.runnvim runnvim
+
+#
+# breakpoints:
+#
+# breakpoint set --name main
+breakpoint set --name exit_from_channel
