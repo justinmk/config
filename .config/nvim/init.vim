@@ -291,7 +291,7 @@ set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set suffixesadd=.java,.cs
 
 set title
-set titlestring=%{getpid().':'.getcwd()}
+set titlestring=%{fnamemodify(getcwd(),':~')}
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
