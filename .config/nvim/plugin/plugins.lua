@@ -506,15 +506,27 @@ local function _config()
 
   -- printf/log util
   require('timber').setup({
+    default_keymaps_enabled = false,
     log_templates = {
       default = {
-        lua = [[print(string.format('%watcher_marker_start %%s %watcher_marker_end', %log_target))]]
-      }
-    }
+        c = [[ILOG("%watcher_marker_start %s %watcher_marker_end", %log_target);]],
+        lua = [[print(string.format('%watcher_marker_start %%s %watcher_marker_end', %log_target))]],
+     },
+     plain = {
+       c = [[LOG("%insert_cursor");]],
+     },
+    },
+    -- batch_log_templates = {},
   })
-  vim.keymap.set({ 'n' }, 'dpj', function()
-    require('timber.actions').insert_log({ position = 'below' })
+  vim.keymap.set('n', 'dP', function()
+    require('timber.actions').insert_log({
+      position = 'below',
+      template = 'plain',
+    })
   end)
+  vim.keymap.set('n', 'dp', function()
+    return require('timber.actions').insert_log({ operator=true, position = 'below' })
+  end, { expr = true })
 end
 
 _config()
