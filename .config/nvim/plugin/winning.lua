@@ -113,10 +113,10 @@ augroup config_curwin_border
   autocmd VimEnter,WinEnter,TabEnter,BufEnter * setlocal winhighlight-=CursorLine:CursorLineNC
 
   " Highlight curwin WinSeparator/SignColumn for "border" effect.
-  let s:winborder_hl = 'WinSeparator:WinBorder,SignColumn:WinBorder'
-  autocmd WinLeave * exe 'setlocal winhighlight+=CursorLine:CursorLineNC winhighlight-='..s:winborder_hl
-  autocmd WinEnter * if len(s:focusable_wins()) > 1 | exe 'setlocal winhighlight+='..s:winborder_hl | endif
+  "let s:winborder_hl = 'WinSeparator:WinBorder,SignColumn:WinBorder'
+  autocmd WinLeave * exe 'setlocal winhighlight+=CursorLine:CursorLineNC'
+  "autocmd WinEnter * if len(s:focusable_wins()) > 1 | exe 'setlocal winhighlight+='..s:winborder_hl | endif
   " Disable effect if there is only 1 window.
-  autocmd WinResized * if 1 == len(s:focusable_wins()) | exe 'setlocal winhighlight-='..s:winborder_hl | endif
+  "autocmd WinResized * if 1 == len(s:focusable_wins()) | exe 'setlocal winhighlight-='..s:winborder_hl | endif
 augroup END
 ]]
