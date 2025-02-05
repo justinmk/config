@@ -13,9 +13,9 @@
 #
 # Run nvim in separate terminal, then attach to its TUI process:
 # Terminal 1:
-#     VIMRUNTIME=$HOME/dev/neovim/runtime/ ~/dev/neovim/build/bin/nvim --luamod-dev -c "call writefile([nvim_get_proc(getpid()).ppid], expand('~/nvim.ppid'))"
+#     VIMRUNTIME=$HOME/dev/neovim/runtime/ ~/dev/neovim/build/bin/nvim --luamod-dev -c "call writefile([nvim_get_proc(getpid()).ppid], expand('/tmp/nvim.ppid'))"
 # Terminal 2:
-#     /usr/local/opt/llvm/bin/lldb --attach-pid "$(cat ~/nvim.ppid)" ; kill "$(cat ~/nvim.ppid)"^C
+#     /usr/local/opt/llvm/bin/lldb --attach-pid "$(cat /tmp/nvim.ppid)" ; kill "$(cat /tmp/nvim.ppid)"^C
 #
 # Run nvim when LLDB starts:
 # process launch -X true -- nvim --luamod-dev
@@ -28,4 +28,4 @@ command script add -f lldb_nvim.runnvim runnvim
 # breakpoints:
 #
 # breakpoint set --name main
-breakpoint set --name exit_from_channel
+breakpoint set --name exit_by_closed_chan
