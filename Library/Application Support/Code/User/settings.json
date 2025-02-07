@@ -16,49 +16,6 @@
     },
     "explorer.confirmDelete": false,
     "explorer.autoReveal": false,
-    "gitlens.showWhatsNewAfterUpgrades": false,
-    "gitlens.showWelcomeOnInstall": false,
-    "gitlens.plusFeatures.enabled": false,
-    "gitlens.codeLens.enabled": false,
-    "gitlens.menus": {
-        "editor": {
-            "blame": false,
-            "clipboard": false,
-            "compare": false,
-            "details": false,
-            "history": false,
-            "remote": false
-        },
-        "editorGroup": {
-            "blame": false,
-            "compare": false
-        },
-        "editorTab": {
-            "clipboard": false,
-            "compare": false,
-            "history": false,
-            "remote": false
-        },
-        "explorer": {
-            "clipboard": false,
-            "compare": false,
-            "history": false,
-            "remote": false
-        },
-        "scmGroup": {
-            "compare": false,
-            "openClose": false,
-            "stash": false,
-            "stashInline": false
-        },
-        "scmItem": {
-            "clipboard": false,
-            "compare": false,
-            "history": false,
-            "remote": false,
-            "stash": false
-        }
-    },
     "editor.tokenColorCustomizations": {
         "comments": "#9f9f9f"
     },

@@ -17,5 +17,7 @@ vim.cmd[[
 
   nnoremap <silent> UD <Cmd>lua require('vscode-neovim').call('git.openChange')<CR>
   nnoremap <silent> UW <Cmd>lua require('vscode-neovim').call('git.stage')<CR>
-  nnoremap <silent> UB <Cmd>lua require('vscode-neovim').call('gitlens.toggleFileBlame')<CR>
+  nnoremap <silent> UB <Cmd>lua require('vscode-neovim').call('git.blame.toggleEditorDecoration')<CR>
+
+  nnoremap <silent> <bs> <Cmd>lua require('vscode-neovim').call('git.blame.toggleEditorDecoration')<CR>
 ]]
