@@ -28,4 +28,4 @@ command script add -f lldb_nvim.runnvim runnvim
 # breakpoints:
 #
 # breakpoint set --name main
-breakpoint set --name exit_by_closed_chan
+# breakpoint set --name ex_detach

@@ -527,6 +527,22 @@ local function _config()
   vim.keymap.set('n', 'dp', function()
     return require('timber.actions').insert_log({ operator=true, position = 'below' })
   end, { expr = true })
+
+  -- theme/colorscheme
+  local function fix_colorscheme()
+    vim.cmd[[
+      if !&termguicolors
+        highlight SpellBad guibg=Red guifg=White
+        highlight CursorLine ctermbg=235
+        highlight Comment ctermfg=gray
+      endif
+      highlight Visual guibg=fg guifg=bg
+    ]]
+  end
+  vim.api.nvim_create_autocmd({'ColorScheme'}, {
+    callback = fix_colorscheme
+  })
+  fix_colorscheme()
 end
 
 _config()

@@ -34,14 +34,6 @@ set scrolloff=4
 set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 
-" theme/colorscheme
-if !&termguicolors
-  highlight SpellBad guibg=Red guifg=White
-  highlight CursorLine ctermbg=235
-  highlight Comment ctermfg=gray
-endif
-highlight Visual guibg=fg guifg=bg
-
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
 " :checktime is SLOW
