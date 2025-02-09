@@ -105,6 +105,10 @@ set nowrap
 "           c<space>
 "           !@       --> async run
 
+:xnoremap y zy
+:nnoremap p zp
+:nnoremap P zP
+
 nnoremap \q q
 "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 
