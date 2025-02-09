@@ -257,14 +257,11 @@ local function on_attach(client, bufnr)
   nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
   ]])
 
-  vim.keymap.set('n', 'gK', function(ev)
-    if vim.v.count > 0 then
-      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-    else
-      -- vim.diagnostic.open_float()
-      vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
-    end
-  end, { buffer = 0, desc = 'Toggle verbose diagnostics. Toggle inlay_hint with [count].' })
+  vim.keymap.set('n', '<bs>', function()
+    vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end, { buffer = 0, desc = 'Toggle verbose diagnostics and inlay_hints.' })
+  vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
 end
 
 local function config_lsp()
