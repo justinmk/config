@@ -105,13 +105,11 @@ set nowrap
 "           c<space>
 "           !@       --> async run
 
+"tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+
 :xnoremap y zy
 :nnoremap p zp
 :nnoremap P zP
-
-nnoremap \q q
-"tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-
 " copy selection to gui-clipboard
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
@@ -219,11 +217,11 @@ nnoremap gV `[v`]
 xnoremap . :normal .<CR>
 " Repeat the last edit on the next [count] matches.
 nnoremap <silent> gn :normal n.<CR>
-nnoremap <C-v>q q
 
 " Record a macro, or set the last-recorded macro to v:register (example: "aq).
 nnoremap <expr> q (v:register==#'"')?'q':(':let @'.(empty(reg_recorded())?'q':reg_recorded())." = '<C-R>=substitute(@".v:register.",\"'\",\"''\",\"g\")<CR>'<C-F>010l")
-
+nnoremap <C-v>q q
+nnoremap \q q
 
 command! -nargs=+ -bang -complete=command R if !<bang>0 | wincmd n | endif
     \ | call execute(printf("put=execute('%s')", substitute(escape(<q-args>, '"'), "'", "''", 'g')))
