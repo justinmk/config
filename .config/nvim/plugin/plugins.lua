@@ -72,6 +72,9 @@ require 'paq' {
   {'tpope/vim-fireplace', opt=true},
 
   'https://github.com/echasnovski/mini.completion',
+  -- nmap yx       <Plug>(ReplSend)
+  -- nmap yxx      <Plug>(ReplSendLine)
+  -- xmap <Enter>  <Plug>(ReplSend)
   'justinmk/nvim-repl',
 
   'https://github.com/mfussenegger/nvim-qwahl',
@@ -195,15 +198,7 @@ vim.g.linediff_buffer_type = 'scratch'
 
 vim.g.clojure_fold = 1
 vim.g.sexp_filetypes = ''
-
 vim.g.salve_auto_start_repl = 1
-
-vim.cmd([[
-  nmap yx       <Plug>(ReplSend)
-  "nmap yxx      <Plug>(ReplSendLine)
-  xmap <Enter>  <Plug>(ReplSend)
-  nnoremap <c-q> :Repl<CR>
-]])
 
 vim.api.nvim_set_var('projectionist_heuristics', {
     ['package.json'] = {
