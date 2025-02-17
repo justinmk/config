@@ -473,6 +473,11 @@ local function _config()
   _G._vimrc.tablabel = function(n)
     local buflist = vim.fn.tabpagebuflist(n)
     local winnr = vim.fn.tabpagewinnr(n)
+    local tabdir = vim.fn.getcwd(-1, n)
+    local has_tabdir = vim.fn.getcwd(-1, -1) ~= tabdir
+    if has_tabdir then
+      return ('CWD: %s/'):format(vim.fn.fnamemodify(tabdir, ':t'))
+    end
     local bufname = vim.fn.bufname(buflist[winnr])
     local isdir = bufname:sub(#bufname) == '/'
     local name = vim.fn.fnamemodify(bufname, isdir and ':h:t' or ':t') .. (isdir and '/' or '')
