@@ -1,5 +1,7 @@
 -- credit: timg + https://github.com/neovim/neovim/issues/30889
 --
+-- TODO: look at https://github.com/folke/snacks.nvim/blob/main/docs/image.md
+--
 -- ref: https://sw.kovidgoyal.net/kitty/graphics-protocol/
 
 local M = {}
