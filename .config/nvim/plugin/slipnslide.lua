@@ -144,5 +144,5 @@ end
 
 vim.cmd[[
   command! -nargs=? Slides lua Slides()
-  nnoremap z<tab> <cmd>lua Slides()<cr>
+  nnoremap <bs> <cmd>lua Slides()<cr>
 ]]

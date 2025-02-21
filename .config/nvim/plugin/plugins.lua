@@ -48,8 +48,6 @@ require 'paq' {
 
   'tpope/vim-surround',
 
-  'tpope/vim-dispatch',
-
   'tpope/vim-repeat',
   'tpope/vim-eunuch',
   'tpope/vim-rsi',
@@ -70,12 +68,13 @@ require 'paq' {
 
   {'tpope/vim-salve', opt=true},
   {'tpope/vim-fireplace', opt=true},
-
-  'https://github.com/echasnovski/mini.completion',
+  'tpope/vim-dispatch',
   -- nmap yx       <Plug>(ReplSend)
   -- nmap yxx      <Plug>(ReplSendLine)
   -- xmap <Enter>  <Plug>(ReplSend)
   'justinmk/nvim-repl',
+
+  'https://github.com/echasnovski/mini.completion',
 
   'https://github.com/mfussenegger/nvim-qwahl',
   -- Provides `require('tsht').nodes()`.
@@ -100,6 +99,8 @@ require 'paq' {
   -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
 
   'https://github.com/lewis6991/satellite.nvim',
+
+  {'https://github.com/MeanderingProgrammer/render-markdown.nvim', opt=true},
 }
 
 vim.api.nvim_create_autocmd({'UIEnter'}, {
