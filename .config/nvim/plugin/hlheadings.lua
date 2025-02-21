@@ -105,35 +105,35 @@ vim.cmd[[
   hi MyH1 ctermfg=white ctermbg=DarkGrey guisp=fg guifg=white guibg=#3b3b3b
 ]] -- cterm=underdouble gui=underdouble guisp=fg
 
-vim.api.nvim_create_autocmd({'FileType'}, {
-  pattern = 'markdown',
-  group = event_ns,
-  callback = function()
-    if vim.wo.diff then
-      clear()
-    else
-      hlheadings_do_hl()
-    end
-
-    if vim.b.did_hlheadings then
-      return
-    end
-
-    vim.api.nvim_create_autocmd({'InsertEnter'}, {
-      buffer = 0,
-      callback = function()
-        clear()
-      end,
-    })
-    vim.api.nvim_create_autocmd({'InsertLeave'}, {
-      buffer = 0,
-      callback = function()
-        hlheadings_do_hl()
-      end,
-    })
-
-    vim.b.did_hlheadings = true
-  end,
-})
+-- vim.api.nvim_create_autocmd({'FileType'}, {
+--   pattern = 'markdown',
+--   group = event_ns,
+--   callback = function()
+--     if vim.wo.diff then
+--       clear()
+--     else
+--       hlheadings_do_hl()
+--     end
+--
+--     if vim.b.did_hlheadings then
+--       return
+--     end
+--
+--     vim.api.nvim_create_autocmd({'InsertEnter'}, {
+--       buffer = 0,
+--       callback = function()
+--         clear()
+--       end,
+--     })
+--     vim.api.nvim_create_autocmd({'InsertLeave'}, {
+--       buffer = 0,
+--       callback = function()
+--         hlheadings_do_hl()
+--       end,
+--     })
+--
+--     vim.b.did_hlheadings = true
+--   end,
+-- })
 
 return M
