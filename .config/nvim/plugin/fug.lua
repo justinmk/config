@@ -94,7 +94,7 @@ local function ctrl_g()
   local fn = vim.fn
   local isfile = 0 == fn.empty(fn.expand('%:p'))
   -- Show file info.
-  local oldmsg = vim.trim(fn.execute('norm! 1'..vim.keycode('<c-g>')))
+  local oldmsg = vim.trim(fn.execute('norm! 2'..vim.keycode('<c-g>')))
   local mtime = isfile and fn.strftime('%Y-%m-%d %H:%M',fn.getftime(fn.expand('%:p'))) or ''
   table.insert(msg, { ('%s  %s\n'):format(oldmsg:sub(1), mtime) })
   -- Show git branch
