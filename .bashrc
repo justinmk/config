@@ -29,10 +29,11 @@ HISTIGNORE='exit:cd:ls:bg:fg:history:f:fd'
 HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
-# After each command:
+# Before each command:
+# - mark start of prompt (OSC 133)
 # - set term title to $_MY_TITLE or cwd
 # - append to history file
-PROMPT_COMMAND='printf "\033]0;${_MY_TITLE:-$PWD}\007" ; history -a'
+PROMPT_COMMAND='printf "\033]133;A\007\033]0;${_MY_TITLE:-$PWD}\007" ; history -a'
 # truncate long paths to ".../foo/bar/baz"
 PROMPT_DIRTRIM=4
 
@@ -90,6 +91,8 @@ fi
 PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M)\[\e[0m\] \u@\h \w\[\e[0m\]
 $ '
 [ -z $SSH_TTY ] || PS1='\[\e[0;30m\]\[\e[47m\]SSH\[\e[0m\] '$PS1
+# Mark end of prompt (OSC 133).
+PS1=$PS1'\033]133;B\007'
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
