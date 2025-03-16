@@ -121,7 +121,7 @@ nnoremap "%y <cmd>let @+=fnamemodify(@%, ':.')<cr>
 cnoremap <m-%> <c-r>=fnamemodify(@%, ':t')<cr>
 cmap     <m-s-5> <m-%>
 " current-file directory
-noremap! <m-/> <c-r>=expand('%:p:h', 1)<cr>
+noremap! <m-/> <c-r>=expand('%:.:h', 1)<cr>
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " /<BS>: Inverse search (line NOT containing pattern).
 cnoremap <expr> <BS> (getcmdtype() =~ '[/?]' && getcmdline() == '') ? '\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>' : '<BS>'
