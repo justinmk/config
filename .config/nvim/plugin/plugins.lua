@@ -22,6 +22,8 @@ require 'paq' {
   --    nvim ./-foo
   --    nvim ./+foo
   'https://github.com/lewis6991/fileline.nvim',
+  -- Open files from :term in the parent Nvim.
+  'https://github.com/willothy/flatten.nvim',
 
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
@@ -541,6 +543,8 @@ local function _config()
     callback = fix_colorscheme
   })
   fix_colorscheme()
+
+  require("flatten").setup{}
 end
 
 _config()
