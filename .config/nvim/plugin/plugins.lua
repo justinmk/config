@@ -105,7 +105,11 @@ require 'paq' {
   {'https://github.com/MeanderingProgrammer/render-markdown.nvim', opt=true},
 }
 
+_G._myconfig = _G._myconfig or {}
+local augroup = vim.api.nvim_create_augroup('my.config', {})
+
 vim.api.nvim_create_autocmd({'UIEnter'}, {
+  group = augroup,
   callback = function()
     local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
     if client and client.name == "Firenvim" then
@@ -213,21 +217,6 @@ vim.api.nvim_set_var('projectionist_heuristics', {
 vim.cmd([[
   runtime! plugin/rsi.vim
 ]])
-
--- xxx
-local function idk()
-  require('satellite').setup()
-  require('mini.completion').setup({})
-
-  require('ghlite').setup{}
-  require('gitsigns').setup{
-    signs_staged_enable = false
-  }
-  vim.cmd([[
-    hi! link GitSignsChange Normal
-  ]])
-
-end
 
 local function on_attach(client, bufnr)
   vim.cmd([[
@@ -347,11 +336,14 @@ local function config_lsp()
   vim.lsp.enable('clangd')
 end
 
-local function set_esc_keymap()
-  vim.api.nvim_create_autocmd({'TermOpen'}, { callback = function()
-    vim.keymap.set('t', '<C-[>', [[<C-\><C-N>]], { buffer = 0 })
-    vim.keymap.set('t', '<Esc>', [[<C-\><C-N>]], { buffer = 0 })
-  end, })
+local function config_term_esc()
+  vim.api.nvim_create_autocmd({'TermOpen'}, {
+    group = augroup,
+    callback = function()
+      vim.keymap.set('t', '<C-[>', [[<C-\><C-N>]], { buffer = 0 })
+      vim.keymap.set('t', '<Esc>', [[<C-\><C-N>]], { buffer = 0 })
+    end,
+  })
 
   -- :terminal-nested Nvim:
   if vim.env.NVIM then
@@ -378,19 +370,22 @@ local function set_esc_keymap()
     vim.fn.chanclose(chan)
 
     -- Restore the mapping(s) on VimLeave.
-    vim.api.nvim_create_autocmd({'VimLeave'}, { callback = function()
-      local chan2 = assert(parent_chan())
-      for _, map in ipairs(to_restore) do
-        vim.rpcrequest(chan2, 'nvim_exec_lua', [=[
-          local map = ...
-          vim.fn.mapset('t', false, map)
-        ]=], {map})
-      end
-    end, })
+    vim.api.nvim_create_autocmd({'VimLeave'}, {
+      group = augroup,
+      callback = function()
+        local chan2 = assert(parent_chan())
+        for _, map in ipairs(to_restore) do
+          vim.rpcrequest(chan2, 'nvim_exec_lua', [=[
+            local map = ...
+            vim.fn.mapset('t', false, map)
+          ]=], {map})
+        end
+      end,
+    })
   end
 end
 
-local function setup_fzf()
+local function config_fzf()
   require('fzf-lua').setup({ fzf_colors = true })
   -- Search full-text or filenames.
   -- TODO: ignore dirs: build .git venv .vim-src .deps .vscode-test node_modules .coverage
@@ -413,15 +408,8 @@ local function setup_fzf()
   ]=]
 end
 
-if not vim.g.vscode then
-  set_esc_keymap()
-  idk()
-  config_lsp()
-  setup_fzf()
-end
-
--- Map ":'<,'>s/" to ":'<,'>s/\%V".
-do
+--- Map ":'<,'>s/" to ":'<,'>s/\%V".
+local function cmdline_sub()
   local skip = false
 
   local function map_cmdline_sub()
@@ -434,14 +422,14 @@ do
       vim.fn.setcmdline(cmd..[[\%V]])
     end
   end
-
   vim.api.nvim_create_autocmd('CmdlineEnter', {
+    group = augroup,
     callback = function()
       skip = false
     end
   })
-
   vim.api.nvim_create_autocmd('CmdlineChanged', {
+    group = augroup,
     callback = function()
       if not skip then
         map_cmdline_sub()
@@ -450,47 +438,26 @@ do
   })
 end
 
-local function _config()
-  _G._vimrc = _G._vimrc or {}
-
-  -- 'tabline'
-  vim.cmd[[highlight TabLineSel guibg=bg guifg=fg]]
-  _G._vimrc.tablabel = function(n)
-    local buflist = vim.fn.tabpagebuflist(n)
-    local winnr = vim.fn.tabpagewinnr(n)
-    local tabdir = vim.fn.getcwd(-1, n)
-    local has_tabdir = vim.fn.getcwd(-1, -1) ~= tabdir
-    if has_tabdir then
-      return ('CWD: %s/'):format(vim.fn.fnamemodify(tabdir, ':t'))
-    end
-    local bufname = vim.fn.bufname(buflist[winnr])
-    local isdir = bufname:sub(#bufname) == '/'
-    local name = vim.fn.fnamemodify(bufname, isdir and ':h:t' or ':t') .. (isdir and '/' or '')
-    name = name:len() > 20 and name:sub(1, 20) .. '…' or name
-    return name == '' and 'No Name' or ' ' .. name
+local function config_theme()
+  -- theme/colorscheme
+  local function fix_colorscheme()
+    vim.cmd[[
+      if !&termguicolors
+        highlight SpellBad guibg=Red guifg=White
+        highlight CursorLine ctermbg=235
+        highlight Comment ctermfg=gray
+      endif
+      highlight Visual guibg=fg guifg=bg
+    ]]
   end
-  _G._vimrc.tabline = function()
-    local s = ''
-    for i = 1, vim.fn.tabpagenr('$') do
-      -- Highlight group.
-      local hlgroup = (i == vim.fn.tabpagenr() and '%#TabLineSel#' or '%#TabLine#')
-      -- %T: set the tabpage number (for mouse clicks).
-      s = s .. ('%s%%%dT %%{v:lua._vimrc.tablabel(%d)} '):format(hlgroup, i, i)
-    end
-    -- After last tab: Fill with TabLineFill. Reset tabpage nr. Right-align the "close" (X) button.
-    return s .. '%#TabLineFill#%T%=%#TabLine#%999XX'
-  end
+  vim.api.nvim_create_autocmd({'ColorScheme'}, {
+    group = augroup,
+    callback = fix_colorscheme
+  })
+  fix_colorscheme()
+end
 
-  vim.go.tabline='%!v:lua._vimrc.tabline()'
-
-  -- credit: gpanders, #30415
-  vim.api.nvim_create_user_command('TermHl', function()
-    local b = vim.api.nvim_create_buf(false, true)
-    local chan = vim.api.nvim_open_term(b, {})
-    vim.api.nvim_chan_send(chan, table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n'))
-    vim.api.nvim_win_set_buf(0, b)
-  end, { desc = 'Highlights ANSI termcodes in curbuf' })
-
+local function config_printf_mappings()
   -- printf/log util
   require('timber').setup({
     default_keymaps_enabled = false,
@@ -514,24 +481,87 @@ local function _config()
   vim.keymap.set('n', 'dp', function()
     return require('timber.actions').insert_log({ operator=true, position = 'below' })
   end, { expr = true })
-
-  -- theme/colorscheme
-  local function fix_colorscheme()
-    vim.cmd[[
-      if !&termguicolors
-        highlight SpellBad guibg=Red guifg=White
-        highlight CursorLine ctermbg=235
-        highlight Comment ctermfg=gray
-      endif
-      highlight Visual guibg=fg guifg=bg
-    ]]
-  end
-  vim.api.nvim_create_autocmd({'ColorScheme'}, {
-    callback = fix_colorscheme
-  })
-  fix_colorscheme()
-
-  require("flatten").setup{}
 end
 
-_config()
+local function config_tabline()
+  -- 'tabline'
+  vim.cmd[[highlight TabLineSel guibg=bg guifg=fg]]
+  _G._myconfig.tablabel = function(n)
+    local buflist = vim.fn.tabpagebuflist(n)
+    local winnr = vim.fn.tabpagewinnr(n)
+    local tabdir = vim.fn.getcwd(-1, n)
+    local has_tabdir = vim.fn.getcwd(-1, -1) ~= tabdir
+    if has_tabdir then
+      return ('CWD: %s/'):format(vim.fn.fnamemodify(tabdir, ':t'))
+    end
+    local bufname = vim.fn.bufname(buflist[winnr])
+    local isdir = bufname:sub(#bufname) == '/'
+    local name = vim.fn.fnamemodify(bufname, isdir and ':h:t' or ':t') .. (isdir and '/' or '')
+    name = name:len() > 20 and name:sub(1, 20) .. '…' or name
+    return name == '' and 'No Name' or ' ' .. name
+  end
+  _G._myconfig.tabline = function()
+    local s = ''
+    for i = 1, vim.fn.tabpagenr('$') do
+      -- Highlight group.
+      local hlgroup = (i == vim.fn.tabpagenr() and '%#TabLineSel#' or '%#TabLine#')
+      -- %T: set the tabpage number (for mouse clicks).
+      s = s .. ('%s%%%dT %%{v:lua._myconfig.tablabel(%d)} '):format(hlgroup, i, i)
+    end
+    -- After last tab: Fill with TabLineFill. Reset tabpage nr. Right-align the "close" (X) button.
+    return s .. '%#TabLineFill#%T%=%#TabLine#%999XX'
+  end
+
+  vim.go.tabline='%!v:lua._myconfig.tabline()'
+end
+
+local function config_term()
+  -- credit: gpanders, #30415
+  vim.api.nvim_create_user_command('TermHl', function()
+    local b = vim.api.nvim_create_buf(false, true)
+    local chan = vim.api.nvim_open_term(b, {})
+    vim.api.nvim_chan_send(chan, table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n'))
+    vim.api.nvim_win_set_buf(0, b)
+  end, { desc = 'Highlights ANSI termcodes in curbuf' })
+
+  -- Enable prompt sign in :terminal buffers.
+  vim.api.nvim_create_autocmd('TermOpen', {
+    command = 'setlocal signcolumn=auto',
+  })
+  vim.api.nvim_create_autocmd('TermRequest', {
+    group = augroup,
+    callback = function(args)
+      if string.match(args.data.sequence, '^\027]133;A') then
+        local lnum = args.data.cursor[1]
+        vim.api.nvim_buf_set_extmark(args.buf, vim.api.nvim_create_namespace('my.terminal.prompt'), lnum - 1, 0, {
+          -- Replace with sign text and highlight group of choice
+          sign_text = '∙',
+          sign_hl_group = 'SpecialChar',
+        })
+      end
+    end,
+  })
+end
+
+if not vim.g.vscode then
+  require('flatten').setup()
+  require('satellite').setup()
+  require('mini.completion').setup({})
+
+  require('ghlite').setup{}
+  require('gitsigns').setup{
+    signs_staged_enable = false
+  }
+  vim.cmd([[
+    hi! link GitSignsChange Normal
+  ]])
+
+  config_term_esc()
+  config_term()
+  config_tabline()
+  config_lsp()
+  config_fzf()
+  config_printf_mappings()
+  cmdline_sub()
+  config_theme()
+end
