@@ -123,6 +123,16 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
   end
 })
 
+-- Enable treesitter. For c/vimscript/markdown: https://github.com/neovim/neovim/pull/32965
+vim.api.nvim_create_autocmd({'FileType'}, {
+  callback = function(ev)
+    if not ev.match or ev.match == '' or ev.match == 'text' then
+      vim.treesitter.stop()
+    end
+    pcall(function() vim.treesitter.start() end)
+  end
+})
+
 vim.cmd([[
   let g:sneak#label = 1
   let g:sneak#use_ic_scs = 1
