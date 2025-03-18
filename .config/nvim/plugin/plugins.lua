@@ -119,19 +119,6 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
   end
 })
 
--- Enable treesitter
-vim.api.nvim_create_autocmd({'FileType'}, {
-  callback = function(ev)
-    if not ev.match or ev.match == '' or ev.match == 'text' then
-      vim.treesitter.stop()
-    end
-    -- local lang = ev.match
-    -- if vim.treesitter.get_lang(lang) ~= nil then
-    pcall(function() vim.treesitter.start() end)
-  end
-})
-
-
 vim.cmd([[
   let g:sneak#label = 1
   let g:sneak#use_ic_scs = 1
