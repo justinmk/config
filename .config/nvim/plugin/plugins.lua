@@ -347,51 +347,46 @@ local function config_lsp()
 end
 
 local function config_term_esc()
-  vim.api.nvim_create_autocmd({'TermOpen'}, {
-    group = augroup,
-    callback = function()
-      vim.keymap.set('t', '<C-[>', [[<C-\><C-N>]], { buffer = 0 })
-      vim.keymap.set('t', '<Esc>', [[<C-\><C-N>]], { buffer = 0 })
-    end,
-  })
+  vim.keymap.set('t', '<C-[>', [[<C-\><C-N>]])
+  vim.keymap.set('t', '<Esc>', [[<C-\><C-N>]])
 
   -- :terminal-nested Nvim:
   if vim.env.NVIM then
     local function parent_chan()
       local ok, chan = pcall(vim.fn.sockconnect, 'pipe', vim.env.NVIM, {rpc=true})
+      if not ok then
+        vim.notify(('failed to create channel to $NVIM: %s'):format(chan))
+      end
       return ok and chan or nil
     end
-    local chan = parent_chan()
-    if not chan then
-      return
-    end
 
-    local to_restore = {} --- Mappings to restore.
-    local function unmap_parent(lhs)
-      -- Unmap <Esc> and <C-[> in the parent so it gets sent to the child (this) Nvim.
+    local didset = false
+    local chan = assert(parent_chan())
+    local function map_parent(lhs)
+      -- Map <Esc> and <C-[> in the parent so it gets sent to the child (this) Nvim.
       local map = vim.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg(..., 't', false, true)]], { lhs }) --[[@as table<string,any>]]
       if map.rhs == [[<C-\><C-N>]] then
-        vim.rpcrequest(chan, 'nvim_exec_lua', [[vim.keymap.del('t', ..., {buffer=0})]], { lhs })
+        vim.rpcrequest(chan, 'nvim_exec_lua', [[vim.keymap.set('t', ..., '<Esc>', {buffer=0})]], { lhs })
+        didset = true
       end
-      table.insert(to_restore, map)
     end
-    unmap_parent('<Esc>')
-    unmap_parent('<C-[>')
+    map_parent('<Esc>')
+    map_parent('<C-[>')
     vim.fn.chanclose(chan)
 
     -- Restore the mapping(s) on VimLeave.
-    vim.api.nvim_create_autocmd({'VimLeave'}, {
-      group = augroup,
-      callback = function()
-        local chan2 = assert(parent_chan())
-        for _, map in ipairs(to_restore) do
-          vim.rpcrequest(chan2, 'nvim_exec_lua', [=[
-            local map = ...
-            vim.fn.mapset('t', false, map)
-          ]=], {map})
-        end
-      end,
-    })
+    if didset then
+      vim.api.nvim_create_autocmd({'VimLeave'}, {
+        group = augroup,
+        callback = function()
+          local chan2 = assert(parent_chan())
+          vim.rpcrequest(chan2, 'nvim_exec2', [=[
+            tunmap <buffer> <Esc>
+            tunmap <buffer> <C-[>
+          ]=], {})
+        end,
+      })
+    end
   end
 end
 
@@ -554,7 +549,10 @@ local function config_term()
 end
 
 if not vim.g.vscode then
-  require('flatten').setup()
+  require("flatten").setup{
+    hooks = {},
+    nest_if_no_args = true,
+  }
   require('satellite').setup()
   require('mini.completion').setup({})
 
