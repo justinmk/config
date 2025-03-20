@@ -1,6 +1,8 @@
 -- credit: timg + https://github.com/neovim/neovim/issues/30889
 --
--- TODO: look at https://github.com/folke/snacks.nvim/blob/main/docs/image.md
+-- TODO: look at
+-- - https://github.com/folke/snacks.nvim/blob/main/docs/image.md
+-- - https://github.com/HakonHarnes/img-clip.nvim
 --
 -- ref: https://sw.kovidgoyal.net/kitty/graphics-protocol/
 

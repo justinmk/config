@@ -58,13 +58,13 @@ local function try_show_img()
   end
   vim.cmd[[redraw]]
   -- vim.cmd[[sleep 100m]]
-  require('img').show({ filename = imgpath })
+  require('my.img').show({ filename = imgpath })
 end
 
 function _G.slides_clear()
   -- vim.cmd[[mapclear <buffer>]]
   vim.cmd[[setlocal laststatus=2]]
-  require'img'.clear_all()
+  require'my.img'.clear_all()
   vim.fn.clearmatches()
   vim.o.tabline = saved.tabline
   vim.o.ruler = saved.ruler
@@ -97,7 +97,7 @@ function _G.show_cur_slide()
   end
 
   vim.cmd[[doautocmd FileType]] -- Trigger hlheadings.lua:hlheadings_do_hl().
-  require'img'.clear_all()
+  require'my.img'.clear_all()
   try_show_img()
 end
 
