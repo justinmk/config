@@ -558,7 +558,8 @@ if not vim.g.vscode then
 
   require('ghlite').setup{}
   require('gitsigns').setup{
-    signs_staged_enable = false
+    signs_staged_enable = false,
+    current_line_blame = true,
   }
   vim.cmd([[
     hi! link GitSignsChange Normal
