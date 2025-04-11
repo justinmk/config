@@ -556,10 +556,13 @@ if not vim.g.vscode then
   require('satellite').setup()
   require('mini.completion').setup({})
 
-  require('ghlite').setup{}
+  -- require('ghlite').setup{}
   require('gitsigns').setup{
     signs_staged_enable = false,
     current_line_blame = true,
+    current_line_blame_opts = {
+      virt_text_pos = 'eol_right_align', -- 'eol' | 'overlay' | 'right_align'
+    },
   }
   vim.cmd([[
     hi! link GitSignsChange Normal
