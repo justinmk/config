@@ -237,7 +237,7 @@ augroup config_autocmd
 
   " :help restore-cursor
   autocmd BufReadPre * autocmd FileType <buffer> ++once
-    \ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
+    \ if !&diff && &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if expand('<afile>:t') !=# 'CMakeLists.txt' | setf text | endif
 

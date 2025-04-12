@@ -125,6 +125,7 @@ vim.api.nvim_create_autocmd({'UIEnter'}, {
 
 -- Enable treesitter. For c/vimscript/markdown: https://github.com/neovim/neovim/pull/32965
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = augroup,
   callback = function(ev)
     if not ev.match or ev.match == '' or ev.match == 'text' then
       vim.treesitter.stop()
@@ -248,51 +249,31 @@ local function on_attach(client, bufnr)
   vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
 end
 
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = augroup,
+  callback = on_attach,
+})
+
 local function config_lsp()
-  local function organize_imports()
-    local params = {
-      command = '_typescript.organizeImports',
-      arguments = { vim.api.nvim_buf_get_name(0) },
-      title = ''
-    }
-    vim.lsp.buf.execute_command(params)
-  end
   vim.lsp.config('ts_ls', {
-    on_attach = function()
-      on_attach()
-      vim.api.nvim_buf_create_user_command(0, 'LspTSOrganizeImports', organize_imports, {})
+    on_attach = function(self)
+      local client = self
+      vim.api.nvim_buf_create_user_command(0, 'LspTSOrganizeImports',
+        function()
+          client:exec_cmd({
+            command = '_typescript.organizeImports',
+            arguments = { vim.api.nvim_buf_get_name(0) },
+            title = ''
+          })
+        end, {})
     end,
-    init_options = { hostInfo = 'neovim' },
-    cmd = { 'typescript-language-server', '--stdio' },
-    filetypes = {
-      'javascript',
-      'javascriptreact',
-      'javascript.jsx',
-      'typescript',
-      'typescriptreact',
-      'typescript.tsx',
-    },
-    root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git', },
   })
   vim.lsp.enable('ts_ls')
 
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
   table.insert(runtime_path, 'lua/?/init.lua')
-  vim.lsp.config('luals', {
-    cmd = { 'lua-language-server' },
-    on_attach = on_attach,
-    filetypes = { 'lua' },
-    root_markers = {
-      '.luarc.json',
-      '.luarc.jsonc',
-      '.luacheckrc',
-      '.stylua.toml',
-      'stylua.toml',
-      'selene.toml',
-      'selene.yml',
-      '.git',
-    },
+  vim.lsp.config('lua_ls', {
     settings = {
       Lua = {
         runtime = {
@@ -316,32 +297,13 @@ local function config_lsp()
       },
     },
   })
-  vim.lsp.enable('luals')
+  vim.lsp.enable('lua_ls')
 
   vim.lsp.config('clangd', {
     cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
-    on_attach = on_attach,
-    on_exit = function(...)
-      require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
-    end,
-    filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
-    root_markers = {
-      '.clangd',
-      '.clang-tidy',
-      '.clang-format',
-      'compile_commands.json',
-      'compile_flags.txt',
-      'configure.ac', -- AutoTools
-      '.git',
-    },
-    capabilities = {
-      textDocument = {
-        completion = {
-          editsNearCursor = true,
-        },
-      },
-      offsetEncoding = { 'utf-8', 'utf-16' },
-    },
+    -- on_exit = function(...)
+    --   require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
+    -- end,
   })
   vim.lsp.enable('clangd')
 end
