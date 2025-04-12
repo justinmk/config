@@ -484,6 +484,9 @@ local function config_printf_mappings()
     })
   end)
   vim.keymap.set('n', 'dp', function()
+    if vim.wo.diff then
+      return 'dp'
+    end
     return require('timber.actions').insert_log({ operator=true, position = 'below' })
   end, { expr = true })
 end
@@ -547,6 +550,17 @@ local function config_term()
     end,
   })
 end
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = augroup,
+  callback = function()
+    if vim.v.event.operator == 'y' then
+      for i = 9, 1, -1 do -- Shift all numbered registers.
+        vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
+      end
+    end
+  end,
+})
 
 if not vim.g.vscode then
   require("flatten").setup{
