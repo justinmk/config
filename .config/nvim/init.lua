@@ -1,6 +1,4 @@
-" Vim news: https://www.arp242.net/vimlog/
-" Nvim news: https://neovim.io/doc/user/news.html
-"==============================================================================
+vim.cmd[[
 
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
@@ -33,6 +31,7 @@ set exrc
 set scrolloff=4
 set fillchars+=msgsep:‾,eob:·
 set inccommand=split
+set winborder=rounded
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
@@ -383,4 +382,4 @@ endfunction
 command! -nargs=* NvimCxn call Cxn(<q-args>)
 
 silent! source ~/.vimrc.local
-
+]]
