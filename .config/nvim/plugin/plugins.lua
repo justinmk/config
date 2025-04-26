@@ -256,6 +256,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 local function config_lsp()
   vim.lsp.enable('ts_ls')
+  vim.lsp.enable('bashls')
 
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
