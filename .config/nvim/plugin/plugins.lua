@@ -255,19 +255,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 local function config_lsp()
-  vim.lsp.config('ts_ls', {
-    on_attach = function(self)
-      local client = self
-      vim.api.nvim_buf_create_user_command(0, 'LspTSOrganizeImports',
-        function()
-          client:exec_cmd({
-            command = '_typescript.organizeImports',
-            arguments = { vim.api.nvim_buf_get_name(0) },
-            title = ''
-          })
-        end, {})
-    end,
-  })
   vim.lsp.enable('ts_ls')
 
   local runtime_path = vim.split(package.path, ';')
