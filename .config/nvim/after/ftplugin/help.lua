@@ -1,3 +1,5 @@
+vim.cmd[[set iskeyword&]]
+
 -- execute/evaluate
 vim.cmd[[
   nnoremap <buffer>         yxal    :Runtime<cr>
