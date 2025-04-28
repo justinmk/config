@@ -1,0 +1,59 @@
+# config docs:
+#   https://bottom.pages.dev/stable/configuration/config-file/layout/
+# default config:
+#   https://github.com/ClementTsang/bottom/blob/main/sample_configs/default_config.toml
+
+# Layout - layouts follow a pattern like this:
+#   [[row]] represents a row in the application.
+#   [[row.child]] represents either a widget or a column.
+#   [[row.child.child]] represents a widget.
+#
+# Widget `type` must be one of ["cpu", "mem", "proc", "net", "temp", "disk", "empty"].
+# Layout components have a `ratio` (defaults to 1).
+# The default widget layout:
+[[row]]
+  ratio=10
+  [[row.child]]
+  type="cpu"
+  [[row.child]]
+    ratio=4
+    type="mem"
+  [[row.child]]
+    type="net"
+[[row]]
+  ratio=90
+  [[row.child]]
+    type="proc"
+    default=true
+
+[flags]
+avg_cpu = true
+
+temperature_type = "c"
+
+rate = 1000
+cpu_left_legend = true
+current_usage = true
+# group_processes = true
+case_sensitive = false
+whole_word = false
+regex = true
+default_widget_type = "proc"
+show_full_command = true
+default_time_value = 60000
+process_command = true
+process_per_cpu = true
+# tree = true
+
+# columns = ["PID", "Name", "CPU%", "Mem%", "R/s", "W/s", "T.Read", "T.Write", "User", "State", "GMem%", "GPU%"]
+[processes]
+columns = [
+    "pid",
+    "state",
+    # "user",
+    "cpu%",
+    "mem%",
+    # "read",
+    # "write",
+    "name",
+]
