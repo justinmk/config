@@ -14,9 +14,8 @@
 [[row]]
   ratio=10
   [[row.child]]
-  type="cpu"
+    type="cpu"
   [[row.child]]
-    ratio=4
     type="mem"
   [[row.child]]
     type="net"
@@ -38,7 +37,6 @@ current_usage = true
 case_sensitive = false
 whole_word = false
 regex = true
-default_widget_type = "proc"
 show_full_command = true
 default_time_value = 60000
 process_command = true
