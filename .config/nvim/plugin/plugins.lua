@@ -23,7 +23,7 @@ require 'paq' {
   --    nvim ./+foo
   'https://github.com/lewis6991/fileline.nvim',
   -- Open files from :term in the parent Nvim.
-  'https://github.com/willothy/flatten.nvim',
+  -- 'https://github.com/willothy/flatten.nvim',
 
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
@@ -514,10 +514,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 if not vim.g.vscode then
-  require("flatten").setup{
-    hooks = {},
-    nest_if_no_args = true,
-  }
+  -- require("flatten").setup{
+  --   hooks = {},
+  --   nest_if_no_args = true,
+  -- }
   require('satellite').setup()
   require('mini.completion').setup({})
 
@@ -542,3 +542,5 @@ if not vim.g.vscode then
   cmdline_sub()
   config_theme()
 end
+
+require('vim._extui').enable({})
