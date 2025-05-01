@@ -474,14 +474,6 @@ local function config_tabline()
 end
 
 local function config_term()
-  -- credit: gpanders, #30415
-  vim.api.nvim_create_user_command('TermHl', function()
-    local b = vim.api.nvim_create_buf(false, true)
-    local chan = vim.api.nvim_open_term(b, {})
-    vim.api.nvim_chan_send(chan, table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n'))
-    vim.api.nvim_win_set_buf(0, b)
-  end, { desc = 'Highlights ANSI termcodes in curbuf' })
-
   -- Enable prompt sign in :terminal buffers.
   vim.api.nvim_create_autocmd('TermOpen', {
     command = 'setlocal signcolumn=auto',
