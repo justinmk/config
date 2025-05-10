@@ -486,7 +486,7 @@ local function config_term()
         vim.api.nvim_buf_set_extmark(args.buf, vim.api.nvim_create_namespace('my.terminal.prompt'), lnum - 1, 0, {
           -- Replace with sign text and highlight group of choice
           sign_text = '∙',
-          sign_hl_group = 'SpecialChar',
+          -- sign_hl_group = 'SpecialChar',
         })
       end
     end,
