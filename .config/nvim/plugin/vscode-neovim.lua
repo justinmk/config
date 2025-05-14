@@ -3,6 +3,8 @@ if not vim.g.vscode then
 end
 
 vim.cmd[[
+  set shadafile=NONE
+
   nnoremap <silent> gd <Cmd>lua require('vscode-neovim').call(vim.v.count > 0 and 'typescript.goToSourceDefinition' or 'editor.action.revealDefinition')<CR>
   nnoremap <silent> gD <Cmd>lua require('vscode-neovim').call('editor.action.goToImplementation')<CR>
   nnoremap <silent> gri <Cmd>lua require('vscode-neovim').call('references-view.findImplementations')<CR>
