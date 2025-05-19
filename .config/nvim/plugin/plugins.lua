@@ -16,7 +16,7 @@ require 'paq' {
   -- Minimal, yet aesthetic, "screencast" tool.
   {'https://github.com/NvChad/showkeys', opt=true},
 
-  'https://github.com/Goose97/timber.nvim',
+  'https://github.com/andrewferrier/debugprint.nvim',
 
   -- Hint: to open files start with "+" or "-" from the terminal, prefix them with "./".
   --    nvim ./-foo
@@ -188,10 +188,10 @@ vim.cmd([====[
 ]====])
 
 -- g?: Web search
-vim.keymap.set('n', 'g?', function()
+vim.keymap.set('n', 'g??', function()
   vim.ui.open(('https://google.com/search?q=%s'):format(vim.fn.expand('<cword>')))
 end)
-vim.keymap.set('x', 'g?', function()
+vim.keymap.set('x', 'g??', function()
   vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(
     vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'), { type=vim.fn.mode() }), ' '))))
   vim.api.nvim_input('<esc>')
@@ -414,31 +414,7 @@ end
 
 local function config_printf_mappings()
   -- printf/log util
-  require('timber').setup({
-    default_keymaps_enabled = false,
-    log_templates = {
-      default = {
-        c = [[ILOG("%watcher_marker_start %s %watcher_marker_end", %log_target);]],
-        lua = [[print(string.format('%watcher_marker_start %%s %watcher_marker_end', %log_target))]],
-     },
-     plain = {
-       c = [[LOG("%insert_cursor");]],
-     },
-    },
-    -- batch_log_templates = {},
-  })
-  vim.keymap.set('n', 'dP', function()
-    require('timber.actions').insert_log({
-      position = 'below',
-      template = 'plain',
-    })
-  end)
-  vim.keymap.set('n', 'dp', function()
-    if vim.wo.diff then
-      return 'dp'
-    end
-    return require('timber.actions').insert_log({ operator=true, position = 'below' })
-  end, { expr = true })
+  require('debugprint').setup({})
 end
 
 local function config_tabline()
