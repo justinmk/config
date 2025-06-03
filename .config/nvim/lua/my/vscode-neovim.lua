@@ -1,7 +1,3 @@
-if not vim.g.vscode then
-  return
-end
-
 vim.cmd[[
   set shadafile=NONE
 
