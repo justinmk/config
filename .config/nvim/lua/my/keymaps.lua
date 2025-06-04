@@ -132,7 +132,6 @@ inoremap <c-r>R <c-o>:<up><home>R! <cr>
 
 " special-purpose mappings/commands ===========================================
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
-nnoremap <leader>vp   :exe 'e' stdpath('config')..'/plugin/'<cr>
 nnoremap <leader>vr   :Vimref<cr>
 
 ]]

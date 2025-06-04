@@ -246,10 +246,6 @@ command! -nargs=* NvimCxn call Cxn(<q-args>)
 silent! source ~/.vimrc.local
 ]]
 
-if vim.g.vscode then
-  require('my.vscode-neovim')
-end
-
 require('my.keymaps')
 require('my.bufdelete')
 require('my.ctrl_s_shell')
@@ -740,7 +736,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-if not vim.g.vscode then
+if vim.g.vscode then
+  require('my.vscode-neovim')
+else
   -- require("flatten").setup{
   --   hooks = {},
   --   nest_if_no_args = true,
