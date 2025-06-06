@@ -38,7 +38,7 @@ set winborder=rounded
 " :checktime is SLOW
 " autocmd CursorHold,FocusGained * silent! checktime
 
-set shada^=r/tmp/,r/private/,rfugitive:,rzipfile:,rterm:,rhealth:
+set shada^=r/tmp/,r/private/,rzipfile:,rterm:,rhealth:
 set jumpoptions+=view
 set tabclose=uselast
 set cpoptions-=_
