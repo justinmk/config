@@ -726,6 +726,19 @@ end
 
 local function config_completion()
   require('mini.completion').setup({})
+
+  -- CTRL-q (insert-mode) manually triggers Amazon Q completion (inline suggestions).
+  vim.keymap.set('i', '<c-q>', function()
+    local client = vim.lsp.get_clients({ bufnr = 0, name = 'amazonq-completion' })[1]
+    if not client then
+      vim.notify('Amazon Q not enabled for this buffer')
+      return
+    end
+    vim.lsp.completion.enable(true, client.id, 0)
+    vim.notify('Amazon Q: working...')
+    vim.lsp.completion.get()
+    -- vim.cmd[[redraw | echo '']]
+  end)
 end
 
 -- yankring
