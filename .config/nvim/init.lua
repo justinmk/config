@@ -724,6 +724,10 @@ local function config_term()
   })
 end
 
+local function config_completion()
+  require('mini.completion').setup({})
+end
+
 -- yankring
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = augroup,
@@ -744,7 +748,6 @@ else
   --   nest_if_no_args = true,
   -- }
   require('satellite').setup()
-  require('mini.completion').setup({})
 
   -- require('ghlite').setup{}
   require('gitsigns').setup{
@@ -766,6 +769,7 @@ else
   config_printf_mappings()
   cmdline_sub()
   config_theme()
+  config_completion()
 end
 
 require('vim._extui').enable({})
