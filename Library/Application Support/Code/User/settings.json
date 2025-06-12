@@ -49,9 +49,10 @@
     "editor.inlineSuggest.showToolbar": "always",
     "window.density.editorTabHeight": "compact",
     "window.commandCenter": false,
-    "diffEditor.hideUnchangedRegions.enabled": true,
     "terminal.integrated.shellIntegration.enabled": true,
     "git.openRepositoryInParentFolders": "never",
+    "git.blame.statusBarItem.enabled": true,
+    "git.blame.editorDecoration.enabled": true,
     "extensions.ignoreRecommendations": true,
     "remote.SSH.defaultExtensions": [
         "amazonwebservices.aws-toolkit-vscode"
@@ -90,13 +91,34 @@
     "_aws.dev.logfile": "~/awstoolkit.log",
     "_aws.dev.forceInstallTools": true,
     "aws.suppressPrompts": {
-        "remoteConnected": true
-    },
-    "_aws.suppressPrompts": {
+        "apprunnerNotifyPause": false,
+        "apprunnerNotifyPricing": false,
+        "codeCatalystConnectionExpired": false,
+        "createCredentialsProfile": false,
+        "ecsRunCommand": false,
+        "ecsRunCommandDisable": false,
+        "ecsRunCommandEnable": false,
+        "fileViewerEdit": false,
+        "minIdeVersion": false,
+        "regionAddAutomatically": false,
         "remoteConnected": true,
-        "ecsRunCommand": true,
-        "codeWhispererNewWelcomeMessageKey": true,
-        "codeWhispererNewWelcomeMessage": true,
-        "amazonQWelcomePage": true
-    }
+        "samcliConfirmDevStack": false,
+        "ssoCacheError": false,
+        "yamlExtPrompt": false
+    },
+    "amazonQ.suppressPrompts": {
+        "amazonQSessionConfigurationMessage": true,
+        "amazonQChatDisclaimer": true,
+        "amazonQChatPairProgramming": true
+    },
+    "amazonQ.workspaceIndex": false,
+    "_amazonQ.experiments": {
+        "amazonqChatLSP": true,
+        "amazonqLSP": true
+    },
+    "_aws.experiments": {
+        "amazonqChatLSP": true,
+        "amazonqLSP": true
+    },
+    "amazonq.trace.server": "debug"
 }
