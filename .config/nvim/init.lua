@@ -705,9 +705,16 @@ local function config_tabline()
 end
 
 local function config_term()
-  -- Enable prompt sign in :terminal buffers.
   vim.api.nvim_create_autocmd('TermOpen', {
-    command = 'setlocal signcolumn=auto',
+    callback = function()
+      vim.cmd[=[
+        " Enable prompt sign in :terminal buffers.
+        setlocal signcolumn=auto
+
+        nnoremap <silent><buffer> <cr> i<cr><c-\><c-n>
+        nnoremap <silent><buffer> <c-c> i<c-c><c-\><c-n>
+      ]=]
+    end
   })
   vim.api.nvim_create_autocmd('TermRequest', {
     group = augroup,
