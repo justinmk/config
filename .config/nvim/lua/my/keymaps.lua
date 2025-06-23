@@ -110,10 +110,7 @@ inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M
 " Print unix time at cursor as human-readable datetime. 1677604904 => '2023-02-28 09:21:45'
 nnoremap gA :echo strftime('%Y-%m-%d %H:%M:%S', '<c-r><c-w>')<cr>
 
-" Preserve '[ '] on :write.
-nnoremap <silent> z. :silent lockmarks update ++p<cr>
-
-" Select last inserted text.
+" Select last inserted/edited text.
 nnoremap gV `[v`]
 
 " Repeat last command for each line of a visual selection.

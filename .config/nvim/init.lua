@@ -99,7 +99,7 @@ augroup config_autocmd
   autocmd!
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
-  autocmd BufHidden,FocusLost * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
+  autocmd BufHidden,FocusLost,WinLeave * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
 
   " :help restore-cursor
   autocmd BufReadPre * autocmd FileType <buffer> ++once
