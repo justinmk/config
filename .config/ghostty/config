@@ -17,7 +17,9 @@
 # # Example:
 # resize-overlay-duration = 4s 200ms
 
+shell-integration = none
 macos-option-as-alt = true
+macos-titlebar-style = tabs
 
 background = #000000
 foreground = #ffffff
@@ -26,8 +28,10 @@ font-family = Menlo Regular
 font-size = 14
 
 cursor-color = green
+cursor-style = block
 mouse-hide-while-typing
 split-divider-color = green
+window-new-tab-position = end
 
 keybind = super+N=new_split:right
 keybind = super+n=new_split:down
