@@ -151,7 +151,7 @@ set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set suffixesadd=.java,.cs
 
 set title
-set titlestring=%{fnamemodify(getcwd(),':t')}
+let &titlestring = (exists('$SSH_TTY') ? 'SSH ' : '') .. '%{fnamemodify(getcwd(),":t")}'
 
 " scriptease
 " TODO:
