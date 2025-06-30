@@ -33,7 +33,7 @@ shopt -s histappend
 # - mark start of prompt (OSC 133)
 # - set term title to [SSH]$_MY_TITLE or [SSH]cwd
 # - append to history file
-PROMPT_COMMAND='printf "\033]133;A\007\033]0;${SSH_TTY:+SSH|}${_MY_TITLE:-${PWD##*/}}\007" ; history -a'
+PROMPT_COMMAND='printf "\033]133;A\007\033]0;${SSH_TTY:+SSH }${_MY_TITLE:-${PWD##*/}}\007" ; history -a'
 # truncate long paths to ".../foo/bar/baz"
 PROMPT_DIRTRIM=4
 
