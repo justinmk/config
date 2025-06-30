@@ -26,6 +26,8 @@ foreground = #ffffff
 
 font-family = Menlo Regular
 font-size = 14
+# Disable ligatures.
+font-feature = "-calt, -liga, -dlig"
 
 cursor-color = green
 cursor-style = block
