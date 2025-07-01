@@ -2,6 +2,11 @@
 #   $ ghostty +show-config --default --docs
 # To see current keybindings:
 #   $ ghostty +list-keybinds --default
+# To run a command (e.g. "nvim") in ghostty on macos from an external source:
+#   $ open -na Ghostty.app --args -e nvim
+# TODO: script via macos Shortcuts?
+#   - https://github.com/ghostty-org/ghostty/pull/7634
+#   - https://x.com/mitchellh/status/1935781682877247653
 #
 # docs: https://ghostty.org/docs/config
 
