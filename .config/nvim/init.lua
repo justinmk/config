@@ -763,6 +763,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 if vim.g.vscode then
   require('my.vscode-neovim')
 else
+  require('vim._extui').enable({})
+
   -- require("flatten").setup{
   --   hooks = {},
   --   nest_if_no_args = true,
@@ -791,5 +793,3 @@ else
   config_theme()
   config_completion()
 end
-
-require('vim._extui').enable({})
