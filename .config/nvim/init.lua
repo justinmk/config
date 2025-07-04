@@ -3,13 +3,6 @@ vim.cmd[[
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
 
-fun! InstallPlug() " Bootstrap plugin manager on new systems.
-lua << EOF
-  print(vim.fn.system({'git', 'clone', 'https://github.com/savq/paq-nvim.git',
-    vim.fn.stdpath('data')..'/site/pack/paqs/start/paq-nvim'}))
-EOF
-endfun
-
 " Use <C-L> to:
 "   - redraw
 "   - clear 'hlsearch'
@@ -264,12 +257,9 @@ require('my.winning')
 --    4. start nvim client in new tmux window
 --       :Start ~/dev/neovim/build/bin/nvim --remote-ui --server ~/.cache/nvim/debug-server.pipe
 
-
-require 'paq' {
-  'savq/paq-nvim', -- Let Paq manage itself
-
+vim.pack.add{
   -- Minimal, yet aesthetic, "screencast" tool.
-  {'https://github.com/NvChad/showkeys', opt=true},
+  { src = 'https://github.com/NvChad/showkeys', opt=true},
 
   'https://github.com/andrewferrier/debugprint.nvim',
 
@@ -285,51 +275,51 @@ require 'paq' {
   'https://github.com/justinmk/vim-dirvish.git',
 
   {
-    'glacambre/firenvim',
-    build = function() vim.fn['firenvim#install'](0) end,
+    src = 'https://github.com/glacambre/firenvim',
+    -- build = function() vim.fn['firenvim#install'](0) end,
   },
 
   'https://github.com/justinmk/vim-sneak.git',
 
-  'tpope/vim-characterize',
-  'tpope/vim-apathy',
-  'tpope/vim-dadbod',
+  'https://github.com/tpope/vim-characterize',
+  'https://github.com/tpope/vim-apathy',
+  'https://github.com/tpope/vim-dadbod',
 
-  {'will133/vim-dirdiff', opt=true},
+  { src = 'https://github.com/will133/vim-dirdiff', opt=true},
   -- gh wrapper: https://github.com/pwntester/octo.nvim
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+  'https://github.com/tpope/vim-fugitive',
+  'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
   'https://github.com/daliusd/ghlite.nvim',
   'https://github.com/lewis6991/gitsigns.nvim',
 
-  'tpope/vim-surround',
+  'https://github.com/tpope/vim-surround',
 
-  'tpope/vim-repeat',
-  'tpope/vim-eunuch',
-  'tpope/vim-rsi',
+  'https://github.com/tpope/vim-repeat',
+  'https://github.com/tpope/vim-eunuch',
+  'https://github.com/tpope/vim-rsi',
 
-  'tpope/vim-unimpaired',
-  'tpope/vim-endwise',
-  'tommcdo/vim-lion',
-  'tommcdo/vim-exchange',
+  'https://github.com/tpope/vim-unimpaired',
+  'https://github.com/tpope/vim-endwise',
+  'https://github.com/tommcdo/vim-lion',
+  'https://github.com/tommcdo/vim-exchange',
 
-  'haya14busa/vim-edgemotion',
+  'https://github.com/haya14busa/vim-edgemotion',
 
-  'tpope/vim-obsession',
+  'https://github.com/tpope/vim-obsession',
 
-  'AndrewRadev/linediff.vim',
-  {'mbbill/undotree', opt=true},
+  'https://github.com/AndrewRadev/linediff.vim',
+  { src = 'https://github.com/mbbill/undotree', opt=true},
 
-  {'guns/vim-sexp', opt=true},
+  { src = 'https://github.com/guns/vim-sexp', opt=true},
 
-  {'tpope/vim-salve', opt=true},
-  {'tpope/vim-fireplace', opt=true},
-  'tpope/vim-dispatch',
+  { src = 'https://github.com/tpope/vim-salve', opt=true},
+  { src = 'https://github.com/tpope/vim-fireplace', opt=true},
+  'https://github.com/tpope/vim-dispatch',
   -- nmap yx       <Plug>(ReplSend)
   -- nmap yxx      <Plug>(ReplSendLine)
   -- xmap <Enter>  <Plug>(ReplSend)
-  'justinmk/nvim-repl',
+  'https://github.com/justinmk/nvim-repl',
 
   'https://github.com/echasnovski/mini.completion',
 
@@ -340,24 +330,24 @@ require 'paq' {
   -- 'https://github.com/mfussenegger/nluarepl',
   -- 'https://github.com/mfussenegger/nvim-overfly',
 
-  {'chrisbra/Colorizer', opt=true},
+  { src = 'https://github.com/chrisbra/Colorizer', opt=true},
 
   'https://github.com/inkarkat/vim-ingo-library',
   'https://github.com/inkarkat/vim-mark',
 
-  'junegunn/fzf',
+  'https://github.com/junegunn/fzf',
   'https://github.com/ibhagwan/fzf-lua',
 
-  'tpope/vim-projectionist',
+  'https://github.com/tpope/vim-projectionist',
 
-  'neovim/nvim-lspconfig',
+  'https://github.com/neovim/nvim-lspconfig',
 
   -- requires nvim-treesitter? :(
   -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
 
   'https://github.com/lewis6991/satellite.nvim',
 
-  {'https://github.com/MeanderingProgrammer/render-markdown.nvim', opt=true},
+  { src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim', opt=true},
 }
 
 _G._myconfig = _G._myconfig or {}
