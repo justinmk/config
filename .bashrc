@@ -141,6 +141,11 @@ if [ "$(uname)" = Darwin ] ; then
       defaults write NSGlobalDomain KeyRepeat -int 2
       defaults write -g KeyRepeat -int 2
       defaults write -g InitialKeyRepeat -int 15
+
+      defaults write com.apple.dock orientation -string left  # Set Dock position (left, bottom, right)
+      defaults write com.apple.dock tilesize -int 48          # Set Dock size (range 16-128)
+      defaults write com.apple.dock autohide -bool true       # Enable auto-hide
+      killall Dock # Restart the Dock to apply changes
     fi
 fi
 

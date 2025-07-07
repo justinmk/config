@@ -235,8 +235,6 @@ function! Cxn(addr) abort
   call chansend(&channel, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
 endfunction
 command! -nargs=* NvimCxn call Cxn(<q-args>)
-
-silent! source ~/.vimrc.local
 ]]
 
 require('my.keymaps')
@@ -783,3 +781,5 @@ else
   config_theme()
   config_completion()
 end
+
+vim.cmd[[silent! source ~/.vimrc.local]]
