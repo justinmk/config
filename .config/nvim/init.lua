@@ -3,23 +3,10 @@ vim.cmd[[
 let g:did_install_default_menus = 1  " avoid stupid menu.vim (saves ~100ms)
 let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
 
-" Use <C-L> to:
-"   - redraw
-"   - clear 'hlsearch'
-"   - update the current diff (if any)
-" Use {count}<C-L> to also:
-"   - clear all extmark namespaces
-nnoremap <silent><expr> <C-L> (v:count ? '<cmd>call nvim_buf_clear_namespace(0,-1,0,-1)<cr>' : '')
-      \ .. ':nohlsearch'.(has('diff')?'\|diffupdate':'')
-      \ .. '<CR><C-L>'
-
-command! Session if filereadable(stdpath('config').'/session.vim') | exe 'source '.stdpath('config').'/session.vim'
-      \ | else | exe 'Obsession '.stdpath('config').'/session.vim' | endif
-set sessionoptions-=blank
-
 "==============================================================================
 " general settings / options
 "==============================================================================
+set sessionoptions-=blank
 set exrc
 set scrolloff=4
 set fillchars+=msgsep:‾,eob:·
@@ -35,8 +22,12 @@ set shada^=r/tmp/,r/private/,rzipfile:,rterm:,rhealth:
 set jumpoptions+=view
 set tabclose=uselast
 set cpoptions-=_
+
+" UI/TUI/GUI
 set guicursor+=t:ver25
 au UIEnter * set guifont=Menlo:h20
+set title
+let &titlestring = (exists('$SSH_TTY') ? 'SSH ' : '') .. '%{fnamemodify(getcwd(),":t")}'
 
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
 " Set softtabstop=-1 to mirror 'shiftwidth'.
@@ -44,49 +35,43 @@ set expandtab shiftwidth=2 softtabstop=-1
 autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
 set listchars+=trail:⣿
 set list
-
 let g:mapleader = "z,"
-
 set undofile
 set fileformats=unix,dos
-
 " [i, [d
 set path+=/usr/lib/gcc/**/include
 " neovim
 set path+=build/src/nvim/auto/**,.deps/build/src/**/,src,src/nvim
 " DWIM 'includeexpr': make gf work on filenames like "a/…" (in diffs, etc.).
 set includeexpr=substitute(v:fname,'^[^\/]*/','','')
-
 let g:sh_noisk = 1
 " set lazyredraw  " no redraws in macros. Disabled for: https://github.com/neovim/neovim/issues/22674
 set ignorecase " case-insensitive searching
 set smartcase  " but become case-sensitive if you type uppercase characters
-
 set foldopen-=search
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
 set shortmess+=cC
-
-nnoremap <silent> yoz :<c-u>if &foldenable && 2==&foldnestmax && 0==&foldlevel\|set nofoldenable\|
-      \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
-
-nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : (v:count ? v:count : 80)<CR><CR>
-
 set nostartofline
 set cursorline
 set diffopt+=hiddenoff,linematch:60,foldcolumn:0
-
-"==============================================================================
-" text, tab and indent
-
 set formatoptions+=rno1l/
 " don't syntax-highlight long lines
 set synmaxcol=200
-
 set linebreak
 set nowrap
 
+" autocomplete / omnicomplete / tags
+set dictionary+=/usr/share/dict/words
+set completeopt=menuone,noselect,noinsert,fuzzy
+set complete+=f,kspell
+set wildignore+=tags,gwt-unitCache/*,*/__pycache__/*,build/*,build.?/*,*/node_modules/*
+" Files with these suffixes get a lower priority when matching a wildcard
+set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
+      \,.o,.obj,.dll,.class,.pyc,.ipynb,.so,.swp,.zip,.exe,.jar,.gz
+" Better `gf`
+set suffixesadd=.java,.cs
 
 augroup config_autocmd
   autocmd!
@@ -116,35 +101,6 @@ augroup END
 
 set wildcharm=<C-Z>
 set wildoptions+=fuzzy
-nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
-" _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
-nnoremap <C-f> :edit **/
-nnoremap \t    :tag<space>
-" See `man fnmatch`.
-nnoremap \g  mS:Ggrep! -q <C-R>=(system(['git','grep','-P'])=~#'no pattern')?'-P':'-E'<CR> <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.mpack' ':/!*.pbf' ':/!*.pdf' ':/!*.po' ':(top,exclude,icase)notebooks/' ':/!data/' ':/!work/' ':/!qgis/' ':/!graphhopper_data/'
-      \<Home><C-Right><C-Right><C-Right><C-Right><left>
-nnoremap 9\g  :Ggrep<m-up><Home><C-Right><C-Right><C-Right><C-Right><left>
-nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
-" search all file buffers (clear qf first).
-nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
-" search current buffer and open results in loclist
-nnoremap \c   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
-
-" =============================================================================
-" autocomplete / omnicomplete / tags
-" =============================================================================
-set dictionary+=/usr/share/dict/words
-set completeopt=menuone,noselect,noinsert,fuzzy
-set complete+=f,kspell
-set wildignore+=tags,gwt-unitCache/*,*/__pycache__/*,build/*,build.?/*,*/node_modules/*
-" Files with these suffixes get a lower priority when matching a wildcard
-set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
-      \,.o,.obj,.dll,.class,.pyc,.ipynb,.so,.swp,.zip,.exe,.jar,.gz
-" Better `gf`
-set suffixesadd=.java,.cs
-
-set title
-let &titlestring = (exists('$SSH_TTY') ? 'SSH ' : '') .. '%{fnamemodify(getcwd(),":t")}'
 
 " scriptease
 " TODO:
@@ -172,11 +128,10 @@ function! TimeCommand(cmd, count) abort
   return ''
 endfunction
 
-nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr><c-r>+<cr>tags: <esc><cmd>set nopaste<cr>
-
+" Neovim/Vim development
+autocmd BufEnter */.vim-src/* setlocal nolist
 command! CdVim          exe 'e '.finddir(".vim-src", expand("~")."/neovim/**,".expand("~")."/dev/neovim/**")<bar>lcd %
 command! NvimTestScreenshot put =\"local Screen = require('test.functional.ui.screen')\nlocal screen = Screen.new()\nscreen:attach()\nscreen:snapshot_util({},true)\"
-
 func! GetVimref(...) abort
   let tagpat = '\v(\d+\.){2}(\d)+'
   let ref = (a:0 is 0 || empty(a:1)) ? matchstr(expand('<cWORD>'), tagpat) : matchstr(a:1, tagpat)
@@ -204,13 +159,6 @@ func! EditVimref(...) abort
   exe 'Gedit '..ref
 endfunc
 command! -nargs=? Vimref call EditVimref('<args>')
-command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*/**' --exclude='**/build*/**' --exclude='cdk.out/**' --exclude='**/cdk.out/**' --exclude='.vim-src/**' --exclude='**/dist/**' --exclude='node_modules/**' --exclude='**/node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
-  \ --exclude=.git --exclude=.svn --exclude=.hg --exclude="*.cache.html" --exclude="*.nocache.js" --exclude="*.min.*" --exclude="*.map" --exclude="*.swp" --exclude="*.bak" --exclude="*.pyc" --exclude="*.class" --exclude="*.sln" --exclude="*.Master" --exclude="*.csproj" --exclude="*.csproj.user" --exclude="*.cache" --exclude="*.dll" --exclude="*.pdb" --exclude=tags --exclude="cscope.*" --exclude="*.tar.*"
-  \ *
-
-" Neovim/Vim development
-autocmd BufEnter */.vim-src/* setlocal nolist
-
 function! Cxn_py() abort
   vsplit
   terminal
@@ -226,7 +174,6 @@ function! Cxn(addr) abort
     call Cxn_py()
     return
   endif
-
   terminal
   let nvim_path = v:progpath " executable('build/bin/nvim') ? 'build/bin/nvim' : 'nvim'
   call chansend(&channel, nvim_path." -u NORC\n")
@@ -235,7 +182,31 @@ function! Cxn(addr) abort
   call chansend(&channel, ":call rpcrequest(j, 'nvim_command', 'call Cxn_py()')\n")
 endfunction
 command! -nargs=* NvimCxn call Cxn(<q-args>)
+
+command! Session if filereadable(stdpath('config').'/session.vim') | exe 'source '.stdpath('config').'/session.vim'
+      \ | else | exe 'Obsession '.stdpath('config').'/session.vim' | endif
+
+command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*/**' --exclude='**/build*/**' --exclude='cdk.out/**' --exclude='**/cdk.out/**' --exclude='.vim-src/**' --exclude='**/dist/**' --exclude='node_modules/**' --exclude='**/node_modules/**' --exclude='venv/**' --exclude='**/site-packages/**' --exclude='data/**' --exclude='dist/**' --exclude='notebooks/**' --exclude='Notebooks/**' --exclude='*graphhopper_data/*.json' --exclude='*graphhopper/*.json' --exclude='*.json' --exclude='qgis/**'
+  \ --exclude=.git --exclude=.svn --exclude=.hg --exclude="*.cache.html" --exclude="*.nocache.js" --exclude="*.min.*" --exclude="*.map" --exclude="*.swp" --exclude="*.bak" --exclude="*.pyc" --exclude="*.class" --exclude="*.sln" --exclude="*.Master" --exclude="*.csproj" --exclude="*.csproj.user" --exclude="*.cache" --exclude="*.dll" --exclude="*.pdb" --exclude=tags --exclude="cscope.*" --exclude="*.tar.*"
+  \ *
+
 ]]
+
+vim.g['sneak#label'] = 1
+vim.g['sneak#use_ic_scs'] = 1
+vim.g['sneak#absolute_dir'] = 1
+vim.cmd[[map <M-;> <Plug>Sneak_,]]
+
+vim.g.surround_indent = 0
+vim.g.surround_no_insert_mappings = 1
+
+vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issues/40
+
+vim.g.linediff_buffer_type = 'scratch'
+
+vim.g.clojure_fold = 1
+vim.g.sexp_filetypes = ''
+vim.g.salve_auto_start_repl = 1
 
 require('my.keymaps')
 require('my.bufdelete')
@@ -254,7 +225,6 @@ require('my.winning')
 --       :Start! lldb --source lldbinit --one-line run -- ~/dev/neovim/build/bin/nvim --headless --listen ~/.cache/nvim/debug-server.pipe
 --    4. start nvim client in new tmux window
 --       :Start ~/dev/neovim/build/bin/nvim --remote-ui --server ~/.cache/nvim/debug-server.pipe
-
 vim.pack.add{
   -- Minimal, yet aesthetic, "screencast" tool.
   { src = 'https://github.com/NvChad/showkeys', opt=true},
@@ -377,100 +347,24 @@ vim.api.nvim_create_autocmd({'FileType'}, {
   end
 })
 
-vim.cmd([[
-  let g:sneak#label = 1
-  let g:sneak#use_ic_scs = 1
-  let g:sneak#absolute_dir = 1
-  map <M-;> <Plug>Sneak_,
-]])
-
-vim.g.surround_indent = 0
-vim.g.surround_no_insert_mappings = 1
-
-vim.g.dispatch_no_tmux_make = 1  -- Prefer job strategy even in tmux.
--- TODO:
--- run closest zig test case: https://github.com/mfussenegger/dotfiles/commit/8e827b72e2b72e7fb240e8a270d786cffc38a2a5#diff-7d18f76b784e0cb761b7fc0a995680cf2a27b6f77031b60b854248478aed8b6fR5
--- run closest neovim lua test case via make: https://github.com/mfussenegger/dotfiles/commit/a32190b76b678517849d6da84d56836d44a22f2d#diff-f81a3d06561894224d8353f9babc6a7fa9b4962a40c191eb5c23c9cdcc6004c0R158
-vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
--- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
-
-vim.cmd([[
-  nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
-  nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
-
-  " Configure https://github.com/inkarkat/vim-mark until it enrages me enough to rewrite it.
-  let g:mw_no_mappings = 1
-  "nnoremap <silent> m.. :exe 'Mark /\%'..line('.')..'l./'<cr>
-  nnoremap <silent> m.. :exe 'Mark /\V'..escape(getline('.'), '/\')..'/'<cr>
-  nnoremap <silent> m*  :exe 'Mark /\V'..escape(substitute('<c-r><c-w>', "'", "''", 'g'), '/\')..'/'<cr>
-  nmap     <silent> m?  <Plug>MarkToggle
-  nnoremap <silent> m<bs> :MarkClear<cr>
-  nmap     <silent> ]m <Plug>MarkSearchAnyOrDefaultNext
-  nmap     <silent> [m <Plug>MarkSearchAnyOrDefaultPrev
-  xmap              m*  <Plug>MarkIWhiteSet
-]])
-
-vim.cmd([[
-  nmap <C-j> m'<Plug>(edgemotion-j)
-  nmap <C-k> m'<Plug>(edgemotion-k)
-  xmap <C-j> m'<Plug>(edgemotion-j)
-  xmap <C-k> m'<Plug>(edgemotion-k)
-  omap <C-j> <Plug>(edgemotion-j)
-  omap <C-k> <Plug>(edgemotion-k)
-]])
-
-vim.cmd([====[
-  inoremap [[ [[ ]]<Left><Left><Left>
-  inoremap [= [=[ ]=]<Left><Left><Left><Left>
-  inoremap {<CR> {<CR>}<Esc>O
-  inoremap {; {<CR>};<Esc>O
-  inoremap {, {<CR>},<Esc>O
-  inoremap [<CR> [<CR>]<Esc>O
-  inoremap [; [<CR>];<Esc>O
-  inoremap [, [<CR>],<Esc>O
-]====])
-
--- g?: Web search
-vim.keymap.set('n', 'g??', function()
-  vim.ui.open(('https://google.com/search?q=%s'):format(vim.fn.expand('<cword>')))
-end)
-vim.keymap.set('x', 'g??', function()
-  vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(
-    vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'), { type=vim.fn.mode() }), ' '))))
-  vim.api.nvim_input('<esc>')
-end)
-
-vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issues/40
-
-vim.g.linediff_buffer_type = 'scratch'
-
-vim.g.clojure_fold = 1
-vim.g.sexp_filetypes = ''
-vim.g.salve_auto_start_repl = 1
-
 vim.api.nvim_set_var('projectionist_heuristics', {
-    ['package.json'] = {
-      ['package.json'] = {['alternate'] = {'package-lock.json'}},
-      ['package-lock.json'] = {['alternate'] = {'package.json'}},
-    },
-    ['*.sln'] = {
-      ['*.cs'] = {['alternate'] = {'{}.designer.cs'}},
-      ['*.designer.cs'] = {['alternate'] = {'{}.cs'}},
-    },
-    ['/*.c|src/*.c'] = {
-      ['*.c'] = {['alternate'] = {'../include/{}.h', '{}.h'}},
-      ['*.h'] = {['alternate'] = '{}.c'},
-    },
-    ['Makefile'] = {
-      ['Makefile'] = {['alternate'] = 'CMakeLists.txt'},
-      ['CMakeLists.txt'] = {['alternate'] = 'Makefile'},
-    },
-  })
-
--- Eager-load these plugins so we can override their settings. {{{
-vim.cmd([[
-  runtime! plugin/rsi.vim
-]])
+  ['package.json'] = {
+    ['package.json'] = {['alternate'] = {'package-lock.json'}},
+    ['package-lock.json'] = {['alternate'] = {'package.json'}},
+  },
+  ['*.sln'] = {
+    ['*.cs'] = {['alternate'] = {'{}.designer.cs'}},
+    ['*.designer.cs'] = {['alternate'] = {'{}.cs'}},
+  },
+  ['/*.c|src/*.c'] = {
+    ['*.c'] = {['alternate'] = {'../include/{}.h', '{}.h'}},
+    ['*.h'] = {['alternate'] = '{}.c'},
+  },
+  ['Makefile'] = {
+    ['Makefile'] = {['alternate'] = 'CMakeLists.txt'},
+    ['CMakeLists.txt'] = {['alternate'] = 'Makefile'},
+  },
+})
 
 local function on_attach(client, bufnr)
   vim.cmd([[

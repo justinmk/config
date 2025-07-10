@@ -1,4 +1,4 @@
-vim.cmd[[
+vim.cmd[==[
 " key mappings/bindings =================================================== {{{
 "
 " available mappings:
@@ -131,4 +131,81 @@ inoremap <c-r>R <c-o>:<up><home>R! <cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <leader>vr   :Vimref<cr>
 
-]]
+nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
+nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
+
+" Configure https://github.com/inkarkat/vim-mark until it enrages me enough to rewrite it.
+let g:mw_no_mappings = 1
+"nnoremap <silent> m.. :exe 'Mark /\%'..line('.')..'l./'<cr>
+nnoremap <silent> m.. :exe 'Mark /\V'..escape(getline('.'), '/\')..'/'<cr>
+nnoremap <silent> m*  :exe 'Mark /\V'..escape(substitute('<c-r><c-w>', "'", "''", 'g'), '/\')..'/'<cr>
+nmap     <silent> m?  <Plug>MarkToggle
+nnoremap <silent> m<bs> :MarkClear<cr>
+nmap     <silent> ]m <Plug>MarkSearchAnyOrDefaultNext
+nmap     <silent> [m <Plug>MarkSearchAnyOrDefaultPrev
+xmap              m*  <Plug>MarkIWhiteSet
+
+nmap <C-j> m'<Plug>(edgemotion-j)
+nmap <C-k> m'<Plug>(edgemotion-k)
+xmap <C-j> m'<Plug>(edgemotion-j)
+xmap <C-k> m'<Plug>(edgemotion-k)
+omap <C-j> <Plug>(edgemotion-j)
+omap <C-k> <Plug>(edgemotion-k)
+
+inoremap [[ [[ ]]<Left><Left><Left>
+inoremap [= [=[ ]=]<Left><Left><Left><Left>
+inoremap {<CR> {<CR>}<Esc>O
+inoremap {; {<CR>};<Esc>O
+inoremap {, {<CR>},<Esc>O
+inoremap [<CR> [<CR>]<Esc>O
+inoremap [; [<CR>];<Esc>O
+inoremap [, [<CR>],<Esc>O
+
+" Use <C-L> to:
+"   - redraw
+"   - clear 'hlsearch'
+"   - update the current diff (if any)
+" Use {count}<C-L> to also:
+"   - clear all extmark namespaces
+nnoremap <silent><expr> <C-L> (v:count ? '<cmd>call nvim_buf_clear_namespace(0,-1,0,-1)<cr>' : '')
+      \ .. ':nohlsearch'.(has('diff')?'\|diffupdate':'')
+      \ .. '<CR><C-L>'
+
+nnoremap <silent> yoz :<c-u>if &foldenable && 2==&foldnestmax && 0==&foldlevel\|set nofoldenable\|
+      \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
+
+nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : (v:count ? v:count : 80)<CR><CR>
+
+nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
+" _opt-in_ to sloppy-search https://github.com/neovim/neovim/issues/3209#issuecomment-133183790
+nnoremap <C-f> :edit **/
+nnoremap \t    :tag<space>
+" See `man fnmatch`.
+nnoremap \g  mS:Ggrep! -q <C-R>=(system(['git','grep','-P'])=~#'no pattern')?'-P':'-E'<CR> <C-R>=shellescape(fnameescape(expand('<cword>')))<CR> -- ':/' ':/!*.mpack' ':/!*.pbf' ':/!*.pdf' ':/!*.po' ':(top,exclude,icase)notebooks/' ':/!data/' ':/!work/' ':/!qgis/' ':/!graphhopper_data/'
+      \<Home><C-Right><C-Right><C-Right><C-Right><left>
+nnoremap 9\g  :Ggrep<m-up><Home><C-Right><C-Right><C-Right><C-Right><left>
+nnoremap \v  mS:<c-u>noau vimgrep /\C/j **<left><left><left><left><left>
+" search all file buffers (clear qf first).
+nnoremap \b  mS:<c-u>cexpr []<bar>exe 'bufdo silent! noau vimgrepadd/\C/j %'<bar>botright copen<s-left><s-left><left><left><left>
+" search current buffer and open results in loclist
+nnoremap \c   ms:<c-u>lvimgrep // % <bar>lw<s-left><left><left><left><left>
+
+nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=strftime('%Y%m%d')<cr><cr><c-r>+<cr>tags: <esc><cmd>set nopaste<cr>
+
+]==]
+
+-- TODO:
+-- run closest zig test case: https://github.com/mfussenegger/dotfiles/commit/8e827b72e2b72e7fb240e8a270d786cffc38a2a5#diff-7d18f76b784e0cb761b7fc0a995680cf2a27b6f77031b60b854248478aed8b6fR5
+-- run closest neovim lua test case via make: https://github.com/mfussenegger/dotfiles/commit/a32190b76b678517849d6da84d56836d44a22f2d#diff-f81a3d06561894224d8353f9babc6a7fa9b4962a40c191eb5c23c9cdcc6004c0R158
+vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
+-- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
+
+-- g?: Web search
+vim.keymap.set('n', 'g??', function()
+  vim.ui.open(('https://google.com/search?q=%s'):format(vim.fn.expand('<cword>')))
+end)
+vim.keymap.set('x', 'g??', function()
+  vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(
+    vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'), { type=vim.fn.mode() }), ' '))))
+  vim.api.nvim_input('<esc>')
+end)
