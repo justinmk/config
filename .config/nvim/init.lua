@@ -66,7 +66,7 @@ set foldopen-=search
 set timeoutlen=3000
 set noshowmode " Hide the mode text (e.g. -- INSERT --)
 set foldlevelstart=99 "open all folds by default
-if has('patch-7.4.314') | set shortmess+=cC | endif
+set shortmess+=cC
 
 nnoremap <silent> yoz :<c-u>if &foldenable && 2==&foldnestmax && 0==&foldlevel\|set nofoldenable\|
       \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
@@ -751,7 +751,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 if vim.g.vscode then
   require('my.vscode-neovim')
 else
-  require('vim._extui').enable({})
+  require('vim._extui').enable({msg={target='cmd'}})
 
   -- require("flatten").setup{
   --   hooks = {},
