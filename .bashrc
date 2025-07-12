@@ -89,9 +89,8 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M)\[\e[0m\] \u@\h \w\[\e[0m\]
-\033]133;A\007$ '
+\[\e]133;A\007\]\$ '
 [ -z $SSH_TTY ] || PS1='\[\e[0;30m\]\[\e[47m\]SSH\[\e[0m\] '$PS1
-# Mark end of prompt (OSC 133).
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
