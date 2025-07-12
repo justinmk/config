@@ -33,7 +33,7 @@ shopt -s histappend
 # - mark start of prompt (OSC 133)
 # - set term title to [SSH]$_MY_TITLE or [SSH]cwd
 # - append to history file
-PROMPT_COMMAND='printf "\033]133;A\007\033]0;${SSH_TTY:+SSH }${_MY_TITLE:-${PWD##*/}}\007" ; history -a'
+PROMPT_COMMAND='printf "\033]0;${SSH_TTY:+SSH }${_MY_TITLE:-${PWD##*/}}\007" ; history -a'
 # truncate long paths to ".../foo/bar/baz"
 PROMPT_DIRTRIM=4
 
@@ -89,7 +89,7 @@ elif [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M)\[\e[0m\] \u@\h \w\[\e[0m\]
-$ '
+\033]133;A\007$ '
 [ -z $SSH_TTY ] || PS1='\[\e[0;30m\]\[\e[47m\]SSH\[\e[0m\] '$PS1
 # Mark end of prompt (OSC 133).
 
