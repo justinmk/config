@@ -10,6 +10,11 @@ vim.cmd[==[
 
 "tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 
+nnoremap j gj
+nnoremap k gk
+xnoremap j gj
+xnoremap k gk
+
 :xnoremap y zy
 :nnoremap p zp
 :nnoremap P zP
@@ -131,6 +136,7 @@ inoremap <c-r>R <c-o>:<up><home>R! <cr>
 nnoremap <leader>vv   :exe 'e' fnameescape(resolve($MYVIMRC))<cr>
 nnoremap <leader>vr   :Vimref<cr>
 
+" Make "*" stay on the first match.
 nnoremap <silent> *  ms:<c-u>let @/='\V\<'.escape(expand('<cword>'), '/\').'\>'<bar>call histadd('/',@/)<bar>set hlsearch<cr>
 nnoremap <silent> g* ms:<c-u>let @/='\V' . escape(expand('<cword>'), '/\')     <bar>call histadd('/',@/)<bar>set hlsearch<cr>
 
