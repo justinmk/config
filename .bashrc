@@ -30,10 +30,14 @@ HISTTIMEFORMAT='%F %T '
 # append to the history file, don't overwrite it
 shopt -s histappend
 # Before each command:
+# - announce current directory (OSC 7)
 # - mark start of prompt (OSC 133)
 # - set term title to [SSH]$_MY_TITLE or [SSH]cwd
 # - append to history file
-PROMPT_COMMAND='printf "\033]0;${SSH_TTY:+SSH }${_MY_TITLE:-${PWD##*/}}\007" ; history -a'
+function print_osc7() {
+  printf '\033]7;file://%s%s\033\\' "$HOSTNAME" "$PWD"
+}
+PROMPT_COMMAND='print_osc7; printf "\033]0;${SSH_TTY:+SSH }${_MY_TITLE:-${PWD##*/}}\007" ; history -a'
 # truncate long paths to ".../foo/bar/baz"
 PROMPT_DIRTRIM=4
 

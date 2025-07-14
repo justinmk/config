@@ -600,14 +600,26 @@ local function config_term()
   })
   vim.api.nvim_create_autocmd('TermRequest', {
     group = augroup,
-    callback = function(args)
-      if string.match(args.data.sequence, '^\027]133;A') then
-        local lnum = args.data.cursor[1]
-        vim.api.nvim_buf_set_extmark(args.buf, vim.api.nvim_create_namespace('my.terminal.prompt'), lnum - 1, 0, {
+    callback = function(ev)
+      if string.match(ev.data.sequence, '^\027]133;A') then
+        -- OSC 133: shell-prompt
+        local lnum = ev.data.cursor[1]
+        vim.api.nvim_buf_set_extmark(ev.buf, vim.api.nvim_create_namespace('my.terminal.prompt'), lnum - 1, 0, {
           -- Replace with sign text and highlight group of choice
           sign_text = '∙',
           -- sign_hl_group = 'SpecialChar',
         })
+      elseif string.match(ev.data.sequence, '\027]7;') then
+        -- OSC 7: dir-change
+        local dir = string.gsub(ev.data.sequence, '\027]7;file://[^/]*', '')
+        if vim.fn.isdirectory(dir) == 0 then
+          vim.notify('invalid dir: '..dir)
+          return
+        end
+        vim.b[ev.buf].osc7_dir = dir
+        if vim.api.nvim_get_current_buf() == ev.buf then
+          vim.cmd.lcd(dir)
+        end
       end
     end,
   })
