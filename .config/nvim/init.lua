@@ -609,9 +609,12 @@ local function config_term()
           sign_text = '∙',
           -- sign_hl_group = 'SpecialChar',
         })
-      elseif string.match(ev.data.sequence, '\027]7;') then
+      end
+
+      local val, n = string.gsub(ev.data.sequence, '^\027]7;file://[^/]*', '')
+      if n > 0 then
         -- OSC 7: dir-change
-        local dir = string.gsub(ev.data.sequence, '\027]7;file://[^/]*', '')
+        local dir = val
         if vim.fn.isdirectory(dir) == 0 then
           vim.notify('invalid dir: '..dir)
           return
