@@ -1,124 +1,128 @@
 {
-    "editor.minimap.enabled": false,
-    "terminal.integrated.rendererType": "dom",
-    "terminal.integrated.macOptionIsMeta": true,
-    "files.insertFinalNewline": true,
-    "vscode-neovim.revealCursorScrollLine": true,
-    "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim",
-    "vscode-neovim.mouseSelectionStartVisualMode": true,
-    "vscode-neovim.mouseSelectionVisualMode": true,
-    "editor.cursorBlinking": "expand",
-    "editor.stickyScroll.enabled": true,
-    "workbench.tree.enableStickyScroll": true,
-    "window.zoomLevel": 1,
-    "extensions.experimental.affinity": {
-        "asvetliakov.vscode-neovim": 1
-    },
-    "explorer.confirmDelete": false,
-    "explorer.autoReveal": false,
-    "editor.tokenColorCustomizations": {
-        "comments": "#9f9f9f"
-    },
-    "javascript.preferences.importModuleSpecifier": "relative",
-    "typescript.preferences.importModuleSpecifier": "relative",
-    "editor.renderWhitespace": "none",
-    "githubPullRequests.remotes": [
-        "origin",
-        "upstream",
-        "public"
-    ],
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true
-    },
-    "search.exclude": {
-        "**/.vscode-test-web/": true,
-        "**/.vscode-test/": true,
-        "**/aws-sam-cli-src/": true,
-        "**/testFixtures/workspaceFolder/": true
-    },
-    "go.toolsManagement.autoUpdate": true,
-    "notebook.cellToolbarLocation": {
-        "default": "right",
-        "jupyter-notebook": "left"
-    },
-    "redhat.telemetry.enabled": false,
-    "editor.inlineSuggest.suppressSuggestions": true,
-    "editor.inlineSuggest.showToolbar": "always",
-    "window.density.editorTabHeight": "compact",
-    "window.commandCenter": false,
-    "terminal.integrated.shellIntegration.enabled": true,
-    "git.openRepositoryInParentFolders": "never",
-    "git.blame.statusBarItem.enabled": true,
-    "git.blame.editorDecoration.enabled": true,
-    "extensions.ignoreRecommendations": true,
-    "remote.SSH.defaultExtensions": [
-        "amazonwebservices.aws-toolkit-vscode"
-    ],
-    "yaml.customTags": [
-        "!And",
-        "!And sequence",
-        "!If",
-        "!If sequence",
-        "!Not",
-        "!Not sequence",
-        "!Equals",
-        "!Equals sequence",
-        "!Or",
-        "!Or sequence",
-        "!FindInMap",
-        "!FindInMap sequence",
-        "!Base64",
-        "!Join",
-        "!Join sequence",
-        "!Cidr",
-        "!Ref",
-        "!Sub",
-        "!Sub sequence",
-        "!GetAtt",
-        "!GetAZs",
-        "!ImportValue",
-        "!ImportValue sequence",
-        "!Select",
-        "!Select sequence",
-        "!Split",
-        "!Split sequence"
-    ],
-    "aws.dev.forceDevMode": true,
-    "_aws.dev.devenvTimeoutMs": 200,
-    "_aws.dev.logfile": "~/awstoolkit.log",
-    "_aws.dev.forceInstallTools": true,
-    "aws.suppressPrompts": {
-        "apprunnerNotifyPause": false,
-        "apprunnerNotifyPricing": false,
-        "codeCatalystConnectionExpired": false,
-        "createCredentialsProfile": false,
-        "ecsRunCommand": false,
-        "ecsRunCommandDisable": false,
-        "ecsRunCommandEnable": false,
-        "fileViewerEdit": false,
-        "minIdeVersion": false,
-        "regionAddAutomatically": false,
-        "remoteConnected": true,
-        "samcliConfirmDevStack": false,
-        "ssoCacheError": false,
-        "yamlExtPrompt": false
-    },
-    "amazonQ.suppressPrompts": {
-        "amazonQSessionConfigurationMessage": true,
-        "amazonQChatDisclaimer": true,
-        "amazonQChatPairProgramming": true
-    },
-    "amazonQ.workspaceIndex": false,
-    "_amazonQ.experiments": {
-        "amazonqChatLSP": true,
-        "amazonqLSP": true
-    },
-    "_aws.experiments": {
-        "amazonqChatLSP": true,
-        "amazonqLSP": true
-    },
-    "amazonq.trace.server": "debug"
+  "_amazonQ.experiments": {
+    "amazonqChatLSP": true,
+    "amazonqLSP": true
+  },
+  "_aws.dev.devenvTimeoutMs": 200,
+  "_aws.dev.forceInstallTools": true,
+  "_aws.dev.logfile": "~/awstoolkit.log",
+  "_aws.experiments": {
+    "amazonqChatLSP": true,
+    "amazonqLSP": true
+  },
+  "amazonQ.suppressPrompts": {
+    "amazonQChatDisclaimer": true,
+    "amazonQChatPairProgramming": true,
+    "amazonQSessionConfigurationMessage": true
+  },
+  "amazonQ.workspaceIndex": false,
+  "amazonq.trace.server": "debug",
+  "aws.dev.forceDevMode": true,
+  "aws.suppressPrompts": {
+    "apprunnerNotifyPause": false,
+    "apprunnerNotifyPricing": false,
+    "codeCatalystConnectionExpired": false,
+    "createCredentialsProfile": false,
+    "ecsRunCommand": false,
+    "ecsRunCommandDisable": false,
+    "ecsRunCommandEnable": false,
+    "fileViewerEdit": false,
+    "minIdeVersion": false,
+    "regionAddAutomatically": false,
+    "remoteConnected": true,
+    "samcliConfirmDevStack": false,
+    "ssoCacheError": false,
+    "yamlExtPrompt": false
+  },
+  "editor.accessibilitySupport": "off",
+  "editor.cursorBlinking": "expand",
+  "editor.inlineSuggest.showToolbar": "always",
+  "editor.inlineSuggest.suppressSuggestions": true,
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "none",
+  "editor.stickyScroll.enabled": true,
+  "editor.tokenColorCustomizations": {
+    "comments": "#9f9f9f"
+  },
+  "explorer.autoReveal": false,
+  "explorer.confirmDelete": false,
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "extensions.ignoreRecommendations": true,
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.factorypath": true,
+    "**/.project": true,
+    "**/.settings": true
+  },
+  "files.insertFinalNewline": true,
+  "git.blame.editorDecoration.enabled": true,
+  "git.blame.statusBarItem.enabled": true,
+  "git.openRepositoryInParentFolders": "never",
+  "githubPullRequests.remotes": [
+    "origin",
+    "upstream",
+    "public"
+  ],
+  "go.toolsManagement.autoUpdate": true,
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "redhat.telemetry.enabled": false,
+  "remote.SSH.defaultExtensions": [
+    "amazonwebservices.aws-toolkit-vscode"
+  ],
+  "search.exclude": {
+    "**/.vscode-test-web/": true,
+    "**/.vscode-test/": true,
+    "**/aws-sam-cli-src/": true,
+    "**/testFixtures/workspaceFolder/": true
+  },
+  "terminal.integrated.macOptionIsMeta": true,
+  "terminal.integrated.rendererType": "dom",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "vscode-neovim.mouseSelectionStartVisualMode": true,
+  "vscode-neovim.mouseSelectionVisualMode": true,
+  "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim",
+  "vscode-neovim.revealCursorScrollLine": true,
+  "window.commandCenter": false,
+  "window.density.editorTabHeight": "compact",
+  "window.zoomLevel": 1,
+  "workbench.tree.enableStickyScroll": true,
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  "terminal.integrated.env.osx": {
+    "Q_NEW_SESSION": "1"
+  }
 }
