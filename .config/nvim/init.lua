@@ -431,6 +431,25 @@ local function config_lsp()
     -- end,
   })
   vim.lsp.enable('clangd')
+
+  -- maven package: https://central.sonatype.com/artifact/software.amazon.smithy/smithy-language-server
+  -- smithy-language-server has no docs, so look at: https://github.com/smithy-lang/smithy-vscode/blob/600cfcf0db65edce85f02e6d50f5fa2b0862bc8d/src/extension.ts#L78
+  vim.lsp.config('smithy-lsp', {
+    -- brew install coursier
+    -- coursier launch software.amazon.smithy:smithy-language-server:0.7.0 --jvm corretto:21 -r m2local -M software.amazon.smithy.lsp.Main -- 0
+    cmd = { 'coursier', 'launch', 'software.amazon.smithy:smithy-language-server:0.7.0', '-M', 'software.amazon.smithy.lsp.Main', '--' , '0' },
+    filetypes = { 'smithy' },
+    root_markers = { 'smithy-build.json' },
+    message_level = vim.lsp.protocol.MessageType.Log,
+    init_options = {
+      statusBarProvider = 'show-message',
+      isHttpEnabled = true,
+      compilerOptions = {
+        snippetAutoIndent = false,
+      },
+    },
+  })
+  vim.lsp.enable('smithy-lsp')
 end
 
 local function config_term_esc()
