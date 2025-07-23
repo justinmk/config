@@ -105,7 +105,7 @@ local function ctrl_g()
   -- Show current directory.
   table.insert(msg, { ('dir: %s\n'):format(fn.fnamemodify(fn.getcwd(), ':~')) })
   -- Show current session.
-  table.insert(msg, { ('ses: %s\n'):format(#vim.v.this_session > 0 and fn.fnamemodify(vim.v.this_session ':~') or '?') })
+  table.insert(msg, { ('ses: %s\n'):format(#vim.v.this_session > 0 and fn.fnamemodify(vim.v.this_session, ':~') or '?') })
   -- Show process id.
   table.insert(msg, { ('PID: %s\n'):format(fn.getpid()) })
   -- Show current context.
