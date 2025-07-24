@@ -432,7 +432,7 @@ local function config_lsp()
   })
   vim.lsp.enable('clangd')
 
-  vim.lsp.enable('smithy-lsp')
+  vim.lsp.enable('smithy_ls')
 end
 
 local function config_term_esc()
