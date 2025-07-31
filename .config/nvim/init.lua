@@ -237,7 +237,7 @@ vim.pack.add{
   --    nvim ./+foo
   'https://github.com/lewis6991/fileline.nvim',
   -- Open files from :term in the parent Nvim.
-  -- 'https://github.com/willothy/flatten.nvim',
+  'https://github.com/brianhuster/unnest.nvim',
 
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
@@ -260,7 +260,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
   'https://github.com/daliusd/ghlite.nvim',
-  { src = 'https://github.com/lewis6991/gitsigns.nvim', version = '60676707b6a5' },
+  { src = 'https://github.com/lewis6991/gitsigns.nvim' },
 
   'https://github.com/tpope/vim-surround',
 
@@ -399,6 +399,7 @@ local function config_lsp()
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
   table.insert(runtime_path, 'lua/?/init.lua')
+  -- TODO: migrate to emmylua_ls. https://old.reddit.com/r/neovim/comments/1mdtr4g/emmylua_ls_is_supersnappy/
   vim.lsp.config('lua_ls', {
     settings = {
       Lua = {
@@ -665,10 +666,6 @@ if vim.g.vscode then
 else
   require('vim._extui').enable({msg={target='cmd'}})
 
-  -- require("flatten").setup{
-  --   hooks = {},
-  --   nest_if_no_args = true,
-  -- }
   require('satellite').setup()
 
   -- require('ghlite').setup{}
