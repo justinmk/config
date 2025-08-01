@@ -260,7 +260,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
   'https://github.com/daliusd/ghlite.nvim',
-  { src = 'https://github.com/lewis6991/gitsigns.nvim', version = '60676707b6a5' },
+  { src = 'https://github.com/lewis6991/gitsigns.nvim' },
 
   'https://github.com/tpope/vim-surround',
 
