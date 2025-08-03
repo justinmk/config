@@ -69,6 +69,12 @@ path_prepend "/opt/homebrew/opt/curl/bin/"
 # path_prepend "${HOME}/dasht/bin"
 # path_prepend "${HOME}/ctags/"
 
+if [ -f /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 # Add these dirs to $MANPATH.
 [ -d "${HOME}/dasht/man" ] && MANPATH="${HOME}/dasht/man:$MANPATH"
 
@@ -80,12 +86,15 @@ if [ -r '/opt/homebrew/etc/profile.d/bash_completion.sh' ]; then
   # homebrew uses /opt/homebrew for ARM packages. https://apple.stackexchange.com/a/410829/36305
   . '/opt/homebrew/etc/profile.d/bash_completion.sh'
 
-  # These are separate, wtf?
+  # Requires "brew install git":
   . /opt/homebrew/etc/bash_completion.d/git-completion.bash
+  # Requires "brew install node":
   . /opt/homebrew/etc/bash_completion.d/npm
 elif [ -r '/usr/local/etc/profile.d/bash_completion.sh' ]; then
   # homebrew uses /usr/local for Intel packages. https://apple.stackexchange.com/a/410829/36305
   . '/usr/local/etc/profile.d/bash_completion.sh'
+elif [ -r '/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh' ]; then
+   . '/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh'
 elif [ -d '/usr/local/etc/bash_completion.d' ]; then
   for f in '/usr/local/etc/bash_completion.d/'*; do
     [ -r "$f" ] && source "$f"
