@@ -26,6 +26,9 @@ shell-integration = none
 macos-option-as-alt = true
 macos-titlebar-style = tabs
 
+working-directory = home
+window-inherit-working-directory = false
+
 background = #000000
 foreground = #ffffff
 
