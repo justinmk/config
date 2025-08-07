@@ -36,3 +36,5 @@ obj
 *.pyc
 *.so
 
+# build
+cdk.context.json
