@@ -227,8 +227,6 @@ require('my.winning')
 --    4. start nvim client in new tmux window
 --       :Start ~/dev/neovim/build/bin/nvim --remote-ui --server ~/.cache/nvim/debug-server.pipe
 vim.pack.add{
-  -- Minimal, yet aesthetic, "screencast" tool.
-  { src = 'https://github.com/NvChad/showkeys', opt=true},
 
   'https://github.com/andrewferrier/debugprint.nvim',
 
@@ -254,12 +252,9 @@ vim.pack.add{
   'https://github.com/tpope/vim-apathy',
   'https://github.com/tpope/vim-dadbod',
 
-  { src = 'https://github.com/will133/vim-dirdiff', opt=true},
-  -- gh wrapper: https://github.com/pwntester/octo.nvim
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
-  'https://github.com/daliusd/ghlite.nvim',
   { src = 'https://github.com/lewis6991/gitsigns.nvim' },
 
   'https://github.com/tpope/vim-surround',
@@ -278,12 +273,6 @@ vim.pack.add{
   'https://github.com/tpope/vim-obsession',
 
   'https://github.com/AndrewRadev/linediff.vim',
-  { src = 'https://github.com/mbbill/undotree', opt=true},
-
-  { src = 'https://github.com/guns/vim-sexp', opt=true},
-
-  { src = 'https://github.com/tpope/vim-salve', opt=true},
-  { src = 'https://github.com/tpope/vim-fireplace', opt=true},
   'https://github.com/tpope/vim-dispatch',
   -- nmap yx       <Plug>(ReplSend)
   -- nmap yxx      <Plug>(ReplSendLine)
@@ -299,8 +288,6 @@ vim.pack.add{
   -- 'https://github.com/mfussenegger/nluarepl',
   -- 'https://github.com/mfussenegger/nvim-overfly',
 
-  { src = 'https://github.com/chrisbra/Colorizer', opt=true},
-
   'https://github.com/inkarkat/vim-ingo-library',
   'https://github.com/inkarkat/vim-mark',
 
@@ -315,9 +302,23 @@ vim.pack.add{
   -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
 
   'https://github.com/lewis6991/satellite.nvim',
-
-  { src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim', opt=true},
 }
+-- On-demand plugins, not loaded until ":packadd …".
+vim.pack.add({
+  -- Minimal, yet aesthetic, "screencast" tool.
+  'https://github.com/NvChad/showkeys',
+  -- gh wrapper: https://github.com/pwntester/octo.nvim
+  'https://github.com/daliusd/ghlite.nvim',
+  'https://github.com/will133/vim-dirdiff',
+  'https://github.com/mbbill/undotree',
+  'https://github.com/guns/vim-sexp',
+  'https://github.com/tpope/vim-salve',
+  'https://github.com/tpope/vim-fireplace',
+  'https://github.com/chrisbra/Colorizer',
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+}, {
+  load = function() end,
+})
 
 _G._myconfig = _G._myconfig or {}
 local augroup = vim.api.nvim_create_augroup('my.config', {})
