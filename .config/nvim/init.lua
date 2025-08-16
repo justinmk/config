@@ -545,6 +545,7 @@ local function config_theme()
         highlight Comment ctermfg=gray
       endif
       highlight Visual guibg=fg guifg=bg
+      highlight MsgSeparator guibg=bg guifg=fg
     ]]
   end
   vim.api.nvim_create_autocmd({'ColorScheme'}, {
