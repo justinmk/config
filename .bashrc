@@ -198,11 +198,13 @@ ghrebase1() {
 }
 
 p() {
-  if [ "$(uname)" = Darwin ] ; then
-    ps -e "$@" -o state,pid,rss,vsz,command
-  else
-    ps -e "$@" -o state,pidns,pid,rss,vsz,command
-  fi
+  (
+    if [ "$(uname)" = Darwin ] ; then
+      ps -e "$@" -o state,pid,rss,vsz,command
+    else
+      ps -e "$@" -o state,pidns,pid,rss,vsz,command
+    fi
+  ) | grep -v ' grep '
 }
 
 _Z_DATA="$HOME/.config/z/z"
