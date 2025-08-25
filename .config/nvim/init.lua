@@ -309,7 +309,7 @@ vim.pack.add({
   'https://github.com/NvChad/showkeys',
   -- gh wrapper: https://github.com/pwntester/octo.nvim
   'https://github.com/daliusd/ghlite.nvim',
-  'https://github.com/will133/vim-dirdiff',
+  'https://github.com/deathbeam/difftool.nvim',
   'https://github.com/mbbill/undotree',
   'https://github.com/guns/vim-sexp',
   'https://github.com/tpope/vim-salve',
