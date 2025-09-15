@@ -1,3 +1,5 @@
+vim.g.fugitive_legacy_commands = false
+
 vim.cmd[=[
 augroup config_fug
   autocmd!
