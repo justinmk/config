@@ -135,7 +135,7 @@ inoremap <c-r>R <c-o>:<up><home>R! <cr>
 " special-purpose mappings/commands ===========================================
 nnoremap <expr> <leader>r '<cmd>update<bar>confirm restart edit '..fnameescape(fnamemodify(expand('%'),':p'))..'<cr>'
 nnoremap <leader>vv   :exe 'edit' fnameescape(resolve($MYVIMRC))<cr>
-nnoremap <leader>vl   :exe 'edit' fnameescape(fnamemodify(resolve($MYVIMRC),':p:h'))..'/lua/my/'<cr>M
+nnoremap <leader>vp   :exe 'edit' fnameescape(fnamemodify(resolve($MYVIMRC),':p:h'))..'/lua/my/'<cr>M
 nnoremap <leader>vr   :Vimref<cr>
 
 " Make "*" stay on the first match.

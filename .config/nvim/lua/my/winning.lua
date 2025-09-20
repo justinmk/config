@@ -78,6 +78,7 @@ func! s:zoom_toggle(cnt) abort
 endfunc
 nnoremap +     :<C-U>call <SID>zoom_toggle(v:count)<CR>
 nnoremap <Bar> :<C-U>call <SID>zoom_toggle(v:count)<CR>
+nnoremap _ <cmd>ZenMode<cr>
 
 augroup config_winning
   autocmd!
