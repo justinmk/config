@@ -256,6 +256,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
   { src = 'https://github.com/lewis6991/gitsigns.nvim' },
+  'https://github.com/justinmk/guh.nvim',
 
   'https://github.com/tpope/vim-surround',
 
@@ -308,8 +309,6 @@ vim.pack.add{
 vim.pack.add({
   -- Minimal, yet aesthetic, "screencast" tool.
   'https://github.com/NvChad/showkeys',
-  -- gh wrapper: https://github.com/pwntester/octo.nvim
-  'https://github.com/daliusd/ghlite.nvim',
   'https://github.com/deathbeam/difftool.nvim',
   'https://github.com/mbbill/undotree',
   'https://github.com/guns/vim-sexp',
@@ -696,7 +695,6 @@ else
 
   require('satellite').setup()
 
-  -- require('ghlite').setup{}
   require('gitsigns').setup{
     signs_staged_enable = false,
     current_line_blame = true,
