@@ -11,7 +11,6 @@ set exrc
 set scrolloff=4
 set fillchars+=msgsep:‾,eob:·
 set inccommand=split
-set splitkeep=topline
 set winborder=rounded
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
