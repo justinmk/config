@@ -693,8 +693,6 @@ if vim.g.vscode then
 else
   require('vim._extui').enable({msg={target='cmd'}})
 
-  require('satellite').setup()
-
   require('gitsigns').setup{
     signs_staged_enable = false,
     current_line_blame = true,
