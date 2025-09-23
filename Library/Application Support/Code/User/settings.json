@@ -34,6 +34,7 @@
     "ssoCacheError": false,
     "yamlExtPrompt": false
   },
+  "dev.containers.dockerPath": "podman",
   "editor.accessibilitySupport": "off",
   "editor.cursorBlinking": "expand",
   "editor.inlineSuggest.showToolbar": "always",
@@ -51,10 +52,23 @@
   },
   "extensions.ignoreRecommendations": true,
   "files.exclude": {
+    "**/.DS_Store": true,
     "**/.classpath": true,
     "**/.factorypath": true,
+    "**/.git": true,
+    "**/.hg": true,
     "**/.project": true,
-    "**/.settings": true
+    "**/.settings": true,
+    "**/.svn": true,
+    "**/Thumbs.db": true,
+    ".bemol": true,
+    ".viceroy": true,
+    "apollo-overrides": true,
+    "build": false,
+    "env": true,
+    "packageInfo*": true,
+    "release-info": true,
+    "src/*/build": false
   },
   "files.insertFinalNewline": true,
   "git.blame.editorDecoration.enabled": true,
@@ -76,10 +90,19 @@
     "amazonwebservices.aws-toolkit-vscode"
   ],
   "search.exclude": {
+    "**/*.code-search": true,
     "**/.vscode-test-web/": true,
     "**/.vscode-test/": true,
     "**/aws-sam-cli-src/": true,
-    "**/testFixtures/workspaceFolder/": true
+    "**/bower_components": true,
+    "**/node_modules": true,
+    "**/testFixtures/workspaceFolder/": true,
+    "build": true,
+    "env": true,
+    "src/*/build": true
+  },
+  "terminal.integrated.env.osx": {
+    "Q_NEW_SESSION": "1"
   },
   "terminal.integrated.macOptionIsMeta": true,
   "terminal.integrated.rendererType": "dom",
@@ -121,8 +144,5 @@
     "!Select sequence",
     "!Split",
     "!Split sequence"
-  ],
-  "terminal.integrated.env.osx": {
-    "Q_NEW_SESSION": "1"
-  }
+  ]
 }
