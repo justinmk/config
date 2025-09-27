@@ -297,6 +297,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-projectionist',
 
   'https://github.com/neovim/nvim-lspconfig',
+  'https://github.com/NickvanDyke/opencode.nvim',
 
   -- requires nvim-treesitter? :(
   -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
