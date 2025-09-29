@@ -1,3 +1,5 @@
+local augroup = vim.api.nvim_create_augroup('my.config.keymaps', {})
+
 vim.cmd[==[
 " key mappings/bindings =================================================== {{{
 "
@@ -218,12 +220,15 @@ vim.keymap.set('x', 'g??', function()
   vim.api.nvim_input('<esc>')
 end)
 
-if package.loaded['opencode'] then
-  vim.keymap.set('n', 'zq:', function() require('opencode').ask() end, { desc = 'Ask' })
-  vim.keymap.set('n', 'zqA', function() require('opencode').append_prompt('@buffer') end, { desc = 'Add buffer to prompt' })
-  vim.keymap.set('x', 'zqA', function() require('opencode').append_prompt('@selection') end, { desc = 'Add selection to prompt' })
-  vim.keymap.set('n', 'zqY', function() require('opencode').command('messages_copy') end, { desc = 'Copy last response' })
-  vim.keymap.set('n', '<PageUp>', function() require('opencode').command('messages_half_page_up') end, { desc = 'Messages half page up' })
-  vim.keymap.set('n', '<PageDown>', function() require('opencode').command('messages_half_page_down') end, { desc = 'Messages half page down' })
-  vim.keymap.set({ 'n', 'x' }, 'zqa', function() require('opencode').select() end, { desc = 'Select prompt' })
-end
+-- TODO: this doesn't actually work for opencode.nvim because it doesn't have a `plugin/*` file.
+-- https://github.com/neovim/neovim/issues/26427
+vim.api.nvim_create_autocmd('SourcePost', {
+  group = augroup,
+  pattern = 'opencode',
+  callback = function()
+    vim.keymap.set('n', 'zq:', function() require('opencode').ask() end, { desc = 'Ask' })
+    vim.keymap.set('n', '<PageUp>', function() require('opencode').command('messages_half_page_up') end, { desc = 'Messages half page up' })
+    vim.keymap.set('n', '<PageDown>', function() require('opencode').command('messages_half_page_down') end, { desc = 'Messages half page down' })
+    vim.keymap.set({ 'n', 'x' }, 'zqa', function() require('opencode').select() end, { desc = 'Select prompt' })
+  end
+})
