@@ -220,15 +220,16 @@ vim.keymap.set('x', 'g??', function()
   vim.api.nvim_input('<esc>')
 end)
 
--- TODO: this doesn't actually work for opencode.nvim because it doesn't have a `plugin/*` file.
--- https://github.com/neovim/neovim/issues/26427
-vim.api.nvim_create_autocmd('SourcePost', {
+-- NOTE: can't use SourcePost event, see https://github.com/neovim/neovim/issues/26427
+vim.api.nvim_create_autocmd('OptionSet', {
   group = augroup,
-  pattern = 'opencode',
+  pattern = 'runtimepath',
   callback = function()
-    vim.keymap.set('n', 'zq:', function() require('opencode').ask() end, { desc = 'Ask' })
-    vim.keymap.set('n', '<PageUp>', function() require('opencode').command('messages_half_page_up') end, { desc = 'Messages half page up' })
-    vim.keymap.set('n', '<PageDown>', function() require('opencode').command('messages_half_page_down') end, { desc = 'Messages half page down' })
-    vim.keymap.set({ 'n', 'x' }, 'zqa', function() require('opencode').select() end, { desc = 'Select prompt' })
+    if vim.v.option_new:find('opencode') and not vim.v.option_old:find('opencode') then
+      vim.keymap.set('n', 'zq:', function() require('opencode').ask() end, { desc = 'Ask' })
+      vim.keymap.set('n', '<PageUp>', function() require('opencode').command('messages_half_page_up') end, { desc = 'Messages half page up' })
+      vim.keymap.set('n', '<PageDown>', function() require('opencode').command('messages_half_page_down') end, { desc = 'Messages half page down' })
+      vim.keymap.set({ 'n', 'x' }, 'zqa', function() require('opencode').select() end, { desc = 'Select prompt' })
+    end
   end
 })
