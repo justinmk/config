@@ -208,12 +208,13 @@ vim.g.clojure_fold = 1
 vim.g.sexp_filetypes = ''
 vim.g.salve_auto_start_repl = 1
 
-require('my.keymaps')
-require('my.bufdelete')
-require('my.ctrl_s_shell')
-require('my.fug')
-require('my.replace-op')
-require('my.winning')
+if pcall(require, 'my.keymaps') then
+  require('my.bufdelete')
+  require('my.ctrl_s_shell')
+  require('my.fug')
+  require('my.replace-op')
+  require('my.winning')
+end
 
 -- TODO plugins:
 --
