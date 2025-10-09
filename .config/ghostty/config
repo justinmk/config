@@ -43,7 +43,7 @@ mouse-hide-while-typing
 split-divider-color = green
 window-new-tab-position = end
 
-keybind = super+N=new_split:right
+keybind = super+shift+n=new_split:right
 keybind = super+n=new_split:down
 keybind = super+t=new_tab
 keybind = super+w=close_surface

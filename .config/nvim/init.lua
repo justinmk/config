@@ -12,6 +12,7 @@ set scrolloff=4
 set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 set winborder=rounded
+set pumborder=rounded
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
@@ -235,7 +236,7 @@ vim.pack.add{
   --    nvim ./+foo
   'https://github.com/lewis6991/fileline.nvim',
   -- Open files from :term in the parent Nvim.
-  'https://github.com/brianhuster/unnest.nvim',
+  -- 'https://github.com/brianhuster/unnest.nvim',
 
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
@@ -309,7 +310,6 @@ vim.pack.add{
 vim.pack.add({
   -- Minimal, yet aesthetic, "screencast" tool.
   'https://github.com/NvChad/showkeys',
-  'https://github.com/deathbeam/difftool.nvim',
   'https://github.com/mbbill/undotree',
   'https://github.com/guns/vim-sexp',
   'https://github.com/tpope/vim-salve',
@@ -547,6 +547,7 @@ local function config_theme()
       endif
       highlight Visual guibg=fg guifg=bg
       highlight MsgSeparator guibg=bg guifg=fg
+      highlight Pmenu guibg=bg
     ]]
   end
   vim.api.nvim_create_autocmd({'ColorScheme'}, {

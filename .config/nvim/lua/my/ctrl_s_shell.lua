@@ -92,6 +92,7 @@ func! s:ctrl_s(cnt, here) abort
     endif
     terminal
     setlocal scrollback=-1
+    " TODO: call nvim_buf_set_name(0, bufname('%') .. '#shell')
     file :shell
     " XXX: original term:// buffer hangs around after :file ...
     bwipeout! #
