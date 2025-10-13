@@ -512,8 +512,14 @@ local function cmdline_sub()
 
   local function map_cmdline_sub()
     local cmd = vim.fn.getcmdline()
+    -- TODO: Nvim bug: this shows an error in some cases, despite pcall():
+    -- Possibly related to: https://github.com/neovim/neovim/commit/72b0bfa1fb7e897e5126aabae718a5480f466b9e
+    --    CmdlineChanged Autocommands for "*": Vim(append):E115: Missing quote: '
+    --    CmdlineChanged Autocommands for "*": Vim(append):E115: Missing quote: 'e
+    --    CmdlineChanged Autocommands for "*": Vim(append):E115: Missing quote: 'ed
+    --    CmdlineChanged Autocommands for "*": Vim(append):E115: Missing quote: 'edi
+    --    ...
     local ok, rv = pcall(vim.api.nvim_parse_cmd, cmd, {})
-    -- vim.notify(vim.inspect(rv))
 
     if ok and rv.cmd == 'substitute' and cmd:match("'<,'>s[^u ]") then
       skip = true
@@ -528,6 +534,7 @@ local function cmdline_sub()
   })
   vim.api.nvim_create_autocmd('CmdlineChanged', {
     group = augroup,
+    desc = 'my.config:cmdline_sub()',
     callback = function()
       if not skip then
         map_cmdline_sub()
@@ -712,7 +719,7 @@ else
   config_lsp()
   config_fzf()
   config_printf_mappings()
-  cmdline_sub()
+  -- cmdline_sub()
   config_theme()
   config_completion()
 end
