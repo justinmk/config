@@ -677,6 +677,10 @@ vim.api.nvim_create_autocmd('WinScrolled', {
   group = augroup,
   callback = function(ev)
     local win = assert(tonumber(ev.match))
+    if vim.wo[win].scrollbind then
+      -- XXX: Disabled for 'scrollbind' windows because it sometimes makes them out of sync.
+      return
+    end
     local buf = vim.api.nvim_win_get_buf(win)
     local line_count = vim.api.nvim_buf_line_count(buf)
     local win_height = math.min(vim.api.nvim_win_get_height(win), line_count)
