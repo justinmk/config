@@ -115,7 +115,7 @@ alias ls='ls -C --color=auto'
 
 # change to parent directory matching partial string, eg:
 # in directory /home/foo/bar/baz, 'bd f' changes to /home/foo
-bd() {
+bd_() {
   local old_dir=`pwd`
   local new_dir=`echo $old_dir | sed 's|\(.*/'$1'[^/]*/\).*|\1|'`
   index=`echo $new_dir | awk '{ print index($1,"/'$1'"); }'`
