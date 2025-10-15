@@ -303,7 +303,7 @@ vim.pack.add{
   -- requires nvim-treesitter? :(
   -- 'https://github.com/yorickpeterse/nvim-tree-pairs',
 
-  'https://github.com/lewis6991/satellite.nvim',
+  -- 'https://github.com/lewis6991/satellite.nvim',
   'https://github.com/folke/zen-mode.nvim',
 }
 -- On-demand plugins, not loaded until ":packadd …".
