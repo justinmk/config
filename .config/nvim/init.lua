@@ -293,7 +293,6 @@ vim.pack.add{
   'https://github.com/inkarkat/vim-ingo-library',
   'https://github.com/inkarkat/vim-mark',
 
-  'https://github.com/junegunn/fzf',
   'https://github.com/ibhagwan/fzf-lua',
 
   'https://github.com/tpope/vim-projectionist',
@@ -555,6 +554,8 @@ local function config_theme()
       highlight Visual guibg=fg guifg=bg
       highlight MsgSeparator guibg=bg guifg=fg
       highlight Pmenu guibg=bg
+      highlight PmenuThumb guibg=NvimLightGrey1
+      highlight QuickFixLine guifg=None guibg=NvimDarkCyan
     ]]
   end
   vim.api.nvim_create_autocmd({'ColorScheme'}, {
