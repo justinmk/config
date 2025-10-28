@@ -64,6 +64,8 @@ path_prepend() {
 
 # Add these dirs to $PATH.
 path_prepend "${HOME}/bin"
+# For uv/pip
+path_prepend "${HOME}/.local/bin"
 path_prepend "/opt/homebrew/bin/"
 path_prepend "/opt/homebrew/opt/curl/bin/"
 # path_prepend "${HOME}/dasht/bin"
