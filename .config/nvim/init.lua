@@ -572,7 +572,7 @@ end
 
 local function config_tabline()
   -- 'tabline'
-  vim.cmd[[highlight TabLineSel guibg=bg guifg=fg]]
+  vim.cmd[[highlight TabLineSel guibg=bg guifg=fg ctermbg=white ctermfg=black]]
   _G._myconfig.tablabel = function(n)
     local buflist = vim.fn.tabpagebuflist(n)
     local winnr = vim.fn.tabpagewinnr(n)
