@@ -16,10 +16,18 @@ nnoremap j gj
 nnoremap k gk
 xnoremap j gj
 xnoremap k gk
+nnoremap <up> <c-u>
+nnoremap <down> <c-d>
 
-:xnoremap y zy
-:nnoremap p zp
-:nnoremap P zP
+" change directory
+nnoremap cdd  <cmd>lcd %:h<bar>pwd<cr>
+nnoremap cdg  :lcd <c-r>=luaeval('vim.fs.root(vim.fn.expand("%"), ".git")')<cr><bar>pwd<cr>
+nnoremap cu   <cmd>lcd ..<bar>pwd<cr>
+nnoremap c-   <cmd>lcd -<bar>pwd<cr>
+
+xnoremap y zy
+nnoremap p zp
+nnoremap P zP
 " copy selection to gui-clipboard
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
@@ -49,7 +57,6 @@ inoremap <C-space> <C-x><C-o>
 xnoremap <expr> I (mode()=~#'[vV]'?'<C-v>^o^I':'I')
 xnoremap <expr> A (mode()=~#'[vV]'?'<C-v>0o$A':'A')
 
-
 nnoremap g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
 
 " word-wise i_CTRL-Y
@@ -60,10 +67,6 @@ nnoremap / ms/
 
 nnoremap <expr> n 'Nn'[v:searchforward]
 nnoremap <expr> N 'nN'[v:searchforward]
-
-nnoremap <up> <c-u>
-nnoremap <down> <c-d>
-
 
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
