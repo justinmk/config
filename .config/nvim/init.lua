@@ -14,6 +14,13 @@ set inccommand=split
 set winborder=rounded
 set pumborder=rounded
 
+augroup config_fug
+  autocmd!
+  " Defaults for text-like buffers.
+  autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
+  autocmd FileType markdown,gitcommit runtime! after/ftplugin/text.vim
+augroup END
+
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
 " :checktime is SLOW
@@ -204,6 +211,7 @@ vim.g.surround_no_insert_mappings = 1
 vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issues/40
 
 vim.g.linediff_buffer_type = 'scratch'
+vim.g.fugitive_legacy_commands = false
 
 vim.g.clojure_fold = 1
 vim.g.sexp_filetypes = ''
@@ -212,7 +220,6 @@ vim.g.salve_auto_start_repl = 1
 if pcall(require, 'my.keymaps') then
   require('my.bufdelete')
   require('my.ctrl_s_shell')
-  require('my.fug')
   require('my.replace-op')
   require('my.winning')
 end
@@ -258,6 +265,7 @@ vim.pack.add{
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
   { src = 'https://github.com/lewis6991/gitsigns.nvim' },
   'https://github.com/justinmk/guh.nvim',
+  'https://github.com/justinmk/vim-ug',
 
   'https://github.com/tpope/vim-surround',
 
