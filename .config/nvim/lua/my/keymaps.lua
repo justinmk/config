@@ -231,7 +231,7 @@ vim.api.nvim_create_autocmd('OptionSet', {
     if vim.v.option_new:find('opencode') and not vim.v.option_old:find('opencode') then
       vim.keymap.set('n', '<PageUp>', function() require('opencode').command('messages_half_page_up') end, { desc = 'Messages half page up' })
       vim.keymap.set('n', '<PageDown>', function() require('opencode').command('messages_half_page_down') end, { desc = 'Messages half page down' })
-      vim.keymap.set({ 'n', 'x' }, 'zqa', function() require('opencode').select() end, { desc = 'Select prompt' })
+      vim.keymap.set({ 'n', 'x' }, 'zq', function() require('opencode').select() end, { desc = 'Select prompt' })
     end
   end
 })

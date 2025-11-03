@@ -447,7 +447,8 @@ end
 
 local function config_term_esc()
   vim.keymap.set('t', '<C-[>', [[<C-\><C-N>]])
-  vim.keymap.set('t', '<Esc>', [[<C-\><C-N>]])
+  -- Map ESC to ESC, so we have a way to send literal ESC.
+  vim.keymap.set('t', '<Esc>', '<Esc>')
 
   -- :terminal-nested Nvim:
   if vim.env.NVIM then
@@ -462,14 +463,15 @@ local function config_term_esc()
     local didset = false
     local chan = assert(parent_chan())
     local function map_parent(lhs)
-      -- Map <Esc> and <C-[> in the parent so it gets sent to the child (this) Nvim.
+      -- Map `lhs` in the parent so it gets sent to the child (this) Nvim.
       local map = vim.rpcrequest(chan, 'nvim_exec_lua', [[return vim.fn.maparg(..., 't', false, true)]], { lhs }) --[[@as table<string,any>]]
       if map.rhs == [[<C-\><C-N>]] then
         vim.rpcrequest(chan, 'nvim_exec_lua', [[vim.keymap.set('t', ..., '<Esc>', {buffer=0})]], { lhs })
         didset = true
       end
     end
-    map_parent('<Esc>')
+    -- Don't map ESC. So we have a way to send literal ESC.
+    -- map_parent('<Esc>')
     map_parent('<C-[>')
     vim.fn.chanclose(chan)
 
@@ -480,7 +482,7 @@ local function config_term_esc()
         callback = function()
           local chan2 = assert(parent_chan())
           vim.rpcrequest(chan2, 'nvim_exec2', [=[
-            tunmap <buffer> <Esc>
+            " tunmap <buffer> <Esc>
             tunmap <buffer> <C-[>
           ]=], {})
         end,
