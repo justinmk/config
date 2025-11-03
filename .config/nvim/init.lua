@@ -14,13 +14,6 @@ set inccommand=split
 set winborder=rounded
 set pumborder=rounded
 
-augroup config_fug
-  autocmd!
-  " Defaults for text-like buffers.
-  autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
-  autocmd FileType markdown,gitcommit runtime! after/ftplugin/text.vim
-augroup END
-
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
 " :checktime is SLOW
@@ -33,14 +26,12 @@ set cpoptions-=_
 
 " UI/TUI/GUI
 set guicursor+=t:ver25
-au UIEnter * set guifont=Menlo:h20
 set title
 let &titlestring = (exists('$SSH_TTY') ? 'SSH ' : '') .. '%{fnamemodify(getcwd(),":t")}'
 
 " Don't mess with 'tabstop', with 'expandtab' it isn't used.
 " Set softtabstop=-1 to mirror 'shiftwidth'.
 set expandtab shiftwidth=2 softtabstop=-1
-autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
 set listchars+=trail:⣿
 set list
 let g:mapleader = "z,"
@@ -81,8 +72,15 @@ set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 " Better `gf`
 set suffixesadd=.java,.cs
 
-augroup config_autocmd
+augroup my.config
   autocmd!
+
+  autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
+
+  " Defaults for text-like buffers.
+  autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
+  autocmd FileType markdown,gitcommit runtime! after/ftplugin/text.vim
+
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
   autocmd BufHidden,FocusLost,WinLeave,CursorHold * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
@@ -329,11 +327,12 @@ vim.pack.add({
 })
 
 _G._myconfig = _G._myconfig or {}
-local augroup = vim.api.nvim_create_augroup('my.config', {})
+local augroup = vim.api.nvim_create_augroup('my.config', {clear=false})
 
 vim.api.nvim_create_autocmd({'UIEnter'}, {
   group = augroup,
   callback = function()
+    vim.cmd[[set guifont=Menlo:h20]]
     local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
     if client and client.name == "Firenvim" then
       vim.cmd[[
