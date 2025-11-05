@@ -507,6 +507,8 @@ local function config_fzf()
     " Search MRU files
     nnoremap <silent>       <M-\> :FzfLua oldfiles<cr>
     nnoremap <silent><expr> <C-\> v:count ? 'mS:<C-U>FzfLua lines<CR>' : ':<C-U>FzfLua buffers<CR>'
+    " Search buffer contents.
+    nnoremap <silent> g/    :FzfLua lines<cr>
     nnoremap <silent> gO    :FzfLua btags<cr>
     nnoremap <silent> gr/   :FzfLua tags<cr>
   ]=]
