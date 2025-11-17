@@ -20,8 +20,8 @@ nnoremap <up> <c-u>
 nnoremap <down> <c-d>
 
 " change directory
-nnoremap cdd  <cmd>lcd %:h<bar>pwd<cr>
-nnoremap cdg  :lcd <c-r>=luaeval('vim.fs.root(vim.fn.expand("%"), ".git")')<cr><bar>pwd<cr>
+nnoremap cd%  <cmd>lcd %:h<bar>pwd<cr>
+nnoremap cdd  :lcd <c-r>=luaeval('vim.fs.root(vim.fn.expand("%"), ".git")')<cr><bar>pwd<cr>
 nnoremap cdu   <cmd>lcd ..<bar>pwd<cr>
 nnoremap cd-   <cmd>lcd -<bar>pwd<cr>
 
