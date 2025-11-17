@@ -199,6 +199,39 @@ ghrebase1() {
     && git log --oneline --graph --decorate -n 5
 }
 
+# Run a command for "each git repo" at the same level as the topmost git repo
+# found in the current tree.
+giteach() {
+  local maxdepth=4
+  local marker=".git"
+
+  # Find topmost .git directory, breadth-first.
+  local topmost_repo=""
+  local depth=0
+  while depth=$((depth + 1)) ; [ $depth -lt $maxdepth ]; do
+    local git_dirs=$(find . -maxdepth $depth -name "$marker" -type d 2>/dev/null | head -1)
+    if [ -n "$git_dirs" ]; then
+      topmost_repo="$(dirname "$git_dirs")"
+      break
+    fi
+  done
+
+  if [ -z "$topmost_repo" ]; then
+    echo "No \"$marker\" repositories found within depth $maxdepth" >&2
+    return 1
+  fi
+
+  # Run command in each subdir at level.
+  for repo in $(find . -maxdepth $depth -name ".git" -type d -exec dirname {} +); do
+    (
+      cd "$repo" || exit
+      echo ""
+      echo "Repository: $repo"
+      "$@"
+    )
+  done
+}
+
 p() {
   (
     if [ "$(uname)" = Darwin ] ; then
