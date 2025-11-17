@@ -320,7 +320,7 @@ vim.pack.add({
   'https://github.com/tpope/vim-salve',
   'https://github.com/tpope/vim-fireplace',
   'https://github.com/chrisbra/Colorizer',
-  'https://github.com/OXY2DEV/markview.nvim',
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
   'https://github.com/NickvanDyke/opencode.nvim',
 }, {
   load = function() end,
