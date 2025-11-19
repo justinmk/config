@@ -281,6 +281,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-obsession',
 
   'https://github.com/AndrewRadev/linediff.vim',
+  'https://github.com/stevearc/quicker.nvim',
   'https://github.com/tpope/vim-dispatch',
   -- nmap yx       <Plug>(ReplSend)
   -- nmap yxx      <Plug>(ReplSendLine)
@@ -718,6 +719,7 @@ if vim.g.vscode then
 else
   require('vim._extui').enable({msg={target='cmd'}})
 
+  require('quicker').setup{}
   require('gitsigns').setup{
     signs_staged_enable = false,
     current_line_blame = true,
