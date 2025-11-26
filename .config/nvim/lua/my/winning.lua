@@ -40,6 +40,8 @@ xnoremap <silent> <m-=> <esc><cmd>exe (line("'>") - line("'<") + 1).'wincmd _'<b
 
 " manage tabs
 nnoremap <silent> <M-t>    :tab split<cr>
+nnoremap <silent> <M-]>    gt
+nnoremap <silent> <M-[>    gT
 nnoremap <silent> ZT       :tabclose<cr>
 " move tab to Nth position
 nnoremap <expr> <M-L> ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
