@@ -71,6 +71,9 @@ nnoremap <expr> N 'nN'[v:searchforward]
 " :help :DiffOrig
 command! DiffOrig leftabove vnew | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
+" linediff
+xnoremap <expr> D (mode() ==# "V" ? ':Linediff<cr>' : 'D')
+
 nnoremap yo<space> :set <C-R>=(&diffopt =~# 'iwhiteall') ? 'diffopt-=iwhiteall' : 'diffopt+=iwhiteall'<CR><CR>
 
 " Format filters
