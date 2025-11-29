@@ -107,7 +107,7 @@ fi
 
 PS1='$([ "$?" = 0 ] || printf "\[\e[1;31m\]")$(date +%m%d.%H%M)\[\e[0m\] \u@\h \w\[\e[0m\]
 \[\e]133;A\007\]\$ '
-[ -z $SSH_TTY ] || PS1='\[\e[0;30m\]\[\e[47m\]SSH\[\e[0m\] '$PS1
+[ -z "$SSH_TTY" ] || PS1='\[\e[0;30m\]\[\e[47m\]SSH\[\e[0m\] '$PS1
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -153,8 +153,7 @@ if [ "$(uname)" = Darwin ] ; then
       # Avoid creating .DS_Store files on network volumes
       defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
       # Set key-repeat rate. But not too high: on macOS 10.13 KeyRepeat=0 is insane.
-      defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-      defaults write NSGlobalDomain KeyRepeat -int 2
+      defaults write -g ApplePressAndHoldEnabled -bool false
       defaults write -g KeyRepeat -int 2
       defaults write -g InitialKeyRepeat -int 15
 
@@ -245,5 +244,5 @@ p() {
 _Z_DATA="$HOME/.config/z/z"
 . ~/bin/z.sh
 
-[ -f ~/.bashrc.local ] && source ~/.bashrc.local
+[ -f ~/.bashrc.local ] && source ~/.bashrc.local || true
 

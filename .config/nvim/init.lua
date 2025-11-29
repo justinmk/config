@@ -436,7 +436,7 @@ local function config_lsp()
   vim.lsp.enable('lua_ls')
 
   vim.lsp.config('clangd', {
-    cmd = { [[/usr/local/opt/llvm/bin/clangd]] },
+    cmd = { [[/opt/homebrew/opt/llvm/bin/clangd]] },
     -- on_exit = function(...)
     --   require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect((...)))
     -- end,
