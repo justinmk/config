@@ -184,8 +184,8 @@ inoremap [, [<CR>],<Esc>O
 "   - clearmatches()
 " Use {count}<C-L> to also:
 "   - clear all extmark namespaces
-nnoremap <silent><expr> <C-L> (v:count ? '<cmd>call nvim_buf_clear_namespace(0,-1,0,-1)<cr>' : '')
-      \ .. '<cmd>nohlsearch\|call clearmatches()' .. (has('diff') ? '\|diffupdate' : '')
+nnoremap <silent><expr> <C-L> (v:count ? '<cmd>call clearmatches()\|call nvim_buf_clear_namespace(0,-1,0,-1)<cr>' : '')
+      \ .. '<cmd>nohlsearch' .. (has('diff') ? '\|diffupdate' : '')
       \ .. '<CR><C-L>'
 
 nnoremap <silent> yoz :<c-u>if &foldenable && 2==&foldnestmax && 0==&foldlevel\|set nofoldenable\|
