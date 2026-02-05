@@ -376,29 +376,45 @@ vim.api.nvim_set_var('projectionist_heuristics', {
   },
 })
 
-local function on_attach(client, bufnr)
-  vim.cmd([[
-  nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
-  " Get diagnostics only for current buffer (one client):
-  " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
-  " vim.fn.setqflist(vim.diagnostic.toqflist(d))
-  nnoremap <buffer> grq <cmd>lua vim.diagnostic.setqflist()<cr>
-  nnoremap <buffer> gO  <cmd>FzfLua lsp_document_symbols<cr>
-  nnoremap <buffer> gr/ <cmd>FzfLua lsp_workspace_symbols<cr>
-  nnoremap <buffer> gd  <cmd>lua vim.lsp.buf.definition()<cr>
-  nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
-  ]])
-
-  vim.keymap.set('n', '<bs>', function()
-    vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-  end, { buffer = 0, desc = 'Toggle verbose diagnostics and inlay_hints.' })
-  vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
-end
-
 vim.api.nvim_create_autocmd('LspAttach', {
   group = augroup,
-  callback = on_attach,
+  callback = function()
+    vim.cmd([[
+    nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
+    " Get diagnostics only for current buffer (one client):
+    " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
+    " vim.fn.setqflist(vim.diagnostic.toqflist(d))
+    nnoremap <buffer> grq <cmd>lua vim.diagnostic.setqflist()<cr>
+    nnoremap <buffer> gO  <cmd>FzfLua lsp_document_symbols<cr>
+    nnoremap <buffer> gr/ <cmd>FzfLua lsp_workspace_symbols<cr>
+    nnoremap <buffer> gd  <cmd>lua vim.lsp.buf.definition()<cr>
+    nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
+    ]])
+
+    vim.keymap.set('n', '<bs>', function()
+      vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    end, { buffer = 0, desc = 'Toggle verbose diagnostics and inlay_hints.' })
+    vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
+
+    -- vim.api.nvim_create_autocmd('LspProgress', {
+    --   callback = function (ev)
+    --     local value = ev.data.params.value
+    --     local clientId = ev.data.client_id
+    --     local client = assert(vim.lsp.get_clients({id = clientId})[1])
+    --     local msgId = ('progress-lsp-%s-%s'):format(clientId, value.title)
+    --     local title = ('[%s] %s'):format(client.name or clientId, value.title)
+    --
+    --     vim.api.nvim_echo({ { value.message or 'done' } }, false, {
+    --       id = msgId,
+    --       kind = 'progress',
+    --       title = title,
+    --       status = value.kind ~= 'end' and 'running' or 'success',
+    --       percent = value.percentage,
+    --     })
+    --   end,
+    -- })
+  end,
 })
 
 local function config_lsp()
@@ -442,8 +458,6 @@ local function config_lsp()
     -- end,
   })
   vim.lsp.enable('clangd')
-
-  vim.lsp.enable('smithy_ls')
 end
 
 local function config_term_esc()
@@ -717,7 +731,7 @@ vim.api.nvim_create_autocmd('WinScrolled', {
 if vim.g.vscode then
   require('my.vscode-neovim')
 else
-  require('vim._extui').enable({msg={target='cmd'}})
+  require('vim._core.ui2').enable({msg={target='cmd'}})
 
   require('quicker').setup{}
   require('gitsigns').setup{
