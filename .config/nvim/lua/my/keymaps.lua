@@ -43,15 +43,12 @@ noremap! <m-/> <c-r>=expand('%:.:h', 1)<cr>
 noremap! <c-r>? <c-r>=substitute(getreg('/'), '[<>\\]', '', 'g')<cr>
 " /<BS>: Inverse search (line NOT containing pattern).
 cnoremap <expr> <BS> (getcmdtype() =~ '[/?]' && getcmdline() == '') ? '\v^(()@!.)*$<Left><Left><Left><Left><Left><Left><Left>' : '<BS>'
-" Hit space to match multiline whitespace.
-cnoremap <expr> <Space> getcmdtype() =~ '[/?]' ? '\_s\+' : ' '
 " //: "Search within visual selection".
 cnoremap <expr> / (getcmdtype() =~ '[/?]' && getcmdline() == '') ? "\<C-c>\<Esc>/\\%V" : '/'
 
 nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
 nnoremap ' `
-inoremap <C-space> <C-x><C-o>
 
 " niceblock
 xnoremap <expr> I (mode()=~#'[vV]'?'<C-v>^o^I':'I')
@@ -87,7 +84,7 @@ nnoremap gqav    :call append('$', json_encode(eval(join(getline(1,'$')))))<cr>'
 nnoremap gj i<c-j><esc>k$
 xnoremap x  "_d
 
-nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
+nnoremap vK <C-\><C-N><Cmd>help!<CR>
 
 " text-object: entire buffer
 " Elegant text-object pattern hacked out of jdaddy.vim.
@@ -214,7 +211,7 @@ nnoremap <leader>== <cmd>set paste<cr>o<cr><c-r>=repeat('=',80)<cr><cr><c-r>=str
 -- TODO:
 -- run closest zig test case: https://github.com/mfussenegger/dotfiles/commit/8e827b72e2b72e7fb240e8a270d786cffc38a2a5#diff-7d18f76b784e0cb761b7fc0a995680cf2a27b6f77031b60b854248478aed8b6fR5
 -- run closest neovim lua test case via make: https://github.com/mfussenegger/dotfiles/commit/a32190b76b678517849d6da84d56836d44a22f2d#diff-f81a3d06561894224d8353f9babc6a7fa9b4962a40c191eb5c23c9cdcc6004c0R158
-vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make functionaltest<S-Left><S-Left><S-Left><Left>]])
+vim.cmd([[nnoremap mT mT:FocusDispatch VIMRUNTIME= TEST_COLORS=0 TEST_FILE=<c-r>% TEST_FILTER= TEST_TAG= make CMAKE_EXTRA_FLAGS="-DENABLE_UNIBILIUM=0 -DENABLE_LTO=0" functionaltest<S-Left><S-Left><S-Left><S-Left><S-Left><Left>]])
 -- nnoremap <silent> yr  :<c-u>set opfunc=<sid>tmux_run_operator<cr>g@
 
 -- g?: Web search

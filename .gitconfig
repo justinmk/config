@@ -62,6 +62,7 @@
   r = "!git branch --sort=-committerdate | head -n 10 ; git branch --sort=-committerdate -a | grep -E 'justinmk|origin' | grep -v 'HEAD' | sed 's,remotes/,,' | head -n 10"
   s  = !git status -sb
   co = checkout
+  cou = "!git checkout -b \"$@\" && git branch --set-upstream-to upstream/master"
   rl = log --walk-reflogs --boundary --pretty=format:\"%ci %h %gd %gs\"
   ri = "!sh -c 't=\"${1:-master}\"; s=\"${2:-HEAD}\"; mb=\"$(git merge-base \"$t\" \"$s\")\"; if test \"x$mb\" = x ; then o=\"$t\"; else lm=\"$(git log -n1 --merges \"$t..$s\" --pretty=%H)\"; if test \"x$lm\" = x ; then o=\"$mb\"; else o=\"$lm\"; fi; fi; test $# -gt 0 && shift; test $# -gt 0 && shift; git rebase --interactive --keep-empty --autosquash \"$o\" \"$@\"'"
 [fetch]

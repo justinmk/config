@@ -8,11 +8,12 @@ let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
 "==============================================================================
 set sessionoptions-=blank
 set exrc
-set scrolloff=4
+set scrolloff=2
 set fillchars+=msgsep:‾,eob:·
 set inccommand=split
 set winborder=rounded
 set pumborder=rounded
+"set cmdheight=0
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
@@ -63,7 +64,7 @@ set nowrap
 
 " autocomplete / omnicomplete / tags
 set dictionary+=/usr/share/dict/words
-set completeopt=menuone,noselect,noinsert,fuzzy
+set completeopt=menuone,noselect,noinsert,fuzzy,popup
 set complete+=f,kspell
 set wildignore+=tags,gwt-unitCache/*,*/__pycache__/*,build/*,build.?/*,*/node_modules/*
 " Files with these suffixes get a lower priority when matching a wildcard
@@ -83,7 +84,7 @@ augroup my.config
 
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
-  autocmd BufHidden,FocusLost,WinLeave,CursorHold * if &buftype=='' && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
+  autocmd BufHidden,FocusLost,WinLeave,CursorHold * if &buftype=='' && !&readonly && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
 
   " :help restore-cursor
   autocmd BufReadPre * autocmd FileType <buffer> ++once
@@ -378,7 +379,7 @@ vim.api.nvim_set_var('projectionist_heuristics', {
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = augroup,
-  callback = function()
+  callback = function(ev)
     vim.cmd([[
     nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
     " Get diagnostics only for current buffer (one client):
@@ -396,6 +397,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
     end, { buffer = 0, desc = 'Toggle verbose diagnostics and inlay_hints.' })
     vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
+
+    -- CTRL-space (insert-mode) manually triggers LSP completion.
+    vim.keymap.set('i', '<c-space>', function()
+      vim.lsp.completion.enable(true, ev.data.client_id, ev.buf)
+      -- vim.notify('lsp completion: working...')
+      vim.lsp.completion.get()
+      -- vim.cmd[[redraw | echo '']]
+    end, { buffer = 0 })
 
     -- vim.api.nvim_create_autocmd('LspProgress', {
     --   callback = function (ev)
@@ -426,6 +435,7 @@ local function config_lsp()
   table.insert(runtime_path, 'lua/?/init.lua')
   -- TODO: migrate to emmylua_ls. https://old.reddit.com/r/neovim/comments/1mdtr4g/emmylua_ls_is_supersnappy/
   vim.lsp.config('lua_ls', {
+    ---@type lspconfig.settings.lua_ls
     settings = {
       Lua = {
         runtime = {
@@ -670,23 +680,6 @@ local function config_term()
   })
 end
 
-local function config_completion()
-  require('mini.completion').setup({})
-
-  -- CTRL-q (insert-mode) manually triggers Amazon Q completion (inline suggestions).
-  vim.keymap.set('i', '<c-q>', function()
-    local client = vim.lsp.get_clients({ bufnr = 0, name = 'amazonq-completion' })[1]
-    if not client then
-      vim.notify('Amazon Q not enabled for this buffer')
-      return
-    end
-    vim.lsp.completion.enable(true, client.id, 0)
-    vim.notify('Amazon Q: working...')
-    vim.lsp.completion.get()
-    -- vim.cmd[[redraw | echo '']]
-  end)
-end
-
 -- yankring
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = augroup,
@@ -733,6 +726,11 @@ if vim.g.vscode then
 else
   require('vim._core.ui2').enable({msg={target='cmd'}})
 
+  vim.keymap.set('i', '<c-s-space>', function()
+    require('mini.completion').setup{}
+    vim.notify('activated mini.completion ...')
+  end)
+
   require('quicker').setup{}
   require('gitsigns').setup{
     signs_staged_enable = false,
@@ -743,6 +741,8 @@ else
   }
   vim.cmd([[
     hi! link GitSignsChange Normal
+    nnoremap Up <cmd>lua require('gitsigns').preview_hunk_inline()<cr>
+    nmap UP Up
   ]])
 
   config_term_esc()
@@ -753,7 +753,6 @@ else
   config_printf_mappings()
   -- cmdline_sub()
   config_theme()
-  config_completion()
 end
 
 vim.cmd[[silent! source ~/.vimrc.local]]
