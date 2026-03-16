@@ -199,6 +199,17 @@ command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*/**' --exclude='**/bu
 
 ]]
 
+--- @param evnames string|string[]
+--- @param group string|integer?
+--- @param opts vim.api.keyset.create_autocmd?
+--- @param fn fun(ev)
+local function nvim_on(evnames, group, opts, fn)
+  opts = opts or {}
+  opts.group = group
+  opts.callback = fn
+  vim.api.nvim_create_autocmd(evnames, opts or {})
+end
+
 vim.g['sneak#label'] = 1
 vim.g['sneak#use_ic_scs'] = 1
 vim.g['sneak#absolute_dir'] = 1
@@ -331,32 +342,26 @@ vim.pack.add({
 _G._myconfig = _G._myconfig or {}
 local augroup = vim.api.nvim_create_augroup('my.config', {clear=false})
 
-vim.api.nvim_create_autocmd({'UIEnter'}, {
-  group = augroup,
-  callback = function()
-    vim.cmd[[set guifont=Menlo:h20]]
-    local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
-    if client and client.name == "Firenvim" then
-      vim.cmd[[
-        set cmdheight=0 shortmess+=W scrolloff=0 laststatus=0 textwidth=9999
-        nnoremap <expr> + '@_<cmd>set columns='..(v:count?v:count:'150')..' lines='..(v:count?v:count:'40')..'<cr>'
-        nnoremap <D-v> "+p
-        inoremap <D-v> <c-o>"+p
-      ]]
-    end
+nvim_on({'UIEnter'}, augroup, nil, function()
+  vim.cmd[[set guifont=Menlo:h20]]
+  local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
+  if client and client.name == "Firenvim" then
+    vim.cmd[[
+      set cmdheight=0 shortmess+=W scrolloff=0 laststatus=0 textwidth=9999
+      nnoremap <expr> + '@_<cmd>set columns='..(v:count?v:count:'150')..' lines='..(v:count?v:count:'40')..'<cr>'
+      nnoremap <D-v> "+p
+      inoremap <D-v> <c-o>"+p
+    ]]
   end
-})
+end)
 
 -- Enable treesitter. For c/vimscript/markdown: https://github.com/neovim/neovim/pull/32965
-vim.api.nvim_create_autocmd({'FileType'}, {
-  group = augroup,
-  callback = function(ev)
-    if not ev.match or ev.match == '' or ev.match == 'text' then
-      vim.treesitter.stop()
-    end
-    pcall(function() vim.treesitter.start() end)
+nvim_on({'FileType'}, augroup, nil, function(ev)
+  if not ev.match or ev.match == '' or ev.match == 'text' then
+    vim.treesitter.stop()
   end
-})
+  pcall(function() vim.treesitter.start() end)
+end)
 
 vim.api.nvim_set_var('projectionist_heuristics', {
   ['package.json'] = {
@@ -377,54 +382,49 @@ vim.api.nvim_set_var('projectionist_heuristics', {
   },
 })
 
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = augroup,
-  callback = function(ev)
-    vim.cmd([[
-    nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
-    " Get diagnostics only for current buffer (one client):
-    " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
-    " vim.fn.setqflist(vim.diagnostic.toqflist(d))
-    nnoremap <buffer> grq <cmd>lua vim.diagnostic.setqflist()<cr>
-    nnoremap <buffer> gO  <cmd>FzfLua lsp_document_symbols<cr>
-    nnoremap <buffer> gr/ <cmd>FzfLua lsp_workspace_symbols<cr>
-    nnoremap <buffer> gd  <cmd>lua vim.lsp.buf.definition()<cr>
-    nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
-    ]])
+nvim_on('LspAttach', augroup, nil, function(ev)
+  vim.cmd([[
+  nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
+  " Get diagnostics only for current buffer (one client):
+  " d = vim.diagnostic.get(0, {namespace=vim.lsp.diagnostic.get_namespace(vim.lsp.get_clients({buf=0})[1].id)})
+  " vim.fn.setqflist(vim.diagnostic.toqflist(d))
+  nnoremap <buffer> grq <cmd>lua vim.diagnostic.setqflist()<cr>
+  nnoremap <buffer> gO  <cmd>FzfLua lsp_document_symbols<cr>
+  nnoremap <buffer> gr/ <cmd>FzfLua lsp_workspace_symbols<cr>
+  nnoremap <buffer> gd  <cmd>lua vim.lsp.buf.definition()<cr>
+  nnoremap <buffer> gi  <cmd>lua vim.lsp.buf.implementation()<cr>
+  ]])
 
-    vim.keymap.set('n', '<bs>', function()
-      vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
-      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-    end, { buffer = 0, desc = 'Toggle verbose diagnostics and inlay_hints.' })
-    vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
+  vim.keymap.set('n', '<bs>', function()
+    vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end, { buffer = 0, desc = 'Toggle verbose diagnostics and inlay_hints.' })
+  vim.keymap.set('n', 'gK', function() vim.diagnostic.open_float() end, { buffer = 0, desc = 'Toggle diagnostics window.' })
 
-    -- CTRL-space (insert-mode) manually triggers LSP completion.
-    vim.keymap.set('i', '<c-space>', function()
-      vim.lsp.completion.enable(true, ev.data.client_id, ev.buf)
-      -- vim.notify('lsp completion: working...')
-      vim.lsp.completion.get()
-      -- vim.cmd[[redraw | echo '']]
-    end, { buffer = 0 })
+  -- CTRL-space (insert-mode) manually triggers LSP completion.
+  vim.keymap.set('i', '<c-space>', function()
+    vim.lsp.completion.enable(true, ev.data.client_id, ev.buf)
+    -- vim.notify('lsp completion: working...')
+    vim.lsp.completion.get()
+    -- vim.cmd[[redraw | echo '']]
+  end, { buffer = 0 })
 
-    -- vim.api.nvim_create_autocmd('LspProgress', {
-    --   callback = function (ev)
-    --     local value = ev.data.params.value
-    --     local clientId = ev.data.client_id
-    --     local client = assert(vim.lsp.get_clients({id = clientId})[1])
-    --     local msgId = ('progress-lsp-%s-%s'):format(clientId, value.title)
-    --     local title = ('[%s] %s'):format(client.name or clientId, value.title)
-    --
-    --     vim.api.nvim_echo({ { value.message or 'done' } }, false, {
-    --       id = msgId,
-    --       kind = 'progress',
-    --       title = title,
-    --       status = value.kind ~= 'end' and 'running' or 'success',
-    --       percent = value.percentage,
-    --     })
-    --   end,
-    -- })
-  end,
-})
+  -- nvim_on('LspProgress', augroup, nil, function(ev)
+  --   local value = ev.data.params.value
+  --   local clientId = ev.data.client_id
+  --   local client = assert(vim.lsp.get_clients({id = clientId})[1])
+  --   local msgId = ('progress-lsp-%s-%s'):format(clientId, value.title)
+  --   local title = ('[%s] %s'):format(client.name or clientId, value.title)
+  --
+  --   vim.api.nvim_echo({ { value.message or 'done' } }, false, {
+  --     id = msgId,
+  --     kind = 'progress',
+  --     title = title,
+  --     status = value.kind ~= 'end' and 'running' or 'success',
+  --     percent = value.percentage,
+  --   })
+  -- end)
+end)
 
 local function config_lsp()
   vim.lsp.enable('ts_ls')
@@ -502,16 +502,13 @@ local function config_term_esc()
 
     -- Restore the mapping(s) on VimLeave.
     if didset then
-      vim.api.nvim_create_autocmd({'VimLeave'}, {
-        group = augroup,
-        callback = function()
-          local chan2 = assert(parent_chan())
-          vim.rpcrequest(chan2, 'nvim_exec2', [=[
-            " tunmap <buffer> <Esc>
-            tunmap <buffer> <C-[>
-          ]=], {})
-        end,
-      })
+      nvim_on({'VimLeave'}, augroup, nil, function()
+        local chan2 = assert(parent_chan())
+        vim.rpcrequest(chan2, 'nvim_exec2', [=[
+          " tunmap <buffer> <Esc>
+          tunmap <buffer> <C-[>
+        ]=], {})
+      end)
     end
   end
 end
@@ -542,6 +539,7 @@ local function config_fzf()
 end
 
 --- Map ":'<,'>s/" to ":'<,'>s/\%V".
+--- @diagnostic disable-next-line: unused-function, unused-local
 local function cmdline_sub()
   local skip = false
 
@@ -594,10 +592,7 @@ local function config_theme()
       highlight QuickFixLine guifg=None guibg=NvimDarkCyan
     ]]
   end
-  vim.api.nvim_create_autocmd({'ColorScheme'}, {
-    group = augroup,
-    callback = fix_colorscheme
-  })
+  nvim_on({'ColorScheme'}, augroup, nil, fix_colorscheme)
   fix_colorscheme()
 end
 
@@ -639,87 +634,76 @@ local function config_tabline()
 end
 
 local function config_term()
-  vim.api.nvim_create_autocmd('TermOpen', {
-    callback = function()
-      vim.cmd[=[
-        " Enable prompt sign in :terminal buffers.
-        setlocal signcolumn=auto
+  nvim_on('TermOpen', nil, nil,function()
+    vim.cmd[=[
+      " Enable prompt sign in :terminal buffers.
+      setlocal signcolumn=auto
 
-        nnoremap <silent><buffer> <cr> i<cr><c-\><c-n>
-        nnoremap <silent><buffer> <c-c> i<c-c><c-\><c-n>
-      ]=]
+      nnoremap <silent><buffer> <cr> i<cr><c-\><c-n>
+      nnoremap <silent><buffer> <c-c> i<c-c><c-\><c-n>
+    ]=]
+  end)
+  nvim_on('TermRequest', augroup, nil,  function(ev)
+    if string.match(ev.data.sequence, '^\027]133;A') then
+      -- OSC 133: shell-prompt
+      local lnum = ev.data.cursor[1]
+      vim.api.nvim_buf_set_extmark(ev.buf, vim.api.nvim_create_namespace('my.terminal.prompt'), lnum - 1, 0, {
+        -- Replace with sign text and highlight group of choice
+        sign_text = '∙',
+        -- sign_hl_group = 'SpecialChar',
+      })
     end
-  })
-  vim.api.nvim_create_autocmd('TermRequest', {
-    group = augroup,
-    callback = function(ev)
-      if string.match(ev.data.sequence, '^\027]133;A') then
-        -- OSC 133: shell-prompt
-        local lnum = ev.data.cursor[1]
-        vim.api.nvim_buf_set_extmark(ev.buf, vim.api.nvim_create_namespace('my.terminal.prompt'), lnum - 1, 0, {
-          -- Replace with sign text and highlight group of choice
-          sign_text = '∙',
-          -- sign_hl_group = 'SpecialChar',
-        })
-      end
 
-      local val, n = string.gsub(ev.data.sequence, '^\027]7;file://[^/]*', '')
-      if n > 0 then
-        -- OSC 7: dir-change
-        local dir = val
-        if vim.fn.isdirectory(dir) == 0 then
-          vim.notify('invalid dir: '..dir)
-          return
-        end
-        vim.b[ev.buf].osc7_dir = dir
-        if vim.api.nvim_get_current_buf() == ev.buf then
-          vim.cmd.lcd(dir)
-        end
+    local val, n = string.gsub(ev.data.sequence, '^\027]7;file://[^/]*', '')
+    if n > 0 then
+      -- OSC 7: dir-change
+      local dir = val
+      if vim.fn.isdirectory(dir) == 0 then
+        vim.notify('invalid dir: '..dir)
+        return
       end
-    end,
-  })
+      vim.b[ev.buf].osc7_dir = dir
+      if vim.api.nvim_get_current_buf() == ev.buf then
+        vim.cmd.lcd(dir)
+      end
+    end
+  end)
 end
 
 -- yankring
-vim.api.nvim_create_autocmd('TextYankPost', {
-  group = augroup,
-  callback = function()
-    if vim.v.event.operator == 'y' then
-      for i = 9, 1, -1 do -- Shift all numbered registers.
-        vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
-      end
+nvim_on('TextYankPost', augroup, nil, function()
+  if vim.v.event.operator == 'y' then
+    for i = 9, 1, -1 do -- Shift all numbered registers.
+      vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
     end
-  end,
-})
+  end
+end)
 
 -- Never scroll past end-of-buffer. (Never show "filler lines".)
-vim.api.nvim_create_autocmd('WinScrolled', {
-  group = augroup,
-  callback = function(ev)
-    local win = assert(tonumber(ev.match))
-    if vim.wo[win].scrollbind then
-      -- XXX: Disabled for 'scrollbind' windows because it sometimes makes them out of sync.
-      return
-    end
-    local buf = vim.api.nvim_win_get_buf(win)
-    local line_count = vim.api.nvim_buf_line_count(buf)
-    local win_height = math.min(vim.api.nvim_win_get_height(win), line_count)
+nvim_on('WinScrolled', augroup, nil,  function(ev)
+  local win = assert(tonumber(ev.match))
+  if vim.wo[win].scrollbind then
+    -- XXX: Disabled for 'scrollbind' windows because it sometimes makes them out of sync.
+    return
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  local line_count = vim.api.nvim_buf_line_count(buf)
+  local win_height = math.min(vim.api.nvim_win_get_height(win), line_count)
 
-    -- top line number + window height should be <= line_count
-    local last_visible_line = vim.fn.line('w0', win) + win_height - 1
-    local out_of_buf_lines = last_visible_line - line_count
+  -- top line number + window height should be <= line_count
+  local last_visible_line = vim.fn.line('w0', win) + win_height - 1
+  local out_of_buf_lines = last_visible_line - line_count
 
-    if out_of_buf_lines > 0 then
-      vim._with({ win=win }, function()
-        vim.fn.winrestview({
-          topline = math.max(1, line_count - win_height + 1),
-        })
-        -- https://github.com/neovim/neovim/issues/35633#issuecomment-3256274806
-        vim.api.nvim_feedkeys(vim.keycode('<Ignore>'), 'ni', false)
-      end)
-    end
-  end,
-})
+  if out_of_buf_lines > 0 then
+    vim._with({ win=win }, function()
+      vim.fn.winrestview({
+        topline = math.max(1, line_count - win_height + 1),
+      })
+      -- https://github.com/neovim/neovim/issues/35633#issuecomment-3256274806
+      vim.api.nvim_feedkeys(vim.keycode('<Ignore>'), 'ni', false)
+    end)
+  end
+end)
 
 if vim.g.vscode then
   require('my.vscode-neovim')
