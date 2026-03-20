@@ -1,5 +1,9 @@
 -- execute/evaluate
 vim.cmd[[
+  " Use default 'iskeyword' which is much nicer for "*", etc.
+  " Since "K" (and 'keywordprg') uses ":help!" there is no need to screw up 'iskeyword'.
+  set iskeyword&
+
   nnoremap <buffer>         yxal    :Runtime<cr>
   xnoremap <silent><buffer> <enter> :<C-U>keeppatterns '<,'>g/^/exe getline('.')<CR>
 
