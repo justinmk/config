@@ -186,7 +186,7 @@ nnoremap <silent><expr> <C-L> (v:count ? '<cmd>call clearmatches()\|call nvim_bu
       \ .. '<CR><C-L>'
 
 nnoremap <silent> yoz :<c-u>if &foldenable && 2==&foldnestmax && 0==&foldlevel\|set nofoldenable\|
-      \ else\|setl foldmethod=indent foldnestmax=2 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
+      \ else\|setl foldmethod=indent foldnestmax=3 foldlevel=0 foldenable\|set foldmethod=manual\|endif<cr>
 
 nnoremap yoT :<c-u>setlocal textwidth=<C-R>=(!v:count && &textwidth != 0) ? 0 : (v:count ? v:count : 80)<CR><CR>
 

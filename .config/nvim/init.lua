@@ -326,8 +326,7 @@ vim.pack.add{
 }
 -- On-demand plugins, not loaded until ":packadd …".
 vim.pack.add({
-  -- Minimal, yet aesthetic, "screencast" tool.
-  'https://github.com/NvChad/showkeys',
+  'https://github.com/NvChad/showkeys', -- Minimal, yet aesthetic, "screencast" tool.
   'https://github.com/mbbill/undotree',
   'https://github.com/guns/vim-sexp',
   'https://github.com/tpope/vim-salve',
