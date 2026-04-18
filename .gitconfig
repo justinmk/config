@@ -77,10 +77,10 @@
   # default in Git ≥ 1.8.4
   ui = auto
 [color "branch"]
-  current   = bold white green
-  local     = bold yellow
-  remote    = bold magenta
-  upstream  = bold cyan
+  current   = bold black green
+  local     = yellow
+  remote    = magenta
+  upstream  = cyan
 [color "status"]
   # staged changes
   added     = bold green
