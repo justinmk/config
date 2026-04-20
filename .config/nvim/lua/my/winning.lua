@@ -34,7 +34,8 @@ nnoremap <silent>      <s-tab>  <C-^>
 " inoremap <c-r><c-w> <esc>:call <sid>switch_to_alt_win()<bar>let g:prev_win_buf=@%<cr><c-w><c-p>gi<c-r>=g:prev_win_buf<cr>
 
 " Fit current window (vertically) to the buffer text.
-nnoremap <silent> <m-=> <cmd>exe min([winheight('%'),line('$')]).'wincmd _'<bar>setlocal winfixheight<cr>
+" Force with [count], regardless of whether it would make the window bigger.
+nnoremap <silent> <m-=> <cmd>exe (v:count ? line('$') : min([winheight('%'),line('$')])).'wincmd _'<bar>setlocal winfixheight<cr>
 " Fit current window (vertically) to the selected text.
 xnoremap <silent> <m-=> <esc><cmd>exe (line("'>") - line("'<") + 1).'wincmd _'<bar>setlocal winfixheight<cr>
 
