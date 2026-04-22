@@ -222,6 +222,12 @@ vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issue
 
 vim.g.linediff_buffer_type = 'scratch'
 vim.g.fugitive_legacy_commands = false
+vim.g.diffs = {
+  integrations = {
+    fugitive = true,
+    -- gitsigns = true,
+  }
+}
 
 vim.g.clojure_fold = 1
 vim.g.sexp_filetypes = ''
@@ -270,6 +276,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-apathy',
   'https://github.com/tpope/vim-dadbod',
 
+  'https://github.com/barrettruth/diffs.nvim',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
