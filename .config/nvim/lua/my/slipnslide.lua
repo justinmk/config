@@ -3,9 +3,17 @@
 
 local saved = {}
 
+local imgs = {}
+
 -- Gets the dir of the current buffer.
 local function buf_dir()
  return vim.fn.fnamemodify(vim.fn.expand('%'), ':p:h')
+end
+
+local function clear_imgs()
+  for _, imgid in ipairs(imgs) do
+    vim.ui.img.del(imgid)
+  end
 end
 
 -- Searches between previous and next H1 heading ("^(#|=)").
@@ -38,33 +46,46 @@ function _G.search_cur_slide(pat)
   return matches
 end
 
--- Gets the image filepath for the current slide, if any.
+--- Gets the image data for the current slide, if any.
 local function get_slide_img()
-  -- "img: ./foo/bar.png"
-  local el = search_cur_slide('^img: .*')[1]
-  if not el then
-    return nil
+  -- Markdown image: "![alt](/img/foo/bar.png)"
+  local relpath = search_cur_slide('^!%[.-%]%((.-)%)')[1]
+  if not relpath then
+    -- "img: ./foo/bar.png"
+    local el = search_cur_slide('^img: .*')[1]
+    if not el then
+      return nil
+    end
+    relpath = vim.trim(el:gsub('img: ', ''))
   end
-  local relpath = vim.trim(el:gsub('img: ', ''))
-  local fullpath = vim.fs.joinpath(buf_dir(), relpath)
-  assert(vim.fn.filereadable(fullpath) ~= 0)
-  return fullpath
+
+  local fullpath
+  if relpath:sub(1, 1) == '/' then
+    -- Site-absolute path: resolve against Hugo project root's static/ dir.
+    local root = vim.fs.root(0, { 'hugo.yaml', 'hugo.toml', 'config.yaml', 'config.toml' })
+    fullpath = root and vim.fs.joinpath(root, 'static', relpath:sub(2)) or relpath
+  else
+    fullpath = vim.fs.joinpath(buf_dir(), relpath)
+  end
+  assert(vim.fn.filereadable(fullpath) ~= 0, ('img read failed: "%s"'):format(fullpath))
+  return vim.fn.readblob(fullpath)
 end
 
 local function try_show_img()
-  local imgpath = get_slide_img()
-  if not imgpath then
+  local img = get_slide_img()
+  if not img then
     return
   end
   vim.cmd[[redraw]]
   -- vim.cmd[[sleep 100m]]
-  require('my.img').show({ filename = imgpath })
+  local imgid = vim.ui.img.set(img, { row = 5, col = 60,  height = 20, zindex = 50 })
+  table.insert(imgs, imgid)
 end
 
 function _G.slides_clear()
   -- vim.cmd[[mapclear <buffer>]]
   vim.cmd[[setlocal laststatus=2]]
-  require'my.img'.clear_all()
+  clear_imgs()
   vim.fn.clearmatches()
   vim.o.tabline = saved.tabline
   vim.o.ruler = saved.ruler
@@ -97,7 +118,7 @@ function _G.show_cur_slide()
   end
 
   vim.cmd[[doautocmd FileType]] -- Trigger hlheadings.lua:hlheadings_do_hl().
-  require'my.img'.clear_all()
+  clear_imgs()
   try_show_img()
 end
 
