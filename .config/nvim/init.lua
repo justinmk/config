@@ -353,7 +353,7 @@ nvim_on({'UIEnter'}, augroup, nil, function()
   local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
   if client and client.name == "Firenvim" then
     vim.cmd[[
-      set cmdheight=0 shortmess+=W scrolloff=0 laststatus=0 textwidth=9999
+      set cmdheight=0 shortmess+=Wu scrolloff=0 laststatus=0 textwidth=9999
       nnoremap <expr> + '@_<cmd>set columns='..(v:count?v:count:'150')..' lines='..(v:count?v:count:'40')..'<cr>'
       nnoremap <D-v> "+p
       inoremap <D-v> <c-o>"+p
@@ -436,36 +436,23 @@ local function config_lsp()
   vim.lsp.enable('ts_ls')
   vim.lsp.enable('bashls')
 
-  local runtime_path = vim.split(package.path, ';')
-  table.insert(runtime_path, 'lua/?.lua')
-  table.insert(runtime_path, 'lua/?/init.lua')
-  -- TODO: migrate to emmylua_ls. https://old.reddit.com/r/neovim/comments/1mdtr4g/emmylua_ls_is_supersnappy/
-  vim.lsp.config('lua_ls', {
-    ---@type lspconfig.settings.lua_ls
+  vim.lsp.config('emmylua_ls', {
+    cmd = { 'emmylua_ls' },
+    filetypes = { 'lua' },
+    root_markers = { '.emmyrc.json', '.luarc.json', '.git' },
     settings = {
-      Lua = {
-        runtime = {
-          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-          version = 'LuaJIT',
-          -- Setup your lua path
-          path = runtime_path,
-        },
-        diagnostics = {
-          -- Get the language server to recognize the `vim` global
-          globals = {'vim'},
-        },
-        workspace = {
-          -- Make the server aware of Neovim runtime files
-          library = vim.api.nvim_get_runtime_file('', true),
-        },
-        -- Do not send telemetry data containing a randomized but unique identifier
-        telemetry = {
-          enable = false,
-        },
+      runtime = {
+        version = 'LuaJIT',
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file('', true),
+      },
+      diagnostics = {
+        globals = { 'vim' },
       },
     },
   })
-  vim.lsp.enable('lua_ls')
+  vim.lsp.enable('emmylua_ls')
 
   vim.lsp.config('clangd', {
     cmd = { [[/opt/homebrew/opt/llvm/bin/clangd]] },
