@@ -86,35 +86,6 @@ xnoremap x  "_d
 
 nnoremap vK <C-\><C-N><Cmd>help!<CR>
 
-" text-object: entire buffer
-" Elegant text-object pattern hacked out of jdaddy.vim.
-function! s:line_outer_movement(count) abort
-  if empty(getline(1)) && 1 == line('$')
-    return "\<Esc>"
-  endif
-  let [lopen, copen, lclose, cclose] = [1, 1, line('$'), 1]
-  call setpos("'[", [0, lopen, copen, 0])
-  call setpos("']", [0, lclose, cclose, 0])
-  return "'[o']"
-endfunction
-xnoremap <expr>   al <SID>line_outer_movement(v:count1)
-onoremap <silent> al :normal Val<CR>
-
-" text-object: line
-" Elegant text-object pattern hacked out of jdaddy.vim.
-function! s:line_inner_movement(count) abort
-  "TODO: handle count
-  if empty(getline('.'))
-    return "\<Esc>"
-  endif
-  let [lopen, copen, lclose, cclose] = [line('.'), 1, line('.'), col('$')-1]
-  call setpos("'[", [0, lopen, copen, 0])
-  call setpos("']", [0, lclose, cclose, 0])
-  return "`[o`]"
-endfunction
-xnoremap <expr>   il <SID>line_inner_movement(v:count1)
-onoremap <silent> il :normal vil<CR>
-
 " Insert formatted datetime (from @tpope vimrc).
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y","%Y%m%d"],'strftime(v:val)')+[localtime()]),0)<CR>
 " Print unix time at cursor as human-readable datetime. 1677604904 => '2023-02-28 09:21:45'

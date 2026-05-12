@@ -79,7 +79,7 @@ augroup my.config
   autocmd FileType * autocmd CursorMoved * ++once if !&expandtab | setlocal listchars+=tab:\ \  | endif
 
   " Defaults for text-like buffers.
-  autocmd VimEnter,BufNew * autocmd InsertEnter <buffer=abuf> ++once if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
+  autocmd InsertEnter * if &filetype ==# '' | exe 'runtime! after/ftplugin/text.vim' | endif
   autocmd FileType markdown,gitcommit runtime! after/ftplugin/text.vim
 
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
@@ -92,7 +92,7 @@ augroup my.config
 
   autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if expand('<afile>:t') !=# 'CMakeLists.txt' | setf text | endif
 
-  autocmd TextYankPost * silent! lua vim.hl.on_yank {higroup='Visual', timeout=300}
+  autocmd TextPutPost,TextYankPost * silent! lua vim.hl.hl_op {higroup='Visual', timeout=300}
 
   " autocmd VimEnter * if !empty($NVIM)
   "       \ |let g:r=jobstart(['nc', '-U', $NVIM],{'rpc':v:true})
@@ -388,6 +388,7 @@ vim.api.nvim_set_var('projectionist_heuristics', {
   },
 })
 
+---@param ev {data: vim.event.lspattach.data}
 nvim_on('LspAttach', augroup, nil, function(ev)
   vim.cmd([[
   nnoremap <buffer> K   <cmd>lua vim.lsp.buf.hover()<cr>
@@ -409,8 +410,10 @@ nvim_on('LspAttach', augroup, nil, function(ev)
 
   -- CTRL-space (insert-mode) manually triggers LSP completion.
   vim.keymap.set('i', '<c-space>', function()
-    vim.lsp.completion.enable(true, ev.data.client_id, ev.buf)
-    -- vim.notify('lsp completion: working...')
+    vim.notify_once('activated lsp completion ...')
+    vim.lsp.completion.enable(true, ev.data.client_id, ev.buf, {
+      autotrigger = true,
+    })
     vim.lsp.completion.get()
     -- vim.cmd[[redraw | echo '']]
   end, { buffer = 0 })
@@ -439,16 +442,23 @@ local function config_lsp()
   vim.lsp.config('emmylua_ls', {
     cmd = { 'emmylua_ls' },
     filetypes = { 'lua' },
-    root_markers = { '.emmyrc.json', '.luarc.json', '.git' },
+    root_markers = { { '.emmyrc.json', '.luarc.json' }, '.git' },
+    --- TODO: missing @type lspconfig.settings.emmylua_ls
     settings = {
-      runtime = {
-        version = 'LuaJIT',
-      },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file('', true),
-      },
-      diagnostics = {
-        globals = { 'vim' },
+      emmylua = {
+        runtime = {
+          version = 'LuaJIT',
+        },
+        workspace = {
+          library = {
+            vim.env.VIMRUNTIME,
+            -- For LSP Settings Type Annotations: https://github.com/neovim/nvim-lspconfig#lsp-settings-type-annotations
+            vim.api.nvim_get_runtime_file('lua/lspconfig', false)[1],
+          },
+        },
+        diagnostics = {
+          globals = { 'vim' },
+        },
       },
     },
   })
