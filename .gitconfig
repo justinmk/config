@@ -33,6 +33,11 @@
   default = current
 [diff]
   algorithm = patience
+  colorMoved = true
+  colorMovedWS = allow-indentation-change
+  mnemonicPrefix = true
+  tool = nvim_difftool
+  submodule = diff
 [blame]
   markIgnoredLines = true
   markUnblamableLines = true
@@ -49,6 +54,11 @@
   keepBackup = false
 [mergetool "vimdiff"]
   cmd = $EDITOR -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w|only|diffoff!'
+[difftool]
+  prompt = false
+  trustExitCode = true
+[difftool "nvim_difftool"]
+  cmd = nvim -c \"packadd nvim.difftool\" -d \"$LOCAL\" \"$REMOTE\"
 [i18n]
   filesEncoding = utf-8
 [commit]
