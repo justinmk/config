@@ -31,7 +31,7 @@ nnoremap P zP
 " copy selection to gui-clipboard
 xnoremap Y "+y
 " copy entire file contents (to gui-clipboard if available)
-nnoremap yY :let b:winview=winsaveview()<bar>exe 'keepjumps keepmarks norm ggVG"+y'<bar>call winrestview(b:winview)<cr>
+nnoremap yY "+yal
 " copy current (relative) filename (to gui-clipboard if available)
 nnoremap "%y <cmd>let @+=fnamemodify(@%, ':.')<cr>
 
