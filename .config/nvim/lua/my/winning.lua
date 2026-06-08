@@ -44,6 +44,15 @@ nnoremap <silent> <M-t>    :tab split<cr>
 nnoremap <silent> <M-]>    gt
 nnoremap <silent> <M-[>    gT
 nnoremap <silent> ZT       :tabclose<cr>
+noremap <silent><M-1> 1gt
+noremap <silent><M-2> 2gt
+noremap <silent><M-3> 3gt
+noremap <silent><M-4> 4gt
+noremap <silent><M-5> 5gt
+noremap <silent><M-6> 6gt
+noremap <silent><M-7> 7gt
+noremap <silent><M-8> 8gt
+noremap <silent><M-9> 9gt
 " move tab to Nth position
 nnoremap <expr> <M-L> ':<C-u>tabmove '.(v:count ? (v:count - 1) : '+1').'<CR>'
 nnoremap <expr> <M-H> ':<C-u>tabmove '.(v:count ? (v:count - 1) : '-1').'<CR>'
