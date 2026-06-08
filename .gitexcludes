@@ -38,3 +38,6 @@ obj
 
 # build
 cdk.context.json
+
+# AI agents
+**/.claude/settings.local.json
