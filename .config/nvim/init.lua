@@ -17,8 +17,6 @@ set pumborder=rounded
 
 " https://github.com/neovim/neovim/issues/3463#issuecomment-148757691
 " autocmd CursorHold,FocusGained,FocusLost * silent! rshada|silent! wshada
-" :checktime is SLOW
-" autocmd CursorHold,FocusGained * silent! checktime
 
 set shada^=r/tmp/,r/private/,rzipfile:,rterm:,rhealth:
 set jumpoptions+=view
@@ -84,6 +82,7 @@ augroup my.config
 
   autocmd BufReadCmd *.vsix call zip#Browse(expand("<amatch>"))
   autocmd BufReadPost *.i setlocal filetype=c
+  " Custom autowrite/autosave:
   autocmd BufHidden,FocusLost,WinLeave,CursorHold * if &buftype=='' && !&readonly && filereadable(expand('%:p')) | silent lockmarks update ++p | endif
 
   " :help restore-cursor
