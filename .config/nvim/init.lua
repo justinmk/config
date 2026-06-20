@@ -635,7 +635,7 @@ local function config_tabline()
 end
 
 local function config_term()
-  nvim_on('TermOpen', nil, nil,function()
+  nvim_on('TermOpen', nil, { pattern = { '{term,shell}://*', ':shell*' } },function()
     vim.cmd[=[
       " Enable prompt sign in :terminal buffers.
       setlocal signcolumn=auto
