@@ -222,6 +222,10 @@ vim.g.obsession_no_bufenter = 1  -- https://github.com/tpope/vim-obsession/issue
 vim.g.linediff_buffer_type = 'scratch'
 vim.g.fugitive_legacy_commands = false
 vim.g.diffs = {
+  highlights = {
+    treesitter = { max_lines = 1000 },
+    vim = { max_lines = 1000 },
+  },
   integrations = {
     fugitive = true,
     -- gitsigns = true,
@@ -250,8 +254,6 @@ end
 --    4. start nvim client in new tmux window
 --       :Start ~/dev/neovim/build/bin/nvim --remote-ui --server ~/.cache/nvim/debug-server.pipe
 vim.pack.add{
-
-  'https://github.com/andrewferrier/debugprint.nvim',
 
   -- Hint: to open files start with "+" or "-" from the terminal, prefix them with "./".
   --    nvim ./-foo
@@ -597,11 +599,6 @@ local function config_theme()
   fix_colorscheme()
 end
 
-local function config_printf_mappings()
-  -- printf/log util
-  require('debugprint').setup({})
-end
-
 local function config_tabline()
   -- 'tabline'
   vim.cmd[[highlight TabLineSel guibg=bg guifg=fg ctermbg=white ctermfg=black]]
@@ -735,7 +732,6 @@ else
   config_tabline()
   config_lsp()
   config_fzf()
-  config_printf_mappings()
   -- cmdline_sub()
   config_theme()
 end
