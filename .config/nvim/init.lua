@@ -264,7 +264,6 @@ vim.pack.add{
 
   'https://github.com/justinmk/vim-ipmotion.git',
   'https://github.com/justinmk/vim-gtfo.git',
-  'https://github.com/justinmk/vim-dirvish.git',
 
   {
     src = 'https://github.com/glacambre/firenvim',
@@ -341,6 +340,7 @@ vim.pack.add({
   'https://github.com/tpope/vim-fireplace',
   'https://github.com/chrisbra/Colorizer',
   'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+  'https://github.com/justinmk/vim-dirvish.git',
 }, {
   load = function() end,
 })
