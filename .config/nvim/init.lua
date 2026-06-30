@@ -6,6 +6,7 @@ let g:loaded_netrwPlugin = 0  " Disable netrw. 🚮
 "==============================================================================
 " general settings / options
 "==============================================================================
+set updatecount=0 " i've fucking had it with swapfiles.
 set sessionoptions-=blank
 set exrc
 set scrolloff=2
