@@ -710,8 +710,14 @@ else
   require('vim._core.ui2').enable({msg={target='cmd'}})
 
   vim.keymap.set('i', '<c-s-space>', function()
-    require('mini.completion').setup{}
-    vim.notify('activated mini.completion ...')
+    if vim.g.minicompletion_disable == nil then
+      require('mini.completion').setup{}
+      vim.g.minicompletion_disable = false
+      vim.notify('mini.completion ON')
+      return
+    end
+    vim.g.minicompletion_disable = not vim.g.minicompletion_disable
+    vim.notify('mini.completion ' .. (vim.g.minicompletion_disable and 'OFF' or 'ON'))
   end)
 
   require('quicker').setup{}
