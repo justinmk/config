@@ -40,6 +40,7 @@ font-feature = "-calt, -liga, -dlig"
 cursor-color = green
 cursor-style = block
 mouse-hide-while-typing
+mouse-shift-capture = true
 split-divider-color = green
 window-new-tab-position = end
 

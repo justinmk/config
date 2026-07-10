@@ -235,9 +235,9 @@ giteach() {
 p() {
   (
     if [ "$(uname)" = Darwin ] ; then
-      ps -e "$@" -o state,pid,start,rss,vsz,command
+      ps -e -r "$@" -o state,pid,start,%cpu,rss,vsz,command
     else
-      ps -e "$@" -o state,pidns,pid,start,rss,vsz,command
+      ps -e -r "$@" -o state,pidns,pid,start,%cpu,rss,vsz,command
     fi
   ) | grep -v ' grep '
 }
