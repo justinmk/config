@@ -1,6 +1,6 @@
 # Beware! This file is rewritten by htop when settings are changed in the interface.
 # The parser is also very primitive, and not human-friendly.
-htop_version=3.5.2
+htop_version=3.5.3-3.5.3
 config_reader_min_version=3
 fields=2 20 0 48 17 18 38 39 46 47 49 1
 hide_kernel_threads=1
