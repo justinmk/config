@@ -50,9 +50,10 @@ nnoremap g: :lua =
 nnoremap z= <cmd>setlocal spell<CR>z=
 nnoremap ' `
 
-" niceblock
-xnoremap <expr> I (mode()=~#'[vV]'?'<C-v>^o^I':'I')
-xnoremap <expr> A (mode()=~#'[vV]'?'<C-v>0o$A':'A')
+" niceblock: multicursor edition 🐙
+let g:mc_clear_once = "\<Cmd>au InsertLeave <buffer> ++once lua vim.schedule(function() vim.api.nvim_buf_clear_namespace(0, vim.api.nvim_create_namespace('nvim.multicursor'), 0, -1) end)\<CR>"
+xnoremap <expr> I (mode()=~#'[vV]'?g:mc_clear_once..'QI':'I')
+xnoremap <expr> A (mode()=~#'[vV]'?g:mc_clear_once..'QA':'A')
 
 nnoremap g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
 
