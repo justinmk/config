@@ -65,6 +65,8 @@ set nowrap
 set dictionary+=/usr/share/dict/words
 set completeopt=menuone,noselect,noinsert,fuzzy,popup
 set complete+=f,kspell
+" Scanning unloaded buffers can be very slow.
+set complete-=u
 set wildignore+=tags,gwt-unitCache/*,*/__pycache__/*,build/*,build.?/*,*/node_modules/*
 " Files with these suffixes get a lower priority when matching a wildcard
 set suffixes+=.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
