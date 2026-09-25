@@ -204,7 +204,7 @@ command! Tags !ctags -R -I EXTERN -I INIT --exclude='build*/**' --exclude='**/bu
 --- @param evnames string|string[]
 --- @param group string|integer?
 --- @param opts vim.api.keyset.create_autocmd?
---- @param fn fun(ev)
+--- @param fn fun(ev: vim.api.keyset.create_autocmd.callback_args)
 local function nvim_on(evnames, group, opts, fn)
   opts = opts or {}
   opts.group = group
@@ -279,7 +279,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-apathy',
   'https://github.com/tpope/vim-dadbod',
 
-  'https://github.com/barrettruth/diffs.nvim',
+  'https://forge.barrettruth.com/barrettruth/diffs.nvim',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
@@ -341,7 +341,7 @@ vim.pack.add({
   'https://github.com/tpope/vim-salve',
   'https://github.com/tpope/vim-fireplace',
   'https://github.com/chrisbra/Colorizer',
-  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+  'https://codeberg.org/vi6jm/scry.nvim',
   'https://github.com/justinmk/vim-dirvish.git',
 }, {
   load = function() end,
@@ -349,6 +349,15 @@ vim.pack.add({
 
 _G._myconfig = _G._myconfig or {}
 local augroup = vim.api.nvim_create_augroup('my.config', {clear=false})
+
+nvim_on({'SourcePost'}, augroup, nil, function(ev)
+  -- local log = vim.log.new({ name = 'zzz', level=1 })
+  -- log.info(vim.inspect(pluginname))
+  local pluginname = vim.fs.basename(ev.file)
+  if pluginname == 'scry.lua' and not package.loaded['scry'] then
+    require('scry').setup{}
+  end
+end)
 
 nvim_on({'UIEnter'}, augroup, nil, function()
   vim.cmd[[set guifont=Menlo:h20]]
