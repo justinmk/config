@@ -667,8 +667,25 @@ local function config_term()
   end)
 end
 
--- yankring
-nvim_on('TextYankPost', augroup, nil, function()
+nvim_on('TextYankPost', augroup, nil, function(ev)
+  -- Remove cruft from text copied from :terminal output.
+  if vim.bo[ev.buf].buftype == 'terminal' then
+    local vev = vim.v.event
+    local reg, regtype = vev.regname == '' and '"' or (vev.regname), vev.regtype
+
+    local text = table.concat(vev.regcontents, '\n')
+      :gsub('^(%s*)⏺', '%1 ') -- AI chat cruft.
+      :gsub('^(%s*)❯', '%1 ') -- AI chat cruft.
+      :gsub('[ \t]+\n', '\n') -- Trim trailing whitespace.
+      :gsub('[ \t]+$', '')
+    local lines = vim.split(vim.text.indent(0, text), '\n')
+    -- Deferred: writing a register (and the clipboard provider) from inside the yank is unsafe.
+    vim.schedule(function()
+      vim.fn.setreg(reg, lines, regtype)
+    end)
+  end
+
+  -- yankring
   if vim.v.event.operator == 'y' then
     for i = 9, 1, -1 do -- Shift all numbered registers.
       vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
