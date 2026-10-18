@@ -71,7 +71,7 @@
   ll = log --stat --decorate --source -p
   b  = branch -vv
   # Recent branches.
-  r = "!git branch --sort=-committerdate | head -n 10 ; git branch --sort=-committerdate -a | grep -E 'justinmk|origin' | grep -v 'HEAD' | sed 's,remotes/,,' | head -n 10"
+  r = "!git branch --sort=-committerdate --format='%(if)%(HEAD)%(then)* %(else)%(if)%(worktreepath)%(then)+ %(else)  %(end)%(end)%(refname:short)%(if)%(worktreepath)%(then) (%(worktreepath))%(end)' | sed 's, (/.*/, (,' | head -n 10 ;git branch --sort=-committerdate -a | grep -E 'justinmk|origin' | grep -v 'HEAD' | sed 's,remotes/,,' | head -n 10"
   s  = !git status -sb
   co = "!f() { git checkout \"$@\"; git l; }; f"
   cr = "!f() { git checkout \"$@\" && git pull --rebase; git l; }; f"
