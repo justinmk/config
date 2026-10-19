@@ -696,8 +696,8 @@ end)
 -- Never scroll past end-of-buffer. (Never show "filler lines".)
 nvim_on('WinScrolled', augroup, nil,  function(ev)
   local win = assert(tonumber(ev.match))
-  if vim.wo[win].scrollbind then
-    -- XXX: Disabled for 'scrollbind' windows because it sometimes makes them out of sync.
+  if vim.wo[win].scrollbind or vim.wo[win].wrap then
+    -- XXX: May un-sync 'scrollbind' windows. May cause infinite loop with 'wrap'.
     return
   end
   local buf = vim.api.nvim_win_get_buf(win)
