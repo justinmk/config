@@ -796,8 +796,8 @@ else
 end
 
 if vim.fn.exists('##CmdAtom') == 1 then
-  local last_atom ---@type vim.event.cmdatom.data?
-  local last_edit ---@type vim.event.cmdatom.data?
+  -- local last_atom ---@type vim.event.cmdatom.data?
+  -- local last_edit ---@type vim.event.cmdatom.data?
 
   vim.api.nvim_create_autocmd('CmdAtom', {
     -- pattern = { 'motion', 'mapping' },
@@ -811,9 +811,9 @@ if vim.fn.exists('##CmdAtom') == 1 then
       if atom.keys == '' then
         -- Unreplayable Visual op.
       elseif atom.changed and not is_redo_or_undo and atom.lhs ~= '.' then
-        last_edit = atom
+        vim.g.last_edit = atom
       elseif not atom.changed and not is_redo_or_undo and not atom.lhs:match('^[,hjkl]$') then
-        last_atom = atom
+        vim.g.last_atom = atom
       elseif vim.g.debug then
         local oneline = table.concat(vim.split(vim.inspect(atom), '%s*\n%s*'), ' ')
         vim.print(('skipped: %s'):format(oneline))
@@ -838,7 +838,7 @@ if vim.fn.exists('##CmdAtom') == 1 then
   end
 
   vim.keymap.set('n', ',', function()
-    replay(last_atom)
+    replay(vim.g.last_atom)
   end)
 
   vim.keymap.set('n', '.', function()
@@ -848,7 +848,7 @@ if vim.fn.exists('##CmdAtom') == 1 then
       vim.api.nvim_feedkeys('.', 'n', false)
       return
     end
-    replay(last_edit)
+    replay(vim.g.last_edit)
   end)
 
   -- Track the last 20 atoms.
@@ -895,7 +895,7 @@ end
 
 vim.g.guh_debug = 'debug'
 vim.keymap.set('n', 'gb', function()
-  require('guh.util').goto_file_at_cursor()
+  require('guh.util_gb_tmp').goto_file_at_cursor()
 end)
 
 vim.cmd[[silent! source ~/.vimrc.local]]
