@@ -279,7 +279,7 @@ vim.pack.add{
   'https://github.com/tpope/vim-apathy',
   'https://github.com/tpope/vim-dadbod',
 
-  'https://forge.barrettruth.com/barrettruth/diffs.nvim',
+  'https://github.com/barrettruth/diffs.nvim',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/tpope/vim-rhubarb',
   -- 'https://github.com/shumphrey/fugitive-gitlab.vim',
@@ -812,10 +812,17 @@ if vim.fn.exists('##CmdAtom') == 1 then
         -- Unreplayable Visual op.
       elseif atom.changed and not is_redo_or_undo and atom.lhs ~= '.' then
         vim.g.last_edit = atom
-      elseif not atom.changed and not is_redo_or_undo and not atom.lhs:match('^[,hjkl]$') then
+      elseif not atom.changed
+        and not is_redo_or_undo
+        and not atom.lhs:match('^[,hjkl]$')
+        and not (atom.keys and atom.keys:match('^[,hjkl]$'))
+        and vim.trim(atom.keys) ~= ':'
+        and (atom.type ~= 'excmd' or vim.trim(atom.keys) ~= ':' .. vim.trim(vim.fn.histget(':', -1))) -- Use @: instead.
+        and atom.type ~= 'insert'
+      then
         vim.g.last_atom = atom
       elseif vim.g.debug then
-        local oneline = table.concat(vim.split(vim.inspect(atom), '%s*\n%s*'), ' ')
+        local oneline = table.concat(vim.split(vim.inspect(atom), '%s+'), ' ')
         vim.print(('skipped: %s'):format(oneline))
       end
     end,
@@ -831,7 +838,7 @@ if vim.fn.exists('##CmdAtom') == 1 then
     vim.schedule(function()
       vim.api.nvim_feedkeys(keys, atom.keys and 'n' or 'm', false)
       if vim.g.debug then
-        local oneline = table.concat(vim.split(vim.inspect(atom), '%s*\n%s*'), ' ')
+        local oneline = table.concat(vim.split(vim.inspect(atom), '%s+'), ' ')
         vim.print(('atom: sent "%s", %s'):format(keys, oneline))
       end
     end)
