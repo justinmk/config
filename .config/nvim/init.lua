@@ -816,7 +816,7 @@ if vim.fn.exists('##CmdAtom') == 1 then
         and not is_redo_or_undo
         and not atom.lhs:match('^[,hjkl]$')
         and not (atom.keys and atom.keys:match('^[,hjkl]$'))
-        and vim.trim(atom.keys) ~= ':'
+        and vim.trim(atom.keys or '') ~= ':'
         and (atom.type ~= 'excmd' or vim.trim(atom.keys) ~= ':' .. vim.trim(vim.fn.histget(':', -1))) -- Use @: instead.
         and atom.type ~= 'insert'
       then
